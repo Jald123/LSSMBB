@@ -1,0 +1,3236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSA Gage R&R | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* MODERN SUITE LAYOUT */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 340px;
+            height: 100vh;
+            overflow: hidden;
+            background: #050505;
+        }
+
+        .sidebar-left {
+            background: #0a0a0a;
+            border-right: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .main-workspace {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+            background: #050505;
+        }
+
+        .report-sidebar {
+            background: #0a0a0a;
+            border-left: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            color: #8b5cf6;
+            font-family: 'Orbitron';
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* INFOGRAPHIC MODAL */
+        .info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.98);
+            display: none;
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .info-box-premium {
+            width: 95%;
+            max-width: 1000px;
+            background: #0f172a;
+            border-radius: 32px;
+            border: 2px solid #8b5cf6;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(139, 92, 246, 0.2);
+        }
+
+        .info-header-pro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .info-title-pro {
+            font-family: 'Orbitron';
+            color: #8b5cf6;
+            font-size: 28px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .info-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .info-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .info-tab-btn.active {
+            background: #8b5cf6;
+            color: white;
+            border-color: #8b5cf6;
+        }
+
+        .info-grid-pro {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-card-pro {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid #8b5cf6;
+        }
+
+        .info-card-pro h4 {
+            color: #8b5cf6;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin: 0 0 10px;
+        }
+
+        .info-card-pro p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .example-box {
+            grid-column: span 2;
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            display: none;
+        }
+
+        .example-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .close-pro {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 30px;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-pro:hover {
+            color: white;
+        }
+
+        .premium-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Inter';
+            margin-bottom: 15px;
+        }
+
+        .print-header,
+        .print-footer,
+        #print-summary-page {
+            display: none;
+        }
+
+        h4 {
+            font-size: 16px !important;
+        }
+
+        .grid-input {
+            display: grid;
+            gap: 2px;
+            /* dynamically set grid-template-columns in JS */
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .data-cell {
+            padding: 8px;
+            text-align: center;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 16px !important;
+        }
+
+        .data-cell:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .result-badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .badge-success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ECC71;
+        }
+
+        .badge-warning {
+            background: rgba(243, 156, 18, 0.2);
+            color: #F39C12;
+        }
+
+        .badge-danger {
+            background: rgba(231, 76, 60, 0.2);
+            color: #E74C3C;
+        }
+
+        .clickable-result {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+            transition: background 0.2s;
+            border-radius: 4px;
+            padding: 2px 5px;
+        }
+
+        .clickable-result:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .scenario-select {
+            width: 100%;
+            padding: 10px;
+            background: var(--surface-2);
+            color: white;
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .scenario-select option {
+            background: var(--surface-1);
+            color: white;
+        }
+
+        /* MODERN PROGRESS BAR */
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: #334155;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 5px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .progress-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 9px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+    </style>
+    <style>
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .sidebar,
+            .nav-header,
+            .btn,
+            .premium-input,
+            .input-group,
+            .card select,
+            .sidebar-label,
+            .sidebar-title,
+            #candidateNameInput,
+            .progress-container,
+            #aiBtn,
+            #infographicModal,
+            #accuracyModal,
+            #defnModal {
+                display: none !important;
+            }
+
+            .main-workspace {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                border: 1px solid #ccc;
+                box-shadow: none;
+                background: #fff !important;
+                color: #000 !important;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4 {
+                color: #000 !important;
+            }
+
+            .phase-glow {
+                display: none;
+            }
+
+            canvas {
+                max-width: 100%;
+                height: auto;
+            }
+
+            #resultsPanel,
+            #varianceChart {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+
+            #narrative-box {
+                border: 1px solid #000;
+                background: #f9f9f9 !important;
+                color: #000 !important;
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            th,
+            td {
+                border: 1px solid #000 !important;
+                color: #000 !important;
+            }
+
+            .report-sidebar {
+                display: none;
+            }
+
+            /* Force background colors */
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Hide Sidebar and other non-essentials */
+            .sidebar-left,
+            .report-sidebar,
+            header .btn,
+            .nav-header {
+                display: none !important;
+            }
+
+            .app-container {
+                display: block !important;
+            }
+
+            .main-workspace {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+
+            /* Explicitly show results and chart */
+            #resultsPanel,
+            #varianceChart {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+
+            /* Simplify grid for print */
+            #dataGridContainer {
+                max-height: none !important;
+                overflow: visible !important;
+                border: 1px solid #000 !important;
+            }
+
+            /* Hide the large inputs but keep results */
+            /* .card>div>div:first-child { display: none; } */
+
+            /* Let's just hide the specific inputs by ID if possible */
+            #processTolerance,
+            .premium-input {
+                border: none !important;
+                background: transparent !important;
+                color: black !important;
+                -webkit-appearance: none;
+                appearance: none;
+                pointer-events: none;
+            }
+        }
+    </style>
+</head>
+
+<div class="app-container">
+    <!-- SIDEBAR LEFT: TOOLKIT -->
+    <div class="sidebar-left">
+        <div style="font-family:'Orbitron'; font-size:16px; color:#8b5cf6; margin-bottom:30px; text-align:center;">
+            MEASURE STUDIO</div>
+
+        <h3
+            style="font-family:'Orbitron'; font-size:14px; color:#f97316; margin: 0 0 15px 10px; text-transform:uppercase; letter-spacing:1px;">
+            1. Study Setup</h3>
+
+        <div class="card"
+            style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding:15px; margin-bottom:20px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                <i class="fas fa-folder-open" style="color:#facc15;"></i>
+                <span class="sidebar-label" style="margin:0;">Load Case Study Example</span>
+            </div>
+            <select class="premium-input" style="padding:10px; margin-bottom:0; background:rgba(15, 23, 42, 0.8);"
+                onchange="loadCaseStudy(this.value)">
+                <option value="">-- Select Scenario --</option>
+                <optgroup label="✅ PASSING SCENARIOS">
+                    <option value="pass_manufacturing">⚙️ Manuf: Polished Pin (Pass)</option>
+                    <option value="pass_healthcare">🏥 Health: Lab Turnaround (Pass)</option>
+                    <option value="pass_service">📞 Service: Call Avg (Pass)</option>
+                </optgroup>
+                <optgroup label="❌ FAILING SCENARIOS">
+                    <option value="fail_manufacturing">⚙️ Manuf: Rough Shaft (Fail)</option>
+                    <option value="fail_healthcare">🏥 Health: ER Triage (Fail)</option>
+                    <option value="fail_service">📞 Service: Support Tix (Fail)</option>
+                </optgroup>
+                <optgroup label="Legacy Examples">
+                    <option value="manufacturing">⚙️ Manuf: Shaft Diameter</option>
+                    <option value="healthcare">🏥 Health: Patient Wait Time</option>
+                    <option value="glucose">🏥 Health: Glucometer Test</option>
+                    <option value="blood_pressure">🏥 Health: BP Monitor Audit</option>
+                    <option value="service">📞 Service: Call Handle Time</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <h3
+            style="font-family:'Orbitron'; font-size:14px; color:#f97316; margin: 0 0 15px 10px; text-transform:uppercase; letter-spacing:1px;">
+            2. Parameter Audit</h3>
+
+        <div class="card" style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); padding:15px;">
+            <span class="sidebar-label">Global Parameters</span>
+            <div style="display:grid; gap:10px;">
+                <div>
+                    <span onclick="explain('operators')" style="font-size:10px; color:#a78bfa; cursor:help;">Operators
+                        <i class="fas fa-info-circle"></i></span>
+                    <select id="numOperators" class="premium-input" onchange="generateGrid()"
+                        style="padding:8px; margin-bottom:8px;">
+                        <option value="2">2 Operators</option>
+                        <option value="3" selected>3 Operators</option>
+                    </select>
+                </div>
+                <div>
+                    <span onclick="explain('parts')" style="font-size:10px; color:#a78bfa; cursor:help;">Parts <i
+                            class="fas fa-info-circle"></i></span>
+                    <input type="number" id="numParts" class="premium-input" value="10" onchange="generateGrid()"
+                        style="padding:8px; margin-bottom:8px;">
+                </div>
+                <div>
+                    <span onclick="explain('trials')" style="font-size:10px; color:#a78bfa; cursor:help;">Trials <i
+                            class="fas fa-info-circle"></i></span>
+                    <input type="number" id="numTrials" class="premium-input" value="3" onchange="generateGrid()"
+                        style="padding:8px; margin-bottom:8px;">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-ghost" style="margin-top:auto;" onclick="window.location.href='Tool_WorkflowHub.html'"><i
+                class="fas fa-arrow-left"></i> Hub</button>
+    </div>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="main-workspace">
+        <header class="flex-between" style="margin-bottom:30px;">
+            <div>
+                <span class="phase-glow"
+                    style="background:#8b5cf6; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);">MEASURE PHASE</span>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <h1>MSA Gage R&R</h1>
+                    <img src="./assets/accuracy_precision.png" alt="Accuracy vs Precision"
+                        style="height:60px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); cursor:pointer; transition:transform 0.2s;"
+                        onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"
+                        onclick="openAccuracyModal()">
+                </div>
+                <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">Validate your measurement data
+                    before strategic execution.</p>
+            </div>
+            <button class="btn" style="background:rgba(139,92,246,0.1); border:1px solid #8b5cf6; color:#8b5cf6;"
+                onclick="showInfographic()">
+                <i class="fas fa-info-circle"></i> CAN YOU TRUST YOUR DATA?
+            </button>
+        </header>
+
+        <div id="caseStudyDesc" class="card"
+            style="display:none; background:rgba(139, 92, 246, 0.05); border:1px dashed #8b5cf6; margin-bottom:20px; font-size:13px; font-style:italic; color:#cbd5e1;">
+        </div>
+
+        <!-- GAGE INPUT CARD with INTEGRATED RESULTS -->
+        <div class="card" style="margin-bottom:20px;">
+            <div style="display:grid; grid-template-columns: 1fr 2fr; gap:20px;">
+                <!-- LEFT COLUMN: CONTROL & RESULTS -->
+                <div style="display:flex; flex-direction:column; gap:15px;">
+                    <!-- Tolerance Input -->
+                    <div>
+                        <span class="sidebar-label" onclick="explain('tolerance')"
+                            style="cursor:help; color:#8b5cf6;">Tolerance Window <i class="fas fa-info-circle"
+                                style="font-size:10px;"></i></span>
+                        <input type="number" id="processTolerance" class="premium-input" value="10"
+                            placeholder="e.g., 0.05" step="0.01">
+                        <p style="font-size:10px; color:var(--text-muted);">The allowable spread for your metric (USL -
+                            LSL).</p>
+                    </div>
+
+                    <!-- RED SPACE: KEY METRICS ROW -->
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:5px;">
+                        <span style="font-size:10px; color:#64748b;">Key Performance Indicators</span>
+                        <span onclick="showMetricsHelp()"
+                            style="cursor:pointer; color:#8b5cf6; font-size:10px; text-decoration:underline; display:flex; align-items:center; gap:4px;">
+                            <i class="fas fa-book"></i> What do these mean?
+                        </span>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+                        <!-- P/T Ratio -->
+                        <div class="card mb-0"
+                            style="padding:10px; text-align:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05);">
+                            <div style="font-size:9px; color:#94a3b8; margin-bottom:4px;">% P/T RATIO</div>
+                            <div id="grrValue" style="font-size:16px; font-weight:700; color:#ef4444;">-</div>
+                            <div id="grrStatus" style="font-size:9px;" class="result-badge badge-warning">Waiting</div>
+                        </div>
+                        <!-- PV -->
+                        <div class="card mb-0"
+                            style="padding:10px; text-align:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05);"
+                            title="Part Variation: Variation from actual parts. Target >90%">
+                            <div style="font-size:9px; color:#94a3b8; margin-bottom:4px;">PV ❓</div>
+                            <div id="pvValue" style="font-size:16px; font-weight:700;">-</div>
+                            <div style="font-size:8px; color:#64748b;">Process Spread</div>
+                        </div>
+                        <!-- nDC -->
+                        <div class="card mb-0"
+                            style="padding:10px; text-align:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05);"
+                            title="nDC: Distinct Categories. Target >= 5">
+                            <div style="font-size:9px; color:#94a3b8; margin-bottom:4px;">nDC ❓</div>
+                            <div id="ndcValue" style="font-size:16px; font-weight:700;">-</div>
+                            <div id="ndcStatus" style="font-size:9px;" class="result-badge badge-danger">-</div>
+                        </div>
+                    </div>
+
+                    <!-- NEW: NARRATIVE INTERPRETATION BOX -->
+                    <div id="narrative-box"
+                        style="display:none; background:rgba(251, 191, 36, 0.1); border-left:4px solid #f59e0b; padding:15px; margin-bottom:15px; border-radius:4px;">
+                        <h4 style="margin:0 0 5px 0; color:#fbbf24; font-size:12px; font-family:'Orbitron';">📈
+                            INTERPRETATION</h4>
+                        <div id="narrative-text" style="font-size:11px; color:#e2e8f0; line-height:1.5;">Waiting for
+                            results...</div>
+                    </div>
+
+                    <!-- YELLOW SPACE: ANOVA REPORT -->
+                    <div id="resultsPanel"
+                        style="display:none; background:#0f172a; border:1px solid #334155; border-radius:8px; padding:10px;">
+                        <div
+                            style="background: linear-gradient(90deg, #1e3a5f, #0f172a); padding: 8px; margin: -10px -10px 10px -10px; border-radius: 8px 8px 0 0; border-bottom: 2px solid #3b82f6;">
+                            <h3 style="margin: 0; color: #60a5fa; font-size: 11px; text-transform: uppercase;">
+                                📊 Gage R&R Study - ANOVA</h3>
+                        </div>
+
+                        <div id="aiOutput" style="font-size: 11px; color: #e2e8f0;">
+                            <div id="interp-default" style="text-align: center; color: #64748b; padding:10px;">
+                                <div style="font-size: 20px;">📋</div>
+                                Waiting for data...
+                            </div>
+                            <div id="interp-results" style="display:none;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+                                    <thead>
+                                        <tr style="background: #1e293b;">
+                                            <th style="text-align: left; padding: 4px; color: #94a3b8;">Source</th>
+                                            <th style="text-align: center; padding: 4px; color: #94a3b8;">%Var</th>
+                                            <th style="text-align: center; padding: 4px; color: #94a3b8;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding: 4px; border-bottom: 1px solid #334155; cursor:help; text-decoration:underline; text-decoration-style:dotted;"
+                                                onclick="showDefinition('grr')">Total Gage R&R
+                                            </td>
+                                            <td id="tbl-grr"
+                                                style="padding: 4px; border-bottom: 1px solid #334155; text-align: center; font-weight: bold;">
+                                                -</td>
+                                            <td id="tbl-grr-status"
+                                                style="padding: 4px; border-bottom: 1px solid #334155; text-align: center;">
+                                                -</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 4px; border-bottom: 1px solid #334155; cursor:help; text-decoration:underline; text-decoration-style:dotted;"
+                                                onclick="showDefinition('ev')">Repeatability
+                                            </td>
+                                            <td id="tbl-ev"
+                                                style="padding: 4px; border-bottom: 1px solid #334155; text-align: center;">
+                                                -</td>
+                                            <td
+                                                style="padding: 4px; border-bottom: 1px solid #334155; text-align: center; color:#64748b;">
+                                                (Equip)</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 4px; border-bottom: 1px solid #334155; cursor:help; text-decoration:underline; text-decoration-style:dotted;"
+                                                onclick="showDefinition('av')">Reproducibility
+                                            </td>
+                                            <td id="tbl-av"
+                                                style="padding: 4px; border-bottom: 1px solid #334155; text-align: center;">
+                                                -</td>
+                                            <td
+                                                style="padding: 4px; border-bottom: 1px solid #334155; text-align: center; color:#64748b;">
+                                                (Appr)</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 4px; border-bottom: 1px solid #334155; cursor:help; text-decoration:underline; text-decoration-style:dotted;"
+                                                onclick="showDefinition('pv')">Part-to-Part
+                                            </td>
+                                            <td id="tbl-pv"
+                                                style="padding: 4px; border-bottom: 1px solid #334155; text-align: center;">
+                                                -</td>
+                                            <td id="tbl-pv-status"
+                                                style="padding: 4px; border-bottom: 1px solid #334155; text-align: center;">
+                                                -</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 4px; cursor:help; text-decoration:underline; text-decoration-style:dotted;"
+                                                onclick="showDefinition('ndc')">nDC Count</td>
+                                            <td id="tbl-ndc" style="padding: 4px; text-align: center;">-</td>
+                                            <td id="tbl-ndc-status" style="padding: 4px; text-align: center;">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div id="verdict-box"
+                                    style="margin-top:10px; padding:8px; border:1px solid #334155; border-radius:4px; border-left:3px solid #64748b; background:rgba(0,0,0,0.2);">
+                                    <div style="display:flex; align-items:center; gap:5px;">
+                                        <span id="verdict-icon">🤔</span>
+                                        <span id="interp-verdict" style="font-weight:bold; font-size:10px;">Analysis
+                                            Required</span>
+                                    </div>
+                                    <div id="interp-action" style="font-size:9px; color:#94a3b8; margin-top:2px;"></div>
+                                </div>
+                                <div style="display:none;">
+                                    <!-- Legacy hidden elements if JS refers to them -->
+                                    <ul style="color:#cbd5e1; font-size:14px;">
+                                        <li id="interp-grr">--</li>
+                                        <li id="interp-ndc">--</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: GRID -->
+                <div>
+                    <span class="sidebar-label">Data Collection Grid</span>
+                    <div id="dataGridContainer" class="grid-input"
+                        style="max-height:400px; overflow:auto; border:1px solid var(--glass-border); border-radius:8px; padding:10px; background:rgba(0,0,0,0.2);">
+                    </div>
+
+                    <!-- Variance Chart (Moved) -->
+                    <div style="margin-top:15px; background:rgba(0,0,0,0.2); border-radius:8px; padding:10px;">
+                        <h4 style="margin:0 0 10px 0; font-size:11px; color:#94a3b8; text-transform:uppercase;">Variance
+                            Components</h4>
+                        <div style="height:200px;">
+                            <canvas id="varianceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEGACY RESULTS REMOVED TO PREVENT DUPLICATE ID CONFLICTS -->
+    </div>
+
+    <!-- REPORT SIDEBAR -->
+    <div class="report-sidebar">
+        <h2 class="sidebar-title">Gage Report</h2>
+
+        <div class="input-group">
+            <span class="sidebar-label">Lead Analyst:</span>
+            <input type="text" id="candidateNameInput" class="premium-input" placeholder="Enter name...">
+        </div>
+
+        <div class="card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);">
+            <span class="sidebar-label">Study Completion</span>
+            <div class="progress-container">
+                <div id="data-progress-bar" class="progress-bar"></div>
+                <div id="data-progress-label" class="progress-label">0%</div>
+            </div>
+            <p style="font-size:10px; color:var(--text-muted); margin-top:10px;" id="progress-text">Enter data to track
+                progress.</p>
+        </div>
+
+        <div style="display:grid; gap:12px; margin-top:auto;">
+            <button class="btn btn-primary" style="background:#8b5cf6;" onclick="evaluateStudy()"><i
+                    class="fas fa-calculator"></i> Evaluate Study</button>
+            <button class="btn btn-ghost" onclick="window.print()"><i class="fas fa-print"></i> Export MSA Audit
+                (PDF)</button>
+        </div>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:15px;">
+    <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+        <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">🤔
+            What is
+            it?</h4>
+        <p style="margin:0; font-size:12px; color:#cbd5e1;">A statistical test to validate the
+            reliability
+            of your data collection system.</p>
+    </div>
+    <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+        <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">💡
+            Why use
+            it?</h4>
+        <p style="margin:0; font-size:12px; color:#cbd5e1;">To ensure variation comes from the
+            underlying
+            process, not the measuring tool or operator.</p>
+    </div>
+    <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+        <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">🕒
+            When to
+            use?</h4>
+        <p style="margin:0; font-size:12px; color:#cbd5e1;">During the Measure Phase, before
+            collecting
+            baseline data, or when onboarding new inspectors.</p>
+    </div>
+</div>
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:15px;">
+    <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155; position:relative; cursor:help;"
+        class="standard-card-hover">
+        <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">📏
+            The
+            Standard</h4>
+        <p style="margin:0; font-size:12px; color:#cbd5e1;">Standard Crossed Study: 10 Parts x 3
+            Operators x
+            3 Trials (Randomized).</p>
+        <!-- HOVER TOOLTIP -->
+        <div class="standard-tooltip"
+            style="display:none; position:absolute; bottom:105%; left:0; width:280px; background:#0f172a; border:1px solid #f97316; padding:12px; border-radius:8px; z-index:100; box-shadow:0 5px 20px rgba(0,0,0,0.5);">
+            <h5 style="margin:0 0 8px 0; color:#f97316; font-size:12px;">What does this mean?</h5>
+            <ul style="margin:0; padding-left:15px; font-size:11px; color:#cbd5e1; line-height:1.6;">
+                <li><b>10 Parts:</b> Pick 10 different samples spanning full tolerance range.</li>
+                <li><b>3 Operators:</b> Have 3 different people measure independently.</li>
+                <li><b>3 Trials:</b> Each person measures all 10 parts 3 times (blind).</li>
+                <li><b>Total:</b> 10 × 3 × 3 = <b>90 measurements</b>.</li>
+            </ul>
+        </div>
+    </div>
+    <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+        <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">👓
+            Interpretation</h4>
+        <p style="margin:0; font-size:12px; color:#cbd5e1;">Focus on <b>% Study Variation</b>
+            (Process
+            Focus) and <b>% Tolerance</b> (Customer Focus).</p>
+    </div>
+    <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+        <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">📊
+            Scoring Logic</h4>
+        <p style="margin:0; font-size:12px; color:#cbd5e1;">&lt;10% = Excellent (Green)<br>10-30% = Marginal
+            (Yellow)<br>&gt;30% = Unacceptable (Red)</p>
+    </div>
+</div>
+<div style="display:grid; grid-template-columns:1fr 2fr; gap:15px;">
+    <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+        <h4 style="margin:0 0 10px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">📋
+            Pre-Requirements</h4>
+        <p style="margin:0 0 15px 0; font-size:12px; color:#cbd5e1;">Calibrated Master Gage. 10
+            Parts
+            spanning full tolerance. 3 Trained Operators.</p>
+        <h4 style="margin:0 0 10px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">👮
+            Strict
+            Roles</h4>
+        <p style="margin:0; font-size:12px; color:#cbd5e1;"><b>Facilitator:</b> Records data
+            (prevents
+            bias).<br><b>Operators:</b> Measure blindly.<br><b>Quality Engineer:</b> Analyzes
+            results.</p>
+    </div>
+    <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+        <details class="story-mode">
+            <summary>🎮 How to Execute (Story Mode) &nbsp;<span
+                    style="font-weight:normal; font-size:12px; opacity:0.8;">(Includes Scoring & Print
+                    Steps)</span></summary>
+            <style>
+                .step-card {
+                    background: #334155;
+                    padding: 10px;
+                    border-radius: 6px;
+                    position: relative;
+                    transition: transform 0.2s, background 0.2s;
+                    cursor: help;
+                }
+
+                .step-card:hover {
+                    transform: translateY(-2px);
+                    background: #475569;
+                    z-index: 20;
+                }
+
+                .step-tooltip {
+                    display: none;
+                    position: absolute;
+                    bottom: 110%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #1e293b;
+                    border: 1px solid #f97316;
+                    color: #e2e8f0;
+                    padding: 10px;
+                    border-radius: 6px;
+                    width: 240px;
+                    font-size: 11px;
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+                    z-index: 100;
+                    text-align: left;
+                    pointer-events: none;
+                }
+
+                .step-card:hover .step-tooltip {
+                    display: block;
+                }
+
+                .step-tooltip h5 {
+                    margin: 0 0 5px 0;
+                    color: #f97316;
+                    font-size: 11px;
+                    border-bottom: 1px solid #334155;
+                    padding-bottom: 3px;
+                }
+
+                .step-tooltip ul {
+                    margin: 0;
+                    padding-left: 0;
+                    list-style: none;
+                }
+
+                .step-tooltip li {
+                    margin-bottom: 4px;
+                    padding-left: 10px;
+                    position: relative;
+                    color: #cbd5e1;
+                }
+
+                .step-tooltip li::before {
+                    content: "•";
+                    color: #f97316;
+                    position: absolute;
+                    left: 0;
+                }
+            </style>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:10px;">
+
+                <!-- STEP 1 -->
+                <div class="step-card">
+                    <div
+                        style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        1</div>
+                    <div style="margin-left:15px;">
+                        <div style="color:white; font-weight:bold; font-size:11px;">Select Parts
+                        </div>
+                        <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">Pick 10 parts
+                            representing
+                            full variation.</div>
+                    </div>
+                    <div class="step-tooltip">
+                        <h5>Examples (Generic/Service/Health):</h5>
+                        <ul>
+                            <li>10 bolts of diff. sizes (Small to Large).</li>
+                            <li>10 invoices with various error types.</li>
+                            <li>10 blood samples (Low, Normal, High).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="step-card">
+                    <div
+                        style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        2</div>
+                    <div style="margin-left:15px;">
+                        <div style="color:white; font-weight:bold; font-size:11px;">Calibrate</div>
+                        <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">Ensure the
+                            Master Gage
+                            is
+                            accurate.</div>
+                    </div>
+                    <div class="step-tooltip">
+                        <h5>Examples:</h5>
+                        <ul>
+                            <li>Zero the digital calipers before use.</li>
+                            <li>Align checklist to the Master Standard.</li>
+                            <li>Run control solution on Glucose Meter.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="step-card">
+                    <div
+                        style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        3</div>
+                    <div style="margin-left:15px;">
+                        <div style="color:white; font-weight:bold; font-size:11px;">Randomize</div>
+                        <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">Perform Blind
+                            Trials
+                            (don't
+                            show values).</div>
+                    </div>
+                    <div class="step-tooltip">
+                        <h5>Examples:</h5>
+                        <ul>
+                            <li>Blind the operator to the Part #.</li>
+                            <li>Shuffle the stack of Invoices.</li>
+                            <li>Randomize order of Patient testing.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- STEP 4 -->
+                <div class="step-card">
+                    <div
+                        style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        4</div>
+                    <div style="margin-left:15px;">
+                        <div style="color:white; font-weight:bold; font-size:11px;">Measure</div>
+                        <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">Op A measures
+                            all 10.
+                            Then
+                            Op B. Then Op C.</div>
+                    </div>
+                    <div class="step-tooltip">
+                        <h5>Examples:</h5>
+                        <ul>
+                            <li>Operator A measures Diameter (mm).</li>
+                            <li>Analyst B counts Errors per page.</li>
+                            <li>Nurse C records mg/dL values.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- STEP 5 -->
+                <div class="step-card">
+                    <div
+                        style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        5</div>
+                    <div style="margin-left:15px;">
+                        <div style="color:white; font-weight:bold; font-size:11px;">Repeat</div>
+                        <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">Repeat for 3
+                            Trials
+                            total
+                            per Operator.</div>
+                    </div>
+                    <div class="step-tooltip">
+                        <h5>Examples:</h5>
+                        <ul>
+                            <li>Wait 1 hour, measure same bolts again.</li>
+                            <li>Re-review same Invoices next week.</li>
+                            <li>Retest same Samples (if stable).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- STEP 6 -->
+                <div class="step-card">
+                    <div
+                        style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        6</div>
+                    <div style="margin-left:15px;">
+                        <div style="color:white; font-weight:bold; font-size:11px;">Analyze</div>
+                        <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">Check %GRR and
+                            nDC
+                            values.
+                        </div>
+                    </div>
+                    <div class="step-tooltip" style="left:auto; right:0; transform:none;">
+                        <!-- Shift left for last item -->
+                        <h5>Examples:</h5>
+                        <ul>
+                            <li>Is %GRR &lt; 10%? (Great System).</li>
+                            <li>Is nDC &gt; 5? (Good Discrimination).</li>
+                            <li>Are Operators consistent?</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- NEW STEPS -->
+                <div style="background:#334155; padding:10px; border-radius:6px; position:relative;">
+                    <div
+                        style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        7</div>
+                    <div style="margin-left:15px;">
+                        <div style="color:white; font-weight:bold; font-size:11px;">Scoring Logic</div>
+                        <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">
+                            &lt;10% (Green)<br>
+                            10-30% (Yellow)<br>
+                            &gt;30% (Red)
+                        </div>
+                    </div>
+                </div>
+                <div style="background:#334155; padding:10px; border-radius:6px; position:relative;">
+                    <div
+                        style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        8</div>
+                    <div style="margin-left:15px;">
+                        <div style="color:white; font-weight:bold; font-size:11px;">Print & Evaluate</div>
+                        <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">Save Report / Use 'Run
+                            Analysis' to Evaluate.</div>
+                    </div>
+                </div>
+            </div>
+        </details>
+    </div>
+</div>
+</div>
+
+<!-- TOOL SECTION (Below Guide) -->
+<div style="display: grid; grid-template-columns: 3fr 1fr; gap: 30px;">
+
+    <!-- MAIN: RESULTS -->
+    <div id="resultsPanel" style="display:block;">
+        <!-- Ensure visible by default, logic handles hiding if needed, but keeping it simple -->
+
+        <!-- SUMMARY CARDS -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px;">
+            <div class="card mb-0 clickable-result" style="text-align: center; position:relative;"
+                onmouseenter="showEx(this, 'Total Gage R&R (% Tolerance)', 'WHAT: % P/T Ratio. Comapres Gage Error vs Customer Tolerance.\nTARGET: <10% (Excellent), <30% (Acceptable).\nNOTE: This may differ from the Chart which shows % Process Variation.')"
+                onmouseleave="hideEx()">
+                <div
+                    style="font-size: 11px; color: var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">
+                    % P/T Ratio (Tolerance)</div>
+                <div id="grrValue" style="font-size: 28px; font-weight: 700;">-</div>
+                <div id="grrStatus" class="result-badge badge-warning">Waiting</div>
+            </div>
+            <div class="card mb-0 clickable-result" style="text-align: center; position:relative;"
+                onmouseenter="showEx(this, 'Part Variation (PV)', 'WHAT: The variation coming from the actual parts being measured. \nTARGET: Should be >90% of Total Variation. \nWHY: You want to detect product differences, not measurement noise.')"
+                onmouseleave="hideEx()">
+                <div style="font-size: 12px; color: var(--text-secondary);">Part Variation (PV) ❓
+                </div>
+                <div id="pvValue" style="font-size: 28px; font-weight: 700;">-</div>
+                <div style="font-size: 11px;">Actual Process spread</div>
+            </div>
+            <div class="card mb-0 clickable-result" style="text-align: center; position:relative;"
+                onmouseenter="showEx(this, 'nDC (Distinct Categories)', 'WHAT: The number of distinct groups your system can reliably distinguish. \nTARGET: Must be >= 5. \nWHY: If <5, the gage is too blurry to see process changes.')"
+                onmouseleave="hideEx()">
+                <div style="font-size: 12px; color: var(--text-secondary);">nDC (Distinct Cats) ❓
+                </div>
+                <div id="ndcValue" style="font-size: 28px; font-weight: 700;">-</div>
+                <div id="ndcStatus" class="result-badge badge-danger">-</div>
+            </div>
+        </div>
+
+        <!-- AUTO FINDINGS SUMMARY -->
+        <div id="analysisSummary"
+            style="padding:15px; background:var(--surface-3); border-radius:6px; font-size:13px; line-height:1.5; color:var(--text-primary); margin-bottom:20px; display:none; border-left: 3px solid var(--accent);">
+        </div>
+
+        <!-- CHARTS ROW -->
+        <div class="card" style="min-height: 500px;">
+            <div class="flex-between">
+                <h3>Variance Components</h3>
+                <div style="font-size:12px; color:var(--text-secondary);">Ideally, Part Variation >
+                    90%
+                </div>
+            </div>
+            <div class="chart-controls">
+                <div class="control-btn" onclick="magnify('varianceChart', 'Variance Components')">
+                    🔍</div>
+                <div class="control-btn" onclick="downloadChart('varianceChart', 'Variance Components')">⬇️
+                </div>
+            </div>
+
+            <!-- DATA COLLECTION GRID DISPLAY (Read-Only Mirror) -->
+            <div style="display:grid; grid-template-columns: 150px 1fr; gap:20px; margin-top:15px;">
+                <!-- LEFT: Meta Info -->
+                <div
+                    style="background:rgba(255,255,255,0.03); padding:15px; border-radius:8px; display:flex; flex-direction:column; gap:10px;">
+                    <div>
+                        <div style="font-size:10px; color:#94a3b8; text-transform:uppercase; margin-bottom:5px;">Study
+                            Config</div>
+                        <div style="font-size:12px; color:#e2e8f0;"><span id="grid-ops-count">3</span> Operators</div>
+                        <div style="font-size:12px; color:#e2e8f0;"><span id="grid-parts-count">10</span> Parts</div>
+                        <div style="font-size:12px; color:#e2e8f0;"><span id="grid-trials-count">3</span> Trials</div>
+                    </div>
+                    <div style="margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1);">
+                        <div style="font-size:9px; color:#64748b; font-style:italic;">Grid synced with input data</div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Data Grid Visualization -->
+                <div
+                    style="background:#0f172a; border-radius:12px; padding:20px; border:1px solid #1e293b; overflow-x:auto;">
+                    <div style="display:grid; grid-template-columns: auto repeat(9, 1fr); gap:2px; font-size:11px;"
+                        id="varianceGridDisplay">
+                        <!-- HEADER ROW 1: Operator Labels -->
+                        <div style="grid-column: 1; background:transparent;"></div>
+                        <div
+                            style="grid-column: 2 / 5; background:linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05)); padding:10px; text-align:center; border-radius:8px 8px 0 0; font-weight:700; color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3);">
+                            Operator 1</div>
+                        <div
+                            style="grid-column: 5 / 8; background:linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05)); padding:10px; text-align:center; border-radius:8px 8px 0 0; font-weight:700; color:#34d399; border:1px solid rgba(16, 185, 129, 0.3);">
+                            Operator 2</div>
+                        <div
+                            style="grid-column: 8 / 11; background:linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05)); padding:10px; text-align:center; border-radius:8px 8px 0 0; font-weight:700; color:#fbbf24; border:1px solid rgba(245, 158, 11, 0.3);">
+                            Operator 3</div>
+
+                        <!-- HEADER ROW 2: Trial Labels -->
+                        <div style="background:#1e293b; padding:8px; text-align:center; color:#94a3b8; font-size:10px;">
+                        </div>
+                        <div
+                            style="background:rgba(59, 130, 246, 0.1); padding:8px; text-align:center; color:#94a3b8; font-size:10px; border:1px solid rgba(59, 130, 246, 0.2);">
+                            T1</div>
+                        <div
+                            style="background:rgba(59, 130, 246, 0.1); padding:8px; text-align:center; color:#94a3b8; font-size:10px; border:1px solid rgba(59, 130, 246, 0.2);">
+                            T2</div>
+                        <div
+                            style="background:rgba(59, 130, 246, 0.1); padding:8px; text-align:center; color:#94a3b8; font-size:10px; border:1px solid rgba(59, 130, 246, 0.2);">
+                            T3</div>
+                        <div
+                            style="background:rgba(16, 185, 129, 0.1); padding:8px; text-align:center; color:#94a3b8; font-size:10px; border:1px solid rgba(16, 185, 129, 0.2);">
+                            T1</div>
+                        <div
+                            style="background:rgba(16, 185, 129, 0.1); padding:8px; text-align:center; color:#94a3b8; font-size:10px; border:1px solid rgba(16, 185, 129, 0.2);">
+                            T2</div>
+                        <div
+                            style="background:rgba(16, 185, 129, 0.1); padding:8px; text-align:center; color:#94a3b8; font-size:10px; border:1px solid rgba(16, 185, 129, 0.2);">
+                            T3</div>
+                        <div
+                            style="background:rgba(245, 158, 11, 0.1); padding:8px; text-align:center; color:#94a3b8; font-size:10px; border:1px solid rgba(245, 158, 11, 0.2);">
+                            T1</div>
+                        <div
+                            style="background:rgba(245, 158, 11, 0.1); padding:8px; text-align:center; color:#94a3b8; font-size:10px; border:1px solid rgba(245, 158, 11, 0.2);">
+                            T2</div>
+                        <div
+                            style="background:rgba(245, 158, 11, 0.1); padding:8px; text-align:center; color:#94a3b8; font-size:10px; border:1px solid rgba(245, 158, 11, 0.2);">
+                            T3</div>
+
+                        <!-- DATA ROWS will be generated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Original Chart Below -->
+            <div style="margin-top:25px;">
+                <h4 style="font-size:13px; color:#8b5cf6; margin-bottom:10px;">Statistical Breakdown (Chart)</h4>
+                <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="varianceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- RULE BASED INTERPRETATION - MINITAB/SPSS STYLE -->
+        <div class="card"
+            style="border: 2px solid #334155; background: #0f172a; font-family: 'Consolas', 'Courier New', monospace;">
+
+            <!-- HEADER BAR - Minitab Style -->
+            <div
+                style="background: linear-gradient(90deg, #1e3a5f, #0f172a); padding: 12px 15px; margin: -20px -20px 15px -20px; border-radius: 8px 8px 0 0; border-bottom: 2px solid #3b82f6;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3
+                        style="margin: 0; color: #60a5fa; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;">
+                        📊 Gage R&R Study - ANOVA Method</h3>
+                    <span style="font-size: 11px; color: #94a3b8;">Analysis Output Report</span>
+                </div>
+            </div>
+
+            <div id="aiOutput" style="font-size: 13px; color: #e2e8f0;">
+
+                <div id="interp-default" style="padding: 20px; text-align: center; color: #64748b;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">📋</div>
+                    Run the analysis to generate a detailed Minitab-style interpretation of your Measurement
+                    System.
+                </div>
+
+                <div id="interp-results" style="display:none;">
+
+                    <!-- STATISTICAL SUMMARY TABLE -->
+                    <div style="margin-bottom: 20px;">
+                        <div
+                            style="font-size: 11px; color: #60a5fa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px;">
+                            Statistical Summary</div>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                            <thead>
+                                <tr style="background: #1e293b;">
+                                    <th
+                                        style="text-align: left; padding: 8px; border: 1px solid #334155; color: #94a3b8;">
+                                        Source</th>
+                                    <th
+                                        style="text-align: center; padding: 8px; border: 1px solid #334155; color: #94a3b8;">
+                                        %Contribution</th>
+                                    <th
+                                        style="text-align: center; padding: 8px; border: 1px solid #334155; color: #94a3b8;">
+                                        Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #334155;">Total Gage R&R</td>
+                                    <td id="tbl-grr"
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center; font-weight: bold;">
+                                        -</td>
+                                    <td id="tbl-grr-status"
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center;">-
+                                    </td>
+                                </tr>
+                                <tr style="background: rgba(30,41,59,0.5);">
+                                    <td style="padding: 8px; border: 1px solid #334155; padding-left: 20px;">└
+                                        Repeatability (EV)</td>
+                                    <td id="tbl-ev"
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center;">-
+                                    </td>
+                                    <td
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center; font-size: 11px; color: #94a3b8;">
+                                        Equipment error</td>
+                                </tr>
+                                <tr style="background: rgba(30,41,59,0.5);">
+                                    <td style="padding: 8px; border: 1px solid #334155; padding-left: 20px;">└
+                                        Reproducibility (AV)</td>
+                                    <td id="tbl-av"
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center;">-
+                                    </td>
+                                    <td
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center; font-size: 11px; color: #94a3b8;">
+                                        Operator error</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #334155;">Part-to-Part (PV)</td>
+                                    <td id="tbl-pv"
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center; font-weight: bold;">
+                                        -</td>
+                                    <td id="tbl-pv-status"
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center;">-
+                                    </td>
+                                </tr>
+                                <tr style="background: #1e3a5f;">
+                                    <td style="padding: 8px; border: 1px solid #334155; font-weight: bold;">
+                                        Number of Distinct Categories (nDC)</td>
+                                    <td id="tbl-ndc"
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center; font-weight: bold;">
+                                        -</td>
+                                    <td id="tbl-ndc-status"
+                                        style="padding: 8px; border: 1px solid #334155; text-align: center;">-
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- VERDICT BOX -->
+                    <div style="background: linear-gradient(135deg, rgba(30,58,95,0.8), rgba(15,23,42,0.9)); border: 2px solid; border-radius: 8px; padding: 15px; margin-bottom: 15px;"
+                        id="verdict-box">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div
+                                    style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
+                                    System Verdict</div>
+                                <div id="interp-verdict" style="font-size: 18px; font-weight: bold; margin-top: 4px;">--
+                                </div>
+                            </div>
+                            <div id="verdict-icon" style="font-size: 40px;">❓</div>
+                        </div>
+                    </div>
+
+                    <!-- DETAILED FINDINGS -->
+                    <div
+                        style="font-size: 11px; color: #60a5fa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px;">
+                        Interpretation Notes</div>
+                    <ul style="padding-left: 20px; line-height: 1.8; font-size: 12px; margin: 0;">
+                        <li id="interp-grr">--</li>
+                        <li id="interp-ndc">--</li>
+                        <li id="interp-action"
+                            style="font-weight: bold; margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; list-style: none; margin-left: -20px;">
+                            --</li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ACCURACY VS PRECISION VISUAL (Educational) -->
+        <div class="card" style="background: linear-gradient(135deg, #0f172a, #1e293b); border: 1px solid #334155;">
+            <div class="flex-between" style="margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #f97316;">🎯 Understanding Accuracy vs Precision</h3>
+                <span style="font-size: 11px; color: #64748b;">Key MSA Concept</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- 2x2 MATRIX -->
+                <div
+                    style="display: grid; grid-template-columns: auto 1fr 1fr; grid-template-rows: auto 1fr 1fr; gap: 3px;">
+                    <!-- Headers -->
+                    <div></div>
+                    <div style="text-align: center; font-size: 12px; font-weight: bold; color: #22c55e; padding: 5px;">
+                        High Accuracy</div>
+                    <div style="text-align: center; font-size: 12px; font-weight: bold; color: #ef4444; padding: 5px;">
+                        Low Accuracy</div>
+
+                    <!-- Row 1 -->
+                    <div
+                        style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; font-size: 12px; font-weight: bold; color: #22c55e; padding: 5px;">
+                        High Precision</div>
+                    <div
+                        style="background: #1e293b; border-radius: 8px; padding: 10px; text-align: center; border: 2px solid #22c55e;">
+                        <svg viewBox="0 0 60 60" style="width: 50px; height: 50px;">
+                            <circle cx="30" cy="30" r="25" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="30" cy="30" r="15" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="30" cy="30" r="5" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="30" cy="30" r="2" fill="#ef4444" />
+                            <circle cx="28" cy="31" r="2" fill="#ef4444" />
+                            <circle cx="31" cy="29" r="2" fill="#ef4444" />
+                            <circle cx="29" cy="28" r="2" fill="#ef4444" />
+                        </svg>
+                        <div style="font-size: 10px; color: #22c55e; margin-top: 5px;">✅ IDEAL</div>
+                    </div>
+                    <div
+                        style="background: #1e293b; border-radius: 8px; padding: 10px; text-align: center; border: 2px solid #eab308;">
+                        <svg viewBox="0 0 60 60" style="width: 50px; height: 50px;">
+                            <circle cx="30" cy="30" r="25" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="30" cy="30" r="15" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="30" cy="30" r="5" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="42" cy="22" r="2" fill="#ef4444" />
+                            <circle cx="44" cy="24" r="2" fill="#ef4444" />
+                            <circle cx="43" cy="21" r="2" fill="#ef4444" />
+                            <circle cx="45" cy="23" r="2" fill="#ef4444" />
+                        </svg>
+                        <div style="font-size: 10px; color: #eab308; margin-top: 5px;">⚠️ Calibrate</div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div
+                        style="writing-mode: vertical-lr; transform: rotate(180deg); text-align: center; font-size: 12px; font-weight: bold; color: #ef4444; padding: 5px;">
+                        Low Precision</div>
+                    <div
+                        style="background: #1e293b; border-radius: 8px; padding: 10px; text-align: center; border: 2px solid #eab308;">
+                        <svg viewBox="0 0 60 60" style="width: 50px; height: 50px;">
+                            <circle cx="30" cy="30" r="25" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="30" cy="30" r="15" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="30" cy="30" r="5" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="25" cy="35" r="2" fill="#ef4444" />
+                            <circle cx="35" cy="28" r="2" fill="#ef4444" />
+                            <circle cx="28" cy="22" r="2" fill="#ef4444" />
+                            <circle cx="38" cy="38" r="2" fill="#ef4444" />
+                        </svg>
+                        <div style="font-size: 10px; color: #eab308; margin-top: 5px;">⚠️ Train Ops</div>
+                    </div>
+                    <div
+                        style="background: #1e293b; border-radius: 8px; padding: 10px; text-align: center; border: 2px solid #ef4444;">
+                        <svg viewBox="0 0 60 60" style="width: 50px; height: 50px;">
+                            <circle cx="30" cy="30" r="25" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="30" cy="30" r="15" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="30" cy="30" r="5" fill="none" stroke="#475569" stroke-width="2" />
+                            <circle cx="18" cy="42" r="2" fill="#ef4444" />
+                            <circle cx="45" cy="18" r="2" fill="#ef4444" />
+                            <circle cx="20" cy="20" r="2" fill="#ef4444" />
+                            <circle cx="48" cy="45" r="2" fill="#ef4444" />
+                        </svg>
+                        <div style="font-size: 10px; color: #ef4444; margin-top: 5px;">❌ FAIL</div>
+                    </div>
+                </div>
+
+                <!-- EXPLANATION -->
+                <div style="font-size: 12px; color: #cbd5e1; line-height: 1.6;">
+                    <div style="margin-bottom: 12px;">
+                        <b style="color: #60a5fa;">🎯 Accuracy (Bias):</b><br>
+                        Are measurements centered on the TRUE value?<br>
+                        <span style="color: #94a3b8; font-size: 11px;">Fix: Calibrate the gage against a
+                            master.</span>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <b style="color: #a78bfa;">🔄 Precision (Repeatability/Reproducibility):</b><br>
+                        Do measurements cluster tightly together?<br>
+                        <span style="color: #94a3b8; font-size: 11px;">Fix: Repair gage (EV) or train operators
+                            (AV).</span>
+                    </div>
+                    <div
+                        style="padding: 10px; background: rgba(0,0,0,0.3); border-radius: 6px; border-left: 3px solid #f97316;">
+                        <b style="color: #f97316;">💡 Gage R&R focuses on PRECISION.</b><br>
+                        <span style="font-size: 11px;">Accuracy is tested separately via Bias/Linearity
+                            studies.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SIDEBAR: CONFIG & INPUT -->
+    <div>
+        <div class="card">
+            <h2>Report & Export</h2>
+
+            <div class="form-group">
+                <label style="display:flex; justify-content:space-between;">
+                    <span>Analyst / Created By:</span>
+                    <span id="progress-text" style="font-size:12px; color:#94a3b8;">0% Complete</span>
+                </label>
+                <input type="text" id="candidateNameInput" placeholder="Enter your name..."
+                    oninput="updateAnalyst(this.value)"
+                    style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 14px;">
+
+                <div class="progress-container">
+                    <div class="progress-bar" id="data-progress-bar"></div>
+                    <div class="progress-label" id="data-progress-label">0%</div>
+                </div>
+                <div style="font-size: 11px; color: #64748b; margin-top: 5px; font-style: italic;">
+                    Progress tracks data entry completion and quality checks.
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn btn-primary" style="flex: 1; background: #ea580c; border-color: #c2410c;"
+                    onclick="evaluateStudy()">💾 Save & Evaluate</button>
+                <button class="btn btn-ghost"
+                    style="flex: 1; background: #1e293b; color: white; border: 1px solid #475569;"
+                    onclick="window.print()">🖨️ Print PDF</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>1. Study Setup</h2>
+
+            <!-- CASE STUDY SELECTOR (New) -->
+            <div
+                style="background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                <label style="font-size:12px; font-weight:bold; color:#475569; display:block; margin-bottom:5px;">📂
+                    Load Case Study Example</label>
+                <select id="exampleSelector" onchange="loadCaseStudy(this.value)"
+                    style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:13px;">
+                    <option value="">-- Select Scenario --</option>
+                    <option value="manufacturing">⚙️ Manuf: Shaft Diameter</option>
+                    <option value="healthcare">🏥 Health: Patient Wait Time</option>
+                    <option value="service">📞 Service: Call Handle Time</option>
+                </select>
+                <div id="caseStudyDesc"
+                    style="margin-top:10px; font-size:11px; color:#64748b; font-style:italic; line-height:1.4; display:none;">
+                    <!-- Description Injected Here -->
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label
+                    onmouseenter="showEx(this, 'Number of Operators', 'WHAT: Number of people measuring components.\nWHY: To evaluate Reproducibility (Operator Variation).\nIDEAL: 3 (Standard practice).')"
+                    onmouseleave="hideEx()"
+                    style="cursor:help; border-bottom:1px dotted #94a3b8; display:inline-block;">Number of
+                    Operators ❓</label>
+                <select id="numOperators" onchange="generateGrid()">
+                    <option value="2">2 Operators</option>
+                    <option value="3" selected>3 Operators</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label
+                    onmouseenter="showEx(this, 'Number of Parts', 'WHAT: Number of sample parts.\nWHY: To execute Part-to-Part variation calculation.\nIDEAL: 10 (Must represent full process spread).')"
+                    onmouseleave="hideEx()"
+                    style="cursor:help; border-bottom:1px dotted #94a3b8; display:inline-block;">Number of Parts
+                    ❓</label>
+                <select id="numParts" onchange="generateGrid()">
+                    <option value="5">5 Parts</option>
+                    <option value="10" selected>10 Parts</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label
+                    onmouseenter="showEx(this, 'Number of Trials', 'WHAT: Repeats per part per operator.\nWHY: To evaluate Repeatability (Equipment Variation).\nIDEAL: 3.')"
+                    onmouseleave="hideEx()"
+                    style="cursor:help; border-bottom:1px dotted #94a3b8; display:inline-block;">Number of
+                    Trials ❓</label>
+                <select id="numTrials" onchange="generateGrid()">
+                    <option value="2">2 Trials</option>
+                    <option value="3">3 Trials</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label
+                    onmouseenter="showEx(this, 'Tolerance / Process Var', 'WHAT: The Customer Specification Width (USL - LSL).\nWHY: Critical to calculate % P/T Ratio (Pass/Fail Score).\nSOURCE: Check your engineering print.')"
+                    onmouseleave="hideEx()"
+                    style="cursor:help; border-bottom:1px dotted #94a3b8; display:inline-block;">Tolerance /
+                    Process Var ❓</label>
+                <input type="number" id="processTolerance" value="10" placeholder="e.g. 5.0">
+            </div>
+            <!-- Moved 'Load Example' button out since we have the dropdown above, but keeping logic consistent -->
+        </div>
+
+        <!-- Data Entry Card was moved to bottom -->
+
+    </div>
+
+</div>
+
+<!-- FULL WIDTH DATA ENTRY SECTION -->
+<div class="card" style="margin-top: 30px;">
+    <div class="flex-between">
+        <h2>2. Data Entry & Measurement</h2>
+        <div style="font-size:12px; color:#94a3b8; font-style:italic;">Enter readings for each
+            Operator/Part/Trial combination</div>
+    </div>
+
+    <div id="dataGridContainer"
+        style="overflow-x: auto; overflow-y: hidden; width: 100%; border: 1px solid #334155; border-radius: 6px; padding: 10px; background: #0f172a;">
+        <!-- Grid generated by JS -->
+    </div>
+
+    <div style="display:flex; justify-content: flex-end; margin-top: 15px;">
+        <span style="font-size:11px; color:#64748b; margin-right: 15px; align-self:center;">Ensure all cells are
+            filled before analysis.</span>
+    </div>
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+<!-- EXPLANATION MODAL -->
+<div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+    <div class="modal-box">
+        <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+        <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
+        <p id="modalContent" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">
+            Content...
+        </p>
+    </div>
+</div>
+
+<!-- HOVER POP (New) -->
+<div id="hoverPop"
+    style="position: absolute; width: 250px; background: #ffffff; color: #334155; border: 2px solid #3b82f6; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1); padding: 10px; border-radius: 6px; font-size: 12px; z-index: 1000; display: none; pointer-events: none;">
+    <strong id="hpTitle" style="color: #000; display: block; margin-bottom: 4px; font-size: 13px;">Title</strong>
+    <span id="hpDesc" style="white-space: pre-line;">Desc</span>
+</div>
+
+<!-- MAGNIFY MODAL -->
+<div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
+    <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
+        <span class="close-btn" onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+        <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
+        <img id="magnifyImg" style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+    </div>
+</div><!-- Closing tool-column -->
+</div><!-- Closing grid-measure -->
+</div><!-- Closing container -->
+
+<script>
+    let varianceChartInstance = null;
+    let currentScenario = null;
+
+    // SCENARIOS
+    const scenarios = {
+        'manufacturing': {
+            name: "Micrometer Check",
+            tolerance: 6.0,
+            context: "Quality Lab: Using digital micrometers to measure piston diameter.",
+            reason: "If Repeatability (EV) is high, the micrometer might be loose or dirty.",
+            gen: { base: 10, partVar: 5, opBias: 1, noise: 0.4 } // High variation
+        },
+        'healthcare': {
+            name: "BP Measurement",
+            tolerance: 15,
+            context: "Clinical Trial: Nurses measuring patient Systolic BP.",
+            reason: "If Reproducibility (AV) is high, nurses are reading the gauge differently (Training issue).",
+            gen: { base: 120, partVar: 20, opBias: 5, noise: 2 }
+        },
+        'lab': {
+            name: "pH Meter",
+            tolerance: 0.5,
+            context: "Chemical Plant: Testing solution acidity.",
+            reason: "Lab instruments usually have low noise. Expect excellent GR&R (<10%).",
+            gen: { base: 7.0, partVar: 0.3, opBias: 0.02, noise: 0.01 }
+        }
+    };
+
+    // GLOSSARY
+    let lastStudyResults = null;
+
+    const glossary = {
+        "grr": { title: "Total Gage R&R", text: "How much variation is caused by the MEASUREMENT SYSTEM itself.<br><b>Assessment:</b><br>&bull; <10%: Excellent.<br>&bull; 10-30%: Acceptable.<br>&bull; >30%: The system is blind. Fix it.", context: "In many cases, a high GR&R means you are rejecting good parts or accepting bad ones." },
+        "pv": { title: "Part Variation (PV)", text: "The actual difference between the parts (The Truth).<br>You WANT this to be high (>90%), because it means your measurement system can see the difference." },
+        "ndc": { title: "nDC (Distinct Categories)", text: "How many distinct levels can the tool see?<br><b>Target: >= 5</b>.<br>If nDC is 1, your tool is effectively a 'Go/No-Go' gauge." },
+        "tolerance": { title: "Tolerance Window", text: "The 'Voice of the Customer'. It defines the mission parameters. If your tolerance is tight (e.g. 0.01mm), your measurement tool must be extremely precise." },
+        "operators": { title: "Operators (Appraisers)", text: "The human element. We use multiple operators to see if the process is REPRODUCIBLE. If different people get different results, we have a training/SOP problem." },
+        "parts": { title: "Audit Samples (Parts)", text: "The items being measured. We use 10 parts to cover the full expected range of the process (from min to max expected values)." },
+        "trials": { title: "Trials (Repeatability)", text: "How many times each person repeats the measurement. This reveals the REPEATABILITY (Equipment Variation) - can the tool give the same answer twice?" },
+        "op_header": { title: "Operator Audit Unit", text: "Each Operator (Appraiser) measures all parts multiple times. The grid captures the 'Crossed Study' data for statistical ANOVA/Range calculation." },
+        "part_header": { title: "Part Identification", text: "Unique samples selected for the study. Operators should measure these in a blind, randomized order for the best audit result." }
+    };
+
+    window.showCalcDetail = function (type) {
+        if (!lastStudyResults) {
+            alert("Please evaluate the study first to view calculation auditing.");
+            return;
+        }
+
+        const r = lastStudyResults;
+        let title = "";
+        let content = "";
+
+        if (type === 'grr') {
+            title = "Math Breakdown: Total Gage R&R";
+            content = `
+                <div style="background:rgba(0,0,0,0.3); padding:20px; border-radius:15px; border:1px solid #8b5cf6;">
+                    <div style="margin-bottom:20px;">
+                        <h4 style="color:#8b5cf6; display:flex; gap:10px; align-items:center;"><i class="fas fa-microscope"></i> 1. Signal Accumulation</h4>
+                        <p style="font-family:'Courier New'; font-size:14px; color:#fff; background:#111; padding:10px; border-radius:8px;">σ_GRR = √(EV² + AV²)</p>
+                        <ul style="font-size:12px; color:#cbd5e1; line-height:1.6;">
+                            <li>Repeatability (EV): ${r.EV.toFixed(4)}</li>
+                            <li>Reproducibility (AV): ${r.AV.toFixed(4)}</li>
+                            <li><strong>Combined Error (σ_GRR): ${r.GRR.toFixed(4)}</strong></li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom:20px;">
+                        <h4 style="color:#8b5cf6; display:flex; gap:10px; align-items:center;"><i class="fas fa-bullseye"></i> 2. Tolerance Budget</h4>
+                        <p style="font-family:'Courier New'; font-size:14px; color:#fff; background:#111; padding:10px; border-radius:8px;">%GRR = ((6 * σ_GRR) / Tol) * 100</p>
+                        <ul style="font-size:12px; color:#cbd5e1; line-height:1.6;">
+                            <li>6-Sigma Span: ${(6 * r.GRR).toFixed(4)}</li>
+                            <li>Input Tolerance: ${r.tolerance.toFixed(4)}</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="padding:15px; background:rgba(255,255,255,0.05); border-radius:10px; text-align:center;">
+                        <div style="font-size:10px; text-transform:uppercase; color:#94a3b8;">Current Study Result</div>
+                        <div style="font-size:28px; font-weight:900; color:#ef4444;">${r.pctTolerance.toFixed(1)}%</div>
+                        <div style="font-size:12px; margin-top:5px; font-weight:700; color:${r.pctTolerance < 10 ? '#22c55e' : r.pctTolerance < 30 ? '#eab308' : '#ef4444'};">
+                            ${r.pctTolerance < 10 ? '✓ EXCELLENT' : r.pctTolerance < 30 ? '⚠ MARGINAL' : '✗ UNACCEPTABLE'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (type === 'ndc') {
+            title = "Math Breakdown: nDC Resolution";
+            content = `
+                <div style="background:rgba(0,0,0,0.3); padding:20px; border-radius:15px; border:1px solid #8b5cf6;">
+                    <div style="margin-bottom:20px;">
+                        <h4 style="color:#8b5cf6; display:flex; gap:10px; align-items:center;"><i class="fas fa-filter"></i> Category Calculation</h4>
+                        <p style="font-family:'Courier New'; font-size:14px; color:#fff; background:#111; padding:10px; border-radius:8px;">ndc = 1.41 * (PV / GRR)</p>
+                        <ul style="font-size:12px; color:#cbd5e1; line-height:1.6;">
+                            <li>PV (Signal - Part Var): ${r.PV.toFixed(4)}</li>
+                            <li>GRR (Noise - Error): ${r.GRR.toFixed(4)}</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="font-size:13px; color:#cbd5e1; line-height:1.6;">
+                        This value determines the "resolution" of your measurement system. An nDC of ${Math.floor(r.ndc)} means your tool can distinguish ${Math.floor(r.ndc)} non-overlapping categories within the process spread.
+                    </p>
+                    
+                    <div style="padding:15px; background:rgba(255,255,255,0.05); border-radius:10px; text-align:center; margin-top:15px;">
+                        <div style="font-size:10px; text-transform:uppercase; color:#94a3b8;">Strategic Result</div>
+                        <div style="font-size:28px; font-weight:900; color:#8b5cf6;">${Math.floor(r.ndc)}</div>
+                        <div style="font-size:12px; margin-top:5px; font-weight:700; color:${r.ndc >= 5 ? '#22c55e' : '#ef4444'};">
+                            ${r.ndc >= 5 ? '✓ ADEQUATE RESOLUTION' : '✗ INSUFFICIENT DATA DEPTH'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalContent').innerHTML = content;
+        document.getElementById('infoModal').style.display = 'flex';
+    };
+
+    // Initialize Grid on Load
+    window.onload = function () {
+        generateGrid();
+        const d = new Date();
+        const dateStr = d.toLocaleDateString();
+        const timeStr = d.toLocaleTimeString();
+
+        const pd = document.getElementById('printDate');
+        if (pd) pd.innerText = dateStr;
+
+        const pds = document.getElementById('print-date-summary');
+        if (pds) pds.innerText = dateStr;
+
+        const pts = document.getElementById('print-time-summary');
+        if (pts) pts.innerText = timeStr;
+
+        const pdf = document.getElementById('printDateFooter');
+        if (pdf) pdf.innerText = dateStr;
+
+        // Initial Progress Check
+        updateProgress();
+    };
+
+    // GLOBAL TOOLTIP FUNCTIONS
+    window.showEx = function (el, title, desc) {
+        const pop = document.getElementById('hoverPop');
+        const t = document.getElementById('hpTitle');
+        const d = document.getElementById('hpDesc');
+
+        if (!pop || !t || !d) return;
+
+        t.innerText = title;
+        d.innerText = desc;
+
+        const rect = el.getBoundingClientRect();
+        // Position near the element
+        let top = rect.bottom + window.scrollY + 10;
+        let left = rect.left + window.scrollX;
+
+        // Boundary checks
+        if (left + 250 > window.innerWidth) left = window.innerWidth - 260;
+
+        pop.style.top = top + 'px';
+        pop.style.left = left + 'px';
+        pop.style.display = 'block';
+    };
+
+    window.hideEx = function () {
+        const pop = document.getElementById('hoverPop');
+        if (pop) pop.style.display = 'none';
+    };
+
+    window.updateAnalyst = function (val) {
+        const el = document.getElementById('print-candidate-name');
+        if (el) el.innerText = val || 'TBD';
+    };
+
+    // New Smart Progress Logic
+    function updateProgress() {
+        const inputs = document.querySelectorAll('.data-cell');
+        let filled = 0;
+        let total = inputs.length;
+        let valid = 0;
+
+        inputs.forEach(inp => {
+            // Ensure it's an INPUT element to avoid errors on div headers with same class
+            if (inp.tagName === 'INPUT' && inp.value && inp.value.trim() !== "") {
+                filled++;
+                if (!isNaN(parseFloat(inp.value))) {
+                    valid++;
+                }
+            }
+        });
+
+        // "Quality" Logic: Check if there's at least minimal variance (not all same numbers) - rough heuristic
+        // If user enters name, +10%
+        let qualityBonus = 0;
+        const name = document.getElementById('candidateNameInput').value;
+        if (name.length > 2) qualityBonus += 10;
+
+        let pct = total > 0 ? Math.round((filled / total) * 90) : 0; // Data is 90% of the job
+        let finalScore = pct + qualityBonus;
+        if (finalScore > 100) finalScore = 100;
+
+        const bar = document.getElementById('data-progress-bar');
+        const label = document.getElementById('data-progress-label');
+        const text = document.getElementById('progress-text');
+
+        if (bar && label && text) {
+            bar.style.width = finalScore + '%';
+            label.innerText = finalScore + '%';
+            text.innerText = finalScore + '% Complete';
+
+            // Color Shift
+            if (finalScore < 30) bar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+            else if (finalScore < 70) bar.style.background = 'linear-gradient(90deg, #eab308, #facc15)';
+            else bar.style.background = 'linear-gradient(90deg, #22c55e, #4ade80)';
+        }
+    }
+
+    // Hook into generateGrid to attach listeners
+    const originalGenerateGrid = generateGrid;
+    generateGrid = function () {
+        originalGenerateGrid(); // Call original
+        // Attach input listeners to new cells
+        document.querySelectorAll('.data-cell').forEach(inp => {
+            inp.addEventListener('input', updateProgress);
+        });
+        updateProgress();
+    };
+
+    function evaluateStudy(silent = false) {
+        // 1. Gather Data Status
+        const inputs = document.querySelectorAll('.data-cell');
+        const inputList = Array.from(inputs).filter(el => el.tagName === 'INPUT');
+        const total = inputList.length;
+        let filled = 0;
+        inputList.forEach(i => {
+            if (i.value && i.value.trim() !== "") filled++;
+        });
+
+        const analyst = document.getElementById('candidateNameInput') ? document.getElementById('candidateNameInput').value : "Unknown";
+
+        // 2. Validation Logic
+        // In silent mode (live typing), we run calculation even if incomplete to show trends
+        if (!silent) {
+            if (filled < total || !analyst) {
+                const missingDataPoints = total - filled;
+                const msg = `
+                        <div style="text-align:center;">
+                            <div style="font-size:40px; margin-bottom:10px;">🚧</div>
+                            <h3>Study Incomplete</h3>
+                            <p>You have reached <b>${Math.round((filled / total) * 100)}%</b> data entry.</p>
+                            <ul style="text-align:left; background:#f1f5f9; padding:15px; border-radius:6px; font-size:13px; margin:15px 0;">
+                                ${!analyst ? '<li>❌ Analyst Name is missing</li>' : ''}
+                                ${missingDataPoints > 0 ? `<li>❌ ${missingDataPoints} data points are empty</li>` : ''}
+                            </ul>
+                            <button class="btn btn-primary" onclick="closeModal(null)" style="width:100%;">Keep Working</button>
+                        </div>
+                    `;
+
+                document.getElementById('modalTitle').innerText = "Construction in Progress 🚧";
+                document.getElementById('modalContent').innerHTML = msg;
+                document.getElementById('infoModal').style.display = 'flex';
+                return; // Stop execution if manual click
+            }
+        }
+
+        // 3. Run Calculation Core
+        // This function updates the DOM elements directly (Red Zone & Yellow Zone)
+        if (typeof calculateMSA === 'function') {
+            try {
+                calculateMSA();
+            } catch (err) {
+                console.error("MSA Calculation Error:", err);
+            }
+        }
+
+        if (typeof updateProgress === 'function') updateProgress();
+
+        // 4. Success Modal (Only for manual trigger)
+        if (!silent) {
+            let qScore = Math.round((filled / total) * 90);
+            if (analyst.length > 2) qScore += 10;
+            if (qScore > 100) qScore = 100;
+
+            document.getElementById('modalTitle').innerText = "✅ Evaluation Complete";
+            document.getElementById('modalContent').innerHTML = `
+                <div style="text-align:center;">
+                    <p>Your study has been successfully analyzed.</p>
+                    <div style="margin: 15px auto; width: 80%; background: #334155; height: 10px; border-radius: 5px;">
+                        <div style="width: ${qScore}%; background: #22c55e; height: 100%; border-radius: 5px;"></div>
+                    </div>
+                    <p style="font-size:12px; color:#cbd5e1;">Completeness Score: <b>${qScore}%</b></p>
+                    <p><b>Results are ready below.</b></p>
+                    <button class="btn btn-primary" onclick="closeModal(null);" style="width:100%; margin-top:10px;">View Results</button>
+                </div>
+             `;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+    }
+
+    function generateInterpretation(grr, ndc) {
+        document.getElementById('interp-default').style.display = 'none';
+        document.getElementById('interp-results').style.display = 'block';
+
+        const verdictSpan = document.getElementById('interp-verdict');
+        const grrLi = document.getElementById('interp-grr');
+        const ndcLi = document.getElementById('interp-ndc');
+        const actionLi = document.getElementById('interp-action');
+
+        // Verdict
+        let verdictText = "";
+        let verdictColor = "";
+
+        if (grr < 10 && ndc >= 5) {
+            verdictText = "PASS - EXCELLENT SYSTEM";
+            verdictColor = "#4ade80"; // green
+            actionLi.innerText = "Action: No improvement needed. Proceed to Capability Analysis.";
+            actionLi.style.color = "#4ade80";
+        } else if (grr <= 30 && ndc >= 5) {
+            verdictText = "CONDITIONAL PASS - MARGINAL";
+            verdictColor = "#facc15"; // yellow
+            actionLi.innerText = "Action: Acceptable for non-critical characteristics. Monitor closely. Consider training operators to reduce reproducibility error.";
+            actionLi.style.color = "#facc15";
+        } else {
+            verdictText = "FAIL - UNACCEPTABLE SYSTEM";
+            verdictColor = "#f87171"; // red
+            actionLi.innerText = "Action: STOP. Do not use for process analysis. Repair gage or retrain operators immediately.";
+            actionLi.style.color = "#f87171";
+        }
+
+        verdictSpan.innerText = verdictText;
+        verdictSpan.style.color = verdictColor;
+
+        // Details
+        grrLi.innerHTML = `Your <b>Total Gage R&R is ${grr}%</b>. <span style="font-size:12px; opacity:0.8;">(Target: &lt;10% ideal, &lt;30% max)</span>`;
+        ndcLi.innerHTML = `Your <b>nDC is ${ndc}</b>. <span style="font-size:12px; opacity:0.8;">(Target: &ge;5)</span>. This means your system can distinguish ${ndc} distinct categories within the process variation.`;
+
+        // SYNC TO PRINT REPORT
+        document.getElementById('print-detailed-verdict').innerText = verdictText;
+        document.getElementById('print-detailed-verdict').style.color = verdictColor; // Print color might rely on webkit-print-color-adjust
+
+        document.getElementById('print-detailed-grr').innerHTML = `<strong>Total Gage R&R (${grr}%)</strong>: ${grr < 10 ? 'Excellent performance.' : grr <= 30 ? 'Marginal performance.' : 'Unacceptable performance.'}`;
+        document.getElementById('print-detailed-ndc').innerHTML = `<strong>nDC (${ndc})</strong>: ${ndc >= 5 ? 'Adequate resolution (+5 categories).' : 'Insufficient resolution (<5 categories).'}`;
+
+        document.getElementById('print-detailed-action').innerText = actionLi.innerText;
+    }
+
+    // --- GRID GENERATION & MANUAL ENTRY LOGIC ---
+    let debounceTimer;
+    function debouncedCalc() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            // Ensure evaluateStudy exists before calling
+            if (typeof evaluateStudy === 'function') evaluateStudy(true);
+        }, 800);
+    }
+
+    function generateGrid() {
+        const grid = document.getElementById('dataGridContainer');
+        if (!grid) return; // Safety check
+
+        grid.innerHTML = ''; // Clear previous grid
+
+        const opsEl = document.getElementById('numOperators');
+        const partsEl = document.getElementById('numParts');
+        const trialsEl = document.getElementById('numTrials');
+
+        if (!opsEl || !partsEl || !trialsEl) return;
+
+        const ops = parseInt(opsEl.value);
+        const parts = parseInt(partsEl.value);
+        const trials = parseInt(trialsEl.value);
+
+        if (isNaN(ops) || isNaN(parts) || isNaN(trials)) return;
+
+        // Set up grid columns: Part Label + (Ops * Trials)
+        grid.style.display = 'grid';
+        grid.style.gridTemplateColumns = `100px repeat(${ops * trials}, 1fr)`;
+        grid.style.gap = '5px';
+        grid.style.fontSize = '12px';
+
+        // Header Row (Operators)
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'data-cell header-cell';
+        emptyCell.style.background = 'transparent';
+        grid.appendChild(emptyCell);
+
+        for (let o = 1; o <= ops; o++) {
+            const opHeader = document.createElement('div');
+            opHeader.className = 'data-cell header-cell';
+            opHeader.innerText = `Op ${o}`;
+            opHeader.style.gridColumn = `span ${trials}`;
+            opHeader.style.textAlign = 'center';
+            opHeader.style.background = '#334155';
+            grid.appendChild(opHeader);
+        }
+
+        // Sub-header for Trials
+        const emptyCell2 = document.createElement('div');
+        emptyCell2.className = 'data-cell header-cell';
+        emptyCell2.style.background = 'transparent';
+        grid.appendChild(emptyCell2);
+
+        for (let o = 1; o <= ops; o++) {
+            const bg = o === 1 ? 'rgba(59, 130, 246, 0.05)' : o === 2 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(245, 158, 11, 0.05)';
+            for (let t = 1; t <= trials; t++) {
+                const trialHeader = document.createElement('div');
+                trialHeader.className = 'data-cell header-cell';
+                trialHeader.innerText = `T${t}`;
+                trialHeader.style.textAlign = 'center';
+                trialHeader.style.fontSize = '10px';
+                trialHeader.style.background = bg;
+                trialHeader.style.color = '#94a3b8';
+                grid.appendChild(trialHeader);
+            }
+        }
+
+        // Data Rows
+        for (let p = 1; p <= parts; p++) {
+            const rowHead = document.createElement('div');
+            rowHead.className = 'data-cell';
+            rowHead.innerText = `Part ${p}`;
+            rowHead.style.backgroundColor = '#1e293b';
+            rowHead.style.fontWeight = 'bold';
+            rowHead.style.textAlign = 'center';
+            rowHead.style.padding = '8px';
+            grid.appendChild(rowHead);
+
+            for (let o = 1; o <= ops; o++) {
+                const bg = o === 1 ? 'rgba(59, 130, 246, 0.05)' : o === 2 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(245, 158, 11, 0.05)';
+                const border = o === 1 ? '#1e3a8a' : o === 2 ? '#064e3b' : '#78350f';
+
+                for (let t = 1; t <= trials; t++) {
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.className = 'data-cell';
+                    input.style.border = `1px solid ${border}`;
+                    input.style.textAlign = 'center';
+                    input.id = `val-p${p}-o${o}-t${t}`;
+                    input.style.width = '100%';
+                    input.style.background = bg;
+                    input.style.color = '#fff';
+                    input.title = `Operator ${o} measuring Part ${p} (Trial ${t})`;
+
+                    // Live Calc Trigger
+                    input.addEventListener('input', () => {
+                        if (typeof updateProgress === 'function') updateProgress();
+                        debouncedCalc();
+                    });
+                    grid.appendChild(input);
+                }
+            }
+        }
+    }
+
+    /* HOVER POP LOGIC */
+    // These functions are now defined globally at the top.
+    // function showEx(el, title, desc) {
+    //     const pop = document.getElementById('hoverPop');
+    //     const t = document.getElementById('hpTitle');
+    //     const d = document.getElementById('hpDesc');
+
+    //     t.innerText = title;
+    //     d.innerText = desc;
+
+    //     const rect = el.getBoundingClientRect();
+    //     // Position near the element
+    //     let top = rect.bottom + window.scrollY + 10;
+    //     let left = rect.left + window.scrollX;
+
+    //     // Boundary checks
+    //     if (left + 250 > window.innerWidth) left = window.innerWidth - 260;
+
+    //     pop.style.top = top + 'px';
+    //     pop.style.left = left + 'px';
+    //     pop.style.display = 'block';
+    // }
+
+    // function hideEx() {
+    //     document.getElementById('hoverPop').style.display = 'none';
+    // }
+
+    function explain(key) {
+        const item = glossary[key];
+        if (item) {
+            document.getElementById('modalTitle').innerText = item.title;
+            let content = item.text;
+
+            if (currentScenario && scenarios[currentScenario]) {
+                const s = scenarios[currentScenario];
+                content += `<div style='margin-top:15px; padding:10px; background:rgba(52, 152, 219, 0.1); border-left:3px solid #3498db; font-size:13px;'>
+                        <b>Scenario Context:</b> ${s.context}<br><br>${s.reason}`;
+                content += "</div>";
+            }
+
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+    }
+
+    function closeModal(e) {
+        // Handle cases where 'e' is null (direct call)
+        if (!e) {
+            // If called indirectly without event, try to close known modals or pass ID manually if rewritten
+            // But for now, just closing the mostly likely ones safely is better.
+            document.getElementById('infoModal').style.display = 'none';
+            document.getElementById('magnifyModal').style.display = 'none';
+            return;
+        }
+        if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
+        if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+    }
+
+    function magnify(canvasId, title) {
+        const original = document.getElementById(canvasId);
+        const modalImg = document.getElementById('magnifyImg');
+        modalImg.src = original.toDataURL();
+        document.getElementById('magnifyTitle').innerText = title;
+        document.getElementById('magnifyModal').style.display = 'flex';
+    }
+
+    function downloadChart(canvasId, title) {
+        const canvas = document.getElementById(canvasId);
+        const link = document.createElement('a');
+        link.download = title.replace(/\s+/g, '_') + '_Chart.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+
+    function loadScenario() {
+        const sel = document.getElementById('scenarioSelect').value;
+        currentScenario = sel;
+        if (sel && scenarios[sel]) {
+            const s = scenarios[sel];
+            document.getElementById('processTolerance').value = s.tolerance;
+            // The original loadExampleData was removed, so this call needs to be updated if it was used.
+            // Assuming it was replaced by populateExampleData or loadCaseStudy handles it.
+            // For now, commenting out to avoid error if it's not defined.
+            // loadExampleData(s.gen);
+        }
+    }
+
+    /* SEEDED RANDOM */
+    let _seed = 1;
+    function seededRandom() {
+        const x = Math.sin(_seed++) * 10000;
+        return x - Math.floor(x);
+    }
+
+    /* POPULATE DATA */
+    /* POPULATE DATA */
+    function populateExampleData(baseMean = 10, seedVal = null, noiseScale = 1.0) {
+        if (seedVal !== null) _seed = seedVal;
+        else _seed = Date.now();
+
+        const opsEl = document.getElementById('numOperators');
+        const partsEl = document.getElementById('numParts');
+        const trialsEl = document.getElementById('numTrials');
+
+        if (!opsEl || !partsEl || !trialsEl) return;
+
+        const ops = parseInt(opsEl.value);
+        const parts = parseInt(partsEl.value);
+        const trials = parseInt(trialsEl.value);
+
+        // Pre-calculate Operator Bias (Constant for the Operator)
+        const opBiases = [];
+        for (let o = 0; o < ops; o++) {
+            opBiases.push((seededRandom() * 2 - 1) * (baseMean * 0.05 * noiseScale)); // 5% Bias scaled
+        }
+
+        for (let p = 1; p <= parts; p++) {
+            // Part Variation (True Process Variation) - Unaffected by noiseScale usually, but let's keep it standard
+            let trueVal = baseMean + (seededRandom() * 2 - 1) * (baseMean * 0.2);
+
+            for (let o = 1; o <= ops; o++) {
+                let currentOpBias = opBiases[o - 1];
+
+                for (let t = 1; t <= trials; t++) {
+                    // Gage Repeatability (Random Error)
+                    let error = (seededRandom() * 2 - 1) * (baseMean * 0.02 * noiseScale); // 2% Error scaled
+
+                    let val = trueVal + currentOpBias + error;
+
+                    if (baseMean > 20) val = Math.round(val);
+                    else val = parseFloat(val.toFixed(3));
+
+                    const cell = document.getElementById(`val-p${p}-o${o}-t${t}`);
+                    if (cell) cell.value = val;
+                }
+            }
+        }
+        if (typeof updateProgress === 'function') updateProgress();
+        setTimeout(() => { if (typeof evaluateStudy === 'function') evaluateStudy(true); }, 500);
+    }
+
+    const loadExampleData = populateExampleData;
+
+    /* LOAD CASE STUDY */
+    function loadCaseStudy(type) {
+        const desc = document.getElementById('caseStudyDesc');
+        if (!type) {
+            if (desc) desc.style.display = 'none';
+            return;
+        }
+        let text = "";
+        let tolerance = 10;
+        let mean = 10;
+        let seed = 123;
+        let noise = 1.0; // Default
+
+        if (type === 'manufacturing') {
+            text = "CASE: Measuring shaft diameters (mm). Tolerance: +/- 0.05mm."; tolerance = 0.10; mean = 10; seed = 123;
+        } else if (type === 'healthcare') {
+            text = "CASE: Patient Wait Time (min). Tolerance: 5.0 min."; tolerance = 5.0; mean = 15; seed = 99;
+        } else if (type === 'glucose') {
+            text = "CASE: Glucometer Test (mg/dL). Tolerance: 20 mg/dL."; tolerance = 20.0; mean = 120; seed = 55;
+        } else if (type === 'blood_pressure') {
+            text = "CASE: BP Monitor Audit (mmHg). Tolerance: 15 mmHg."; tolerance = 15.0; mean = 125; seed = 77;
+        } else if (type === 'service') {
+            text = "CASE: Call Handle Time (pts). Tolerance: 15 pts."; tolerance = 15; mean = 50; seed = 42;
+        }
+        // NEW PASS SCENARIOS (Low Noise = 0.2)
+        else if (type === 'pass_manufacturing') {
+            text = "PASS CASE: Precision Steel Pins (mm). High Tolerance allows for minor variation."; tolerance = 5.0; mean = 10; seed = 201; noise = 0.2;
+        } else if (type === 'pass_healthcare') {
+            text = "PASS CASE: Lab Turnaround Time (min). Wide acceptable window."; tolerance = 40.0; mean = 20; seed = 202; noise = 0.2;
+        } else if (type === 'pass_service') {
+            text = "PASS CASE: Call Center Avg Handle Time (sec). Generous limits."; tolerance = 100.0; mean = 120; seed = 203; noise = 0.2;
+        }
+        // NEW FAIL SCENARIOS (High Noise = 3.0)
+        else if (type === 'fail_manufacturing') {
+            text = "FAIL CASE: Aerospace Valve (mm). Extremely tight tolerance causes failure."; tolerance = 0.2; mean = 10; seed = 301; noise = 3.0;
+        } else if (type === 'fail_healthcare') {
+            text = "FAIL CASE: Emergency Triage (min). Strict limits reveal high variation."; tolerance = 1.0; mean = 5; seed = 302; noise = 3.0;
+        } else if (type === 'fail_service') {
+            text = "FAIL CASE: IT Support Ticket Close (hrs). Inconsistent process meets strict SLA."; tolerance = 0.5; mean = 24; seed = 303; noise = 3.0;
+        }
+
+        if (desc) {
+            desc.innerHTML = `<i class="fas fa-info-circle"></i> ${text}`;
+            desc.style.display = 'block';
+        }
+
+        // Safety setters
+        const opEl = document.getElementById('numOperators');
+        const ptEl = document.getElementById('numParts');
+        const trEl = document.getElementById('numTrials');
+        const tolEl = document.getElementById('processTolerance');
+
+        if (opEl && opEl.value !== "3") opEl.value = "3";
+        if (ptEl && ptEl.value !== "10") ptEl.value = "10";
+        if (trEl && trEl.value !== "3") trEl.value = "3";
+        if (tolEl) tolEl.value = tolerance;
+
+        if (typeof generateGrid === 'function') generateGrid();
+
+        const nameEl = document.getElementById('candidateNameInput');
+        if (nameEl) nameEl.value = "Auto-Generated Case Study";
+
+        // Pass NOISE parameter
+        setTimeout(() => populateExampleData(mean, seed, noise), 100);
+    }
+
+    // REMOVED DUPLICATE loadExampleData declaration here to fix SyntaxError
+
+
+    function calculateMSA() {
+        console.log("Starting MSA Calculation...");
+        const opsEl = document.getElementById('numOperators');
+        const partsEl = document.getElementById('numParts');
+        const trialsEl = document.getElementById('numTrials');
+        const tolEl = document.getElementById('processTolerance');
+
+        if (!opsEl || !partsEl || !trialsEl || !tolEl) return;
+
+        const ops = parseInt(opsEl.value);
+        const parts = parseInt(partsEl.value);
+        const trials = parseInt(trialsEl.value);
+        const tolerance = parseFloat(tolEl.value);
+
+        let sumRange = 0;
+        let sumPartAvg = [];
+        let opAvgs = new Array(ops).fill(0);
+        let grandSum = 0;
+
+        // 1. Calculate Ranges and Averages SAFELY
+        for (let p = 1; p <= parts; p++) {
+            let partSum = 0;
+            for (let o = 1; o <= ops; o++) {
+                let trialVals = [];
+                for (let t = 1; t <= trials; t++) {
+                    // CRASH PREVENTION: Check if cell exists
+                    const cell = document.getElementById(`val-p${p}-o${o}-t${t}`);
+                    let val = 0;
+                    if (cell) {
+                        val = parseFloat(cell.value);
+                        if (isNaN(val)) val = 0;
+                    }
+                    trialVals.push(val);
+                    partSum += val;
+                    opAvgs[o - 1] += val;
+                    grandSum += val;
+                }
+                let min = Math.min(...trialVals);
+                let max = Math.max(...trialVals);
+                sumRange += (max - min);
+            }
+            sumPartAvg.push(partSum / (ops * trials));
+        }
+
+        const R_bar_all = sumRange / (parts * ops); // Average Range
+
+        // Map average operator values
+        const opAvgsMapped = opAvgs.map(sum => sum / (parts * trials));
+        const X_diff = Math.max(...opAvgsMapped) - Math.min(...opAvgsMapped);
+        const Rp = Math.max(...sumPartAvg) - Math.min(...sumPartAvg);
+
+        // K Constants
+        const K1 = trials === 2 ? 4.56 : 3.05; // Simplified for 2 or 3
+        const K2 = ops === 2 ? 3.65 : 2.70;
+        const K3 = 1.62;
+
+        // Variance
+        const EV = R_bar_all * K1;
+        let AV = Math.sqrt(Math.pow(X_diff * K2, 2) - Math.pow(EV, 2) / (parts * trials));
+        if (isNaN(AV)) AV = 0;
+
+        const GRR = Math.sqrt(Math.pow(EV, 2) + Math.pow(AV, 2));
+        const PV = Rp * K3;
+        const TV = Math.sqrt(Math.pow(GRR, 2) + Math.pow(PV, 2));
+
+        // % Contribution
+        const pctEV = 100 * (EV / TV);
+        const pctAV = 100 * (AV / TV);
+        const pctGRR = 100 * (GRR / TV);
+        const pctPV = 100 * (PV / TV);
+
+        // P/T Ratio
+        const pctTolerance = (6 * GRR / tolerance) * 100;
+        const ndc = 1.41 * (PV / GRR);
+
+        window.lastStudyResults = { pctTolerance, ndc, pctEV, pctAV, pctPV, EV, AV, GRR, PV, TV };
+
+        // --- UPDATE UI SAFELY ---
+        // P/T Ratio
+        const grrValEl = document.getElementById('grrValue');
+        if (grrValEl) grrValEl.textContent = isFinite(pctTolerance) ? pctTolerance.toFixed(1) + "%" : "-";
+
+        const grrStatEl = document.getElementById('grrStatus');
+        if (grrStatEl) {
+            if (pctTolerance < 10) {
+                grrStatEl.innerText = "Excellent"; grrStatEl.className = "result-badge badge-success";
+            } else if (pctTolerance < 30) {
+                grrStatEl.innerText = "Acceptable"; grrStatEl.className = "result-badge badge-warning";
+            } else {
+                grrStatEl.innerText = "Unacceptable"; grrStatEl.className = "result-badge badge-danger";
+            }
+        }
+
+        // PV
+        const pvEl = document.getElementById('pvValue');
+        if (pvEl) pvEl.textContent = isFinite(pctPV) ? pctPV.toFixed(1) + "%" : "-";
+
+        // nDC
+        const ndcValEl = document.getElementById('ndcValue');
+        if (ndcValEl) ndcValEl.textContent = isFinite(ndc) ? Math.floor(ndc) : "-";
+
+        const ndcStatEl = document.getElementById('ndcStatus');
+        if (ndcStatEl) {
+            if (Math.floor(ndc) >= 5) {
+                ndcStatEl.innerText = "Good (>=5)"; ndcStatEl.className = "result-badge badge-success";
+            } else {
+                ndcStatEl.innerText = "Poor (<5)"; ndcStatEl.className = "result-badge badge-danger";
+            }
+        }
+
+        // Show Results Panel
+        const resPanel = document.getElementById('resultsPanel');
+        if (resPanel) resPanel.style.display = 'block';
+
+        if (typeof generateAutoFindings === 'function') {
+            generateAutoFindings(pctTolerance || 0, ndc || 0, pctEV || 0, pctAV || 0, pctPV || 0);
+        }
+
+        if (typeof updateChart === 'function') {
+            updateChart(pctEV || 0, pctAV || 0, pctGRR || 0, pctPV || 0);
+        }
+
+        if (typeof updateVarianceGridMirror === 'function') {
+            updateVarianceGridMirror();
+        }
+    }
+
+    function updateVarianceGridMirror() {
+        const ops = parseInt(document.getElementById('numOperators').value);
+        const parts = parseInt(document.getElementById('numParts').value);
+        const trials = parseInt(document.getElementById('numTrials').value);
+
+        // Update Meta Counts
+        document.getElementById('grid-ops-count').innerText = ops;
+        document.getElementById('grid-parts-count').innerText = parts;
+        document.getElementById('grid-trials-count').innerText = trials;
+
+        const container = document.getElementById('varianceGridDisplay');
+        if (!container) return;
+
+        container.innerHTML = ''; // Clear existing
+
+        // Set Grid Template: 1 Col for Part Label + (Ops * Trials) for data
+        const totalCols = 1 + (ops * trials);
+        container.style.gridTemplateColumns = `auto repeat(${ops * trials}, 1fr)`;
+
+        // --- ROW 1: OPERATOR HEADERS ---
+        // Spacer for Part Label Column
+        const spacer1 = document.createElement('div');
+        container.appendChild(spacer1);
+
+        const opColors = [
+            { bg: 'rgba(59, 130, 246, 0.2)', border: '#3b82f6', text: '#60a5fa' }, // Blue
+            { bg: 'rgba(16, 185, 129, 0.2)', border: '#10b981', text: '#34d399' }, // Green
+            { bg: 'rgba(245, 158, 11, 0.2)', border: '#f59e0b', text: '#fbbf24' }  // Amber
+        ];
+
+        for (let o = 1; o <= ops; o++) {
+            const th = document.createElement('div');
+            th.innerText = `Operator ${o}`;
+            th.style.gridColumn = `span ${trials}`;
+            th.style.textAlign = 'center';
+            th.style.padding = '10px';
+            th.style.fontWeight = '700';
+            th.style.borderRadius = '8px 8px 0 0';
+
+            // Cycle colors if more than 3 ops
+            const theme = opColors[(o - 1) % 3];
+            th.style.background = `linear-gradient(135deg, ${theme.bg}, rgba(0,0,0,0))`;
+            th.style.border = `1px solid ${theme.border}`;
+            th.style.color = theme.text;
+            th.style.borderBottom = 'none';
+
+            container.appendChild(th);
+        }
+
+        // --- ROW 2: TRIAL HEADERS ---
+        // Spacer
+        const spacer2 = document.createElement('div');
+        spacer2.style.background = '#1e293b';
+        container.appendChild(spacer2);
+
+        for (let o = 1; o <= ops; o++) {
+            const theme = opColors[(o - 1) % 3];
+            for (let t = 1; t <= trials; t++) {
+                const th = document.createElement('div');
+                th.innerText = `T${t}`;
+                th.style.textAlign = 'center';
+                th.style.fontSize = '10px';
+                th.style.padding = '8px';
+                th.style.color = '#94a3b8';
+                th.style.background = theme.bg.replace('0.2', '0.05'); // Faint bg
+                th.style.borderLeft = `1px solid ${theme.border}44`; // Faint border
+                th.style.borderBottom = `1px solid ${theme.border}44`;
+                container.appendChild(th);
+            }
+        }
+
+        // --- DATA ROWS ---
+        for (let p = 1; p <= parts; p++) {
+            // Part Label
+            const rowLabel = document.createElement('div');
+            rowLabel.innerText = `Part ${p}`;
+            rowLabel.style.background = '#1e293b';
+            rowLabel.style.padding = '10px';
+            rowLabel.style.fontWeight = 'bold';
+            rowLabel.style.fontSize = '11px';
+            rowLabel.style.display = 'flex';
+            rowLabel.style.alignItems = 'center';
+            rowLabel.style.justifyContent = 'center';
+            rowLabel.style.borderBottom = '1px solid #334155';
+            container.appendChild(rowLabel);
+
+            for (let o = 1; o <= ops; o++) {
+                const theme = opColors[(o - 1) % 3];
+                for (let t = 1; t <= trials; t++) {
+                    const cell = document.createElement('div');
+                    // Get value from main grid
+                    const inputId = `val-p${p}-o${o}-t${t}`;
+                    const sourceInput = document.getElementById(inputId);
+                    const val = sourceInput ? sourceInput.value : '-';
+
+                    cell.innerText = val;
+                    cell.style.textAlign = 'center';
+                    cell.style.padding = '10px';
+                    cell.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+                    cell.style.borderRight = '1px solid rgba(255,255,255,0.05)';
+                    cell.style.color = '#fff';
+
+                    // Specific border for Operator groupings
+                    if (t === trials) {
+                        cell.style.borderRight = `1px solid ${theme.border}44`;
+                    }
+
+                    container.appendChild(cell);
+                }
+            }
+        }
+    }
+
+    function generateAutoFindings(grr, ndc, ev, av, pv) {
+        // UNHIDE RESULTS & HIDE WAITING PLACEHOLDER
+        const def = document.getElementById('interp-default');
+        const res = document.getElementById('interp-results');
+        if (def) def.style.display = 'none';
+        if (res) res.style.display = 'block';
+
+        // Target the NEW action box, not the deleted analysisSummary
+        const actionDiv = document.getElementById('interp-action');
+        let html = ``; // Start empty
+
+        // POPULATE MINITAB-STYLE TABLE
+        document.getElementById('tbl-grr').textContent = grr.toFixed(1) + '%';
+        document.getElementById('tbl-ev').textContent = ev.toFixed(1) + '%';
+        document.getElementById('tbl-av').textContent = av.toFixed(1) + '%';
+        document.getElementById('tbl-pv').textContent = (pv || 0).toFixed(1) + '%';
+        document.getElementById('tbl-ndc').textContent = Math.floor(ndc);
+
+        // STATUS CELLS
+        if (grr < 10) {
+            document.getElementById('tbl-grr-status').innerHTML = '<span style="color:#22c55e;">✓ Excellent</span>';
+        } else if (grr <= 30) {
+            document.getElementById('tbl-grr-status').innerHTML = '<span style="color:#eab308;">⚠ Marginal</span>';
+        } else {
+            document.getElementById('tbl-grr-status').innerHTML = '<span style="color:#ef4444;">✗ Fail</span>';
+        }
+
+        if ((pv || 0) > 90) {
+            document.getElementById('tbl-pv-status').innerHTML = '<span style="color:#22c55e;">✓ Good (&gt;90%)</span>';
+        } else if ((pv || 0) > 70) {
+            document.getElementById('tbl-pv-status').innerHTML = '<span style="color:#eab308;">⚠ Check</span>';
+        } else {
+            document.getElementById('tbl-pv-status').innerHTML = '<span style="color:#ef4444;">✗ Low</span>';
+        }
+
+        if (Math.floor(ndc) >= 5) {
+            document.getElementById('tbl-ndc-status').innerHTML = '<span style="color:#22c55e;">✓ Good (≥5)</span>';
+        } else {
+            document.getElementById('tbl-ndc-status').innerHTML = '<span style="color:#ef4444;">✗ Poor (&lt;5)</span>';
+        }
+
+        // VERDICT BOX STYLING
+        const verdictBox = document.getElementById('verdict-box');
+        const verdictIcon = document.getElementById('verdict-icon');
+        if (grr < 10 && Math.floor(ndc) >= 5) {
+            verdictBox.style.borderColor = '#22c55e';
+            verdictIcon.textContent = '✅';
+        } else if (grr <= 30 && Math.floor(ndc) >= 5) {
+            verdictBox.style.borderColor = '#eab308';
+            verdictIcon.textContent = '⚠️';
+        } else {
+            verdictBox.style.borderColor = '#ef4444';
+            verdictIcon.textContent = '❌';
+        }
+
+        if (grr > 30) {
+            html += `<span style='color:var(--error)'>Measurement System Fails (>30% variation).</span><br>`;
+            if (ev > av) html += `• <b>Equipment Fault:</b> The tool Repeatability is the main issue (EV=${ev.toFixed(1)}%). Repair the gauge.`;
+            else html += `• <b>Training Issue:</b> The Operator Reproducibility is the main issue (AV=${av.toFixed(1)}%). Retrain operators.`;
+        } else {
+            html += `<span style='color:var(--success)'>Measurement System is Acceptable.</span><br>`;
+            if (Math.floor(ndc) < 5) html += `• <b>Warning:</b> However, nDC is low (${Math.floor(ndc)}). This tool can't distinguish enough levels.`;
+        }
+
+        // --- NEW: Populate Narrative Box (INTERPRETATION) ---
+        const narrativeBox = document.getElementById('narrative-box');
+        const narrativeText = document.getElementById('narrative-text');
+
+        if (narrativeBox && narrativeText) {
+            let story = ``;
+
+            // CONTEXTUAL STORYTELLING ANALOGY
+            let analogy = "a ruler";
+            let context = "parts";
+            const currentCaseEl = document.getElementById('caseStudyDesc');
+            const currentCase = currentCaseEl ? currentCaseEl.innerText : "";
+
+            if (currentCase.toLowerCase().includes('health') || currentCase.toLowerCase().includes('patient')) {
+                analogy = "a thermometer";
+                context = "patients";
+            }
+
+            if (grr < 10) story += `<p style='margin-top:0'><b>Imagine your gage is ${analogy}.</b> It is crystal clear. You can easily tell the difference between ${context}. <br><br><strong style='color:#4ade80'>PASS:</strong> The measurement system variation is minimal (< 10%). Proceed with confidence.</p>`;
+            else if (grr <= 30) story += `<p style='margin-top:0'><b>Imagine your gage is ${analogy} with a smudge.</b> You can still see, but it's a bit blurry. <br><br><strong style='color:#facc15'>WARNING:</strong> Use with caution. The variation is between 10-30%. Identify if the issue is the ${analogy} (EV) or the person using it (AV).</p>`;
+            else story += `<p style='margin-top:0'><b>Imagine vaš gage is ${analogy} that is broken.</b> It gives a different reading every time. You cannot trust it.<br><br><strong style='color:#f87171'>FAIL:</strong> The system variation is too high (> 30%). You are measuring noise, not ${context}.</p>`;
+
+            // SMART RECOMMENDATIONS
+            if (grr > 10) {
+                if (ev > av) story += "<br>👉 <b>Main Culprit: The Tool (Repeaability).</b> The equipment itself is inconsistent. <b>Action:</b> Clean, calibrate, or replace the gage.";
+                else story += "<br>👉 <b>Main Culprit: The People (Reproducibility).</b> Different operators are measuring differently. <b>Action:</b> Standardize the procedure (SOP) and retrain.";
+            }
+
+            if (ndc < 5) story += `<br><br>⚠️ <b>Resolution Issue (nDC ${Math.floor(ndc)} < 5).</b> Your ruler markings are too far apart. You can't distinguish between subtle differences in ${context}.`;
+
+            narrativeText.innerHTML = story;
+            narrativeBox.style.display = 'block';
+        }
+
+        // --- UPDATE LEGACY ACTION BOX ---
+        if (actionDiv) {
+            actionDiv.innerHTML = html;
+            actionDiv.style.display = 'block';
+        }
+
+        // DYNAMIC VERDICT UPDATE
+        const verdictEl = document.getElementById('interp-verdict');
+        const iconEl = document.getElementById('verdict-icon');
+        const boxEl = document.getElementById('verdict-box');
+
+        if (verdictEl && boxEl) {
+            if (grr < 10) {
+                verdictEl.innerText = "PASS: Study Accepted";
+                iconEl.innerText = "✅";
+                boxEl.style.borderLeftColor = "#22c55e";
+                boxEl.style.background = "rgba(34, 197, 94, 0.1)";
+            } else if (grr < 30) {
+                verdictEl.innerText = "Inconclusive: Marginal";
+                iconEl.innerText = "⚠️";
+                boxEl.style.borderLeftColor = "#facc15";
+                boxEl.style.background = "rgba(250, 204, 21, 0.1)";
+            } else {
+                verdictEl.innerText = "FAIL: Study Rejected";
+                iconEl.innerText = "❌";
+                boxEl.style.borderLeftColor = "#ef4444";
+                boxEl.style.background = "rgba(239, 68, 68, 0.1)";
+            }
+        }
+
+        /* METRICS HELP MODAL */
+        // This function needs to be global
+        window.showMetricsHelp = function () {
+            const msg = `
+            <div style="text-align:left; font-size:12px; color:#cbd5e1;">
+                <h3 style="color:#8b5cf6; font-family:'Orbitron'; border-bottom:1px solid #334155; padding-bottom:5px;">MSA Metrics Guide</h3>
+                
+                <div style="margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong style="color:#ef4444;">% P/T Ratio (Precision to Tolerance)</strong>
+                        <span style="font-size:10px; color:#aaa;">Best: &lt; 10%</span>
+                    </div>
+                    <i>Formula: (6 * SD_gage) / Tolerance</i><br>
+                    <div style="margin-top:4px; padding:5px; background:rgba(239,68,68,0.1); border-left:2px solid #ef4444;">
+                        <b>Story:</b> Think of your tolerance window as a garage door, and the variation as your car. You want a small car (low variation) that fits easily into the garage. If % P/T is 100%, your car is scraping the walls!
+                    </div>
+                </div>
+
+                <div style="margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong style="color:#eab308;">PV (Part Variation)</strong>
+                        <span style="font-size:10px; color:#aaa;">Best: &gt; 90%</span>
+                    </div>
+                    <i>Formula: Part_Range * K3</i><br>
+                    <div style="margin-top:4px; padding:5px; background:rgba(234,179,8,0.1); border-left:2px solid #eab308;">
+                        <b>Story:</b> This is the "Good" variation. Use the Chihuahua vs. Great Dane analogy. If you are measuring dog weights, you WANT a big difference between them. If PV is low, all your parts look the same to the gage.
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong style="color:#8b5cf6;">nDC (Number of Distinct Categories)</strong>
+                        <span style="font-size:10px; color:#aaa;">Best: &ge; 5</span>
+                    </div>
+                    <i>Formula: 1.41 * (PV / GRR)</i><br>
+                    <div style="margin-top:4px; padding:5px; background:rgba(139,92,246,0.1); border-left:2px solid #8b5cf6;">
+                        <b>Story:</b> Think of this as screen resolution (pixels). nDC < 5 is like an 8-bit Minecraft image (blocky). nDC > 5 is like 4K HD. You can see the fine details.
+                    </div>
+                </div>
+            </div>
+        `;
+            const titleEl = document.getElementById('modalTitle');
+            const contentEl = document.getElementById('modalContent');
+            const modalEl = document.getElementById('infoModal');
+
+            if (titleEl) titleEl.innerText = "📊 Understanding Code";
+            if (contentEl) contentEl.innerHTML = msg;
+            if (modalEl) modalEl.style.display = 'flex';
+        };
+
+        function updateChart(ev, av, grr, pv) {
+            const ctxEl = document.getElementById('varianceChart');
+            if (!ctxEl) return; // Safety check
+            const ctx = ctxEl.getContext('2d');
+            if (varianceChartInstance) varianceChartInstance.destroy();
+
+            varianceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Repeatability (Equip)', 'Reproducibility (Op)', 'Gage R&R (Total Error)', 'Part-to-Part (Process)'],
+                    datasets: [{
+                        label: '% Contribution to Variation',
+                        data: [ev, av, grr, pv],
+                        backgroundColor: [
+                            '#E91E63', // Noise
+                            '#9C27B0', // Operator
+                            '#F4436', // Bad Stuff
+                            '#4CAF50'  // Good Stuff (Part Var)
+                        ],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Fits the container
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8' } },
+                        tooltip: {
+                            bodyFont: { size: 12 },
+                            footerFont: { size: 11, style: 'italic' },
+                            padding: 12,
+                            callbacks: {
+                                label: function (context) {
+                                    const val = context.raw;
+                                    const label = context.label;
+                                    return label + ": " + val.toFixed(1) + "%";
+                                },
+                                afterLabel: function (context) {
+                                    const label = context.label;
+                                    if (label.includes('Repeatability')) return "Equipment Variation (EV)";
+                                    if (label.includes('Reproducibility')) return "Appraiser Variation (AV)";
+                                    if (label.includes('Total')) return "Combined Measurement Error";
+                                    if (label.includes('Part')) return "Actual Process Spread";
+                                    return "";
+                                },
+                                footer: function (context) {
+                                    const label = context[0].label;
+                                    if (label.includes('Repeatability')) {
+                                        return [
+                                            "━━━━━━━━━━━━━━━━━━━━━━━━━━",
+                                            "DEFINITION: Can the same operator, measuring",
+                                            "the same part, get the same result each time?",
+                                            "",
+                                            "🔧 IF HIGH: Check for worn/loose gage,",
+                                            "   poor fixture, or unstable environment."
+                                        ];
+                                    }
+                                    if (label.includes('Reproducibility')) {
+                                        return [
+                                            "━━━━━━━━━━━━━━━━━━━━━━━━━━",
+                                            "DEFINITION: Do different operators agree",
+                                            "when measuring the same part?",
+                                            "",
+                                            "👥 IF HIGH: Standardize training,",
+                                            "   write clearer SOPs, improve technique."
+                                        ];
+                                    }
+                                    if (label.includes('Total')) {
+                                        return [
+                                            "━━━━━━━━━━━━━━━━━━━━━━━━━━",
+                                            "DEFINITION: Total measurement system error",
+                                            "(Repeatability + Reproducibility combined).",
+                                            "",
+                                            "📊 TARGETS: <10% Excellent | 10-30% OK | >30% FAIL"
+                                        ];
+                                    }
+                                    if (label.includes('Part')) {
+                                        return [
+                                            "━━━━━━━━━━━━━━━━━━━━━━━━━━",
+                                            "DEFINITION: Variation that comes from the",
+                                            "actual differences between parts (the signal).",
+                                            "",
+                                            "📈 WANT THIS HIGH (>90%): Means gage can",
+                                            "   detect product differences vs. noise."
+                                        ];
+                                    }
+                                    return "";
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: { display: true, text: '% of Total Study Variation (%SV)', color: '#64748b' },
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            display: true, // Keep x-axis labels for each bar
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function askAICoach() {
+            const grr = document.getElementById('grrValue').textContent;
+            const ndc = document.getElementById('ndcValue').textContent;
+            const btn = document.getElementById('aiBtn');
+
+            btn.innerHTML = "🧠 Analyzing...";
+
+            const prompt = `
+            Act as a Senior Lean Six Sigma Master Black Belt.
+            I just ran a Gage R&R Study.
+            Results:
+            - Total Gage R&R (% Tolerance): ${grr}
+            - Number of Distinct Categories (nDC): ${ndc}
+            
+            Provide a short, professional interpretation (2-3 sentences) and ONE specific recommendation on what to do next.
+            Do not use markdown. Keep it plain text.
+        `;
+
+            try {
+                const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+                const data = await response.json();
+                const text = data.candidates[0].content.parts[0].text;
+
+                document.getElementById('aiOutput').innerHTML = `<strong style="color:var(--accent);">Coach's Insight:</strong><br>${text}`;
+
+            } catch (e) {
+                document.getElementById('aiOutput').innerText = "AI Connection Error. Please check API Key.";
+            } finally {
+                btn.innerHTML = "Ask Gemini Coach";
+                btn.disabled = false;
+            }
+        }
+
+        // Start pulse animation for the new button
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes pulse {
+                0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+                70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+                100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        function showInfographic() {
+            document.getElementById('infographicModal').style.display = 'flex';
+        }
+
+        function toggleScenario(type) {
+            const appleContent = document.getElementById('content-apples');
+            const healthContent = document.getElementById('content-healthcare');
+            const btnHealth = document.getElementById('btn-health');
+            const btnApples = document.getElementById('btn-apples');
+
+            if (type === 'healthcare') {
+                appleContent.style.display = 'none'; // Use display none on wrapper
+                healthContent.style.display = 'contents';
+                btnHealth.style.background = '#e94560'; // Active
+                btnHealth.style.color = '#fff';
+                btnApples.style.background = 'transparent';
+                btnApples.style.color = '#aaa';
+            } else {
+                healthContent.style.display = 'none';
+                appleContent.style.display = 'contents';
+                btnApples.style.background = '#e94560'; // Active
+                btnApples.style.color = '#fff';
+                btnHealth.style.background = 'transparent';
+                btnHealth.style.color = '#aaa';
+            }
+        }
+
+        // Global Exports for HTML access
+        window.showMetricsHelp = showMetricsHelp;
+        window.updateChart = updateChart;
+        window.generateAutoFindings = generateAutoFindings;
+        window.evaluateStudy = evaluateStudy;
+        window.showInfographic = showInfographic;
+
+        // Define Modal Function Globally
+        window.openAccuracyModal = function () {
+            const m = document.getElementById('accuracyModal');
+            if (m) m.style.display = 'flex';
+        };
+
+        window.showDefinition = function (term) {
+            const modal = document.getElementById('defnModal');
+            const title = document.getElementById('defnTitle');
+            const content = document.getElementById('defnContent');
+
+            let t = "", c = "";
+
+            if (term === 'grr') {
+                t = "Total Gage R&R";
+                c = "<b>Daily Life Example:</b> Trying to read a blurry thermometer.<br><br>It's the combined error from the <b>Tool</b> (Thermometer) and the <b>User</b> (You reading it wrong). If this is high (>30%), you can't trust ANY reading.";
+            } else if (term === 'ev') {
+                t = "Repeatability (Equipment Variation)";
+                c = "<b>Daily Life Example:</b> A broken bathroom scale.<br><br>You step on it 3 times in 10 seconds, and it gives 3 different weights. The scale is inconsistent. <b>Action:</b> Buy a new scale.";
+            } else if (term === 'av') {
+                t = "Reproducibility (Appraiser Variation)";
+                c = "<b>Daily Life Example:</b> Two refs in a football game.<br><br>One ref calls a foul, the other doesn't. They don't agree on the rules. <b>Action:</b> Train the refs (SOPs).";
+            } else if (term === 'pv') {
+                t = "Part-to-Part Variation";
+                c = "<b>Daily Life Example:</b> The difference between a Chihuahua and a Great Dane.<br><br>This is the ACTUAL difference between the things you are measuring. You WANT this to be high (>90%). It means your ruler is precise enough to tell them apart.";
+            } else if (term === 'ndc') {
+                t = "nDC (Number of Distinct Categories)";
+                c = "<b>Daily Life Example:</b> Pixel Resolution.<br><br>If nDC < 5, it's like a low-res Minecraft blocky image. You can't see details. If nDC > 5, it's 4K HD. You can distinctions. <br><b>Target: >= 5.</b>";
+            }
+
+            title.innerHTML = t;
+            content.innerHTML = c;
+            modal.style.display = 'flex';
+        };
+
+
+    }
+
+</script>
+
+<!-- ACCURACY MODAL -->
+<div id="accuracyModal" class="modal-overlay" style="z-index: 10002; display: none; backdrop-filter: blur(10px);">
+    <div class="modal-box"
+        style="max-width: 800px; width: 90%; background: #0f172a; border: 2px solid #eab308; border-radius: 16px; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+        <span class="close-btn" onclick="document.getElementById('accuracyModal').style.display='none'"
+            style="font-size: 28px; color: #cbd5e1; float: right; cursor: pointer;">&times;</span>
+
+        <div style="text-align:center; margin-bottom:20px;">
+            <h2 style="color:#eab308; font-family:'Orbitron';">Accuracy vs Precision</h2>
+            <p style="color:#cbd5e1; font-size:14px;">The fundamental concepts of Measurement System Analysis.</p>
+        </div>
+
+        <div style="display:flex; flex-direction:column; align-items:center; gap:20px;">
+            <img src="./assets/accuracy_targets.png" alt="Accuracy vs Precision Targets"
+                style="max-width:100%; border-radius:10px; border:1px solid #334155;">
+
+            <div
+                style="background:rgba(255,255,255,0.05); padding:20px; border-radius:10px; border-left:4px solid #eab308; text-align:left; width:100%;">
+                <h3 style="color:#fff; margin-top:0;">Thinking Like a Marksman 🎯</h3>
+                <ul style="color:#cbd5e1; line-height:1.8;">
+                    <li><strong style="color:#22c55e;">ACCURACY (Bias):</strong> Are you hitting the bullseye? (Is the
+                        average correct?)</li>
+                    <li><strong style="color:#3b82f6;">PRECISION (Variation):</strong> Are your shots grouped together?
+                        (Is the process consistent?)</li>
+                </ul>
+                <p style="margin-bottom:0; color:#94a3b8; font-style:italic; font-size:12px;">MSA Gage R&R specifically
+                    tests your <b>PRECISION</b>. If your gage is precise but not accurate, you just need to calibrate it
+                    (add/subtract a constant). If it's not precise, you have a bigger problem (User error or broken
+                    gage).</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DEFINITION MODAL -->
+<div id="defnModal" class="modal-overlay" style="z-index: 10003; display: none; backdrop-filter: blur(5px);">
+    <div class="modal-box"
+        style="max-width: 500px; width: 90%; background: #1e293b; border: 1px solid #64748b; border-radius: 12px; padding: 25px;">
+        <span class="close-btn" onclick="document.getElementById('defnModal').style.display='none'"
+            style="float:right; cursor:pointer; color:#fff;">&times;</span>
+        <h3 id="defnTitle" style="color:#fbbf24; margin-top:0;">Definition</h3>
+        <div id="defnContent" style="color:#cbd5e1; line-height:1.6; font-size:14px;"></div>
+    </div>
+</div>
+<!-- INFOGRAPHIC MODAL: DATA INTEGRITY HUB -->
+<div id="infographicModal" class="modal-overlay" style="z-index: 10001; display: none; backdrop-filter: blur(10px);">
+    <div class="modal-box"
+        style="max-width: 1000px; width: 95%; max-height: 95vh; overflow-y: auto; background: #0f172a; border: 2px solid #8b5cf6; border-radius: 24px; padding: 40px; color: #f8fafc; font-family: 'Inter', sans-serif; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+
+        <span class="close-btn" onclick="document.getElementById('infographicModal').style.display='none'"
+            style="font-size: 32px; color: #8b5cf6; position: sticky; top: -10px; right: 0; float: right; cursor: pointer; transition: 0.3s; z-index: 10;">&times;</span>
+
+        <div style="text-align: center; margin-bottom: 40px;">
+            <div
+                style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); display: inline-block; padding: 8px 16px; border-radius: 40px; font-family: 'Orbitron'; font-size: 10px; letter-spacing: 2px; color: #a78bfa; margin-bottom: 15px;">
+                STATISTICAL AUDIT PROTOCOL</div>
+            <h1
+                style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 36px; margin: 0; background: linear-gradient(135deg, #fff, #a78bfa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                Can You Trust Your Data? 🧐</h1>
+            <p style="color: #94a3b8; font-size: 14px; margin-top: 10px;">Before you analyze the process, you must audit
+                the measurement system itself.</p>
+        </div>
+
+
+
+        <!-- SECTION 1: THE FUNDAMENTALS -->
+        <div style="margin-bottom: 50px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px;">
+                <div
+                    style="width: 40px; height: 40px; background: #8b5cf6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    Σ</div>
+                <h2 style="font-family: 'Montserrat'; font-size: 22px; margin: 0;">1. Measurement Science (MSA)</h2>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; transition: 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(139, 92, 246, 0.5)'"
+                    onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+                    <div
+                        style="color: #8b5cf6; font-weight: 800; font-size: 12px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-microscope"></i> What is it?
+                    </div>
+                    <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1; margin: 0;">
+                        Measurement System Analysis (MSA) is a scientific study used to quantify the "Measurement Error"
+                        (Noise) introduced by both your <b>Precision Tools</b> and your <b>People</b>.
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; transition: 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(139, 92, 246, 0.5)'"
+                    onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+                    <div
+                        style="color: #34d399; font-weight: 800; font-size: 12px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-bullseye"></i> Why use it?
+                    </div>
+                    <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1; margin: 0;">
+                        If your data is 30% noise, your control charts and capability studies are <b>liars</b>. You
+                        cannot improve what you cannot accurately measure. 🎯
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; transition: 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(139, 92, 246, 0.5)'"
+                    onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+                    <div
+                        style="color: #f59e0b; font-weight: 800; font-size: 12px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-clock"></i> When to add?
+                    </div>
+                    <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1; margin: 0;">
+                        Crucial during the <b>MEASURE phase</b> of a DMAIC project. Never trust baseline data until the
+                        measurement system passes audit. 🕙
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; transition: 0.3s;"
+                    onmouseover="this.style.borderColor='rgba(139, 92, 246, 0.5)'"
+                    onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+                    <div
+                        style="color: #6366f1; font-weight: 800; font-size: 12px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-history"></i> History of Origin
+                    </div>
+                    <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1; margin: 0;">
+                        Born in <b>Western Electric</b> and refined by the <b>AIAG</b> (Automotive Industry Action
+                        Group) to eliminate the risk of shipping bad parts to customers. 🏭
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: THE STORIES OF VARIATION -->
+        <div style="margin-bottom: 50px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div
+                        style="width: 40px; height: 40px; background: #ec4899; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        📖</div>
+                    <h2 style="font-family: 'Montserrat'; font-size: 22px; margin: 0;">2. The Stories of Variation</h2>
+                </div>
+                <div style="display: flex; background: #1e293b; padding: 4px; border-radius: 12px;">
+                    <button onclick="toggleScenario('apples')" id="btn-apples"
+                        style="padding: 8px 16px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; background: #8b5cf6; color: white;">🍎
+                        The Apple Contest</button>
+                    <button onclick="toggleScenario('healthcare')" id="btn-health"
+                        style="padding: 8px 16px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; background: transparent; color: #94a3b8;">🏥
+                        The Critical Vitals</button>
+                </div>
+            </div>
+
+            <!-- THE APPLE SCENARIO -->
+            <div id="content-apples" style="display: block;">
+                <div
+                    style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(30, 41, 59, 0.5)); border: 1px dashed rgba(239, 68, 68, 0.3); padding: 30px; border-radius: 24px;">
+                    <p style="font-size: 16px; line-height: 1.8; color: #e2e8f0; font-style: italic;">
+                        "Imagine a neighborhood competition for the <b>Heaviest Apple 🍎</b>. You have a rusty ⚖️
+                        kitchen scale and three opinionated judges..."
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 25px;">
+                        <div>
+                            <div
+                                style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px; border-left: 4px solid #f59e0b;">
+                                <h4 style="color: #f59e0b; margin: 0 0 10px 0; font-size: 15px;">🔍 The Wobbly Scale
+                                    (Repeatability)</h4>
+                                <div
+                                    style="font-size: 11px; color: #94a3b8; font-family: 'Orbitron'; margin-bottom: 10px;">
+                                    MATH: (σ̂_gage / σ_total)</div>
+                                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
+                                    You weigh the <b>SAME</b> apple 3 times. Try 1 says 100g, Try 2 says 105g, Try 3
+                                    says 98g.
+                                    The scale is inconsistent! This is <b>Equipment Variation (EV)</b>.
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px; border-left: 4px solid #3b82f6;">
+                                <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 15px;">👥 The Judge's Opinion
+                                    (Reproducibility)</h4>
+                                <div
+                                    style="font-size: 11px; color: #94a3b8; font-family: 'Orbitron'; margin-bottom: 10px;">
+                                    MATH: (Δ Operator_Avgs)</div>
+                                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
+                                    Judge A reads 100g, but Judge B leans in and claims it's 110g. They can't agree on
+                                    the protocol.
+                                    The "Operators" are biased! This is <b>Appraiser Variation (AV)</b>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THE HEALTHCARE SCENARIO (Hidden) -->
+            <div id="content-healthcare" style="display: none;">
+                <div
+                    style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(30, 41, 59, 0.5)); border: 1px dashed rgba(16, 185, 129, 0.3); padding: 30px; border-radius: 24px;">
+                    <p style="font-size: 16px; line-height: 1.8; color: #e2e8f0; font-style: italic;">
+                        "A patient's life depends on an accurate <b>Blood Pressure</b> reading before surgery. But can
+                        we trust our manual cuffs? 🩺"
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 25px;">
+                        <div>
+                            <div
+                                style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px; border-left: 4px solid #f59e0b;">
+                                <h4 style="color: #f59e0b; margin: 0 0 10px 0; font-size: 15px;">📉 The Leaky Valve
+                                    (Repeatability)</h4>
+                                <div
+                                    style="font-size: 11px; color: #94a3b8; font-family: 'Orbitron'; margin-bottom: 10px;">
+                                    DATA: σ^2_Error</div>
+                                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
+                                    Nurse A takes Mr. Jones' vitals thrice. Results: 120/80, 145/95, 110/70.
+                                    The cuff has an air leak or the gage is stuck. The <b>Medical Equipment</b> is
+                                    failing.
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px; border-left: 4px solid #3b82f6;">
+                                <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 15px;">👩‍⚕️ Protocol Drift
+                                    (Reproducibility)</h4>
+                                <div
+                                    style="font-size: 11px; color: #94a3b8; font-family: 'Orbitron'; margin-bottom: 10px;">
+                                    DATA: Σ(X̄_nurse - X̄_grand)</div>
+                                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
+                                    Nurse A measures Mr. Jones at 120/80. Nurse B measures him at 140/90.
+                                    They are applying the cuff differently or hearing the Korotkoff sounds at different
+                                    points.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: THE SCOREBOARD OF TRUTH -->
+        <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px;">
+                <div
+                    style="width: 40px; height: 40px; background: #10b981; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    🏆</div>
+                <h2 style="font-family: 'Montserrat'; font-size: 22px; margin: 0;">3. The Scoreboard of Truth</h2>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center;">
+                <div
+                    style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 20px; padding: 20px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;">🌟</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #10b981;">&lt; 10% ERROR</div>
+                    <p style="font-size: 11px; color: #94a3b8; margin-top: 5px;">GOLD STANDARD.<br>Your measurement
+                        system is a "Master Architect". Trust the data fully.</p>
+                </div>
+                <div
+                    style="background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b; border-radius: 20px; padding: 20px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;">⚖️</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #f59e0b;">10-30% ERROR</div>
+                    <p style="font-size: 11px; color: #94a3b8; margin-top: 5px;">BORDERLINE.<br>Acceptable for some
+                        processes, but monitor for drift. Improve if possible.</p>
+                </div>
+                <div
+                    style="background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: 20px; padding: 20px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;">🛑</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #ef4444;">&gt; 30% ERROR</div>
+                    <p style="font-size: 11px; color: #94a3b8; margin-top: 5px;">CRITICAL FAILURE.<br>The "noise" is
+                        drowning out the signal. Stop analysis immediately.</p>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 30px; padding: 20px; background: rgba(139, 92, 246, 0.05); border-radius: 16px; border: 1px solid rgba(139, 92, 246, 0.1); font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                <strong style="color: #a78bfa; display: block; margin-bottom: 5px;">🧠 MASTER BLACK BELT
+                    PRO-TIP:</strong>
+                "Total Variation (TV) = √(PV² + GRR²). If your Part-to-Part variation (PV) is low, your Gage R&R will
+                look high even if the tool is good. Always compare error to <b>Tolerance</b> to see if you can reliably
+                separate 'Good' from 'Bad'."
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <button onclick="document.getElementById('infographicModal').style.display='none'" class="btn"
+                style="background: #8b5cf6; color: white; border: none; padding: 12px 40px; border-radius: 50px; font-weight: 800; cursor: pointer; font-family: 'Montserrat'; transition: 0.3s; box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.5);">CLOSE
+                AUDIT BRIEF</button>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

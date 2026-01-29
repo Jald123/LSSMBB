@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specialized Engineering Tools | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
+
+    <style>
+        /* OEE Visuals */
+        .oee-ring {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 10px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .oee-val {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .oee-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* Sim Box */
+        .sim-box {
+            height: 200px;
+            background: #222;
+            border: 1px solid #444;
+            padding: 10px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            color: #2ecc71;
+        }
+
+        /* Tabs */
+        .tab-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: bold;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        /* Help Panel */
+        .help-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #E91E63;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .help-btn:hover {
+            transform: scale(1.1);
+            background: #fff;
+            color: #E91E63;
+        }
+
+        .slide-panel {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 450px;
+            height: 100vh;
+            background: var(--surface-1);
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            transition: 0.4s;
+            overflow-y: auto;
+            padding: 30px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slide-panel.open {
+            right: 0;
+        }
+
+        .slide-close {
+            font-size: 24px;
+            cursor: pointer;
+            float: right;
+            color: var(--text-secondary);
+        }
+
+        .story-step {
+            border-left: 2px solid #E91E63;
+            padding-left: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .story-step::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #E91E63;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">SPECIALIZED TOOLS</span>
+                <div style="height: 15px;"></div>
+                <h1>Engineering & Reliability Suite</h1>
+                <p style="color:var(--text-secondary);">TPM (OEE), Advanced MSA (Attribute Agreement), and Monte Carlo
+                    Simulation.</p>
+            </div>
+            <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Back</button>
+        </div>
+
+        <!-- TABS -->
+        <div style="margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1);">
+            <button class="tab-btn active" onclick="switchTab('tpm')">🛠️ TPM & OEE</button>
+            <button class="tab-btn" onclick="switchTab('msa')">📐 Advanced MSA</button>
+            <button class="tab-btn" onclick="switchTab('sim')">🎲 Process Simulation</button>
+        </div>
+
+        <!-- TAB 1: TPM (OEE) -->
+        <div id="tab_tpm" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>OEE Calculator</h3>
+                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">Overall Equipment
+                        Effectiveness.</p>
+
+                    <h4 style="color:#3498db; margin-bottom:5px;">Availability (Time)</h4>
+                    <div class="form-group"><label>Planned Production Time (min)</label><input type="number" id="o_plan"
+                            value="480" oninput="calcOEE()"></div>
+                    <div class="form-group"><label>Downtime / Stops (min)</label><input type="number" id="o_down"
+                            value="60" oninput="calcOEE()"></div>
+
+                    <h4 style="color:#f1c40f; margin-bottom:5px; margin-top:15px;">Performance (Speed)</h4>
+                    <div class="form-group"><label>Total Count Produced</label><input type="number" id="o_prod"
+                            value="400" oninput="calcOEE()"></div>
+                    <div class="form-group"><label>Ideal Cycle Time (min/part)</label><input type="number" id="o_cycle"
+                            value="1.0" oninput="calcOEE()"></div>
+
+                    <h4 style="color:#2ecc71; margin-bottom:5px; margin-top:15px;">Quality (Yield)</h4>
+                    <div class="form-group"><label>Reject Count</label><input type="number" id="o_reject" value="10"
+                            oninput="calcOEE()"></div>
+                </div>
+
+                <div class="card" style="text-align:center;">
+                    <div class="oee-ring" id="ring_oee">
+                        <div class="oee-val" id="res_oee">-%</div>
+                        <div class="oee-label">OEE Score</div>
+                    </div>
+                    <div style="display:flex; justify-content:space-around; margin-top:30px;">
+                        <div>
+                            <div style="font-size:18px; font-weight:bold; color:#3498db;" id="res_avail">-%</div>
+                            <div style="font-size:10px; color:#aaa;">Availability</div>
+                        </div>
+                        <div>
+                            <div style="font-size:18px; font-weight:bold; color:#f1c40f;" id="res_perf">-%</div>
+                            <div style="font-size:10px; color:#aaa;">Performance</div>
+                        </div>
+                        <div>
+                            <div style="font-size:18px; font-weight:bold; color:#2ecc71;" id="res_qual">-%</div>
+                            <div style="font-size:10px; color:#aaa;">Quality</div>
+                        </div>
+                    </div>
+
+                    <div id="oee_interp"
+                        style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-left:3px solid #333; text-align:left; font-size:12px;">
+                        Enter data to analyze equipment loss.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: ADVANCED MSA -->
+        <div id="tab_msa" style="display:none;">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Attribute Agreement Analysis (Kappa)</h3>
+                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">For Pass/Fail data. Does
+                        the appraiser agree with the Master Standard?</p>
+
+                    <div class="form-group">
+                        <label>Total Samples Checked</label>
+                        <input type="number" id="m_total" value="50">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Agreements (Matched Master)</label>
+                        <input type="number" id="m_agreed" value="45">
+                    </div>
+                    <button class="btn btn-primary" onclick="calcKappa()">Calculate Kappa</button>
+
+                    <div style="margin-top:20px; padding:10px; background:rgba(255,255,255,0.05); border-radius:4px;">
+                        <div style="font-size:11px; text-transform:uppercase; color:#aaa;">Fleiss' Kappa Score</div>
+                        <div id="res_kappa" style="font-size:24px; font-weight:bold;">-</div>
+                        <div id="kappa_interp" style="font-size:12px; margin-top:5px; color:#aaa;">...</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Bias & Linearity Check</h3>
+                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">Is the gage 'Accuracy'
+                        consistently off?</p>
+
+                    <div class="form-group">
+                        <label>Reference Value (Master)</label>
+                        <input type="number" id="b_ref" value="10.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Observed Average (x̄)</label>
+                        <input type="number" id="b_obs" value="10.05">
+                    </div>
+                    <button class="btn btn-secondary-card" onclick="calcBias()">Check Bias</button>
+
+                    <div id="bias_result" style="margin-top:20px; display:none;">
+                        <span id="bias_val" style="font-weight:bold; color:#e74c3c;">Bias: +0.05</span>
+                        <p style="font-size:12px; color:#aaa;">System reads higher than true value.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: SIMULATION -->
+        <div id="tab_sim" style="display:none;">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Monte Carlo Simulator</h3>
+                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">Simulate process
+                        variation over time.</p>
+
+                    <div class="form-group"><label>Mean (μ)</label><input type="number" id="s_mu" value="100"></div>
+                    <div class="form-group"><label>StDev (σ)</label><input type="number" id="s_sigma" value="10"></div>
+                    <div class="form-group"><label>Iterations (N)</label><input type="number" id="s_n" value="1000">
+                    </div>
+                    <div class="form-group"><label>Spec Limit (USL)</label><input type="number" id="s_usl" value="125">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="runSim()">Run Simulation</button>
+                </div>
+
+                <div class="card">
+                    <h3>Results</h3>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <div>
+                            <div style="font-size:10px; color:#aaa;">Predicted Yield</div>
+                            <div id="sim_yield" style="font-size:20px; font-weight:bold;">-</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px; color:#aaa;">Defects (PPM)</div>
+                            <div id="sim_ppm" style="font-size:20px; font-weight:bold;">-</div>
+                        </div>
+                    </div>
+                    <div class="sim-box" id="sim_log">
+                        > Ready to simulate...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- HELP PANEL -->
+    <button class="help-btn" onclick="document.getElementById('slidePanel').classList.toggle('open')">?</button>
+    <div id="slidePanel" class="slide-panel">
+        <span class="slide-close"
+            onclick="document.getElementById('slidePanel').classList.toggle('open')">&times;</span>
+        <h2 style="color:#E91E63;">🛠️ Engineering Suite Guide</h2>
+        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Detailed guidelines for each
+            engineering module.</p>
+
+        <!-- SECTION 1: TPM (OEE) -->
+        <div style="margin-bottom:30px; border-bottom:1px solid #444; padding-bottom:20px;">
+            <h3 style="color:var(--accent); display:flex; align-items:center;">
+                <span style="background:#333; padding:5px; border-radius:4px; margin-right:10px;">🛠️</span>
+                TPM & OEE
+            </h3>
+            <div class="story-step"><strong>What:</strong> OEE (Overall Equipment Effectiveness) is a "Zero Loss"
+                calculation (Availability × Performance × Quality).</div>
+            <div class="story-step"><strong>When:</strong> Use when a bottleneck machine is slowing down the entire
+                factory.</div>
+
+            <h4 style="color:#f1c40f; margin-top:15px; font-size:14px;">How to Execute:</h4>
+            <ol style="font-size:13px; color:#ccc; padding-left:20px; line-height:1.6;">
+                <li><strong>Availability:</strong> Measure total <em>Planned Time</em> (e.g. 8 hour shift). Subtract ANY
+                    stops (breakdowns, changeovers).</li>
+                <li><strong>Performance:</strong> Measure <em>Ideal Cycle Time</em> (fastest possible speed). Compare to
+                    actual output.</li>
+                <li><strong>Quality:</strong> Count <em>Total Parts</em> vs <em>Rejects</em> (Scrap/Rework).</li>
+                <li>Combine: If any factor is low, OEE drops drastically (Multiplication effect).</li>
+            </ol>
+
+            <div
+                style="margin-top:10px; background:rgba(231, 76, 60, 0.1); border-left:3px solid #e74c3c; padding:10px; font-size:12px;">
+                <strong>⚠️ Important Consideration:</strong> Avoid "Gaming the System". Do not reduce the Ideal Cycle
+                Time to make OEE look higher. OEE should reveal losses, not hide them.
+            </div>
+        </div>
+
+        <!-- SECTION 2: ATTRIBUTE MSA -->
+        <div style="margin-bottom:30px; border-bottom:1px solid #444; padding-bottom:20px;">
+            <h3 style="color:var(--accent); display:flex; align-items:center;">
+                <span style="background:#333; padding:5px; border-radius:4px; margin-right:10px;">📐</span>
+                Advanced MSA
+            </h3>
+            <div class="story-step"><strong>What:</strong> Validates human inspectors (Visual Pass/Fail) using Kappa
+                stats.</div>
+
+            <h4 style="color:#f1c40f; margin-top:15px; font-size:14px;">How to Execute:</h4>
+            <ol style="font-size:13px; color:#ccc; padding-left:20px; line-height:1.6;">
+                <li>Select <strong>30-50 parts</strong> representing the full range of defects (Good, Bad, Borderline).
+                </li>
+                <li>Have a Master (Expert) define the "True Standard" for each part.</li>
+                <li>Have 2-3 inspectors measure the parts <strong>blindly</strong> (randomized order).</li>
+                <li>Calculate Kappa: Are they agreeing with each other? And with the Master?</li>
+            </ol>
+
+            <div
+                style="margin-top:10px; background:rgba(231, 76, 60, 0.1); border-left:3px solid #e74c3c; padding:10px; font-size:12px;">
+                <strong>⚠️ Important Consideration:</strong> If you only select "Easy" parts (obviously good/bad), you
+                will get a false high score. You MUST include "Borderline" samples to test true capability.
+            </div>
+        </div>
+
+        <!-- SECTION 3: SIMULATION -->
+        <div style="margin-bottom:30px;">
+            <h3 style="color:var(--accent); display:flex; align-items:center;">
+                <span style="background:#333; padding:5px; border-radius:4px; margin-right:10px;">🎲</span>
+                Process Simulation
+            </h3>
+            <div class="story-step"><strong>What:</strong> Uses Monte Carlo methods to predict future failure rates
+                (PPM).</div>
+
+            <h4 style="color:#f1c40f; margin-top:15px; font-size:14px;">How to Execute:</h4>
+            <ol style="font-size:13px; color:#ccc; padding-left:20px; line-height:1.6;">
+                <li>Define the Input Distribution (Mean and Std Dev) based on historical data.</li>
+                <li>Set the Specification Limits (USL/LSL).</li>
+                <li>Run <strong>1,000+ iterations</strong> to generate a virtual population.</li>
+                <li>Analyze the tail defects.</li>
+            </ol>
+            <div
+                style="margin-top:10px; background:rgba(231, 76, 60, 0.1); border-left:3px solid #e74c3c; padding:10px; font-size:12px;">
+                <strong>⚠️ Important Consideration:</strong> Simulation is only as good as your assumptions ("Garbage
+                In, Garbage Out"). Verify your Mean/Sigma stability first.
+            </div>
+        </div>
+
+        <!-- ROLES -->
+        <div style="margin-top:30px; padding-top:20px; border-top:2px solid #555;">
+            <h3 style="color:#fff;">Strict Role Definitions</h3>
+            <ul style="font-size:12px; color:#aaa; list-style:none; padding:0;">
+                <li style="margin-bottom:8px;">👮 <strong>OEE Champion:</strong> Production Manager (Not Maintenance).
+                </li>
+                <li style="margin-bottom:8px;">👩‍🔬 <strong>MSA Administrator:</strong> Quality Engineer (Selects
+                    samples).</li>
+                <li style="margin-bottom:8px;">🧙‍♂️ <strong>Simulation Lead:</strong> Black Belt / Master Black Belt.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById('tab_' + id).style.display = 'block';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // TPM LOGIC
+        function calcOEE() {
+            const plan = parseFloat(document.getElementById('o_plan').value);
+            const down = parseFloat(document.getElementById('o_down').value);
+            const count = parseFloat(document.getElementById('o_prod').value);
+            const cycle = parseFloat(document.getElementById('o_cycle').value);
+            const reject = parseFloat(document.getElementById('o_reject').value);
+
+            if (!plan || plan <= 0) return;
+
+            // A
+            const runTime = plan - down;
+            const avail = Math.max(0, runTime / plan);
+
+            // P
+            const maxOutput = runTime / cycle; // theoretical max if running perfectly during run time
+            // Alternative P calc: (Total Count * Ideal Cycle) / Run Time
+            let perf = (count * cycle) / runTime;
+            if (runTime <= 0) perf = 0;
+            if (perf > 1) perf = 1.0; // Cap at 100% usually
+
+            // Q
+            const good = count - reject;
+            let qual = good / count;
+            if (count <= 0) qual = 0;
+
+            const oee = avail * perf * qual;
+
+            document.getElementById('res_avail').innerText = (avail * 100).toFixed(1) + '%';
+            document.getElementById('res_perf').innerText = (perf * 100).toFixed(1) + '%';
+            document.getElementById('res_qual').innerText = (qual * 100).toFixed(1) + '%';
+            document.getElementById('res_oee').innerText = (oee * 100).toFixed(1) + '%';
+
+            const ring = document.getElementById('ring_oee');
+            if (oee >= 0.85) ring.style.borderColor = '#2ecc71';
+            else if (oee >= 0.60) ring.style.borderColor = '#f1c40f';
+            else ring.style.borderColor = '#e74c3c';
+
+            // Interp
+            let msg = `<strong>Analysis:</strong> OEE is ${(oee * 100).toFixed(1)}%. `;
+            if (oee < 0.6) msg += "Process has significant losses (Stop/Speed/Defects). Focus on the 'Six Big Losses'.";
+            else if (oee >= 0.85) msg += "World Class performance.";
+            document.getElementById('oee_interp').innerHTML = msg;
+        }
+
+        // MSA LOGIC
+        function calcKappa() {
+            // Simplified Kappa for Binary (Pass/Fail) exact match
+            const n = parseFloat(document.getElementById('m_total').value);
+            const agree = parseFloat(document.getElementById('m_agreed').value);
+
+            if (n === 0) return;
+
+            // Observed Agreement (Po)
+            const po = agree / n;
+
+            // Chance Agreement (Pe) - Assuming 50/50 random chance for binary simplified
+            // Real kappa requires contingency table. This is a heuristic for the tool demo.
+            const pe = 0.5;
+
+            const kappa = (po - pe) / (1 - pe);
+            let kDisp = kappa.toFixed(2);
+            if (kappa < 0) kDisp = "0.00";
+
+            document.getElementById('res_kappa').innerText = kDisp;
+
+            const kInt = document.getElementById('kappa_interp');
+            if (parseFloat(kDisp) > 0.9) { kInt.innerText = "Excellent Agreement"; kInt.style.color = "#2ecc71"; }
+            else if (parseFloat(kDisp) > 0.7) { kInt.innerText = "Acceptable"; kInt.style.color = "#f1c40f"; }
+            else { kInt.innerText = "Poor Agreement (System Failure)"; kInt.style.color = "#e74c3c"; }
+        }
+
+        function calcBias() {
+            const ref = parseFloat(document.getElementById('b_ref').value);
+            const obs = parseFloat(document.getElementById('b_obs').value);
+            const bias = obs - ref;
+
+            document.getElementById('bias_result').style.display = 'block';
+            document.getElementById('bias_val').innerText = `Bias: ${bias > 0 ? '+' : ''}${bias.toFixed(3)}`;
+        }
+
+        // SIMULATION LOGIC
+        function runSim() {
+            const mu = parseFloat(document.getElementById('s_mu').value);
+            const sig = parseFloat(document.getElementById('s_sigma').value);
+            const n = parseInt(document.getElementById('s_n').value);
+            const usl = parseFloat(document.getElementById('s_usl').value);
+
+            let log = document.getElementById('sim_log');
+            log.innerHTML = `> Starting Simulation (N=${n})...<br>`;
+
+            let failures = 0;
+
+            for (let i = 0; i < n; i++) {
+                // Box Muller Transform for Normal Dist
+                const u1 = Math.random();
+                const u2 = Math.random();
+                const z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+                const val = mu + (z * sig);
+
+                if (val > usl) failures++;
+
+                // Log first 10
+                if (i < 5) log.innerHTML += `> Run ${i + 1}: ${val.toFixed(2)} ${val > usl ? '[FAIL]' : ''}<br>`;
+            }
+
+            log.innerHTML += `> ...<br>> Simulation Complete.<br>`;
+
+            const yieldVal = ((n - failures) / n) * 100;
+            const ppm = (failures / n) * 1000000;
+
+            document.getElementById('sim_yield').innerText = yieldVal.toFixed(2) + '%';
+            document.getElementById('sim_ppm').innerText = Math.round(ppm).toLocaleString();
+
+            if (failures > 0) log.innerHTML += `> <span style="color:#e74c3c">WARNING: ${failures} runs exceeded Spec Limit (${usl}).</span>`;
+            else log.innerHTML += `> <span style="color:#2ecc71">SUCCESS: Process is capable within N=${n}.</span>`;
+        }
+
+        // Init
+        calcOEE();
+    </script>
+</body>
+
+</html>

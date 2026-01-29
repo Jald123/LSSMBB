@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Registrar | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* MODERN SUITE LAYOUT */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 340px;
+            height: 100vh;
+            overflow: hidden;
+            background: #050505;
+        }
+
+        .sidebar-left {
+            background: #0a0a0a;
+            border-right: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .main-workspace {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .report-sidebar {
+            background: #0a0a0a;
+            border-left: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            color: #f59e0b;
+            font-family: 'Orbitron';
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* INFOGRAPHIC MODAL */
+        .info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.98);
+            display: none;
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .info-box-premium {
+            width: 95%;
+            max-width: 1000px;
+            background: #0f172a;
+            border-radius: 32px;
+            border: 2px solid #f59e0b;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(245, 158, 11, 0.2);
+        }
+
+        .info-header-pro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .info-title-pro {
+            font-family: 'Orbitron';
+            color: #f59e0b;
+            font-size: 28px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .info-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .info-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .info-tab-btn.active {
+            background: #f59e0b;
+            color: white;
+            border-color: #f59e0b;
+        }
+
+        .info-grid-pro {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-card-pro {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid #f59e0b;
+        }
+
+        .info-card-pro h4 {
+            color: #f59e0b;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin: 0 0 10px;
+        }
+
+        .info-card-pro p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .example-box {
+            grid-column: span 2;
+            background: rgba(245, 158, 11, 0.05);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            display: none;
+        }
+
+        .example-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .close-pro {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 30px;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-pro:hover {
+            color: white;
+        }
+
+        /* RISK TABLE */
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .risk-table th {
+            text-align: left;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .risk-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .premium-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: 'Inter';
+            padding: 8px;
+        }
+
+        .premium-input:focus {
+            background: rgba(255, 255, 255, 0.03);
+            outline: none;
+        }
+
+        .risk-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* PRINT STYLES FOR PDF EXPORT */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 20px;
+            }
+
+            .app-container {
+                display: block !important;
+                height: auto !important;
+                background: white !important;
+            }
+
+            .sidebar-left,
+            .report-sidebar,
+            .info-overlay,
+            #helpModal {
+                display: none !important;
+            }
+
+            .main-workspace {
+                padding: 0 !important;
+                overflow: visible !important;
+                width: 100% !important;
+            }
+
+            header {
+                margin-bottom: 20px !important;
+            }
+
+            header .btn {
+                display: none !important;
+            }
+
+            header h1 {
+                color: #1e293b !important;
+                font-size: 24px !important;
+                margin: 5px 0 !important;
+            }
+
+            header p {
+                color: #64748b !important;
+            }
+
+            .phase-glow {
+                background: #f59e0b !important;
+                color: white !important;
+                padding: 4px 12px !important;
+                border-radius: 4px !important;
+                font-size: 10px !important;
+            }
+
+            /* Print Header */
+            .print-header {
+                display: block !important;
+                text-align: center;
+                border-bottom: 3px solid #f59e0b;
+                padding-bottom: 15px;
+                margin-bottom: 20px;
+            }
+
+            .print-header h1 {
+                color: #0f172a !important;
+                font-size: 28px !important;
+                margin: 0 0 5px 0 !important;
+            }
+
+            .print-header .print-meta {
+                color: #64748b;
+                font-size: 12px;
+            }
+
+            /* Heatmap Print */
+            #riskHeatmap {
+                background: #f8fafc !important;
+                border: 2px solid #e2e8f0 !important;
+                padding: 15px !important;
+                margin-bottom: 20px !important;
+                page-break-inside: avoid;
+            }
+
+            #riskHeatmap h3 {
+                color: #0f172a !important;
+            }
+
+            .matrix-cell {
+                border: 1px solid #000 !important;
+            }
+
+            .cell-badge {
+                border: 1px solid #000 !important;
+            }
+
+            /* Table Print */
+            .card {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            .risk-table {
+                background: white !important;
+                border: 2px solid #334155 !important;
+            }
+
+            .risk-table th {
+                background: #1e293b !important;
+                color: white !important;
+                padding: 10px !important;
+                font-size: 10px !important;
+            }
+
+            .risk-table th .info-icon {
+                display: none !important;
+            }
+
+            .risk-table td {
+                padding: 8px !important;
+                border: 1px solid #cbd5e1 !important;
+                color: #0f172a !important;
+                font-size: 11px !important;
+            }
+
+            .premium-input {
+                color: #0f172a !important;
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            select.premium-input {
+                -webkit-appearance: none;
+                appearance: none;
+            }
+
+            .priority-badge {
+                border: 1px solid #000 !important;
+            }
+
+            .btn {
+                display: none !important;
+            }
+
+            /* Footer */
+            .print-footer {
+                display: block !important;
+                text-align: center;
+                margin-top: 30px;
+                padding-top: 15px;
+                border-top: 1px solid #e2e8f0;
+                font-size: 10px;
+                color: #94a3b8;
+            }
+        }
+
+        /* Hidden elements for print only */
+        .print-header,
+        .print-footer {
+            display: none;
+        }
+
+        /* HEATMAP 5x5 STYLES */
+        .matrix-cell {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: black;
+            position: relative;
+        }
+
+        .c-red {
+            background: #ef4444;
+            border: 1px solid #b91c1c;
+        }
+
+        .c-orange {
+            background: #f97316;
+            border: 1px solid #c2410c;
+        }
+
+        .c-yellow {
+            background: #facc15;
+            border: 1px solid #a16207;
+        }
+
+        .c-green {
+            background: #a3e635;
+            border: 1px solid #4d7c0f;
+        }
+
+        .cell-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: white;
+            color: black;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .info-icon {
+            margin-left: 5px;
+            color: #3b82f6;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .info-icon:hover {
+            color: #60a5fa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR LEFT -->
+        <div class="sidebar-left">
+            <div style="font-family:'Orbitron'; font-size:16px; color:#f59e0b; margin-bottom:30px; text-align:center;">
+                RISK CENTER</div>
+
+            <div class="card"
+                style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); padding:15px;">
+                <span class="sidebar-label">Global Risk Scenarios</span>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(0)">🏥 Patient Data Breach</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(1)">🏥 Medication Stockout</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(2)">🏥 ER Staff Burnout</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(3)">🏭 Single Source Failure</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(4)">💸 Scope Creep Risk</button>
+                </div>
+            </div>
+
+            <button class="btn btn-ghost" style="margin-top:auto;"
+                onclick="window.location.href='Tool_Improve_Control_Suite.html'"><i class="fas fa-arrow-left"></i>
+                Hub</button>
+        </div>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="main-workspace">
+            <!-- PRINT HEADER (Only visible in PDF) -->
+            <div class="print-header">
+                <h1>⚠️ RISK REGISTRAR REPORT</h1>
+                <div class="print-meta">
+                    <span id="printDate">Generated: --</span> |
+                    <span>Risk Officer: <strong id="printOfficer">--</strong></span> |
+                    <span>Total Risks: <strong id="printCount">0</strong></span> |
+                    <span>Avg. Priority: <strong id="printAvg">0</strong></span>
+                </div>
+            </div>
+            <header class="flex-between" style="margin-bottom:30px;">
+                <div>
+                    <span class="phase-glow"
+                        style="background:#f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);">DEFINE &
+                        CONTROL</span>
+                    <h1>Risk Registrar</h1>
+                    <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">Predicting failure modes and
+                        implementing strategic controls.</p>
+                </div>
+                <button class="btn" style="background:rgba(245,158,11,0.1); border:1px solid #f59e0b; color:#f59e0b;"
+                    onclick="openInfo()">
+                    <i class="fas fa-biohazard"></i> RISK STRATEGY
+                </button>
+            </header>
+
+            <!-- HELP MODAL -->
+            <div id="helpModal" class="info-overlay" style="z-index:6000;">
+                <div class="info-box-premium" style="max-width:500px; border-color:#10b981;">
+                    <span class="close-pro"
+                        onclick="document.getElementById('helpModal').style.display='none'">&times;</span>
+                    <h3 id="helpTitle" style="color:#10b981; font-family:'Orbitron'; margin-bottom:15px;"></h3>
+                    <p id="helpContent" style="color:#cbd5e1; font-size:14px; line-height:1.6;"></p>
+                </div>
+            </div>
+
+            <!-- HEATMAP 5x5 -->
+            <div id="riskHeatmap" class="card" style="padding:20px; margin-bottom:20px; background:rgba(0,0,0,0.3);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="color:#f59e0b; font-size:14px; text-transform:uppercase;">Risk Matrix (1-25)</h3>
+                    <div style="display:flex; gap:10px; font-size:10px; color:var(--text-secondary);">
+                        <span style="display:flex; align-items:center; gap:5px;">
+                            <div style="width:8px; height:8px; background:#ef4444; border-radius:50%;"></div> High
+                            (20-25)
+                        </span>
+                        <span style="display:flex; align-items:center; gap:5px;">
+                            <div style="width:8px; height:8px; background:#f59e0b; border-radius:50%;"></div> Med
+                            (10-19)
+                        </span>
+                        <span style="display:flex; align-items:center; gap:5px;">
+                            <div style="width:8px; height:8px; background:#facc15; border-radius:50%;"></div> Low (5-9)
+                        </span>
+                        <span style="display:flex; align-items:center; gap:5px;">
+                            <div style="width:8px; height:8px; background:#10b981; border-radius:50%;"></div> Minimal
+                            (1-4)
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 30px 1fr; gap:10px;">
+                    <!-- Y-Axis Label -->
+                    <div
+                        style="writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); text-align:center; color:var(--text-secondary); font-size:10px; letter-spacing:2px; font-weight:bold;">
+                        LIKELIHOOD</div>
+
+                    <!-- Matrix Grid 5x5 -->
+                    <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:4px;">
+                        <!-- Row 5 -->
+                        <div class="matrix-cell c-green" id="cell-5-1">5</div>
+                        <div class="matrix-cell c-yellow" id="cell-5-2">10</div>
+                        <div class="matrix-cell c-orange" id="cell-5-3">15</div>
+                        <div class="matrix-cell c-orange" id="cell-5-4">20</div>
+                        <div class="matrix-cell c-red" id="cell-5-5">25</div>
+                        <!-- Row 4 -->
+                        <div class="matrix-cell c-green" id="cell-4-1">4</div>
+                        <div class="matrix-cell c-yellow" id="cell-4-2">8</div>
+                        <div class="matrix-cell c-yellow" id="cell-4-3">12</div>
+                        <div class="matrix-cell c-orange" id="cell-4-4">16</div>
+                        <div class="matrix-cell c-orange" id="cell-4-5">20</div>
+                        <!-- Row 3 -->
+                        <div class="matrix-cell c-green" id="cell-3-1">3</div>
+                        <div class="matrix-cell c-green" id="cell-3-2">6</div>
+                        <div class="matrix-cell c-yellow" id="cell-3-3">9</div>
+                        <div class="matrix-cell c-yellow" id="cell-3-4">12</div>
+                        <div class="matrix-cell c-orange" id="cell-3-5">15</div>
+                        <!-- Row 2 -->
+                        <div class="matrix-cell c-green" id="cell-2-1">2</div>
+                        <div class="matrix-cell c-green" id="cell-2-2">4</div>
+                        <div class="matrix-cell c-green" id="cell-2-3">6</div>
+                        <div class="matrix-cell c-yellow" id="cell-2-4">8</div>
+                        <div class="matrix-cell c-yellow" id="cell-2-5">10</div>
+                        <!-- Row 1 -->
+                        <div class="matrix-cell c-green" id="cell-1-1">1</div>
+                        <div class="matrix-cell c-green" id="cell-1-2">2</div>
+                        <div class="matrix-cell c-green" id="cell-1-3">3</div>
+                        <div class="matrix-cell c-green" id="cell-1-4">4</div>
+                        <div class="matrix-cell c-green" id="cell-1-5">5</div>
+                    </div>
+                </div>
+                <!-- X-Axis Label -->
+                <div style="display:grid; grid-template-columns: 30px 1fr; gap:10px; margin-top:5px;">
+                    <div></div>
+                    <div
+                        style="display:grid; grid-template-columns: repeat(5, 1fr); text-align:center; font-size:10px; color:var(--text-secondary); font-weight:bold;">
+                        <div>1</div>
+                        <div>2</div>
+                        <div>3</div>
+                        <div>4</div>
+                        <div>5</div>
+                    </div>
+                </div>
+                <div
+                    style="text-align:center; font-size:10px; color:var(--text-secondary); letter-spacing:2px; font-weight:bold; margin-top:2px;">
+                    IMPACT</div>
+            </div>
+
+            <!-- RISK TABLE -->
+            <div class="card" style="padding:0;">
+                <table class="risk-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">Risk ID</th>
+                            <th width="25%">Risk Description <i class="fas fa-info-circle info-icon"
+                                    onclick="showHelp('desc')"></i></th>
+                            <th width="12%">Impact <i class="fas fa-info-circle info-icon"
+                                    onclick="showHelp('impact')"></i></th>
+                            <th width="12%">Likelihood <i class="fas fa-info-circle info-icon"
+                                    onclick="showHelp('lik')"></i></th>
+                            <th width="12%">Priority Level <i class="fas fa-info-circle info-icon"
+                                    onclick="showHelp('prio')"></i></th>
+                            <th width="34%">Mitigation Strategy <i class="fas fa-info-circle info-icon"
+                                    onclick="showHelp('mit')"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody id="riskBody">
+                        <!-- Rows injected here -->
+                    </tbody>
+                </table>
+                <button class="btn btn-ghost"
+                    style="width:100%; border:none; height:60px; color:#f59e0b; font-size:12px;" onclick="addEntry()">
+                    <i class="fas fa-plus"></i> ADD NEW RISK ENTRY
+                </button>
+            </div>
+
+            <!-- PRINT FOOTER (Only visible in PDF) -->
+            <div class="print-footer">
+                <p>Generated by <strong>Black Belt Studio - Risk Registrar</strong> | Lean Six Sigma Interactive
+                    Platform</p>
+                <p>This document is for internal review purposes only.</p>
+            </div>
+        </div>
+
+        <!-- REPORT SIDEBAR -->
+        <div class="report-sidebar">
+            <h2 class="sidebar-title">Risk Audit</h2>
+
+            <div class="input-group">
+                <span class="sidebar-label">Risk Officer:</span>
+                <input type="text" id="analystName" class="premium-input" placeholder="Enter name..."
+                    style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
+            </div>
+
+            <div class="card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);">
+                <span class="sidebar-label">Avg. Risk Priority</span>
+                <div id="avgScore" style="font-size:32px; font-weight:800; color:#f59e0b;">0</div>
+                <p style="font-size:10px; color:var(--text-secondary); margin-top:5px;">Target: < 10</p>
+            </div>
+
+            <div class="card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);">
+                <span class="sidebar-label">Critical Risks</span>
+                <div id="criticalCount" style="font-size:32px; font-weight:800; color:#ef4444;">0</div>
+                <p style="font-size:10px; color:var(--text-secondary); margin-top:5px;">Needs immediate executive
+                    mitigation.</p>
+            </div>
+
+            <div style="display:grid; gap:12px; margin-top:auto;">
+                <button class="btn btn-primary" style="background:#f59e0b;" onclick="saveRegistrar()"><i
+                        class="fas fa-save"></i> Save Registrar</button>
+                <button class="btn btn-ghost" onclick="exportPDF()"><i class="fas fa-print"></i> Export Risk
+                    PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INFO MODAL -->
+    <div id="infoModal" class="info-overlay">
+        <div class="info-box-premium">
+            <span class="close-pro" onclick="closeInfo()">&times;</span>
+            <div class="info-header-pro">
+                <div class="info-title-pro">Risk Strategy Insight</div>
+                <div class="info-tabs">
+                    <button class="info-tab-btn active" onclick="switchExample('general')">🍎 Global Principle</button>
+                    <button class="info-tab-btn" onclick="switchExample('healthcare')">🏥 Healthcare Context</button>
+                </div>
+            </div>
+            <div class="info-grid-pro">
+                <div class="info-card-pro">
+                    <h4>What is it?</h4>
+                    <p>A living document that provides a centralized repository for project risks.</p>
+                </div>
+                <div class="info-card-pro">
+                    <h4>Why use it?</h4>
+                    <p>To proactively identify potential failures before they occur.</p>
+                </div>
+                <div class="info-card-pro">
+                    <h4>When to add?</h4>
+                    <p>During the Analyze phase and monitored in Control.</p>
+                </div>
+                <div class="info-card-pro">
+                    <h4>Best Practice</h4>
+                    <p>Review weekly with the core stakeholder team.</p>
+                </div>
+                <div id="ex-general" class="example-box active">
+                    <h4 style="color:#f59e0b;">Example</h4>
+                    <p>Risk: Server crash. Impact 5, Likelihood 4 = Priority 20.</p>
+                </div>
+                <div id="content-healthcare" class="example-box">
+                    <h4 style="color:#f59e0b;">Healthcare</h4>
+                    <p>Risk: Med Error. Impact 5, Likelihood 3 = Priority 15.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        let entryCount = 0;
+
+        const helpData = {
+            'desc': { title: 'Risk Description', content: 'Clearly state the risk event and its cause. Best practice: Use the "IF... THEN..." format. <br><br><b>Example:</b> "IF the primary server fails, THEN patient data will be inaccessible."' },
+            'impact': { title: 'Impact Score (1-5)', content: '<b>1 (Negligible):</b> No effect.<br><b>2 (Minor):</b> Small inconvenience.<br><b>3 (Moderate):</b> Delay in project.<br><b>4 (Major):</b> Significant loss or injury.<br><b>5 (Catastrophic):</b> Project failure or fatality.' },
+            'lik': { title: 'Likelihood Score (1-5)', content: '<b>1 (Rare):</b> <10% chance.<br><b>2 (Unlikely):</b> 10-30% chance.<br><b>3 (Possible):</b> 30-60% chance.<br><b>4 (Likely):</b> 60-90% chance.<br><b>5 (Almost Certain):</b> >90% chance.' },
+            'prio': { title: 'Priority Level (RPN)', content: 'Calculated as <b>Impact × Likelihood</b>.<br><b>< 5:</b> Monitor.<br><b>5-12:</b> Manage.<br><b>15+:</b> IMMEDIATE ACTION REQUIRED.' },
+            'mit': { title: 'Mitigation Strategy', content: 'Actions to reduce risk.<br><b>Avoid:</b> Eliminate the cause.<br><b>Mitigate:</b> Reduce impact/likelihood.<br><b>Transfer:</b> Insurance/Outsource.<br><b>Accept:</b> Monitor only.' }
+        };
+
+        function showHelp(key) {
+            document.getElementById('helpTitle').innerText = helpData[key].title;
+            document.getElementById('helpContent').innerHTML = helpData[key].content;
+            document.getElementById('helpModal').style.display = 'flex';
+        }
+
+        function addEntry(desc = '', impact = 3, likelihood = 2, mit = '') {
+            entryCount++;
+            const tbody = document.getElementById('riskBody');
+            const tr = document.createElement('tr');
+            tr.id = `row-${entryCount}`;
+            tr.className = 'risk-row';
+            tr.innerHTML = `
+                <td style="font-family:'Orbitron'; color:#f59e0b;">R-${entryCount.toString().padStart(3, '0')}</td>
+                <td><input type="text" class="premium-input" placeholder="Describe risk..." value="${desc}"></td>
+                <td><select class="premium-input impact-sel" onchange="calcRow(${entryCount})">
+                    ${[1, 2, 3, 4, 5].map(n => `<option value="${n}" ${n == impact ? 'selected' : ''}>${n}</option>`).join('')}
+                </select></td>
+                <td><select class="premium-input lik-sel" onchange="calcRow(${entryCount})">
+                    ${[1, 2, 3, 4, 5].map(n => `<option value="${n}" ${n == likelihood ? 'selected' : ''}>${n}</option>`).join('')}
+                </select></td>
+                <td><div class="priority-badge" id="prio-${entryCount}" style="background:#334155; padding:5px; border-radius:4px; text-align:center; font-weight:bold;">0</div></td>
+                <td><input type="text" class="premium-input" placeholder="Mitigation plan..." value="${mit}"></td>
+            `;
+            tbody.appendChild(tr);
+            calcRow(entryCount);
+        }
+
+        function calcRow(id) {
+            const row = document.getElementById(`row-${id}`);
+            const im = parseInt(row.querySelector('.impact-sel').value);
+            const lik = parseInt(row.querySelector('.lik-sel').value);
+            const score = im * lik;
+
+            const badge = document.getElementById(`prio-${id}`);
+            badge.innerText = score;
+
+            // Color Logic Matches Heatmap
+            badge.style.color = 'black';
+            if (score >= 20) badge.style.background = '#ef4444'; // Red
+            else if (score >= 15) badge.style.background = '#f97316'; // Orange
+            else if (score >= 5) badge.style.background = '#facc15'; // Yellow
+            else badge.style.background = '#a3e635'; // Green
+
+            updateMetrics();
+        }
+
+        function updateMetrics() {
+            // Reset Heatmap Badges
+            document.querySelectorAll('.cell-badge').forEach(e => e.remove());
+
+            let totalScore = 0;
+            let count = 0;
+            let critical = 0;
+
+            const rows = document.querySelectorAll('.risk-row');
+            rows.forEach(row => {
+                const im = parseInt(row.querySelector('.impact-sel').value);
+                const lik = parseInt(row.querySelector('.lik-sel').value);
+                const score = im * lik;
+                totalScore += score;
+                count++;
+                if (score >= 15) critical++;
+
+                // Add badge to grid
+                const cellId = `cell-${lik}-${im}`; // Likelihood (Row), Impact (Col)
+                const cell = document.getElementById(cellId);
+
+                // Check if badge exists
+                if (cell) {
+                    let badge = cell.querySelector('.cell-badge');
+                    if (!badge) {
+                        badge = document.createElement('div');
+                        badge.className = 'cell-badge';
+                        badge.innerText = '0';
+                        cell.appendChild(badge);
+                    }
+                    badge.innerText = parseInt(badge.innerText) + 1;
+                }
+            });
+
+            const avg = count > 0 ? (totalScore / count).toFixed(1) : 0;
+            if (document.getElementById('avgScore')) document.getElementById('avgScore').innerText = avg;
+            if (document.getElementById('criticalCount')) document.getElementById('criticalCount').innerText = critical;
+        }
+
+        function openInfo() { document.getElementById('infoModal').style.display = 'flex'; }
+        function closeInfo() { document.getElementById('infoModal').style.display = 'none'; }
+        function switchExample(type) {
+            document.querySelectorAll('.info-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.example-box').forEach(e => e.classList.remove('active'));
+            event.target.classList.add('active');
+            if (type == 'healthcare') document.getElementById('content-healthcare').classList.add('active');
+            else document.getElementById('ex-general').classList.add('active');
+        }
+
+        const examples = [
+            [
+                { desc: "Phishing attack compromising Admin credentials", impact: 5, likelihood: 4, mit: "MFA enforcement + Quarterly Simulation Training" },
+                { desc: "Unencrypted laptop theft containing PII", impact: 5, likelihood: 2, mit: "Full disk encryption policy (BitLocker)" },
+                { desc: "Insider threat accessing unauthorized records", impact: 3, likelihood: 1, mit: "Role-based access controls (RBAC) audit" }
+            ],
+            [
+                { desc: "Global outage of primary API gateway", impact: 5, likelihood: 2, mit: "Multi-region failover configuration" },
+                { desc: "Memory leak causing slow degradation", impact: 3, likelihood: 4, mit: "Automated container restart thresholds" },
+                { desc: "DDoS attack overwhelming firewall", impact: 3, likelihood: 3, mit: "Cloudflare enterprise protection + Rate limiting" }
+            ],
+            [
+                { desc: "Senior Nurse fatigue threatening safety", impact: 5, likelihood: 4, mit: "Mandatory break enforcement + 12hr cap" },
+                { desc: "Strike action by support staff", impact: 5, likelihood: 3, mit: "Contingency staffing agency retainer" },
+                { desc: "Skill gap in operating new triage software", impact: 3, likelihood: 4, mit: "Weekly hands-on workshop sessions" }
+            ],
+            [
+                { desc: "Primary chassis supplier bankruptcy", impact: 5, likelihood: 3, mit: "Qualify secondary vendor in Vietnam" },
+                { desc: "Shipping route blockage (Suez)", impact: 3, likelihood: 2, mit: "Maintain 3-month safety stock buffer" },
+                { desc: "Quality recall of raw aluminum batch", impact: 3, likelihood: 3, mit: "Incoming QA spectroscopy inspection" }
+            ],
+            [
+                { desc: "Stakeholder adding out-of-scope features", impact: 3, likelihood: 4, mit: "Strict Change Control Board (CCB) approval" },
+                { desc: "Budget exhaustion before QA phase", impact: 5, likelihood: 3, mit: "Weekly burn-rate tracking dashboard" },
+                { desc: "Key developer poached by competitor", impact: 4, likelihood: 2, mit: "Retention equity vesting schedule" }
+            ]
+        ];
+
+        function loadExample(idx) {
+            const scenario = examples[idx];
+            document.getElementById('riskBody').innerHTML = '';
+            entryCount = 0;
+            // Clear heatmap badges
+            document.querySelectorAll('.cell-badge').forEach(e => e.remove());
+
+            scenario.forEach(ex => {
+                addEntry(ex.desc, ex.impact, ex.likelihood, ex.mit);
+            });
+        }
+
+        window.onload = () => {
+            loadExample(0);
+        };
+
+        function saveRegistrar() {
+            alert('Risk Registrar Saved Successfully!');
+        }
+
+        function exportPDF() {
+            // Populate print header metadata
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            document.getElementById('printDate').innerText = 'Generated: ' + dateStr;
+
+            const officer = document.getElementById('analystName').value || 'Not Specified';
+            document.getElementById('printOfficer').innerText = officer;
+
+            const riskCount = document.querySelectorAll('.risk-row').length;
+            document.getElementById('printCount').innerText = riskCount;
+
+            const avgScore = document.getElementById('avgScore').innerText;
+            document.getElementById('printAvg').innerText = avgScore;
+
+            // Trigger print dialog
+            window.print();
+        }
+    </script>
+</body>
+
+</html>

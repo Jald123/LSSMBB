@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitive Benchmarking | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* PRINT LAYOUT */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 0.5cm;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .container,
+            .lss-guide-btn,
+            .sticky-export,
+            .btn,
+            input,
+            button,
+            select {
+                display: none !important;
+            }
+
+            #print-report-container {
+                display: block !important;
+                width: 100%;
+                height: 100%;
+            }
+
+            .print-hidden {
+                display: none !important;
+            }
+        }
+
+        #print-report-container {
+            display: none;
+            background: white;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .print-header {
+            border-bottom: 2px solid #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .print-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .print-meta {
+            text-align: right;
+            font-size: 10px;
+            color: #7f8c8d;
+        }
+
+        .print-section {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 5px;
+            page-break-inside: avoid;
+        }
+
+        .print-sec-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #e67e22;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .print-table th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #ddd;
+            padding: 5px;
+            text-align: left;
+        }
+
+        .print-table td {
+            border-bottom: 1px solid #eee;
+            padding: 5px;
+        }
+
+        /* PROGRESS BAR */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.5s ease;
+        }
+
+        .scenario-select {
+            width: 100%;
+            padding: 8px;
+            background: #1e293b;
+            color: white;
+            border: 1px solid #3b82f6;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        /* Report Section Styles */
+        .report-box {
+            background: linear-gradient(135deg, #1e3a5f, #0f172a);
+            border: 1px solid #334155;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: white;
+        }
+    </style>
+    <style>
+        /* LSSMBB GOLD STANDARD PREMIUM STYLES */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(255, 107, 53, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 5px rgba(255, 107, 53, 0.2);
+            }
+        }
+
+        .lss-intro-box {
+            background: linear-gradient(135deg, rgba(20, 20, 40, 0.95) 0%, rgba(30, 30, 60, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 5px solid var(--accent);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.8s ease-out;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .lss-intro-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .lss-intro-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .belt-badge-premium {
+            background: linear-gradient(45deg, #111, #333);
+            color: #ffd700;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.15);
+        }
+
+        .lss-intro-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #e0e0e0;
+            font-weight: 300;
+            padding-left: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lss-power-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 13px;
+            padding: 14px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-top: 25px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .lss-power-btn:hover {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .lss-power-content {
+            display: none;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #ddd;
+            border-left: 3px solid var(--accent);
+            animation: fadeInUp 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .lss-guide-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #FF6B35, #FCA311);
+            color: #000;
+            font-weight: 800;
+            padding: 16px 32px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+            cursor: pointer;
+            z-index: 999;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .lss-guide-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7);
+            background: linear-gradient(135deg, #ff8c61, #ffb74d);
+        }
+
+        /* Modal for Guide */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .guide-section-title {
+            color: var(--accent);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* TOOL SPECIFIC */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .data-table td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid #444;
+            color: white;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .score-input {
+            width: 60px !important;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" style="max-width: 1400px;">
+
+        <div class="grid-measure">
+            <div class="guide-column">
+                <!-- GUIDE SECTION -->
+                <div class="explainer-section"
+                    style="background:#0f172a; padding:20px; border-radius:12px; margin-bottom:30px; border:1px solid #1e293b; color:white; font-family:'Inter', sans-serif;">
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+                        <div>
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                                <h1 style="margin:0; font-family:'Orbitron',sans-serif; font-size:24px; color:white;">
+                                    Competitive Benchmarking</h1>
+                                <span
+                                    style="background:#2563eb; color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:bold;">ANALYZE</span>
+                            </div>
+                            <div style="color:#94a3b8; font-style:italic; font-size:14px;">"If you know the enemy and
+                                know
+                                yourself, you need not fear the result of a hundred battles."</div>
+                        </div>
+                        <button onclick="window.print()" class="sticky-export">📷 Export PNG / Print</button>
+                    </div>
+                    <div
+                        style="background:#1e293b; padding:15px; border-radius:8px; margin-bottom:15px; border-left:4px solid #3b82f6;">
+                        <h4 style="margin:0 0 5px 0; color:#60a5fa; font-size:11px; text-transform:uppercase;">📜 Origin
+                            & Power
+                        </h4>
+                        <p style="margin:0; font-size:12px; color:#cbd5e1; line-height:1.5;">Popularized by Xerox in the
+                            1970s
+                            when they realized Japanese competitors were selling copiers for less than Xerox's
+                            production cost.
+                            By dismantling/reverse-engineering these machines, they identified massive efficiency gaps.
+                            Benchmarking forces orgs to look outward and prevents the "Not Invented Here" syndrome.</p>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:15px;">
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">🤔
+                                What is
+                                it?</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;">A continuous process of comparing your
+                                products,
+                                services, and practices against the toughest competitors or industry leaders.</p>
+                        </div>
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">💡
+                                Why use
+                                it?</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;">To identify performance gaps, set
+                                realistic
+                                "stretch" goals, and adopt superior practices without reinventing the wheel.</p>
+                        </div>
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">🕒
+                                When to
+                                use?</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;">During Define (Goal Setting), Measure
+                                (Baselining), or Improve (Seeking Solutions) phases.</p>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:15px;">
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">📏
+                                The
+                                Standard</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;">3 Types: Internal (Dept vs Dept),
+                                Competitive
+                                (Direct Rivals), Functional (Best-in-Class Process across industries).</p>
+                        </div>
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">👓
+                                Interpretation</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;">The <b>"Gap"</b> indicates improvement
+                                potential. Negative Gap = You are behind. Positive Gap = You are leading.</p>
+                        </div>
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">📊
+                                Reference
+                                Values</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;">Top Quartile (Top 25%), Decile (Top
+                                10%), or
+                                Best in Class (Top 1-5%). Aim for Best in Class.</p>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 2fr; gap:15px;">
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 10px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">📋
+                                Pre-Requirements</h4>
+                            <p style="margin:0 0 15px 0; font-size:12px; color:#cbd5e1;">Deep understanding of OWN
+                                process
+                                (Baseline). Metric definition alignment (Apples-to-Apples).</p>
+                            <h4 style="margin:0 0 10px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">👮
+                                Strict
+                                Roles</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;"><b>Project Lead:</b> Drives the
+                                study.<br><b>Benchmarking Partner:</b> Provides external data.<br><b>Legal:</b> Ensures
+                                Antitrust compliance.</p>
+                        </div>
+                        <div
+                            style="background:#1e293b; padding:20px; border-radius:12px; border:1px solid #334155; grid-column: 1 / -1;">
+                            <h3
+                                style="margin: 0 0 20px 0; font-family:'Orbitron'; font-size:16px; color:#60a5fa; display:flex; align-items:center; gap:10px;">
+                                <i class="fas fa-route"></i> Benchmarking Deployment Roadmap
+                            </h3>
+                            <div style="display:grid; grid-template-columns: repeat(6, 1fr); gap:10px;">
+                                <div class="step-unit"
+                                    style="background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; text-align:center; position:relative; border-top: 3px solid #3b82f6;">
+                                    <div style="font-size:20px; margin-bottom:10px;">🎯</div>
+                                    <div style="font-weight:bold; font-size:11px; color:white;">1. IDENTIFY</div>
+                                    <p style="font-size:9px; color:#94a3b8; margin-top:5px; line-height:1.4;">Define
+                                        CTQs & Scope</p>
+                                </div>
+                                <div class="step-unit"
+                                    style="background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; text-align:center; position:relative; border-top: 3px solid #8b5cf6;">
+                                    <div style="font-size:20px; margin-bottom:10px;">🤝</div>
+                                    <div style="font-weight:bold; font-size:11px; color:white;">2. PARTNER</div>
+                                    <p style="font-size:9px; color:#94a3b8; margin-top:5px; line-height:1.4;">Select
+                                        Targets</p>
+                                </div>
+                                <div class="step-unit"
+                                    style="background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; text-align:center; position:relative; border-top: 3px solid #10b981;">
+                                    <div style="font-size:20px; margin-bottom:10px;">📡</div>
+                                    <div style="font-weight:bold; font-size:11px; color:white;">3. COLLECT</div>
+                                    <p style="font-size:9px; color:#94a3b8; margin-top:5px; line-height:1.4;">Gather
+                                        Intel</p>
+                                </div>
+                                <div class="step-unit"
+                                    style="background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; text-align:center; position:relative; border-top: 3px solid #f59e0b;">
+                                    <div style="font-size:20px; margin-bottom:10px;">⚖️</div>
+                                    <div style="font-weight:bold; font-size:11px; color:white;">4. ANALYZE</div>
+                                    <p style="font-size:9px; color:#94a3b8; margin-top:5px; line-height:1.4;">Find the
+                                        Gap</p>
+                                </div>
+                                <div class="step-unit"
+                                    style="background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; text-align:center; position:relative; border-top: 3px solid #ec4899;">
+                                    <div style="font-size:20px; margin-bottom:10px;">🧪</div>
+                                    <div style="font-weight:bold; font-size:11px; color:white;">5. ADAPT</div>
+                                    <p style="font-size:9px; color:#94a3b8; margin-top:5px; line-height:1.4;">Process
+                                        Fit</p>
+                                </div>
+                                <div class="step-unit"
+                                    style="background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; text-align:center; position:relative; border-top: 3px solid #ef4444;">
+                                    <div style="font-size:20px; margin-bottom:10px;">🚀</div>
+                                    <div style="font-weight:bold; font-size:11px; color:white;">6. APPLY</div>
+                                    <p style="font-size:9px; color:#94a3b8; margin-top:5px; line-height:1.4;">Execute
+                                        Change</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Close guide-column -->
+
+            <div class="tool-column">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+
+                    <!-- INPUT CARD -->
+                    <div class="card">
+                        <div class="flex-between">
+                            <h3>📊 Data Entry</h3>
+                            <button class="btn btn-sm" onclick="addMetric()">+ Add Metric</button>
+                        </div>
+                        <p style="font-size:12px; color:#aaa; margin-bottom:5px;">Score from 1 (Worst) to 10 (Best in
+                            Class).
+                        </p>
+
+                        <select class="scenario-select" onchange="loadScenario(this.value)">
+                            <option value="">-- Load Example Scenario --</option>
+                            <optgroup label="Healthcare Scenarios">
+                                <option value="hc_er">🏥 ER Services (Wait Times & Triage)</option>
+                                <option value="hc_patient">🛌 Inpatient Care (Safety & Hygiene)</option>
+                                <option value="hc_tele">📱 Telehealth App (UX & Speed)</option>
+                            </optgroup>
+                            <optgroup label="General Industry">
+                                <option value="gen_coffee">☕ Coffee Shop Chain (Taste & Speed)</option>
+                                <option value="gen_saas">💻 SaaS Platform (Features & Support)</option>
+                            </optgroup>
+                        </select>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Attribute (Critical To Quality)</th>
+                                    <th>Us (Current)</th>
+                                    <th>Competitor A</th>
+                                    <th>Competitor B</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="metricsBody">
+                                <!-- JS Dynamic Rows -->
+                            </tbody>
+                        </table>
+
+                        <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="updateChart()">🔄
+                            Update
+                            Radar Chart</button>
+                    </div>
+
+                    <!-- VISUALIZATION CARD -->
+                    <div class="card"
+                        style="display:flex; flex-direction:column; align-items:center; justify-content:center; background: #fff; color:#333;">
+                        <h3 style="color:#333; align-self:flex-start;">Radar Visualization</h3>
+                        <div style="position: relative; height:400px; width:100%;">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                        <div id="gapAnalysis" onclick="showRadarGuide()"
+                            style="width:100%; margin-top:20px; padding:15px; background:#f8f9fa; border-radius:8px; font-size:13px; border-left:4px solid #e74c3c; cursor:pointer; transition: 0.3s;"
+                            onmouseover="this.style.background='#f1f5f9'; this.style.transform='scale(1.02)';"
+                            onmouseout="this.style.background='#f8f9fa'; this.style.transform='scale(1)';">
+                            <!-- Analysis -->
+                        </div>
+                        <span style="font-size:10px; color:#94a3b8; margin-top:5px; font-style:italic;">⚡ Click alert
+                            for Visual Interpretation Guide</span>
+                    </div>
+
+                    <!-- REPORT & EXPORT SECTION -->
+                    <div class="card report-box" style="grid-column: 1 / -1;">
+                        <h3 style="margin-top:0; color:#60a5fa;">📑 Report & Export</h3>
+
+                        <div style="display: flex; gap: 20px; align-items: flex-end;">
+                            <div style="flex: 1;">
+                                <label
+                                    style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 5px;">Analyst
+                                    / Created By:</label>
+                                <input type="text" id="analystName" placeholder="Enter your name..."
+                                    oninput="updateProgress()"
+                                    style="width: 100%; padding: 10px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: white; font-size: 13px;">
+                            </div>
+                            <div style="flex: 1;">
+                                <div
+                                    style="display:flex; justify-content:space-between; font-size:11px; color:#94a3b8; margin-bottom:5px;">
+                                    <span>Analysis Progress</span>
+                                    <span id="progressText">0% Complete</span>
+                                </div>
+                                <div class="progress-container">
+                                    <div class="progress-bar" id="progressBar"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="btn" style="flex: 1; background: #ea580c; border:none; color:white;"
+                                onclick="saveEvaluate()">💾 Save & Evaluate</button>
+                            <button class="btn"
+                                style="flex: 1; background: #334155; border:1px solid #475569; color:white;"
+                                onclick="printReport()">🖨️ Print PDF</button>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Close tool-column -->
+        </div> <!-- Close grid-measure -->
+
+        <!-- GUIDE BUTTON & MODAL -->
+        <button class="lss-guide-btn" onclick="showGuide()"><i>💡</i> MBB PRO TIPS</button>
+
+        <div class="modal-overlay" id="guideModal" style="z-index: 10001; display: none; backdrop-filter: blur(10px);">
+            <div class="modal-box"
+                style="max-width: 900px; width: 95%; background: #0f172a; border: 2px solid #8b5cf6; border-radius: 24px; padding: 40px; color: #f8fafc;">
+                <span class="close-btn" onclick="document.getElementById('guideModal').style.display='none'"
+                    style="font-size: 32px; color: #8b5cf6; position: absolute; top: 20px; right: 25px; cursor: pointer;">&times;</span>
+
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div
+                        style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); display: inline-block; padding: 6px 16px; border-radius: 40px; font-family: 'Orbitron'; font-size: 10px; letter-spacing: 2px; color: #a78bfa; margin-bottom: 15px;">
+                        STRATEGIC AUDIT UNIT</div>
+                    <h2
+                        style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 32px; margin: 0; background: linear-gradient(135deg, #fff, #a78bfa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                        Master Black Belt Guide 🥋</h2>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div
+                        style="background: rgba(30, 41, 59, 0.5); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h4
+                            style="color: #8b5cf6; margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-binoculars"></i> Strategic Types
+                        </h4>
+                        <ul style="font-size: 13px; line-height: 1.8; color: #cbd5e1; padding-left: 15px;">
+                            <li><b>Competitive:</b> Comparison with direct market rivals (e.g., Ford vs. Toyota).</li>
+                            <li><b>Functional:</b> Best-in-class processes outside your sector (e.g., ER Triage vs. F1
+                                Pit Stop).</li>
+                            <li><b>Internal:</b> Best-performing vs. average unit within your own org.</li>
+                        </ul>
+                    </div>
+
+                    <div
+                        style="background: rgba(239, 68, 68, 0.05); padding: 25px; border-radius: 20px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                        <h4
+                            style="color: #ef4444; margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-exclamation-triangle"></i> The Copycat Trap
+                        </h4>
+                        <p style="font-size: 13px; line-height: 1.6; color: #cbd5e1;">Benchmarking to merely "catch up"
+                            ensures you stay #2. The goal of a Black Belt is to discover the <b>Performance Gap</b>,
+                            then use <b>Innovation</b> to leapfrog the leader.</p>
+                    </div>
+
+                    <div
+                        style="background: rgba(16, 185, 129, 0.05); padding: 25px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.2); grid-column: span 2;">
+                        <h4
+                            style="color: #10b981; margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-chart-line"></i> Radar Interpretation
+                        </h4>
+                        <p style="font-size: 13px; line-height: 1.6; color: #cbd5e1;">Analyze the <b>Performance
+                                Envelope</b>. If a competitor's shape fully contains yours, you suffer from systemic
+                            inefficiency. Overlapping regions indicate specific niche strengths you should exploit as
+                            USPs (Unique Selling Propositions).</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button onclick="document.getElementById('guideModal').style.display='none'"
+                        style="background: #8b5cf6; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s;">CLOSE
+                        ACADEMY</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RADAR INTERPRETATION MODAL -->
+    <div class="modal-overlay" id="radarInfoModal" style="z-index: 10002; display: none; backdrop-filter: blur(15px);">
+        <div class="modal-box"
+            style="max-width: 800px; background: #0f172a; border: 2px solid #3b82f6; border-radius: 20px; padding: 35px; color: #f8fafc; position: relative;">
+            <span class="close-btn" onclick="document.getElementById('radarInfoModal').style.display='none'"
+                style="font-size: 32px; color: #3b82f6; position: absolute; top: 15px; right: 20px; cursor: pointer;">&times;</span>
+
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px;">
+                <div
+                    style="width:50px; height:50px; background:rgba(59, 130, 246, 0.2); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px;">
+                    📊</div>
+                <div>
+                    <h2 style="font-family:'Orbitron'; margin:0; font-size:20px; color:#3b82f6;">Radar Intelligence
+                        Guide</h2>
+                    <p style="margin:0; font-size:12px; color:#94a3b8;">How to audit the Competitive Envelope</p>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:15px;">
+                    <h4 style="color:#3b82f6; margin-top:0;"><i class="fas fa-layer-group"></i> 1. The Envelope</h4>
+                    <p style="font-size:13px; line-height:1.6; color:#cbd5e1;">The <b>Total Blue Area</b> is your
+                        organizational volume. A larger area means you have a balanced, high-performing system. If your
+                        shape is very thin or "spiky", you have critical inconsistencies.</p>
+                </div>
+                <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:15px;">
+                    <h4 style="color:#ef4444; margin-top:0;"><i class="fas fa-arrows-alt-h"></i> 2. The Gap</h4>
+                    <p style="font-size:13px; line-height:1.6; color:#cbd5e1;">The whitespace between the <b>Blue
+                            Edge</b> and the <b>Red Edge</b> is your "Deficit Zone". This represents lost market share
+                        or operational failure that your competitors are currently winning.</p>
+                </div>
+                <div
+                    style="background:rgba(255,255,255,0.03); padding:20px; border-radius:15px; grid-column: span 2; border-left: 4px solid #10b981;">
+                    <h4 style="color:#10b981; margin-top:0;"><i class="fas fa-bullseye"></i> 3. Strategic Focus (Axis
+                        Dominance)</h4>
+                    <p style="font-size:13px; line-height:1.6; color:#cbd5e1;">Identify which <b>Axis</b> causes the
+                        shape to pull inward. This is your bottleneck. In DMAIC, we don't try to grow the whole shape;
+                        we push the specific axis that is creating the largest competitive gap.</p>
+                </div>
+            </div>
+
+            <div
+                style="margin-top:25px; padding:15px; background:rgba(59, 130, 246, 0.1); border-radius:10px; font-size:12px; color:#94a3b8; font-style:italic; text-align:center;">
+                "A perfect octagon at score 10 is the theoretical goal; real-world success is defined by surrounding
+                your opponent's shape."
+            </div>
+        </div>
+    </div>
+
+    <!-- HIDDEN PRINT REPORT -->
+    <div id="print-report-container">
+        <div class="print-header">
+            <div class="print-title">📊 Competitive Benchmarking Report</div>
+            <div class="print-meta">
+                Generated: <span id="printDate"></span><br>
+                Analyst: <span id="printAnalyst"></span>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="print-section">
+                <div class="print-sec-title">Radar Visualization</div>
+                <img id="printChartImg" style="width: 100%; max-height: 300px; object-fit: contain;">
+            </div>
+
+            <div class="print-section">
+                <div class="print-sec-title">Analysis Metrics</div>
+                <table class="print-table">
+                    <thead>
+                        <tr>
+                            <th>Attribute</th>
+                            <th>Us</th>
+                            <th>Comp A</th>
+                            <th>Comp B</th>
+                        </tr>
+                    </thead>
+                    <tbody id="printMetricsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="print-section">
+            <div class="print-sec-title">Gap Analysis & Strategy</div>
+            <div id="printGapAnalysis" style="font-size: 12px; line-height: 1.5; color: #333;"></div>
+        </div>
+
+        <div class="print-section" style="background: #fdf2f8; border-color: #fce7f3;">
+            <div class="print-sec-title" style="color: #be185d;">Professional Recommendation</div>
+            <div style="font-size: 12px; color: #333;">
+                Based on the radar analysis, the organization should focus strictly on the attributes where the gap
+                exceeds 2 points.
+                For areas where "Us" leads, consider marketing these as Unique Selling Propositions (USPs).
+                <br><br>
+                <strong>Next Steps:</strong>
+                <ul>
+                    <li>Initiate Root Cause Analysis (Fishbone) for largest gap.</li>
+                    <li>Conduct "Gemba Walk" at competitor sites (if possible/legal) or acquire their product for
+                        tear-down.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="text-align: center; font-size: 10px; color: #999; margin-top: 20px;">
+            Lean Six Sigma Interactive Platform | Confidential Internal Document
+        </div>
+    </div>
+
+    <script>
+        let metrics = [
+            { name: "Speed (Delivery Time)", us: 6, compA: 8, compB: 4 },
+            { name: "Cost Efficiency", us: 5, compA: 7, compB: 6 },
+            { name: "Quality (Defects)", us: 8, compA: 9, compB: 5 },
+            { name: "Customer Service", us: 7, compA: 6, compB: 8 },
+            { name: "Innovation", us: 4, compA: 8, compB: 3 }
+        ];
+
+        // SCENARIOS
+        const scenarios = {
+            hc_er: [
+                { name: "Triage Speed", us: 4, compA: 9, compB: 7 },
+                { name: "Nurse Compassion", us: 8, compA: 6, compB: 7 },
+                { name: "Cleanliness", us: 9, compA: 8, compB: 5 },
+                { name: "Tech Integration", us: 5, compA: 9, compB: 6 },
+                { name: "Discharge Time", us: 3, compA: 8, compB: 7 }
+            ],
+            hc_patient: [
+                { name: "Fall Prevention", us: 9, compA: 7, compB: 6 },
+                { name: "Food Quality", us: 4, compA: 8, compB: 7 },
+                { name: "Room Quietness", us: 5, compA: 8, compB: 5 },
+                { name: "Doctor Time", us: 6, compA: 8, compB: 8 },
+                { name: "Billing Clarity", us: 3, compA: 7, compB: 5 }
+            ],
+            hc_tele: [
+                { name: "App Ease of Use", us: 8, compA: 6, compB: 9 },
+                { name: "Video Stability", us: 7, compA: 8, compB: 8 },
+                { name: "Rx Turnaround", us: 9, compA: 5, compB: 6 },
+                { name: "Data Security", us: 10, compA: 9, compB: 8 },
+                { name: "Support Wait", us: 6, compA: 4, compB: 7 }
+            ],
+            gen_coffee: [
+                { name: "Bean Freshness", us: 9, compA: 6, compB: 7 },
+                { name: "Brew Speed", us: 5, compA: 10, compB: 8 },
+                { name: "Store Ambiance", us: 8, compA: 5, compB: 9 },
+                { name: "Price Value", us: 4, compA: 8, compB: 6 },
+                { name: "App Loyalty", us: 3, compA: 9, compB: 2 }
+            ],
+            gen_saas: [
+                { name: "Uptime SLA", us: 10, compA: 9, compB: 8 },
+                { name: "API Documentation", us: 5, compA: 9, compB: 7 },
+                { name: "Customer Support", us: 8, compA: 4, compB: 6 },
+                { name: "Feature Set", us: 6, compA: 10, compB: 8 },
+                { name: "Integrations", us: 4, compA: 8, compB: 5 }
+            ]
+        };
+
+        let chartInstance = null;
+
+        function init() {
+            renderTable();
+            initChart();
+            updateProgress();
+        }
+
+        function loadScenario(key) {
+            if (!key || !scenarios[key]) return;
+            // Deep copy to avoid mutating original
+            metrics = JSON.parse(JSON.stringify(scenarios[key]));
+            renderTable();
+            updateChart();
+            updateProgress();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('metricsBody');
+            tbody.innerHTML = '';
+            metrics.forEach((m, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" value="${m.name}" onchange="updateMetric(${i}, 'name', this.value)"></td>
+                    <td><input type="number" class="score-input" value="${m.us}" min="1" max="10" onchange="updateMetric(${i}, 'us', this.value)"></td>
+                    <td><input type="number" class="score-input" value="${m.compA}" min="1" max="10" onchange="updateMetric(${i}, 'compA', this.value)"></td>
+                    <td><input type="number" class="score-input" value="${m.compB}" min="1" max="10" onchange="updateMetric(${i}, 'compB', this.value)"></td>
+                    <td><button onclick="removeMetric(${i})" style="background:none; border:none; color:#e74c3c; cursor:pointer;">&times;</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addMetric() {
+            metrics.push({ name: "New Attribute", us: 5, compA: 5, compB: 5 });
+            renderTable();
+            updateProgress();
+        }
+
+        function removeMetric(i) {
+            metrics.splice(i, 1);
+            renderTable();
+            updateChart();
+            updateProgress();
+        }
+
+        function updateMetric(i, field, val) {
+            if (field !== 'name') val = parseInt(val);
+            metrics[i][field] = val;
+            if (field != 'name') {
+                // Defer chart update slightly for performance if needed, but here direct is fine
+                updateChart();
+            }
+            updateProgress();
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: getChartData(),
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#bbb' },
+                            grid: { color: '#ccc' },
+                            pointLabels: {
+                                font: { size: 12, weight: 'bold' },
+                                color: '#333'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, color: '#333' } }
+                    }
+                }
+            });
+            analyzeGap();
+        }
+
+        function updateChart() {
+            if (chartInstance) {
+                chartInstance.data = getChartData();
+                chartInstance.update();
+            }
+            analyzeGap();
+        }
+
+        function getChartData() {
+            return {
+                labels: metrics.map(m => m.name),
+                datasets: [
+                    {
+                        label: 'Us (Current)',
+                        data: metrics.map(m => m.us),
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        pointBackgroundColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Competitor A',
+                        data: metrics.map(m => m.compA),
+                        backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        pointBackgroundColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Competitor B',
+                        data: metrics.map(m => m.compB),
+                        backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        pointBackgroundColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 2
+                    }
+                ]
+            };
+        }
+
+        function analyzeGap() {
+            let biggestGap = 0;
+            let biggestGapName = "";
+            let winner = "";
+
+            metrics.forEach(m => {
+                const bestComp = Math.max(m.compA, m.compB);
+                const gap = bestComp - m.us;
+                if (gap > biggestGap) {
+                    biggestGap = gap;
+                    biggestGapName = m.name;
+                    winner = m.compA > m.compB ? "Competitor A" : "Competitor B";
+                }
+            });
+
+            const div = document.getElementById('gapAnalysis');
+            if (biggestGap > 0) {
+                div.innerHTML = `<strong>🚨 Critical Gap Alert:</strong> Largest deficit is in <strong>${biggestGapName}</strong>. You are trailing <strong>${winner}</strong> by ${biggestGap} points. Prioritize this for the Improve Phase.`;
+                div.style.borderLeftColor = "#e74c3c";
+            } else {
+                div.innerHTML = `<strong>✅ Market Leader:</strong> You are currently matching or beating competitors in all tracked metrics. Consider "Blue Ocean" attributes to innovate further.`;
+                div.style.borderLeftColor = "#2ecc71";
+            }
+            return div.innerHTML; // For print report
+        }
+
+        function showRadarGuide() {
+            document.getElementById('radarInfoModal').style.display = 'flex';
+        }
+
+        // --- REPORT & EXPORT LOGIC ---
+        function updateProgress() {
+            let score = 0;
+            let maxScore = 3;
+
+            // 1. Metrics Defined
+            if (metrics.length >= 3) score++;
+
+            // 2. Data Entered (non-zero)
+            const hasData = metrics.every(m => m.us > 0 && m.compA > 0);
+            if (hasData) score++;
+
+            // 3. Analyst Identified
+            const name = document.getElementById('analystName').value;
+            if (name.length > 2) score++;
+
+            const pct = Math.round((score / maxScore) * 100);
+            document.getElementById('progressBar').style.width = pct + "%";
+            document.getElementById('progressText').innerText = pct + "% Complete";
+        }
+
+        function saveEvaluate() {
+            updateProgress();
+            const pct = document.getElementById('progressText').innerText;
+            alert(`💾 Evaluation Saved!\nProgress: ${pct}\n\nMetrics have been stored locally.`);
+        }
+
+        function printReport() {
+            // Populate Print Section
+            document.getElementById('printDate').innerText = new Date().toLocaleString();
+            document.getElementById('printAnalyst').innerText = document.getElementById('analystName').value || "Unknown Analyst";
+
+            // Image
+            const canvas = document.getElementById('radarChart');
+            document.getElementById('printChartImg').src = canvas.toDataURL("image/png");
+
+            // Table
+            const tbody = document.getElementById('printMetricsBody');
+            tbody.innerHTML = metrics.map(m => `
+                <tr>
+                    <td>${m.name}</td>
+                    <td><strong>${m.us}</strong></td>
+                    <td>${m.compA}</td>
+                    <td>${m.compB}</td>
+                </tr>
+            `).join('');
+
+            // Gap Text
+            document.getElementById('printGapAnalysis').innerHTML = document.getElementById('gapAnalysis').innerHTML;
+
+            // Trigger 
+            window.print();
+        }
+
+        // --- OLD MBB FUNCTIONS RETAINED ---
+        function togglePower() {
+            const content = document.getElementById('powerContent');
+            const icon = document.getElementById('powerIcon');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                icon.innerText = '▼';
+            } else {
+                content.style.display = 'block';
+                icon.innerText = '▲';
+            }
+        }
+
+        function showGuide() {
+            document.getElementById('guideModal').style.display = 'flex';
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'guideModal') document.getElementById('guideModal').style.display = 'none';
+        }
+
+        // Run
+        init();
+    </script>
+</body>
+
+</html>

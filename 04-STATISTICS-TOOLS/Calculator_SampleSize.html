@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Size Calculator | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* INTRO GRID - EXPANDED (8 Cards) */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .math-block {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            color: #BBB;
+            font-size: 11px;
+        }
+
+        /* STATS RESULTS */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: rgba(27, 107, 130, 0.1);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-val {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .stat-hint {
+            font-size: 11px;
+            color: var(--primary);
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .stat-box:hover .stat-hint {
+            opacity: 1;
+            height: auto;
+        }
+
+        .ai-panel {
+            background: linear-gradient(90deg, rgba(27, 107, 130, 0.1), rgba(0, 0, 0, 0));
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* TOGGLE BUTTONS */
+        .toggle-container {
+            display: flex;
+            background: var(--surface-1);
+            border-radius: 6px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .toggle-btn.active {
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+        }
+
+        /* SLIDER GROUP */
+        .slider-group {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        input[type=range] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .clickable-result {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .clickable-result:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .scenario-select {
+            width: 100%;
+            padding: 10px;
+            background: var(--surface-2);
+            color: white;
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .scenario-select option {
+            background: var(--surface-1);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">PHASE: MEASURE</span>
+                <div style="height: 15px;"></div>
+                <h1>Sample Size Calculator <span class="ai-badge">AI ENABLED</span></h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Plan Your Audit. <span style="color: var(--accent);">Ensure Accuracy.</span> Confidence without
+                    over-sampling.
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-primary" onclick="openSampleInfo()" style="margin-right:10px;">💡 Simple
+                    Explanation</button>
+                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
+                    Hub</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID (8 Cards) -->
+        <div class="intro-grid">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What Is It?</div>
+                <div class="intro-text">Calculates the minimum data points needed to make a statistically valid
+                    conclusion.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When To Use?</div>
+                <div class="intro-text">BEFORE starting data collection. Prevents "Under-sampling" (Bias) or
+                    "Over-sampling" (Waste).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why Use It?</div>
+                <div class="intro-text">Sampling 5 people isn't enough. Sampling 5,000 is too expensive. Find the sweet
+                    spot.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">📐 Z-Values</div>
+                <div class="intro-text">90% = 1.645<br>95% = 1.960<br>99% = 2.576</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="intro-card">
+                <div class="intro-title">📐 Standard Equation</div>
+                <div class="math-block">n = (Z * σ / E)²</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🧠 Interpretation</div>
+                <div class="intro-text">Higher Confidence (99%) = Needs WAY more data.<br>Smaller Error (Precision) =
+                    Needs WAY more data.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🎯 Reference Values</div>
+                <div class="intro-text">Z-Score for 95% = 1.96.<br>Z-Score for 99% = 2.576.</div>
+            </div>
+            <div class="intro-card intro-card-phase">
+                <div class="intro-title">🚀 Phase Relevance</div>
+                <div class="intro-text"><strong>Measure:</strong> Plan data collection.<br><strong>Control:</strong> Set
+                    audit frequency.</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+
+            <!-- SIDEBAR -->
+            <div class="card">
+                <h3>1. Scenario & Type</h3>
+
+                <label style="font-size:12px; color:var(--text-secondary);">Select Industry Scenario:</label>
+                <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()">
+                    <option value="">-- Custom Data --</option>
+                    <option value="manufacturing">⚙️ Manufacturing (Defect check)</option>
+                    <option value="healthcare">🏥 Healthcare (Wait times)</option>
+                    <option value="service">🎧 Service (Customer Survey)</option>
+                </select>
+
+                <div class="toggle-container">
+                    <button class="toggle-btn active" id="btnMean" onclick="setType('mean')">Continuous (Mean)</button>
+                    <button class="toggle-btn" id="btnProp" onclick="setType('proportion')">Discrete
+                        (Proportion)</button>
+                </div>
+
+                <!-- MEAN INPUTS -->
+                <div id="meanInputs">
+                    <div class="slider-group">
+                        <div class="slider-label"><span>Confidence Level</span> <span id="lblConf">95%</span></div>
+                        <input type="range" id="slConf" min="80" max="99" value="95"
+                            oninput="updateVal('lblConf', this.value + '%')">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Margin of Error (±)</label>
+                        <input type="number" id="errMean" placeholder="e.g. 0.5" value="0.5">
+                        <small>Precision needed (e.g. +/- 0.5)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Std Deviation (Estimate)</label>
+                        <input type="number" id="stdMean" placeholder="e.g. 2.5" value="2.5">
+                        <small>Based on historical data or pilot</small>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn btn-ghost" style="flex:1; font-size:11px; color: var(--success);"
+                            onclick="loadExample('mean_high')">🟢 High Precision</button>
+                        <button class="btn btn-ghost" style="flex:1; font-size:11px; color: var(--warning);"
+                            onclick="loadExample('mean_low')">🟠 Low Precision</button>
+                    </div>
+                </div>
+
+                <!-- PROP INPUTS -->
+                <div id="propInputs" style="display: none;">
+                    <div class="slider-group">
+                        <div class="slider-label"><span>Confidence Level</span> <span id="lblConfProp">95%</span></div>
+                        <input type="range" id="slConfProp" min="80" max="99" value="95"
+                            oninput="updateVal('lblConfProp', this.value + '%')">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Margin of Error (%)</label>
+                        <input type="number" id="errProp" placeholder="e.g. 5" value="5">
+                        <small>Acceptable error (e.g. 5%)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Est Proportion (%)</label>
+                        <input type="number" id="estProp" placeholder="e.g. 50" value="50">
+                        <small>Use 50 if unknown (safest)</small>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="calculateSample()"
+                    style="width: 100%; justify-content: center; margin-top: 20px;">
+                    🚀 Calculate Size
+                </button>
+            </div>
+
+            <!-- RESULTS -->
+            <div id="resultsPanel" style="display:none;">
+
+                <!-- BIG NUMBER -->
+                <div class="stat-grid">
+                    <div class="stat-box clickable-result" style="grid-column: span 2;" onclick="explain('n')">
+                        <div class="stat-label">Minimum Sample Size Required ❓</div>
+                        <div class="stat-val" id="resN" style="color: var(--accent); font-size: 56px;">0</div>
+                        <div class="stat-hint">Click info</div>
+                    </div>
+                </div>
+
+                <!-- AUTO FINDINGS SUMMARY -->
+                <div id="analysisSummary"
+                    style="padding:15px; background:var(--surface-3); border-radius:6px; font-size:13px; line-height:1.5; color:var(--text-primary); margin-bottom:20px; display:none; border-left: 3px solid var(--accent);">
+                </div>
+
+                <!-- CHART: TRADE-OFF CURVE -->
+                <div class="card" style="height: 300px;">
+                    <div class="flex-between">
+                        <span style="font-size:12px; color:var(--text-secondary);">Cost/Benefit Curve</span>
+                        <span style="font-size:10px; cursor:pointer;"
+                            onclick="explain('Trade-off Curve', 'Shows how the sample size explodes if you demand too much precision (small error).<br>Find the elbow of the curve for the best ROI.')">ℹ️
+                            Info</span>
+                    </div>
+                    <div class="chart-controls">
+                        <div class="control-btn" onclick="magnify('tradeOffChart', 'Sample Size Trade-off')">🔍</div>
+                        <div class="control-btn" onclick="downloadChart('tradeOffChart', 'Sample Size Trade-off')">⬇️
+                        </div>
+                    </div>
+                    <div class="chart-container"><canvas id="tradeOffChart"></canvas></div>
+                </div>
+
+                <div class="card">
+                    <div class="flex-between">
+                        <h3>💡 AI Collection Strategy</h3>
+                        <button class="btn btn-ghost" onclick="askAICoach()" id="aiBtn">Ask AI Coach</button>
+                    </div>
+
+                    <div class="ai-panel">
+                        <div id="aiOutput" style="font-size: 14px; color: #cbd5e1;">
+                            Click "Ask Coach" for a data collection strategy and risk assessment.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REPORT & EXPORT SECTION -->
+                <div id="reportSection" class="card no-print"
+                    style="margin-top:20px; border-top: 3px solid var(--accent);">
+                    <div style="font-size:18px; font-weight:bold; color:var(--accent); margin-bottom:15px;">Sampling
+                        Audit Plan</div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:center;">
+                        <div>
+                            <label style="font-size:12px; color:var(--text-secondary);">Audit Lead / Analyst:</label>
+                            <input type="text" id="analystName" placeholder="Enter name..."
+                                style="width:100%; padding:10px; background:var(--surface-1); border:1px solid rgba(255, 255, 255, 0.1); border-radius:6px; color:white; margin-top:5px;">
+                        </div>
+                        <div style="text-align:right;">
+                            <button class="btn btn-primary" style="margin-top:20px;" onclick="printReport()">🖨️
+                                Generate Audit PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- INFOGRAPHIC EXPLANATION MODAL -->
+    <div class="modal-overlay" id="hypothesisInfoModal"
+        onclick="if(event.target.id==='hypothesisInfoModal') this.style.display='none'" style="z-index:2000;">
+        <div class="modal-box" style="max-width:800px; width:95%; border: 3px solid var(--accent);">
+            <span class="close-btn" style="float:right; cursor:pointer; font-size:24px;"
+                onclick="document.getElementById('hypothesisInfoModal').style.display='none'">&times;</span>
+            <div style="text-align:center; margin-bottom:20px;">
+                <h2 style="color:var(--accent); margin:0;" id="conceptTitle">Calculated Sampling 🎯</h2>
+                <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">Collect enough data to be right,
+                    without wasting time.</p>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div id="conceptContent" style="min-height:250px;">
+                <!-- Content Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAGNIFY MODAL -->
+    <div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
+        <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
+            <span class="close-btn"
+                onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+            <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
+            <img id="magnifyImg" style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+        </div>
+    </div>
+
+    <script>
+        Chart.defaults.color = '#90A4AE';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+        let chartInstance = null;
+        let currentType = 'mean';
+        let currentScenario = null;
+
+        // SCENARIOS
+        const scenarios = {
+            'manufacturing': {
+                name: "Defect Percentage",
+                type: "proportion",
+                vals: { conf: 95, errProp: 2, estProp: 5 }, // 2% margin, 5% defect est
+                context: "Quality Audit: Checking 10,000 screws. We think 5% are bad.",
+                reason: "We need 2% precision to know if we are truly improving."
+            },
+            'healthcare': {
+                name: "ER Wait Times",
+                type: "mean",
+                vals: { conf: 95, errMean: 5, stdMean: 15 }, // ±5 mins, StdDev 15
+                context: "Patient Flow: Measuring average wait time. High variance expected.",
+                reason: "High StdDev (15m) drives up the sample size required."
+            },
+            'service': {
+                name: "Customer Survey",
+                type: "proportion",
+                vals: { conf: 90, errProp: 5, estProp: 50 }, // 50% conservative
+                context: "NPS Survey: Polling customers. We have no idea what they think (50% est).",
+                reason: "50% Estimate creates the maximum possible sample size (safest bet)."
+            }
+        };
+
+        // GLOSSARY
+        const glossary = {
+            "n": { title: "Sample Size (n)", text: "The mandatory number of data points you must collect to be statistically confident.<br>Collecting fewer than this means your results could just be noise." }
+        };
+
+        function openSampleInfo() {
+            document.getElementById('hypothesisInfoModal').style.display = 'flex';
+            showConcept('sample');
+        }
+
+        const concepts = {
+            sample: {
+                title: "🎯 Sample Size ROI",
+                ideal: "Ideally use when: Data collection is expensive or time-consuming. You want to know if '30' is actually enough for your specific study.",
+                life: {
+                    title: "🥣 The Soup Taste",
+                    text: "You don't need to drink the whole pot to know if it's salty. One well-stirred spoonful is your 'Statistical Sample'. Too small, and you miss the spice. Too big, and you're just full.",
+                    icon: "🥣"
+                },
+                health: {
+                    title: "🏥 Chart Audits",
+                    text: "Instead of auditing every patient file from 2023 (Waste), we calculate a sample size to be 95% confident that our results reflect the whole hospital population.",
+                    icon: "🧬"
+                }
+            }
+        };
+
+        function showConcept(key) {
+            const c = concepts[key];
+            const contentDiv = document.getElementById('conceptContent');
+            const titleDiv = document.getElementById('conceptTitle');
+            titleDiv.innerText = c.title;
+
+            contentDiv.innerHTML = `
+                <div style="background:#0c4a6e; padding:15px; border-radius:8px; margin-bottom:20px; text-align:center; border:1px dashed #0369a1;">
+                    <strong style="color:#7dd3fc;">💡 ${c.ideal}</strong>
+                </div>
+
+                <div class="grid-2" style="gap:20px; margin-top:20px; display:grid; grid-template-columns:1fr 1fr;">
+                    <div style="background:#1e293b; padding:20px; border-radius:8px; border-top:4px solid #0ea5e9;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.life.icon}</div>
+                        <h3 style="color:#7dd3fc; margin-top:0;">Daily Life Example</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.life.text}</p>
+                    </div>
+                    <div style="background:#1e293b; padding:20px; border-radius:8px; border-top:4px solid #10b981;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.health.icon}</div>
+                        <h3 style="color:#10b981; margin-top:0;">Healthcare Application</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.health.text}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeModal(e) { if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none'; }
+
+        function setType(t) {
+            currentType = t;
+            document.getElementById('btnMean').className = t === 'mean' ? 'toggle-btn active' : 'toggle-btn';
+            document.getElementById('btnProp').className = t === 'proportion' ? 'toggle-btn active' : 'toggle-btn';
+            document.getElementById('meanInputs').style.display = t === 'mean' ? 'block' : 'none';
+            document.getElementById('propInputs').style.display = t === 'proportion' ? 'block' : 'none';
+            document.getElementById('resultsPanel').style.display = 'none';
+        }
+
+        function updateVal(id, v) { document.getElementById(id).innerText = v; }
+
+        function getZ(conf) {
+            if (conf >= 99) return 2.576;
+            if (conf >= 95) return 1.96;
+            if (conf >= 90) return 1.645;
+            if (conf >= 80) return 1.282;
+            return 1.96;
+        }
+
+        function loadScenario() {
+            const sel = document.getElementById('scenarioSelect').value;
+            currentScenario = sel;
+
+            if (sel && scenarios[sel]) {
+                const s = scenarios[sel];
+                setType(s.type);
+                if (s.type === 'mean') {
+                    document.getElementById('slConf').value = s.vals.conf; updateVal('lblConf', s.vals.conf + '%');
+                    document.getElementById('errMean').value = s.vals.errMean;
+                    document.getElementById('stdMean').value = s.vals.stdMean;
+                } else {
+                    document.getElementById('slConfProp').value = s.vals.conf; updateVal('lblConfProp', s.vals.conf + '%');
+                    document.getElementById('errProp').value = s.vals.errProp;
+                    document.getElementById('estProp').value = s.vals.estProp;
+                }
+            } else {
+                // reset defaults
+                setType('mean');
+            }
+        }
+
+        function loadExample(type) {
+            if (type === 'mean_high') {
+                document.getElementById('slConf').value = 99; updateVal('lblConf', '99%');
+                document.getElementById('errMean').value = 0.2;
+                document.getElementById('stdMean').value = 2.5;
+            } else {
+                document.getElementById('slConf').value = 90; updateVal('lblConf', '90%');
+                document.getElementById('errMean').value = 1.0;
+                document.getElementById('stdMean').value = 2.5;
+            }
+        }
+
+        function calculateSample() {
+            let n = 0;
+            let chartLabel = '';
+            let points = [];
+            let params = {};
+
+            if (currentType === 'mean') {
+                const conf = parseInt(document.getElementById('slConf').value);
+                const err = parseFloat(document.getElementById('errMean').value);
+                const std = parseFloat(document.getElementById('stdMean').value);
+                const Z = getZ(conf);
+
+                if (!err || !std) { alert("Missing values"); return; }
+
+                n = Math.ceil(Math.pow((Z * std) / err, 2));
+
+                // Trade-off Curve: Error vs Sample Size
+                for (let e = err * 0.5; e <= err * 2; e += (err * 0.1)) {
+                    let size = Math.ceil(Math.pow((Z * std) / e, 2));
+                    points.push({ x: e.toFixed(2), y: size });
+                }
+                chartLabel = 'Margin of Error (E)';
+
+            } else {
+                const conf = parseInt(document.getElementById('slConfProp').value);
+                const err = parseFloat(document.getElementById('errProp').value) / 100;
+                const p = parseFloat(document.getElementById('estProp').value) / 100;
+                const Z = getZ(conf);
+
+                if (!err) { alert("Missing error"); return; }
+
+                n = Math.ceil((Math.pow(Z, 2) * p * (1 - p)) / Math.pow(err, 2));
+
+                // Trade-off Curve
+                for (let e = err * 0.5; e <= err * 2; e += (err * 0.1)) {
+                    let size = Math.ceil((Math.pow(Z, 2) * p * (1 - p)) / Math.pow(e, 2));
+                    points.push({ x: (e * 100).toFixed(1), y: size });
+                }
+                chartLabel = 'Margin of Error (%)';
+            }
+
+            document.getElementById('resultsPanel').style.display = 'block';
+            document.getElementById('resN').innerText = n.toLocaleString();
+
+            generateAutoFindings(n);
+            renderChart(points, chartLabel, n);
+        }
+
+        function generateAutoFindings(n) {
+            const div = document.getElementById('analysisSummary');
+            let html = `<b>Optimization Insight:</b><br>To cut this Sample Size in half, you would need to accept range of error that is <b>1.41x</b> wider (Square Root Rule).<br>Conversely, if you want twice the precision, you'd need <b>${(n * 4).toLocaleString()}</b> samples!`;
+            div.innerHTML = html;
+            div.style.display = 'block';
+        }
+
+        function renderChart(data, xLabel, currentN) {
+            const ctx = document.getElementById('tradeOffChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Sample Size Curve',
+                        data: data,
+                        borderColor: '#29B6F6',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: xLabel }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { title: { display: true, text: 'Required Sample Size (n)' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        async function askAICoach() {
+            const n = document.getElementById('resN').innerText;
+            const btn = document.getElementById('aiBtn');
+            const type = currentType === 'mean' ? 'Continuous (Mean)' : 'Discrete (Proportion)';
+            const conf = currentType === 'mean' ? document.getElementById('slConf').value : document.getElementById('slConfProp').value;
+
+            btn.innerHTML = "Planning...";
+            btn.disabled = true;
+
+            const prompt = `
+                Act as a Master Black Belt Project Lead. We need a sample size of ${n} points for a ${type} study at ${conf}% confidence.
+                Explain: 
+                1. The statistical risk of data collection if we hit 'sampling fatigue' and stop at 50% of this target.
+                2. A strategic tip for randomizing this collection.
+                Keep it to two professional sentences.
+            `;
+
+            try {
+                const r = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const d = await r.json();
+                document.getElementById('aiOutput').innerText = d.candidates[0].content.parts[0].text;
+            } catch (e) { document.getElementById('aiOutput').innerText = "Coach is currently offline."; }
+            finally {
+                btn.innerHTML = "Ask Coach";
+                btn.disabled = false;
+            }
+        }
+
+        function printReport() {
+            const analyst = document.getElementById('analystName').value || 'Statistical Auditor';
+            const date = new Date().toLocaleDateString();
+            const n = document.getElementById('resN').innerText;
+            const typeText = currentType === 'mean' ? 'Continuous Data (Mean)' : 'Discrete Data (Proportion)';
+            const conf = currentType === 'mean' ? document.getElementById('slConf').value : document.getElementById('slConfProp').value;
+            const err = currentType === 'mean' ? document.getElementById('errMean').value : document.getElementById('errProp').value;
+            const scenario = document.getElementById('scenarioSelect').options[document.getElementById('scenarioSelect').selectedIndex].text;
+            const advice = document.getElementById('aiOutput').innerText;
+
+            const chart = document.getElementById('tradeOffChart');
+            const chartData = chart.toDataURL();
+
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Sampling Audit Plan - ${analyst}</title>
+                    <style>
+                        body { font-family: 'Outfit', 'Segoe UI', sans-serif; padding: 40px; color: #1e293b; line-height: 1.5; }
+                        .header { border-bottom: 4px solid #0284c7; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; }
+                        .title { font-size: 24px; font-weight: 800; color: #0c4a6e; text-transform: uppercase; }
+                        .seal { border: 2px solid #0284c7; color: #0284c7; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 11px; }
+                        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
+                        .card { background: #f0f9ff; border: 1px solid #e0f2fe; border-radius: 12px; padding: 25px; }
+                        .main-result { font-size: 48px; font-weight: 900; color: #0284c7; text-align: center; margin: 10px 0; }
+                        .executive-summary { background: #f8fafc; border-left: 6px solid #0284c7; padding: 25px; border-radius: 12px; margin-top: 30px; }
+                        .chart-img { width: 100%; border-radius: 12px; border: 1px solid #e0f2fe; margin-top: 30px; }
+                        .footer { margin-top: 50px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div>
+                            <div class="title">🎯 Data Collection Strategy Audit</div>
+                            <div style="font-size:14px; color:#64748b;">Methodology: ${typeText}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="seal">MASTER BLACK BELT VERIFIED</div>
+                            <div style="font-size:11px; color:#64748b; margin-top:8px;"><b>Lead:</b> ${analyst} | <b>Date:</b> ${date}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        <div class="card" style="text-align:center;">
+                            <h3 style="color:#0369a1; margin-top:0;">Required Sample Size</h3>
+                            <div class="main-result">${n}</div>
+                            <p style="font-size:12px; color:#64748b;">Minimum data points for validity</p>
+                        </div>
+                        <div class="card">
+                            <h3 style="color:#0369a1; margin-top:0;">Model Parameters</h3>
+                            <p><strong>Scenario:</strong> ${scenario}</p>
+                            <p><strong>Confidence:</strong> ${conf}%</p>
+                            <p><strong>Margin of Error:</strong> +/- ${err}${currentType === 'mean' ? '' : '%'}</p>
+                        </div>
+                    </div>
+
+                    <div class="executive-summary">
+                        <h3 style="color:#0c4a6e; margin-top:0;">🔍 Audit Recommendation</h3>
+                        <p>Based on the selected precision requirements, a sample size of ${n} has been established. This sample ensures that the resulting mean/proportion is representative of the population within the specified margin of error. <strong>Warning:</strong> Any reduction in sample size below this threshold will exponentially increase the risk of Type II errors (false negatives).</p>
+                        <div style="margin-top:15px; border-top:1px solid #e2e8f0; padding-top:15px; color:#0369a1; font-style:italic;">
+                            <strong>AI Strategy Insight:</strong> ${advice}
+                        </div>
+                    </div>
+
+                    <h3 style="text-align:center; color:#0c4a6e; margin-top:40px;">Error vs. Sample Size Sensitivity</h3>
+                    <img class="chart-img" src="${chartData}">
+
+                    <div class="footer">
+                        Statistical Excellence Series | Master Black Belt Studio | Proprietary Audit Logic
+                    </div>
+                </body>
+                </html>
+            `);
+            win.document.close();
+            win.focus();
+            setTimeout(() => { win.print(); }, 500);
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'hypothesisInfoModal') document.getElementById('hypothesisInfoModal').style.display = 'none';
+            if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+        }
+
+        function magnify(canvasId, title) {
+            const original = document.getElementById(canvasId);
+            const modalImg = document.getElementById('magnifyImg');
+            modalImg.src = original.toDataURL();
+            document.getElementById('magnifyTitle').innerText = title;
+            document.getElementById('magnifyModal').style.display = 'flex';
+        }
+
+        function downloadChart(canvasId, title) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = title.replace(/\s+/g, '_') + '_Chart.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+
+</body>
+
+</html>

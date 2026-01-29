@@ -1,0 +1,3 @@
+CertTemplateID,BeltLevel,TemplateFileURL,OutputFormat,StorageFolderURL,FieldsMap
+CT_YELLOW_V1,Yellow,https://docs.google.com/document/d/TEMPLATE_ID_HERE,PDF,/Certificates/Yellow,"{""FullName"":""[FirstName] [LastName]"", ""Date"":""[IssuedAt]""}"
+CT_GREEN_V1,Green,https://docs.google.com/document/d/TEMPLATE_ID_HERE,PDF,/Certificates/Green,"{""FullName"":""[FirstName] [LastName]"", ""Date"":""[IssuedAt]""}"

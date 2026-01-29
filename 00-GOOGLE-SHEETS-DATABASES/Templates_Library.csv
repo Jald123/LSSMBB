@@ -1,0 +1,11 @@
+TemplateID,TemplateName,Category,BeltLevel,DMACPhase,Description,TemplateType,FormFields,AutoCalculatedFields,DownloadFormat,UsageCount
+TPL_001,Project Charter,Define,Yellow,Define,Formal project initiation document,Form,"ProjectName, Sponsor, Scope, Budget","ROI, Duration","PDF, Excel",0
+TPL_002,SIPOC Diagram,Define,Yellow,Define,"Suppliers, Inputs, Process, Outputs, Customers",Visual,"ProcessName, Supplier, Input",-,"PDF, Visio",0
+TPL_003,Process Map,Define,Yellow,Define,Visual representation of process flow,Visual,"ProcessSteps, TimePerStep","TotalTime, Bottlenecks","PDF, Visio",0
+TPL_004,Fishbone Diagram,Analyze,Green,Analyze,Root cause analysis tool,Visual,"Problem, Causes, SubCauses","RootCauses (sorted)","PDF, Visio",0
+TPL_005,FMEA Template,Analyze,Green,Analyze,Failure Mode and Effects Analysis,Form,"ProcessStep, FailureMode, Severity","RPN (auto-calc)","Excel, PDF",0
+TPL_006,Design of Experiments (DOE),Improve,Green,Improve,Statistical experiment design,Form,"Factors, Levels, Responses","ANOVA Results",Excel,0
+TPL_007,Control Plan,Control,Green,Control,Process control and monitoring plan,Form,"ProcessStep, ControlMethod, Frequency",-,"Excel, PDF",0
+TPL_008,Value Stream Map,Define,Green,Define,Lean tool to identify waste,Visual,"ProcessSteps, WasteType, Duration","TotalWaste, ValueRatio","Visio, PDF",0
+TPL_009,5S Checklist,Improve,Yellow,Improve,Workplace organization tool,Checklist,"Area, Sort, Set, Shine, Standardize",ComplianceScore,"PDF, Excel",0
+TPL_010,Pareto Analysis,Measure,Yellow,Measure,Identify vital few problems,Form,"Category, Frequency, Impact",CumulativePercentage,"Excel, Chart",0

@@ -1,0 +1,84 @@
+<div style="max-width: 900px; margin: 0 auto; padding: 20px;">
+
+    <div style="background: #E8F4F8; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h2 style="margin-top: 0; color: #1B6F85;">Interactive Exercise: Apply What You Learned</h2>
+        <p>Think about a process in YOUR organization. Answer the following questions:</p>
+    </div>
+
+    <form style="background: white; padding: 20px; border: 1px solid #DDD; border-radius: 8px;">
+
+        <!-- QUESTION 1 -->
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #1B6F85;">
+                1. What process would you like to improve?
+            </label>
+            <textarea style="width: 100%; height: 80px; padding: 10px; border: 1px solid #CCC; 
+                       border-radius: 5px; font-family: Arial;"
+                placeholder="Example: Invoice processing, Customer onboarding, etc."></textarea>
+        </div>
+
+        <!-- QUESTION 2 -->
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #1B6F85;">
+                2. What is the current problem? (Waste or variation?)
+            </label>
+            <div>
+                <input type="radio" name="problem_type" value="waste">
+                <label>Waste (time, money, resources being wasted)</label><br>
+                <input type="radio" name="problem_type" value="variation">
+                <label>Variation (inconsistent results)</label><br>
+                <input type="radio" name="problem_type" value="both">
+                <label>Both waste and variation</label>
+            </div>
+        </div>
+
+        <!-- QUESTION 3 -->
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #1B6F85;">
+                3. Estimate the current performance (Sigma level)
+            </label>
+            <select style="width: 100%; padding: 10px; border: 1px solid #CCC; border-radius: 5px;">
+                <option>-- Select --</option>
+                <option>1-2 Sigma (50-80% quality)</option>
+                <option>2-3 Sigma (80-95% quality)</option>
+                <option>3-4 Sigma (95-99% quality)</option>
+                <option>4-5 Sigma (99-99.9% quality)</option>
+                <option>5-6 Sigma (99.9%+ quality)</option>
+            </select>
+        </div>
+
+        <!-- QUESTION 4 -->
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #1B6F85;">
+                4. Estimated financial impact (SAR)
+            </label>
+            <input type="number" style="width: 100%; padding: 10px; border: 1px solid #CCC; 
+                                  border-radius: 5px;" placeholder="Enter estimated annual cost (e.g., 500000)">
+        </div>
+
+        <!-- SMART FEEDBACK -->
+        <div style="background: #FFF9E6; padding: 15px; border-left: 4px solid #FFB74D; 
+                border-radius: 5px; margin-bottom: 25px;">
+            <strong style="color: #FF9800;">💡 Smart Feedback:</strong>
+            <p style="margin: 10px 0 0 0;">
+                <span id="feedback">
+                    Based on your answers above, this would be an excellent Lean Six Sigma project!
+                    The financial impact suggests significant value creation potential.
+                </span>
+            </p>
+        </div>
+
+        <!-- BUTTONS -->
+        <div style="display: flex; gap: 10px; justify-content: space-between;">
+            <button type="button" style="padding: 12px 24px; background: #CCC; color: #333; 
+                                   border: none; border-radius: 5px; cursor: pointer;">
+                Back to Lesson
+            </button>
+            <button type="button" style="padding: 12px 24px; background: #4CAF50; color: white; 
+                                   border: none; border-radius: 5px; cursor: pointer;">
+                Save Exercise & Continue
+            </button>
+        </div>
+    </form>
+
+</div>

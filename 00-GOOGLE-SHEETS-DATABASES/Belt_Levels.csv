@@ -1,0 +1,5 @@
+BeltLevelID,BeltName,Hours,Description,Difficulty,Color,Prerequisites,Icon,ActionLabel,Benefits
+BLT001,White Belt,0,Foundational awareness,Beginner,#E8F4F8,None,🏳️,Start White Belt,"• Basic Terminology\n• 5S Concepts"
+BLT002,Yellow Belt,80,Team member level,Beginner,#FFE066,White Belt,🟡,Start Yellow Belt,"• Understand DMAIC\n• Use basic tools\n• Support Green Belts"
+BLT003,Green Belt,160,Project leader level,Intermediate,#4CAF50,Yellow Belt,🟢,Start Green Belt,"• Lead small projects\n• Advanced Analysis\n• Data-driven decisions"
+BLT004,Black Belt,240,Master level,Advanced,#000000,Green Belt,⚫,Start Black Belt,"• Full scale projects\n• Mentoring\n• Advanced Statistics"

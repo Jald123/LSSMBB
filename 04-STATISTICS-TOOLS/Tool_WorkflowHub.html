@@ -1,0 +1,2877 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Workflow Hub | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            /* PREMIUM PALETTE */
+            --bg-deep: #050505;
+            --glass-bg: rgba(20, 20, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+
+            /* DMAIC COLORS (Modernized) */
+            --dmaic-color: #3498db;
+            --dmadv-color: #00b894;
+            --kaizen-color: #e1b12c;
+
+            --define: #0984e3;
+            --measure: #00b894;
+            --analyze: #e17055;
+            --improve: #fdcb6e;
+            --control: #6c5ce7;
+
+            --design: #a29bfe;
+            --verify: #fd79a8;
+
+            /* ACCENTS */
+            --accent: #b78628;
+            /* Gold */
+            --surface-1: rgba(30, 30, 35, 0.6);
+            --surface-2: rgba(50, 50, 55, 0.4);
+            --text-primary: #ecf0f1;
+            --text-secondary: #bdc3c7;
+
+            --success: #2ecc71;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+        }
+
+        /* YELLOW BELT THEME (Warm/Orange) */
+        body.theme-yellow {
+            --bg-deep: #0f0a05;
+            --accent: #f39c12;
+            /* Orange */
+            --surface-1: rgba(40, 30, 20, 0.6);
+            --surface-2: rgba(60, 40, 20, 0.4);
+            --dmaic-color: #e67e22;
+        }
+
+        /* GREEN BELT THEME (Fresh/Emerald) */
+        body.theme-green {
+            --bg-deep: #050f0a;
+            --accent: #2ecc71;
+            /* Green */
+            --surface-1: rgba(20, 40, 25, 0.6);
+            --surface-2: rgba(30, 60, 40, 0.4);
+            --dmaic-color: #27ae60;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(9, 132, 227, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(183, 134, 40, 0.05) 0%, transparent 40%);
+        }
+
+        /* --- GLASS UTILS --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* NAVIGATION BAR */
+        .app-nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-btn-back {
+            background: linear-gradient(135deg, #333, #222);
+            color: white;
+            border: 1px solid #444;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .nav-btn-back:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* LAYOUT */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hub-container {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .hub-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* HEADER & TITLES */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            margin: 0;
+        }
+
+        .phase-glow {
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .ai-badge {
+            background: linear-gradient(45deg, var(--accent), #f1c40f);
+            color: black;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--surface-1);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* TRIAGE SECTION */
+        .triage-card {
+            background: linear-gradient(145deg, rgba(9, 132, 227, 0.1), rgba(0, 0, 0, 0.4));
+            border: 1px solid var(--define);
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            position: relative;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .triage-step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .triage-step.active {
+            display: block;
+        }
+
+        /* TABS */
+        .path-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 0px;
+        }
+
+        .path-tab {
+            padding: 15px 30px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 12px 12px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: #888;
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            transition: 0.3s;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .path-tab:hover {
+            background: rgba(50, 50, 50, 0.5);
+            color: white;
+        }
+
+        .path-tab.active {
+            background: var(--surface-1);
+            color: white;
+            border-top: 3px solid var(--accent);
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-dmaic.active {
+            border-top-color: var(--dmaic-color);
+        }
+
+        .tab-dmadv.active {
+            border-top-color: var(--dmadv-color);
+        }
+
+        .tab-kaizen.active {
+            border-top-color: var(--kaizen-color);
+        }
+
+        /* WORKFLOW PATHS */
+        .workflow-path {
+            display: none;
+            background: var(--surface-1);
+            border: 1px solid var(--glass-border);
+            border-radius: 0 0 16px 16px;
+            padding: 30px;
+        }
+
+        .workflow-path.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* STAGE CARDS (ACCORDION) */
+        .stage-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .stage-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .stage-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .stage-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* DMAIC COLORS */
+        .dmaic-1 .stage-header {
+            border-left-color: var(--define);
+        }
+
+        .dmaic-2 .stage-header {
+            border-left-color: var(--measure);
+        }
+
+        .dmaic-3 .stage-header {
+            border-left-color: var(--analyze);
+        }
+
+        .dmaic-4 .stage-header {
+            border-left-color: var(--improve);
+        }
+
+        .dmaic-5 .stage-header {
+            border-left-color: var(--control);
+        }
+
+        /* DMADV COLORS */
+        .dmadv-1 .stage-header {
+            border-left-color: var(--define);
+        }
+
+        .dmadv-2 .stage-header {
+            border-left-color: var(--measure);
+        }
+
+        .dmadv-3 .stage-header {
+            border-left-color: var(--analyze);
+        }
+
+        .dmadv-4 .stage-header {
+            border-left-color: var(--design);
+        }
+
+        .dmadv-5 .stage-header {
+            border-left-color: var(--verify);
+        }
+
+        .stage-content {
+            display: none;
+            padding-top: 10px;
+        }
+
+        .stage-content.open {
+            display: block;
+        }
+
+        /* TOOL ROWS */
+        .tool-row {
+            display: grid;
+            grid-template-columns: 50px 1fr 100px 100px 60px 100px;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--glass-border);
+            transition: 0.2s;
+            margin-bottom: 5px;
+            border-radius: 6px;
+        }
+
+        .tool-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .tool-row.completed {
+            border-left: 2px solid var(--success);
+            background: rgba(46, 204, 113, 0.05);
+        }
+
+        .tool-icon-box {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 18px;
+        }
+
+        .tool-name {
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .tool-name:hover {
+            color: var(--accent);
+        }
+
+        .tool-why {
+            display: block;
+            font-size: 12px;
+            color: #777;
+            margin-top: 2px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            transition: 0.2s;
+            font-family: 'Inter';
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 15px rgba(183, 134, 40, 0.4);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #555;
+            color: #ccc;
+        }
+
+        .btn-ghost:hover {
+            border-color: white;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        /* BADGES */
+        .method-badge,
+        .belt-badge,
+        .prio-badge {
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .method-lean {
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .method-ss {
+            color: #9b59b6;
+            background: rgba(155, 89, 182, 0.1);
+            border: 1px solid rgba(155, 89, 182, 0.2);
+        }
+
+        .method-gen {
+            color: #95a5a6;
+            background: rgba(149, 165, 166, 0.1);
+            border: 1px solid rgba(149, 165, 166, 0.2);
+        }
+
+        .prio-crit {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        .prio-rec {
+            color: #f1c40f;
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+        }
+
+        .belt-y {
+            background: #f1c40f;
+            color: black;
+        }
+
+        .belt-g {
+            background: #2ecc71;
+            color: black;
+        }
+
+        .belt-b {
+            background: #000;
+            color: white;
+            border: 1px solid #444;
+        }
+
+        /* SEPARATORS */
+        .section-separator {
+            padding: 10px 0;
+            margin: 10px 0 5px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        /* SKILLS BANNER */
+        .skills-banner {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .skills-title {
+            color: var(--accent);
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .skills-list {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        /* UTILS */
+        .phase-select-all {
+            font-size: 11px;
+            color: var(--accent);
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        .phase-select-all:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .fancy-modal {
+            background: #111;
+            border: 1px solid var(--accent);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 0 50px rgba(183, 134, 40, 0.2);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ADVANCED NAV BAR (Global Component) -->
+    <nav class="app-nav-bar">
+        <div class="nav-left">
+            <a href="Stats_Calculator_Main.html" class="nav-logo">⚡ Lean Studio</a>
+            <a href="Tool_WorkflowHub.html" class="nav-link">Workflow Guide</a>
+            <a href="Stats_Calculator_Main.html" class="nav-link">Stats Engine</a>
+        </div>
+        <div class="nav-right">
+            <div style="display:flex; align-items:center; gap:10px; margin-right:20px;">
+                <label style="font-size:12px; color:#aaa;">Filter Belt:</label>
+                <select id="beltFilter" onchange="filterBelt()"
+                    style="background:#222; border:1px solid #444; color:white; padding:4px; border-radius:4px; font-size:12px;">
+                    <option value="all">Select All (Full Suite)</option>
+                    <option value="yellow">Yellow Belt Only</option>
+                    <option value="green">Green Belt (+ Yellow)</option>
+                    <option value="black">Black Belt (All)</option>
+                </select>
+            </div>
+            <a href="Stats_Calculator_Main.html" class="nav-btn-back">← Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- HEADER CONTENT -->
+        <div class="flex-between" style="margin-bottom: 20px; margin-top:20px;">
+            <div>
+                <span class="phase-glow">LEARNING HUB</span>
+                <h1>Project Workflow Guide <span class="ai-badge">SMART</span></h1>
+                <p style="color:var(--text-secondary);">Comprehensive workflow logic with Belt Level filtering.</p>
+            </div>
+        </div>
+
+        <!-- PHASE 0: FOUNDATION & STRATEGY -->
+        <div class="card"
+            style="border-left: 4px solid var(--accent); background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(0,0,0,0)); margin-bottom:20px;">
+            <div class="flex-between">
+                <div>
+                    <h2 style="margin:0; font-size:20px; color:var(--text-primary);">Phase 0: Foundation & Strategy</h2>
+                    <p style="margin:5px 0 0 0; color:var(--text-secondary); font-size:13px;">Master the basics before
+                        you begin.</p>
+                </div>
+                <span class="belt-badge belt-y">Required</span>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:15px;">
+                <div
+                    style="background:var(--surface-2); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; gap:15px;">
+                    <div style="font-size:24px;">📘</div>
+                    <div>
+                        <div style="font-weight:bold; color:var(--accent);">LSS Fundamentals</div>
+                        <div style="font-size:11px; color:#aaa;">History, Belts, Principles.</div>
+                        <a href="Tool_LSS_Fundamentals.html" class="btn btn-sm btn-ghost" style="margin-top:5px;">Open
+                            Guide</a>
+                    </div>
+                </div>
+                <div
+                    style="background:var(--surface-2); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; gap:15px;">
+                    <div style="font-size:24px;">🔭</div>
+                    <div>
+                        <div style="font-weight:bold; color:var(--accent);">Project Scoping</div>
+                        <div style="font-size:11px; color:#aaa;">Select the right project.</div>
+                        <a href="Tool_ProjectTriage.html" class="btn btn-sm btn-ghost" style="margin-top:5px;">Launch
+                            Tool</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRIAGE SECTION -->
+        <div id="triageSection" class="triage-card">
+            <h2 style="margin-top:0; display:flex; gap:10px; align-items:center;">
+                <span style="font-size:24px;">⚖️</span>
+                Methodology Triage
+                <button class="btn btn-sm btn-ghost" onclick="skipTriage()"
+                    style="margin-left:auto; font-size:12px; font-weight:normal; border:1px solid #555;">Skip Triage
+                    →</button>
+            </h2>
+            <div id="q1" class="triage-step active">
+                <p style="font-size:16px; margin-bottom:20px;">1. Are you working on an <strong>Existing
+                        Process</strong> or a <strong>New Design</strong>?</p>
+                <div style="display:flex; gap:15px;">
+                    <button class="btn btn-primary" onclick="nextTriage(2, 'existing')">Existing Process</button>
+                    <button class="btn btn-primary"
+                        style="background:var(--dmadv-color); border-color:var(--dmadv-color);"
+                        onclick="endTriage('dmadv')">New / Redesign</button>
+                    <button class="btn btn-primary" style="background:#00b894; border-color:#00b894;"
+                        onclick="endTriage('focus')">Healthcare Quality</button>
+                </div>
+            </div>
+            <div id="q2" class="triage-step">
+                <p style="font-size:16px; margin-bottom:20px;">2. Is the root cause <strong>Unknown & Complex</strong>,
+                    or <strong>Obvious</strong>?</p>
+                <div style="display:flex; gap:15px;">
+                    <button class="btn btn-primary" onclick="endTriage('dmaic')">Unknown / Complex</button>
+                    <button class="btn btn-primary"
+                        style="background:var(--kaizen-color); border-color:var(--kaizen-color);"
+                        onclick="endTriage('kaizen')">Obvious / Quick Win</button>
+                </div>
+            </div>
+            <div id="triageResult" class="triage-step" style="text-align:center;">
+                <h3 id="recTitle" style="color:var(--success); font-size:22px;">Recommended: DMAIC</h3>
+                <p id="recText" style="color:#ccc; margin-bottom:20px;">Standard rigorous problem solving.</p>
+                <button class="btn btn-primary" onclick="activatePath(recPath)">Start Workflow</button>
+                <button class="btn btn-ghost" onclick="resetTriage()">Restart</button>
+            </div>
+        </div>
+
+        <div class="hub-container">
+            <!-- WORKFLOW CONTENT -->
+            <div class="workflow-content">
+
+                <!-- TABS -->
+                <div class="path-tabs">
+                    <div class="path-tab tab-dmaic active" onclick="activatePath('dmaic')">DMAIC (Improve)</div>
+                    <div class="path-tab tab-dmadv" onclick="activatePath('dmadv')">DMADV (Design)</div>
+                    <div class="path-tab tab-kaizen" onclick="activatePath('kaizen')">Kaizen (Event)</div>
+                    <div class="path-tab tab-focus" onclick="activatePath('focus')">FOCUS PDCA (Quality)</div>
+                </div>
+
+                <!-- DMAIC PATH -->
+                <div id="path-dmaic" class="workflow-path active">
+                    <!-- 1. DEFINE -->
+                    <div class="stage-card dmaic-1">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">1. DEFINE <span
+                                        style="font-size:16px; cursor:pointer; opacity:0.8;"
+                                        onclick="showWisdom('define'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Charter, Scope, VOC, Teams</div>
+                            </div>
+                            <div style="display:flex; align-items:center;">
+                                <span class="phase-select-all"
+                                    onclick="togglePhaseAll(this, 'dmaic-content-1'); event.stopPropagation();">Select
+                                    All</span>
+                                <div style="font-size:10px;" id="dmaic-status-1">Open</div>
+                            </div>
+                        </div>
+                        <div id="dmaic-content-1" class="stage-content open">
+                            <!-- Premium Tools -->
+                            <!-- SKILLS GAINED -->
+                            <div class="skills-banner">
+                                <div class="skills-title">🚀 SKILLS UNLOCKED:</div>
+                                <div class="skills-list">
+                                    <span>Problem Scoping</span> <span>•</span> <span>Stakeholder Management</span>
+                                    <span>•</span> <span>Process Mapping</span> <span>•</span> <span>Voice of Customer
+                                        (VOC)</span>
+                                </div>
+                            </div>
+
+                            <!-- Premium Tools -->
+                            <div class="section-separator">Project Management</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <div class="tool-icon-box"
+                                    style="background:rgba(255, 107, 53, 0.2); color:var(--accent);">👑</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_ProjectCharter_Premium.html" class="tool-name">Project Charter
+                                        (Premium)</a>
+                                    <span class="tool-why">Define scope/team. The project contract.</span>
+                                </div>
+                                <span class="method-badge method-gen">PROJ. MGMT</span>
+                                <span class="prio-badge prio-crit">Priority 1</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_ProjectCharter_Premium.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="g">
+                                <div class="tool-icon-box"
+                                    style="background:rgba(255, 107, 53, 0.2); color:var(--accent);">🤝</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_StakeholderAnalysis.html" class="tool-name">Stakeholder Matrix</a>
+                                    <span class="tool-why">Who cares? Manage influence & interest.</span>
+                                </div>
+                                <span class="method-badge method-gen">PROJ. MGMT</span>
+                                <span class="prio-badge prio-crit">Priority 2</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_StakeholderAnalysis.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(231, 76, 60, 0.2); color:#e74c3c;">🩺
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_ProjectTriage.html" class="tool-name">Project Triage & Scoping</a>
+                                    <span class="tool-why">Is this project viable? Validate problem statement.</span>
+                                </div>
+                                <span class="method-badge method-gen">PROJ. MGMT</span>
+                                <span class="prio-badge prio-crit">Priority 3</span>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_ProjectTriage.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <div class="tool-row" data-type="mandatory" data-belt="bb">
+                                <div class="tool-icon-box" style="background:rgba(59, 130, 246, 0.2); color:#3b82f6;">🧭
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanStrategyHub.html" class="tool-name">Hoshin Kanri X-Matrix</a>
+                                    <span class="tool-why">Strategic Alignment. Align Vision → Goals → Metrics.</span>
+                                </div>
+                                <span class="method-badge method-gen">STRATEGY</span>
+                                <span class="prio-badge prio-crit">Priority 1</span>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanStrategyHub.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <!-- Design / Visual Tools -->
+                            <div class="section-separator">Visual & Workshop</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">
+                                    🗺️</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="tool-name">SIPOC Diagram</a>
+                                    <span class="tool-why">High-level map (Supplier->Customer).</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-crit">Priority 1</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">🏠
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_QFD_HouseOfQuality.html" class="tool-name">QFD House of Quality</a>
+                                    <span class="tool-why">Translate Customer Voice (VOC) to Specs.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-crit">Priority 2</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_QFD_HouseOfQuality.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <div class="tool-row" data-type="mandatory" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(59, 130, 246, 0.2); color:#3b82f6;">🏊
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_Swimlane_Advanced.html" class="tool-name">Advanced Swimlane
+                                        Architect</a>
+                                    <span class="tool-why">Premium Process Mapping. Visualize handoffs & cycle
+                                        time.</span>
+                                </div>
+                                <span class="method-badge method-lean">LEAN</span>
+                                <span class="prio-badge prio-crit">Priority 3</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_Swimlane_Advanced.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="y">
+                                <div class="tool-icon-box">🧠</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=affinity" class="tool-name">Affinity
+                                        Diagram</a>
+                                    <span class="tool-why">Organize chaotic brainstorming ideas.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=affinity" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="g">
+                                <div class="tool-icon-box">📅</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_GanttChart.html" class="tool-name">Project Timelines (Gantt)</a>
+                                    <span class="tool-why">Schedule milestones & dependencies.</span>
+                                </div>
+                                <span class="method-badge method-gen">PROJ. MGMT</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_GanttChart.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="b">
+                                <div class="tool-icon-box">👔</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanLeadership.html" class="tool-name">Leadership & Management</a>
+                                    <span class="tool-why">Change Management (ADKAR).</span>
+                                </div>
+                                <span class="method-badge method-gen">CHANGE MGMT</span>
+                                <span class="prio-badge prio-opt">Opt.</span>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanLeadership.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. MEASURE -->
+                    <div class="stage-card dmaic-2" id="dmaic-stage-2">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">2. MEASURE <span
+                                        style="font-size:16px; cursor:pointer; opacity:0.8;"
+                                        onclick="showWisdom('measure', event); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">MSA, Capability, Statistics</div>
+                            </div>
+                            <div style="display:flex; align-items:center;">
+                                <span class="phase-select-all"
+                                    onclick="togglePhaseAll(this, 'dmaic-content-2'); event.stopPropagation();">Select
+                                    All</span>
+                                <div style="font-size:10px;" id="dmaic-status-2">Open</div>
+                            </div>
+                        </div>
+                        <div id="dmaic-content-2" class="stage-content">
+                            <!-- SKILLS GAINED -->
+                            <div class="skills-banner">
+                                <div class="skills-title">🚀 SKILLS UNLOCKED:</div>
+                                <div class="skills-list">
+                                    <span>Data Collection</span> <span>•</span> <span>Measurement Reliability</span>
+                                    <span>•</span> <span>Baseline Performance</span> <span>•</span> <span>Basic
+                                        Statistics</span>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Premium Tools</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">📏
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_MSA_Premium.html" class="tool-name">MSA (Gage R&R) Premium</a>
+                                    <span class="tool-why">Is your data trustworthy? Validate your measurement system
+                                        first.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-crit">Priority 1</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_MSA_Premium.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">📊
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_DescriptiveStats.html" class="tool-name">Descriptive Stats</a>
+                                    <span class="tool-why">The heartbeat of your process (Mean, Median, Mode,
+                                        StDev).</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-crit">Priority 2</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Calculator_DescriptiveStats.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">🎯
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_ProcessCapability.html" class="tool-name">Process Capability
+                                        (Cp/Cpk)</a>
+                                    <span class="tool-why">Can you meet customer specs? The ultimate baseline
+                                        metric.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-crit">Priority 3</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Calculator_ProcessCapability.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Strategic Baseline</div>
+                            <div class="tool-row" data-type="optional" data-belt="bb">
+                                <div class="tool-icon-box"
+                                    style="background:rgba(255, 107, 53, 0.2); color:var(--accent);">🏹</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_Benchmarking.html" class="tool-name">Competitive Benchmarking</a>
+                                    <span class="tool-why">Gap Analysis vs. World Class standards.</span>
+                                </div>
+                                <span class="method-badge method-gen">STRATEGY</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_Benchmarking.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Analysis Lab</div>
+                            <div class="tool-row" data-type="optional" data-belt="g">
+                                <div class="tool-icon-box">🧪</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_DistributionPowerLab.html" class="tool-name">Distribution Lab</a>
+                                    <span class="tool-why">Test for Normality. Is your data skewed?</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_DistributionPowerLab.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="y">
+                                <div class="tool-icon-box">📐</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_SigmaLevel.html" class="tool-name">Sigma Level Calculator</a>
+                                    <span class="tool-why">DPMO, Z-Score, Yield.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-opt">Opt.</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Calculator_SigmaLevel.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="y">
+                                <span class="tool-icon-box">📊</span>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_Histogram.html" class="tool-name">Histogram Tool</a>
+                                    <span class="tool-why">Visual distribution check.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-opt">Opt.</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_Histogram.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="g">
+                                <span class="tool-icon-box">📦</span>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_BoxPlot.html" class="tool-name">Box & Whisker Plot</a>
+                                    <span class="tool-why">Visual spread & outliers.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-opt">Opt.</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_BoxPlot.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Visual & Workshop</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="b">
+                                <span class="tool-icon-box"
+                                    style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">🗺️</span>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_VSM.html" class="tool-name">Value Stream Map (VSM)</a>
+                                    <span class="tool-why">See the flow. Visualize Value vs. Waste in the total
+                                        line.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="prio-badge prio-crit">Priority 2</span>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_VSM.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <span class="tool-icon-box"
+                                    style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">🔳</span>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_RACI_Premium.html" class="tool-name">Modern RACI Matrix</a>
+                                    <span class="tool-why">Define clear Governance & Accountability.</span>
+                                </div>
+                                <span class="method-badge method-gen">PROJ. MGMT</span>
+                                <span class="prio-badge prio-crit">Priority 2</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_RACI_Premium.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="g">
+                                <span class="tool-icon-box">🌲</span>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=ctq" class="tool-name">CTQ Tree</a>
+                                    <span class="tool-why">Critical to Quality drivers.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=ctq" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="y">
+                                <span class="tool-icon-box">🍝</span>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=spaghetti" class="tool-name">Spaghetti
+                                        Diagram</a>
+                                    <span class="tool-why">Motion waste analysis. Trace the path.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=spaghetti" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. ANALYZE -->
+                    <div class="stage-card dmaic-3" id="dmaic-stage-3">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">3. ANALYZE <span
+                                        style="font-size:16px; cursor:pointer; opacity:0.8;"
+                                        onclick="showWisdom('analyze', event); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Root Cause, Hypothesis, FMEA</div>
+                            </div>
+                            <div style="display:flex; align-items:center;">
+                                <span class="phase-select-all"
+                                    onclick="togglePhaseAll(this, 'dmaic-content-3'); event.stopPropagation();">Select
+                                    All</span>
+                                <div style="font-size:10px;" id="dmaic-status-3">Open</div>
+                            </div>
+                        </div>
+                        <div id="dmaic-content-3" class="stage-content">
+                            <div class="section-separator">Premium Tools</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="g">
+                                <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                <div><a href="Tool_HypothesisWizard_Premium.html" class="tool-name">Hypothesis Wizard
+                                        (Premium)</a><span class="tool-why">Choose right test & p-value.</span></div>
+                                <div><span class="method-badge method-ss">Six Sigma</span></div>
+                                <div><span class="prio-badge prio-crit">Priority 1</span></div>
+                                <div><span class="belt-badge belt-g">GB</span></div>
+                                <div><a href="Tool_HypothesisWizard_Premium.html" class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="g">
+                                <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                <div><a href="Tool_FMEA_Premium.html" class="tool-name">FMEA Risk Manager</a><span
+                                        class="tool-why">Failure Mode Effects Analysis.</span></div>
+                                <div><span class="method-badge method-ss">Six Sigma</span></div>
+                                <div><span class="prio-badge prio-crit">Priority 2</span></div>
+                                <div><span class="belt-badge belt-g">GB</span></div>
+                                <div><a href="Tool_FMEA_Premium.html" class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                <div><a href="Tool_ParetoAnalysis.html" class="tool-name">Pareto Analysis
+                                        (80/20)</a><span class="tool-why">Focus on vital few.</span></div>
+                                <div><span class="method-badge method-ss">Six Sigma</span></div>
+                                <div><span class="prio-badge prio-crit">Priority 3</span></div>
+                                <div><span class="belt-badge belt-y">YB</span></div>
+                                <div><a href="Tool_ParetoAnalysis.html" class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <!-- SKILLS GAINED -->
+                            <div class="skills-banner">
+                                <div class="skills-title">🚀 SKILLS UNLOCKED:</div>
+                                <div class="skills-list">
+                                    <span>Root Cause Analysis</span> <span>•</span> <span>Hypothesis Testing</span>
+                                    <span>•</span> <span>Risk Management</span> <span>•</span> <span>Data
+                                        Interpretation</span>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Root Cause Discovery</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <div class="tool-icon-box"
+                                    style="background:rgba(255, 107, 53, 0.2); color:var(--accent);">🐟</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=fishbone" class="tool-name">Fishbone
+                                        Diagram</a>
+                                    <span class="tool-why">Brainstorm causes (Man, Machine, Material, Method).</span>
+                                </div>
+                                <span class="method-badge method-gen">ROOT CAUSE</span>
+                                <span class="prio-badge prio-crit">Priority 1</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=fishbone" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <div class="tool-icon-box"
+                                    style="background:rgba(255, 107, 53, 0.2); color:var(--accent);">❓</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=5whys" class="tool-name">5 Whys Analysis</a>
+                                    <span class="tool-why">Drill down past symptoms to the true root cause.</span>
+                                </div>
+                                <span class="method-badge method-gen">ROOT CAUSE</span>
+                                <span class="prio-badge prio-crit">Priority 2</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=5whys" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+
+
+                            <div class="section-separator">Advanced Analysis</div>
+                            <div class="tool-row" data-type="optional" data-belt="g">
+                                <div class="tool-icon-box">🔢</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_tTest.html" class="tool-name">t-Test Analysis</a>
+                                    <span class="tool-why">Compare 2 groups.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Calculator_tTest.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="b">
+                                <div class="tool-icon-box">🔢</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_ANOVA.html" class="tool-name">ANOVA / F-Test</a>
+                                    <span class="tool-why">Compare 3+ groups/var.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Calculator_ANOVA.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="g">
+                                <div class="tool-icon-box">🔲</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_ChiSquare.html" class="tool-name">Chi-Square Test</a>
+                                    <span class="tool-why">Categorical data test.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Calculator_ChiSquare.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="b">
+                                <div class="tool-icon-box">📉</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_Regression.html" class="tool-name">Regression & Trends</a>
+                                    <span class="tool-why">Correlation & Scatter.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Calculator_Regression.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="b">
+                                <div class="tool-icon-box">🕵️</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_AdvancedAnalytics.html" class="tool-name">Advanced Analytics (MVA)</a>
+                                    <span class="tool-why">Clustering/Deep stats.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-opt">Opt.</span>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_AdvancedAnalytics.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Visual & Workshop</div>
+                            <div class="tool-row" data-type="optional" data-belt="g">
+                                <div class="tool-icon-box">🏊</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_Swimlane_Advanced.html" class="tool-name">Swimlane
+                                        Diagram</a>
+                                    <span class="tool-why">Cross-functional flow.</span>
+                                </div>
+                                <span class="method-badge method-gen">Rec.</span>
+                                <span class="prio-badge prio-rec">GB</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_Swimlane_Advanced.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="y">
+                                <div class="tool-icon-box">⚔️</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=swot" class="tool-name">SWOT Analysis</a>
+                                    <span class="tool-why">Strategic assessment.</span>
+                                </div>
+                                <span class="prio-badge prio-opt">Opt.</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=swot" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. IMPROVE -->
+                    <div class="stage-card dmaic-4" id="dmaic-stage-4">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">4. IMPROVE <span
+                                        style="font-size:16px; cursor:pointer; opacity:0.8;"
+                                        onclick="showWisdom('improve', event); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Solutions, DOE, Implementation</div>
+                            </div>
+                            <div style="display:flex; align-items:center;">
+                                <span class="phase-select-all"
+                                    onclick="togglePhaseAll(this, 'dmaic-content-4'); event.stopPropagation();">Select
+                                    All</span>
+                                <div style="font-size:10px;" id="dmaic-status-4">Open</div>
+                            </div>
+                        </div>
+                        <div id="dmaic-content-4" class="stage-content">
+                            <!-- SKILLS GAINED -->
+                            <div class="skills-banner">
+                                <div class="skills-title">🚀 SKILLS UNLOCKED:</div>
+                                <div class="skills-list">
+                                    <span>Experimental Design</span> <span>•</span> <span>Solution Selection</span>
+                                    <span>•</span> <span>Financial Analysis</span> <span>•</span> <span>Implementation
+                                        Planning</span>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Solution Engine</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">💡
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=affinity" class="tool-name">Brainstorming
+                                        Board</a>
+                                    <span class="tool-why">Divergent thinking. Generate 50+ ideas.</span>
+                                </div>
+                                <span class="method-badge method-gen">IDEATION</span>
+                                <span class="prio-badge prio-crit">Priority 1</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=affinity" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">💰
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=cba" class="tool-name">Cost Benefit
+                                        Analysis</a>
+                                    <span class="tool-why">Does the ROI justify the cost?</span>
+                                </div>
+                                <span class="method-badge method-gen">FINANCE</span>
+                                <span class="prio-badge prio-crit">Priority 2</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=cba" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Advanced Optimization (Premium)</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(244, 114, 182, 0.2); color:var(--accent-poka);">🛡️
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_PokaYoke_Premium.html" class="tool-name">Poka-Yoke Architect</a>
+                                    <span class="tool-why">Mistake-proofing the new design. Zero defect focus.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="prio-badge prio-crit">Priority 1</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_Improve_Control_Suite.html#poka" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">🔬
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_DOE_Premium.html" class="tool-name">DOE Optimizer</a>
+                                    <span class="tool-why">Design of Experiments. Find perfect settings mathematically.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-crit">Priority 2</span>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_DOE_Premium.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Implementation Planning</div>
+                            <div class="tool-row" data-type="optional" data-belt="g">
+                                <div class="tool-icon-box">🔭</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_Forecast.html" class="tool-name">Forecast & Trend</a>
+                                    <span class="tool-why">Predict future states.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-opt">Opt.</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_Forecast.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="g">
+                                <div class="tool-icon-box">📏</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_SampleSize.html" class="tool-name">Sample Size Calculator</a>
+                                    <span class="tool-why">Validation sizing.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Calculator_SampleSize.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="y">
+                                <div class="tool-icon-box">✅</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=moscow" class="tool-name">MoSCoW Rules</a>
+                                    <span class="tool-why">Prioritization (Must, Should, Could, Won't).</span>
+                                </div>
+                                <span class="method-badge method-gen">PRIORITIZ.</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=moscow" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="y">
+                                <div class="tool-icon-box">🧹</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=5s" class="tool-name">5S Checklist</a>
+                                    <span class="tool-why">Workplace organization.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=5s" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. CONTROL -->
+                    <div class="stage-card dmaic-5" id="dmaic-stage-5">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">5. CONTROL <span
+                                        style="font-size:16px; cursor:pointer; opacity:0.8;"
+                                        onclick="showWisdom('control', event); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">SPC, Control Plans, Sustaining</div>
+                            </div>
+                            <div style="display:flex; align-items:center;">
+                                <span class="phase-select-all"
+                                    onclick="togglePhaseAll(this, 'dmaic-content-5'); event.stopPropagation();">Select
+                                    All</span>
+                                <div style="font-size:10px;" id="dmaic-status-5">Open</div>
+                            </div>
+                        </div>
+                        <div id="dmaic-content-5" class="stage-content">
+                            <!-- SKILLS GAINED -->
+                            <div class="skills-banner">
+                                <div class="skills-title">🚀 SKILLS UNLOCKED:</div>
+                                <div class="skills-list">
+                                    <span>Process Control</span> <span>•</span> <span>Standardization</span>
+                                    <span>•</span> <span>Risk Monitoring</span> <span>•</span> <span>Long-term
+                                        Sustainability</span>
+                                </div>
+                            </div>
+
+                            <div class="section-separator">Premium Tools</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(231, 76, 60, 0.2); color:#e74c3c;">📈
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_ControlCharts.html" class="tool-name">Control Charts (SPC)</a>
+                                    <span class="tool-why">Is the improved process stable? Monitor with Xbar-R / I-MR
+                                        lines.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-crit">Priority 1</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Calculator_ControlCharts.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(245, 158, 11, 0.2); color:var(--accent-risk);">
+                                    ⚠️</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_RiskRegistrar_Premium.html" class="tool-name">Modern Risk Registrar</a>
+                                    <span class="tool-why">Proactive threat tracking and mitigation management.</span>
+                                </div>
+                                <span class="method-badge method-ss">Six Sigma</span>
+                                <span class="prio-badge prio-crit">Priority 2</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_Improve_Control_Suite.html#risk" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+
+                            <!-- Visual -->
+                            <div class="section-separator">Documentation & Sustainment</div>
+                            <div class="tool-row" data-type="mandatory" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(59, 130, 246, 0.2); color:var(--accent-sop);">📄
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_SOP_Premium.html" class="tool-name">Professional SOP Engine</a>
+                                    <span class="tool-why">Standardizing the 'New Way' for sustainable quality.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="prio-badge prio-crit">Priority 1</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_Improve_Control_Suite.html#sop" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-type="optional" data-belt="y">
+                                <div class="tool-icon-box">📄</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=a3" class="tool-name">A3 Problem Solving</a>
+                                    <span class="tool-why">Final project summary on one page.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="prio-badge prio-rec">Rec.</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_LeanWorkshop.html?tool=a3" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <!-- Certification -->
+                            <div class="tool-row" data-type="optional" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(255, 215, 0, 0.1); color:#ffd700;">🎓
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_ExamEngine.html" class="tool-name">Project Certification</a>
+                                    <span class="tool-why">Generate transcript & sign-off.</span>
+                                </div>
+                                <span class="method-badge method-gen">Admin</span>
+                                <span class="prio-badge prio-opt">Final</span>
+                                <span class="belt-badge belt-b">All</span>
+                                <div class="tool-action">
+                                    <input type="checkbox" class="tool-check" onchange="updateProgress('dmaic')">
+                                    <a href="Tool_ExamEngine.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DMADV PATH (Design for Six Sigma) -->
+                <div id="path-dmadv" class="workflow-path">
+
+                    <!-- STAGE 1: DEFINE (2-3 Weeks) -->
+                    <div class="stage-card dmadv-1">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">1. DEFINE (2-3 Weeks) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('dmadv_define'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Charter, VOC, Market Segmentation</div>
+                            </div>
+                            <div style="font-size:10px;" id="dmadv-status-1">Open</div>
+                        </div>
+                        <div class="stage-content open">
+                            <!-- YB -->
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box"
+                                    style="background:rgba(255, 107, 53, 0.2); color:var(--accent);">👑</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_ProjectCharter_Premium.html" class="tool-name">Project Charter &
+                                        Scope</a>
+                                    <span class="tool-why">Define problem, scope, and goals.</span>
+                                </div>
+                                <span class="method-badge method-ss">DFSS</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_ProjectCharter_Premium.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">👥
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_StakeholderAnalysis.html" class="tool-name">Stakeholder Map & RACI</a>
+                                    <span class="tool-why">Identify who is impacted and responsible.</span>
+                                </div>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_StakeholderAnalysis.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <!-- GB -->
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">
+                                    🗺️</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="tool-name">SIPOC Diagram</a>
+                                    <span class="tool-why">High-level process boundary.</span>
+                                </div>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=sipoc"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(0, 184, 148, 0.2); color:#00b894;">🗣️
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">VOC Plan & Themes</a>
+                                    <span class="tool-why">Gather and organize customer needs.</span>
+                                </div>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                            <!-- BB -->
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(0, 0, 0, 0.5); color:#fff;">🏢</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">Competitive Benchmarking</a>
+                                    <span class="tool-why">Voice of Business & Market approach.</span>
+                                </div>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STAGE 2: MEASURE (2-3 Weeks) -->
+                    <div class="stage-card dmadv-2">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">2. MEASURE (2-3 Weeks) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('dmadv_measure'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">CTQ Flowdown, Kano, QFD</div>
+                            </div>
+                            <div style="font-size:10px;" id="dmadv-status-2">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <!-- YB -->
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(241, 196, 15, 0.2); color:#f1c40f;">🌳
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">CTQ Tree (Simple)</a>
+                                    <span class="tool-why">Translate needs to measurable CTQs.</span>
+                                </div>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                            <!-- GB -->
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">📊
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=kano" class="tool-name">Kano Model</a>
+                                    <span class="tool-why">Classify features: Must-have vs Delighters.</span>
+                                </div>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=kano"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">🏠
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=qfd" class="tool-name">QFD / House of Quality
+                                        1</a>
+                                    <span class="tool-why">First level technical requirements.</span>
+                                </div>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=qfd"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <!-- BB -->
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(0, 0, 0, 0.5); color:#fff;">📏</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">Design Scorecard</a>
+                                    <span class="tool-why">Weighted CTQs and targets strategy.</span>
+                                </div>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STAGE 3: ANALYZE (3-4 Weeks) -->
+                    <div class="stage-card dmadv-3">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">3. ANALYZE (3-4 Weeks) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('dmadv_analyze'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Brainstorming, Pugh Matrix, Risks</div>
+                            </div>
+                            <div style="font-size:10px;" id="dmadv-status-3">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <!-- YB -->
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(230, 126, 34, 0.2); color:#e67e22;">💡
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=affinity" class="tool-name">Concept
+                                        Brainstorming</a>
+                                    <span class="tool-why">Generate 3-5 design concepts.</span>
+                                </div>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=affinity"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <!-- GB -->
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">✅
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=pugh" class="tool-name">Pugh Matrix</a>
+                                    <span class="tool-why">Concept selection against baseline.</span>
+                                </div>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=pugh"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(231, 76, 60, 0.2); color:#e74c3c;">🛡️
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_FMEA_Premium.html" class="tool-name">Risk Scan (Mini-FMEA)</a>
+                                    <span class="tool-why">Early identification of failure modes.</span>
+                                </div>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_FMEA_Premium.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <!-- BB -->
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(0, 0, 0, 0.5); color:#fff;">✨</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">TRIZ / Trade-offs</a>
+                                    <span class="tool-why">Innovative complex problem solving.</span>
+                                </div>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STAGE 4: DESIGN (4-6 Weeks) -->
+                    <div class="stage-card dmadv-4">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">4. DESIGN (4-6 Weeks) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('dmadv_design'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Detailed Design, DOE, DFMEA</div>
+                            </div>
+                            <div style="font-size:10px;" id="dmadv-status-4">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <!-- YB -->
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">📐
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">Review Blueprint</a>
+                                    <span class="tool-why">Review detailed process/service map.</span>
+                                </div>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(230, 126, 34, 0.2); color:#e67e22;">🔨
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">Prototype Plan</a>
+                                    <span class="tool-why">Plan for building and testing prototypes.</span>
+                                </div>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                            <!-- GB -->
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(231, 76, 60, 0.2); color:#e74c3c;">⚠️
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_FMEA_Premium.html" class="tool-name">DFMEA (Detailed)</a>
+                                    <span class="tool-why">Comprehensive design risk analysis.</span>
+                                </div>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_FMEA_Premium.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(0, 184, 148, 0.2); color:#00b894;">📝
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">Design Specs</a>
+                                    <span class="tool-why">Detailed specifications tied to CTQs.</span>
+                                </div>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                            <!-- BB -->
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">🧪
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Calculator_DOE.html" class="tool-name">DOE (Robust Design)</a>
+                                    <span class="tool-why">Optimize parameters for reduced variation.</span>
+                                </div>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action"><a href="Calculator_DOE.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STAGE 5: VERIFY (3-4 Weeks) -->
+                    <div class="stage-card dmadv-5">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">5. VERIFY (3-4 Weeks) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('dmadv_verify'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Pilot, Validation, Hand-off</div>
+                            </div>
+                            <div style="font-size:10px;" id="dmadv-status-5">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <!-- YB -->
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">✅
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=controlplan" class="tool-name">Control Plan</a>
+                                    <span class="tool-why">Basic control & monitoring plan.</span>
+                                </div>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=controlplan"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">📊
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Stats_Calculator_Main.html" class="tool-name">Before/After Verification</a>
+                                    <span class="tool-why">Review pilot execution metrics.</span>
+                                </div>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Stats_Calculator_Main.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <!-- GB -->
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(241, 196, 15, 0.2); color:#f1c40f;">🚀
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">DVP&R / Pilot Report</a>
+                                    <span class="tool-why">Design Verification Plan & Report.</span>
+                                </div>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                            <!-- BB -->
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(0, 0, 0, 0.5); color:#fff;">📈</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_TemplatesGallery.html" class="tool-name">Reliability Testing</a>
+                                    <span class="tool-why">Stress tests and scale-up planning.</span>
+                                </div>
+                                <span class="belt-badge belt-b">BB</span>
+                                <div class="tool-action"><a href="Tool_TemplatesGallery.html"
+                                        class="btn btn-sm">View</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KAIZEN (Rapid Event) -->
+                <div id="path-kaizen" class="workflow-path">
+
+                    <!-- 1. KICKOFF & CURRENT STATE -->
+                    <div class="stage-card dmaic-1">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">1. KICKOFF & CURRENT STATE <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('define'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Charter, Gemba, Waste ID (Day 1)</div>
+                            </div>
+                            <div style="font-size:10px;" id="kaizen-status-1">Open</div>
+                        </div>
+                        <div class="stage-content open">
+                            <div class="skills-banner">
+                                <div class="skills-title">🚀 GOAL:</div>
+                                <div class="skills-list"><span>Map the Process</span> <span>•</span> <span>Identify
+                                        Waste</span></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box"
+                                    style="background:rgba(255, 107, 53, 0.2); color:var(--accent);">📋</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_ProjectCharter_Premium.html" class="tool-name">Kickoff: Event
+                                        Charter</a>
+                                    <span class="tool-why">Roles, Goals & Scope (2 hrs).</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_ProjectCharter_Premium.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">
+                                    🗺️</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="tool-name">SIPOC & Process
+                                        Map</a>
+                                    <span class="tool-why">Define boundaries (2 hrs).</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=sipoc"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(231, 76, 60, 0.2); color:#e74c3c;">🗑️
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_Target_Waste.html" class="tool-name">Gemba Walk: Waste ID</a>
+                                    <span class="tool-why">Observe DOWNTIME (2 hrs).</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_Target_Waste.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. ANALYZE & BRAINSTORM -->
+                    <div class="stage-card dmaic-2">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">2. ANALYZE & BRAINSTORM <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('kaizen_analyze'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Root Cause, 5 Whys, Solutions</div>
+                            </div>
+                            <div style="font-size:10px;" id="kaizen-status-2">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(241, 196, 15, 0.2); color:#f1c40f;">⚡
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=fishbone" class="tool-name">Fishbone (Root
+                                        Cause)</a>
+                                    <span class="tool-why">Find root causes (2 hrs).</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=fishbone"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(230, 126, 34, 0.2); color:#e67e22;">💡
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=affinity" class="tool-name">Brainstorming
+                                        Solutions</a>
+                                    <span class="tool-why">Generate options (2 hrs).</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=affinity"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">⚖️
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=pick" class="tool-name">Prioritization
+                                        Matrix</a>
+                                    <span class="tool-why">Impact vs Effort (1 hr).</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=pick"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. IMPLEMENT -->
+                    <div class="stage-card dmaic-3">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">3. IMPLEMENT (Act) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('kaizen_act'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Execute, 5S, Standard Work</div>
+                            </div>
+                            <div style="font-size:10px;" id="kaizen-status-3">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">🧹
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_KaizenPDCA.html" class="tool-name">5S Event</a>
+                                    <span class="tool-why">Sort, Set, Shine (Workspace).</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_KaizenPDCA.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">🔒
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=controlplan" class="tool-name">New Standard
+                                        Work</a>
+                                    <span class="tool-why">Document the new process.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=controlplan"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. VERIFY & CLOSE -->
+                    <div class="stage-card dmaic-4">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">4. VERIFY & CLOSE <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('kaizen_sustain'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Results, Celebration, Handover</div>
+                            </div>
+                            <div style="font-size:10px;" id="kaizen-status-4">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">📊
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Stats_Calculator_Main.html" class="tool-name">Verify: Metrics</a>
+                                    <span class="tool-why">Time study & Defect counts.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-y">YB</span>
+                                <div class="tool-action"><a href="Stats_Calculator_Main.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">📝
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=a3" class="tool-name">A3 Report Out</a>
+                                    <span class="tool-why">Summarize and celebrate.</span>
+                                </div>
+                                <span class="method-badge method-lean">Lean</span>
+                                <span class="belt-badge belt-g">GB</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=a3"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FOCUS PDCA (Healthcare/Service Quality) -->
+                <div id="path-focus" class="workflow-path">
+
+                    <!-- 1. FIND -->
+                    <div class="stage-card focus-1 dmaic-1">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">1. FIND (F) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('focus_find'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Identify process, Problem Statement, Baseline
+                                </div>
+                            </div>
+                            <div style="font-size:10px;" id="focus-status-1">Open</div>
+                        </div>
+                        <div class="stage-content open">
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box"
+                                    style="background:rgba(255, 107, 53, 0.2); color:var(--accent);">👑</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_ProjectCharter_Premium.html" class="tool-name">Problem Statement &
+                                        Aim</a>
+                                    <span class="tool-why">Define impact/goal (SMART).</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-y">Step 1</span>
+                                <div class="tool-action"><a href="Tool_ProjectCharter_Premium.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">🔎
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_ParetoAnalysis.html" class="tool-name">Pareto Analysis (80/20)</a>
+                                    <span class="tool-why">Select "vital few" opportunities.</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-y">Step 1</span>
+                                <div class="tool-action"><a href="Tool_ParetoAnalysis.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">📊
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=ctq" class="tool-name">Baseline KPI List
+                                        (CTQ)</a>
+                                    <span class="tool-why">Define Y metric.</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-y">Step 1</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=ctq"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. ORGANIZE -->
+                    <div class="stage-card focus-2 dmaic-1">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">2. ORGANIZE (O) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('focus_organize'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Team, Roles, Stakeholders</div>
+                            </div>
+                            <div style="font-size:10px;" id="focus-status-2">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">👥
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_StakeholderAnalysis.html" class="tool-name">Team Charter (RACI)</a>
+                                    <span class="tool-why">Assign roles & cadence.</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-y">Step 2</span>
+                                <div class="tool-action"><a href="Tool_StakeholderAnalysis.html?tab=raci"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="y">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">🤝
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_StakeholderAnalysis.html" class="tool-name">Stakeholder Map</a>
+                                    <span class="tool-why">Communication plan.</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-y">Step 2</span>
+                                <div class="tool-action"><a href="Tool_StakeholderAnalysis.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. CLARIFY -->
+                    <div class="stage-card focus-3 dmaic-2">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">3. CLARIFY (C) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('focus_clarify'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Process Map, Current State, Data Plan</div>
+                            </div>
+                            <div style="font-size:10px;" id="focus-status-3">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">
+                                    🗺️</div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="tool-name">SIPOC / Process
+                                        Map</a>
+                                    <span class="tool-why">Map workflow & handoffs.</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-g">Step 3</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=sipoc"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">🏊
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=swimlane" class="tool-name">Swimlane Map</a>
+                                    <span class="tool-why">Clarify roles & handoffs.</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-g">Step 3</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=swimlane"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. UNDERSTAND -->
+                    <div class="stage-card focus-4 dmaic-2">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">4. UNDERSTAND (U) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('focus_understand'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Root Cause, Variation, Stratification</div>
+                            </div>
+                            <div style="font-size:10px;" id="focus-status-4">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(225, 112, 85, 0.2); color:#e17055;">🐟
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=fishbone" class="tool-name">Fishbone
+                                        Diagram</a>
+                                    <span class="tool-why">Identify potential causes.</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-g">Step 4</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=fishbone"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(230, 126, 34, 0.2); color:#e67e22;">❓
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=5whys" class="tool-name">5 Whys Analysis</a>
+                                    <span class="tool-why">Drill to root cause.</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-g">Step 4</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=5whys"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. SELECT -->
+                    <div class="stage-card focus-5 dmaic-2">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">5. SELECT (S) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('focus_select'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Intervention, Prioritization, Risk</div>
+                            </div>
+                            <div style="font-size:10px;" id="focus-status-5">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(155, 89, 182, 0.2); color:#9b59b6;">💡
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=pick" class="tool-name">Solution
+                                        Prioritization</a>
+                                    <span class="tool-why">PICK Matrix (Impact vs Effort).</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-b">Step 5</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=pick"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(231, 76, 60, 0.2); color:#e74c3c;">⚠️
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_FMEA_Premium.html" class="tool-name">Risk Review (Mini-FMEA)</a>
+                                    <span class="tool-why">Assess risk of intervention.</span>
+                                </div>
+                                <span class="method-badge method-ss">Focus</span>
+                                <span class="belt-badge belt-b">Step 5</span>
+                                <div class="tool-action"><a href="Tool_FMEA_Premium.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. PLAN -->
+                    <div class="stage-card focus-6 dmaic-3">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">6. PLAN (P) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('focus_plan'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Pilot Plan, Measures, Tasks</div>
+                            </div>
+                            <div style="font-size:10px;" id="focus-status-6">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">📝
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_ProjectCharter_Premium.html" class="tool-name">Implementation Plan</a>
+                                    <span class="tool-why">Tasks, Owners, Dates.</span>
+                                </div>
+                                <span class="method-badge method-ss">PDCA</span>
+                                <span class="belt-badge belt-g">Step 6</span>
+                                <div class="tool-action"><a href="Tool_ProjectCharter_Premium.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7. DO -->
+                    <div class="stage-card focus-7 dmaic-3">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">7. DO (D) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('focus_do'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Execute Pilot, Capture Data</div>
+                            </div>
+                            <div style="font-size:10px;" id="focus-status-7">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(241, 196, 15, 0.2); color:#f1c40f;">🚀
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="#" class="tool-name" onclick="return false;">Pilot Execution</a>
+                                    <span class="tool-why">Train & Run new method.</span>
+                                </div>
+                                <span class="method-badge method-ss">PDCA</span>
+                                <span class="belt-badge belt-g">Step 7</span>
+                                <div class="tool-action"><button class="btn btn-sm"
+                                        onclick="alert('Use Pilot Log Template');">View</button></div>
+                            </div>
+                            <div class="tool-row" data-belt="g">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">📄
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=controlplan" class="tool-name">Draft Standard
+                                        Work</a>
+                                    <span class="tool-why">Initial SOP draft.</span>
+                                </div>
+                                <span class="method-badge method-ss">PDCA</span>
+                                <span class="belt-badge belt-g">Step 7</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=controlplan"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8. CHECK -->
+                    <div class="stage-card focus-8 dmaic-4">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">8. CHECK (C) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('focus_check'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Compare Results, Run Charts</div>
+                            </div>
+                            <div style="font-size:10px;" id="focus-status-8">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">📈
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Stats_Calculator_Main.html" class="tool-name">Run Chart / Control Chart</a>
+                                    <span class="tool-why">Check trend & stability.</span>
+                                </div>
+                                <span class="method-badge method-ss">PDCA</span>
+                                <span class="belt-badge belt-b">Step 8</span>
+                                <div class="tool-action"><a href="Stats_Calculator_Main.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(52, 152, 219, 0.2); color:#3498db;">📊
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Stats_Calculator_Main.html" class="tool-name">Before / After Analysis</a>
+                                    <span class="tool-why">Verify KPI improvement.</span>
+                                </div>
+                                <span class="method-badge method-ss">PDCA</span>
+                                <span class="belt-badge belt-b">Step 8</span>
+                                <div class="tool-action"><a href="Stats_Calculator_Main.html"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 9. ACT -->
+                    <div class="stage-card focus-9 dmaic-5">
+                        <div class="stage-header" onclick="toggleStage(this)">
+                            <div>
+                                <h3 style="display:flex; align-items:center; gap:10px;">9. ACT (A) <span
+                                        style="font-size:16px; cursor:pointer;"
+                                        onclick="showWisdom('focus_act'); event.stopPropagation();"
+                                        title="Phase Wisdom">💡</span></h3>
+                                <div style="font-size:12px;opacity:0.7;">Standardize, Sustain, Scale</div>
+                            </div>
+                            <div style="font-size:10px;" id="focus-status-9">Open</div>
+                        </div>
+                        <div class="stage-content">
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">🔒
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_LeanWorkshop.html?tool=controlplan" class="tool-name">Control Plan</a>
+                                    <span class="tool-why">Reaction plan & monitoring.</span>
+                                </div>
+                                <span class="method-badge method-ss">PDCA</span>
+                                <span class="belt-badge belt-b">Step 9</span>
+                                <div class="tool-action"><a href="Tool_LeanWorkshop.html?tool=controlplan"
+                                        class="btn btn-sm">Launch</a></div>
+                            </div>
+                            <div class="tool-row" data-belt="b">
+                                <div class="tool-icon-box" style="background:rgba(46, 204, 113, 0.2); color:#2ecc71;">📋
+                                </div>
+                                <div style="flex-grow:1;">
+                                    <a href="Tool_KaizenPDCA.html" class="tool-name">Audit Checklist</a>
+                                    <span class="tool-why">Verify sustainability.</span>
+                                </div>
+                                <span class="method-badge method-ss">PDCA</span>
+                                <span class="belt-badge belt-b">Step 9</span>
+                                <div class="tool-action"><a href="Tool_KaizenPDCA.html" class="btn btn-sm">Launch</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDEBAR -->
+            <!-- MODERN RIGHT SIDEBAR -->
+            <div class="sticky-sidebar"
+                style="position:sticky; top:90px; height:fit-content; display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Quick Nav -->
+                <div class="card" style="padding:20px;">
+                    <h4 style="margin:0 0 15px 0; color:var(--accent); font-family:'Orbitron'; font-size:14px;">Running
+                        Phase</h4>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <a href="#path-dmaic" onclick="activatePath('dmaic'); window.scrollTo(0,0);"
+                            style="text-decoration:none; color:#ddd; font-size:12px; display:flex; align-items:center; gap:10px; padding:8px; border-radius:4px; background:rgba(255,255,255,0.05);">
+                            <span style="color:var(--define);">●</span> Define / Measure
+                        </a>
+                        <a href="#path-dmaic" onclick="activatePath('dmaic');"
+                            style="text-decoration:none; color:#ddd; font-size:12px; display:flex; align-items:center; gap:10px; padding:8px; border-radius:4px; background:rgba(255,255,255,0.05);">
+                            <span style="color:var(--analyze);">●</span> Analyze / Improve
+                        </a>
+                        <a href="#path-dmaic" onclick="activatePath('dmaic');"
+                            style="text-decoration:none; color:#ddd; font-size:12px; display:flex; align-items:center; gap:10px; padding:8px; border-radius:4px; background:rgba(255,255,255,0.05);">
+                            <span style="color:var(--control);">●</span> Control / Sustain
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Progress Card -->
+                <div class="card" style="text-align:center; position:relative; overflow:hidden;">
+                    <div style="position:absolute; top:0; left:0; width:100%; height:4px; background:#333;">
+                        <div id="progress-bar-top"
+                            style="width:0%; height:100%; background:var(--accent); transition:0.5s;"></div>
+                    </div>
+                    <h4 style="margin:10px 0 0 0;">Completion</h4>
+                    <div style="font-size:42px; font-weight:800; color:var(--accent); text-shadow:0 0 20px rgba(0,0,0,0.5);"
+                        id="sidebar-percent">0%</div>
+                    <div style="font-size:11px; color:#aaa;">of current phase tools</div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="card" style="padding:15px;">
+                    <h4 style="margin:0 0 10px 0; color:#888; font-size:12px; text-transform:uppercase;">Shortcuts</h4>
+                    <a href="Stats_Calculator_Main.html"
+                        style="display:block; padding:10px; background:var(--surface-2); color:white; border-radius:6px; text-decoration:none; margin-bottom:5px; border:1px solid var(--glass-border); font-size:12px;">
+                        📊 Stats Engine
+                    </a>
+                    <a href="Tool_TemplatesGallery.html"
+                        style="display:block; padding:10px; background:var(--surface-2); color:white; border-radius:6px; text-decoration:none; border:1px solid var(--glass-border); font-size:12px;">
+                        📂 Templates Gallery
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let recPath = 'dmaic';
+
+        // --- BELT FILTERING LOGIC ---
+        // --- BELT FILTERING LOGIC & COLOR THEMES ---
+        function filterBelt() {
+            const belt = document.getElementById('beltFilter').value;
+            const rows = document.querySelectorAll('.tool-row');
+            const body = document.body;
+
+            // RESET THEMES
+            body.classList.remove('theme-yellow', 'theme-green');
+
+            // APPLY THEME
+            if (belt === 'yellow') body.classList.add('theme-yellow');
+            if (belt === 'green') body.classList.add('theme-green');
+            // 'black' or 'all' defaults to standard premium theme
+
+            rows.forEach(row => {
+                const rowBelt = row.getAttribute('data-belt'); // y, g, b
+                if (!rowBelt) return; // Skip if no belt data
+
+                let show = false;
+                if (belt === 'all') {
+                    show = true;
+                } else if (belt === 'yellow') {
+                    if (rowBelt === 'y') show = true;
+                } else if (belt === 'green') {
+                    if (rowBelt === 'y' || rowBelt === 'g') show = true;
+                } else if (belt === 'black') {
+                    // Black includes everything
+                    show = true;
+                }
+
+                row.style.display = show ? 'grid' : 'none';
+            });
+        }
+
+        // TRIAGE
+        function nextTriage(q, val) {
+            document.querySelectorAll('.triage-step').forEach(el => el.classList.remove('active'));
+            document.getElementById('q' + q).classList.add('active');
+        }
+        function endTriage(path) {
+            recPath = path;
+            document.querySelectorAll('.triage-step').forEach(el => el.classList.remove('active'));
+            document.getElementById('triageResult').classList.add('active');
+            const titles = { 'dmaic': 'Recommended: DMAIC', 'dmadv': 'Recommended: DMADV', 'kaizen': 'Recommended: Kaizen Event', 'focus': 'Recommended: FOCUS PDCA (Quality)' };
+            document.getElementById('recTitle').innerText = titles[path];
+        }
+        function resetTriage() {
+            document.querySelectorAll('.triage-step').forEach(el => el.classList.remove('active'));
+            document.getElementById('q1').classList.add('active');
+        }
+        function skipTriage() { window.scrollTo({ top: 400, behavior: 'smooth' }); }
+
+        // TABS
+        function activatePath(path) {
+            document.querySelectorAll('.path-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.tab-' + path).classList.add('active');
+            document.querySelectorAll('.workflow-path').forEach(p => p.classList.remove('active'));
+            document.getElementById('path-' + path).classList.add('active');
+            window.scrollTo({ top: 400, behavior: 'smooth' });
+            updateProgress(path);
+        }
+
+        function toggleStage(header) {
+            header.nextElementSibling.classList.toggle('open');
+        }
+
+        function togglePhaseAll(btn, contentId) {
+            const container = document.getElementById(contentId);
+            // Only toggle visible items based on filter!
+            const belt = document.getElementById('beltFilter').value;
+            const checkboxes = Array.from(container.querySelectorAll('.tool-row')).filter(r => r.style.display !== 'none').map(r => r.querySelector('.tool-check'));
+
+            let allChecked = true;
+            checkboxes.forEach(c => { if (!c.checked) allChecked = false; });
+
+            const newState = !allChecked;
+            checkboxes.forEach(c => c.checked = newState);
+
+            btn.innerText = newState ? "Deselect All" : "Select All";
+            updateProgress('dmaic');
+        }
+
+        // PROGRESS
+        function updateProgress(boxType) {
+            const container = document.getElementById('path-' + boxType);
+            if (!container) return;
+
+            const allChecks = container.querySelectorAll('.tool-check');
+            let checkedCount = 0;
+            allChecks.forEach(c => {
+                if (c.checked) {
+                    checkedCount++;
+                    c.closest('.tool-row').classList.add('completed');
+                } else {
+                    c.closest('.tool-row').classList.remove('completed');
+                }
+            });
+            const pct = allChecks.length > 0 ? Math.round((checkedCount / allChecks.length) * 100) : 0;
+            document.getElementById('sidebar-percent').innerText = pct + '%';
+
+            function updateStageStatus(stageClass, statusId, contentId) {
+                const stage = container.querySelector('.' + stageClass);
+                if (!stage) return;
+
+                const mandatories = stage.querySelectorAll('.tool-row[data-type="mandatory"] input.tool-check');
+                let allMandatoryDone = true;
+                if (mandatories.length === 0) allMandatoryDone = true;
+                mandatories.forEach(m => { if (!m.checked) allMandatoryDone = false; });
+
+                const statusEl = document.getElementById(statusId);
+                if (statusEl) {
+                    statusEl.innerText = allMandatoryDone ? "✓ Complete" : "In Progress";
+                    statusEl.style.color = allMandatoryDone ? "var(--success)" : "inherit";
+                }
+            }
+
+            if (boxType === 'dmaic') {
+                updateStageStatus('dmaic-1', 'dmaic-status-1');
+                updateStageStatus('dmaic-2', 'dmaic-status-2');
+                updateStageStatus('dmaic-3', 'dmaic-status-3');
+                updateStageStatus('dmaic-4', 'dmaic-status-4');
+                updateStageStatus('dmaic-5', 'dmaic-status-5');
+            } else if (boxType === 'dmadv') {
+                // DMADV Uses 'dmadv-N' classes
+                updateStageStatus('dmadv-1', 'dmadv-status-1');
+                updateStageStatus('dmadv-2', 'dmadv-status-2');
+                updateStageStatus('dmadv-3', 'dmadv-status-3');
+                updateStageStatus('dmadv-4', 'dmadv-status-4');
+                updateStageStatus('dmadv-5', 'dmadv-status-5');
+            } else if (boxType === 'kaizen') {
+                // Kaizen uses 'dmaic-N' classes inside the kaizen container
+                updateStageStatus('dmaic-1', 'kaizen-status-1');
+                updateStageStatus('dmaic-2', 'kaizen-status-2');
+                updateStageStatus('dmaic-3', 'kaizen-status-3');
+                updateStageStatus('dmaic-4', 'kaizen-status-4');
+            } else if (boxType === 'focus') {
+                // FOCUS 9-Step Workflow
+                updateStageStatus('focus-1', 'focus-status-1');
+                updateStageStatus('focus-2', 'focus-status-2');
+                updateStageStatus('focus-3', 'focus-status-3');
+                updateStageStatus('focus-4', 'focus-status-4');
+                updateStageStatus('focus-5', 'focus-status-5');
+                updateStageStatus('focus-6', 'focus-status-6');
+                updateStageStatus('focus-7', 'focus-status-7');
+                updateStageStatus('focus-8', 'focus-status-8');
+                updateStageStatus('focus-9', 'focus-status-9');
+            }
+            saveState();
+        }
+
+        function saveState() {
+            const state = [];
+            document.querySelectorAll('.tool-check').forEach(c => state.push(c.checked));
+            localStorage.setItem('workflow_hub_state_v7', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const state = JSON.parse(localStorage.getItem('workflow_hub_state_v7'));
+            if (state) {
+                document.querySelectorAll('.tool-check').forEach((c, idx) => {
+                    if (idx < state.length && state[idx]) c.checked = true;
+                });
+            }
+            updateProgress('dmaic');
+            updateProgress('dmadv');
+            updateProgress('kaizen');
+            updateProgress('focus');
+
+            // Set initial filter to All
+            document.getElementById('beltFilter').value = 'all';
+            filterBelt();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadState);
+    </script>
+    <!-- WISDOM MODAL -->
+    <div id="wisdomModal" class="modal-overlay">
+        <div class="modal-box fancy-modal">
+            <span class="close-btn" onclick="closeWisdom()">&times;</span>
+            <div id="wisdomContent">
+                <!-- Dynamic Content -->
+            </div>
+            <div style="text-align:center; margin-top:20px;">
+                <button class="btn btn-primary" onclick="closeWisdom()">Time to Execute</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .fancy-modal {
+            background: linear-gradient(135deg, #1A1A33 0%, #0F0F1E 100%);
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 50px rgba(255, 107, 53, 0.3);
+            text-align: center;
+        }
+
+        .wisdom-quote {
+            font-size: 24px;
+            font-style: italic;
+            color: #fff;
+            margin-bottom: 20px;
+            font-family: 'Georgia', serif;
+            line-height: 1.4;
+        }
+
+        .wisdom-author {
+            color: var(--accent);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        .wisdom-context {
+            font-size: 14px;
+            color: #ccc;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--success);
+            text-align: left;
+        }
+
+        /* --- TAB SPECIFIC THEMES (Backgrounds Only) --- */
+        /* DMADV (Design - Blue/Purple) */
+        .tab-dmadv.active {
+            background: linear-gradient(135deg, #0984e3, #6c5ce7) !important;
+            border-color: #a29bfe !important;
+        }
+
+        /* KAIZEN (Event - Orange/Red) */
+        .tab-kaizen.active {
+            background: linear-gradient(135deg, #e67e22, #c0392b) !important;
+            border-color: #e74c3c !important;
+        }
+
+        /* FOCUS (Quality - Teal) */
+        .tab-focus.active {
+            background: linear-gradient(135deg, #00b894, #006266) !important;
+            border-color: #55efc4 !important;
+        }
+    </style>
+
+    <script>
+        const wisdomData = {
+            // DMAIC
+            'define': { quote: "If I were given one hour to save the planet, I would spend 59 minutes defining the problem.", author: "Albert Einstein", context: "<b>Why Define?</b> Solving the wrong problem is the most common failure mode. Stop. Define the pain before you prescribe the pill." },
+            'measure': { quote: "To measure is to know. If you cannot measure it, you cannot improve it.", author: "Lord Kelvin", context: "<b>Why Measure?</b> Opinions are free, but data is priceless. Establish a baseline to quantify the gap." },
+            'analyze': { quote: "Data! Data! Data! I can't make bricks without clay.", author: "Sherlock Holmes", context: "<b>Why Analyze?</b> Don't jump to conclusions. Dig deep. The root cause is rarely what you think it is." },
+            'improve': { quote: "There is always a better way.", author: "Thomas Edison", context: "<b>Why Improve?</b> This is the pivot point. You know the cause. Now unleash creativity and test solutions." },
+            'control': { quote: "Where there is no standard there can be no improvement.", author: "Taiichi Ohno", context: "<b>Why Control?</b> Entropy is the enemy. Without controls, the process will drift back to chaos. Lock it in." },
+
+            // DMADV (Design)
+            'dmadv_define': { quote: "The best way to predict the future is to create it.", author: "Peter Drucker", context: "<b>Define (Design):</b> Don't just improve the old; reimagine the new. Scope the innovation." },
+            'dmadv_measure': { quote: "The customer rarely buys what the business thinks it sells.", author: "Peter Drucker", context: "<b>Measure (Design):</b> Capture the Voice of the Customer (VOC). Translate vague needs into hard specs." },
+            'dmadv_analyze': { quote: "Innovation is 1% inspiration and 99% perspiration.", author: "Thomas Edison", context: "<b>Analyze (Design):</b> Generate concepts. Diverge then converge. Use data to select the robust design." },
+            'dmadv_design': { quote: "Design is not just what it looks like and feels like. Design is how it works.", author: "Steve Jobs", context: "<b>Design:</b> Optimization. Reduce variation before you build. Test in the virtual world (DOE) first." },
+            'dmadv_verify': { quote: "Quality is everyone's responsibility.", author: "W. Edwards Deming", context: "<b>Verify:</b> Prove it works. Validate with the customer. Launch with a stable process." },
+
+            // KAIZEN (Event)
+            'kaizen_prep': { quote: "Give me six hours to chop down a tree and I will spend the first four sharpening the axe.", author: "Abraham Lincoln", context: "<b>Kickoff:</b> A successful event is 80% preparation. Define the scope and get the data ready." },
+            'kaizen_analyze': { quote: "A bad system will beat a good person every time.", author: "W. Edwards Deming", context: "<b>Analyze:</b> Go to the Gemba. See the waste. Don't blame people; fix the process flow." },
+            'kaizen_act': { quote: "Bias for action.", author: "Tom Peters", context: "<b>Implement:</b> Don't wait for perfection. Try it. Fix it. Do it now. Mock up the new way." },
+            'kaizen_sustain': { quote: "Without standards, there can be no Kaizen.", author: "Taiichi Ohno", context: "<b>Sustain:</b> If you don't standardized the new way, old habits will return. Audit and celebrate." },
+
+            // FOCUS PDCA (Quality)
+            // FOCUS PDCA (Quality) - 9 Steps
+            'focus_find': { quote: "Focus on the vital few, not the trivial many.", author: "Joseph Juran", context: "<b>Find (F):</b> Identify a specific process/problem worth improving. Write a tight problem statement and confirm it's a process issue (not just training)." },
+            'focus_organize': { quote: "None of us is as smart as all of us.", author: "Ken Blanchard", context: "<b>Organize (O):</b> Organize the right improvement team. Identify sponsor, SMEs, and data owner. Set cadence and scope boundaries." },
+            'focus_clarify': { quote: "If you can't describe what you are doing as a process, you don't know what you're doing.", author: "W. Edwards Deming", context: "<b>Clarify (C):</b> Clarify how the process actually works today. Map the workflow, handoffs, and define operational definitions." },
+            'focus_understand': { quote: "A problem well stated is a problem half solved.", author: "Charles Kettering", context: "<b>Understand (U):</b> Understand sources of variation. Identify potential causes (Fishbone) and validate with data (Data stratification)." },
+            'focus_select': { quote: "Efficiency is doing things right; effectiveness is doing the right things.", author: "Peter Drucker", context: "<b>Select (S):</b> Select the best intervention. Generate multiple options, compare impact/effort, and define success criteria." },
+            'focus_plan': { quote: "A goal without a plan is just a wish.", author: "Antoine de Saint-Exupéry", context: "<b>Plan (P):</b> Create the pilot and measurement plan. Specify who/what/when, define baseline vs post-change measures." },
+            'focus_do': { quote: "Action is the foundational key to all success.", author: "Pablo Picasso", context: "<b>Do (D):</b> Run the pilot. Execute change on a small scale, capture deviations, and collect data exactly as planned." },
+            'focus_check': { quote: "In God we trust, all others must bring data.", author: "W. Edwards Deming", context: "<b>Check (C):</b> Analyze pilot results. Compare before/after to targets, identify unintended consequences, and decide: adopt, adapt, or abandon." },
+            'focus_act': { quote: "Without standards, there can be no improvement.", author: "Taiichi Ohno", context: "<b>Act (A):</b> Standardize, sustain, and scale. Update SOPs, put monitoring in place, and hand off to operations." }
+        };
+
+        function showWisdom(phase, event) {
+            const data = wisdomData[phase];
+            if (!data) return;
+            const html = `
+                <div class="wisdom-quote">"${data.quote}"</div>
+                <div class="wisdom-author">— ${data.author}</div>
+                <div class="wisdom-context">${data.context}</div>
+            `;
+            document.getElementById('wisdomContent').innerHTML = html;
+            document.getElementById('wisdomModal').style.display = 'flex';
+        }
+
+        function closeWisdom() {
+            document.getElementById('wisdomModal').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

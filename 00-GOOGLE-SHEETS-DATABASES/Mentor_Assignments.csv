@@ -1,0 +1,2 @@
+AssignmentID,LearnerID,MentorID,AssignmentMode,BeltLevel,Active,StartDate
+MA_001,USR001,USR002,LearnerChoice,Yellow,TRUE,2025-01-15

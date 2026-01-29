@@ -1,0 +1,9 @@
+RuleID,SourceTemplate,TargetTemplate,SourceField,TargetField,TransformationLogic
+RULE_001,Project Charter,SIPOC Diagram,ProcessName,ProcessName,Direct copy
+RULE_002,Project Charter,FMEA Template,ProjectBudget,CriticalityThreshold,"If Budget > 500K, high priority"
+RULE_003,SIPOC Diagram,Process Map,ProcessSteps,ProcessSteps,Direct copy
+RULE_004,Process Map,Fishbone Diagram,BottleneckActivity,ProblemStatement,"Concat: ""Bottleneck: "" + Activity"
+RULE_005,Fishbone Diagram,FMEA Template,RootCauses,PotentialFailures,Direct copy
+RULE_006,FMEA Template,Control Plan,ControlledItems,ControlPoints,Direct copy
+RULE_007,Project Charter,Value Stream Map,Scope,MapBoundary,Direct copy
+RULE_008,Control Plan,Certification Form,ControlFrequency,AuditSchedule,Auto-calculate audit dates

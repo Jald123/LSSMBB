@@ -1,0 +1,23 @@
+ReqID,BeltLevel,RequirementType,RequirementValue,IsMandatory,Order,Notes
+REQ_YB_M01,Yellow,ModulesComplete,YB_M01,TRUE,10,Introduction Module
+REQ_YB_M02,Yellow,ModulesComplete,YB_M02,TRUE,20,Define Phase Basics
+REQ_YB_M03,Yellow,ModulesComplete,YB_M03,TRUE,30,Measure Phase Basics
+REQ_YB_M04,Yellow,ModulesComplete,YB_M04,TRUE,40,Analyze Phase Basics
+REQ_YB_M05,Yellow,ModulesComplete,YB_M05,TRUE,50,Improve Phase Basics
+REQ_YB_M06,Yellow,ModulesComplete,YB_M06,TRUE,60,Control Phase Basics
+REQ_YB_QAVG,Yellow,AvgQuizScore,80,TRUE,70,Maintain 80% average
+REQ_YB_TPL1,Yellow,RequiredTemplates,TPL_001_CHARTER,TRUE,80,Project Charter
+REQ_YB_TPL2,Yellow,RequiredTemplates,TPL_002_SIPOC,TRUE,90,SIPOC Diagram
+REQ_YB_GATE1,Yellow,RequiredProjectGates,GATE_YB_DEFINE,TRUE,100,Define Phase Gate
+REQ_YB_GATE2,Yellow,RequiredProjectGates,GATE_YB_FINAL,TRUE,110,Final Project Sign-off
+REQ_GB_M01,Green,ModulesComplete,GB_M01,TRUE,10,Advanced Define
+REQ_GB_M02,Green,ModulesComplete,GB_M02,TRUE,20,Advanced Measure
+REQ_GB_QAVG,Green,AvgQuizScore,85,TRUE,70,Maintain 85% average
+REQ_GB_GATE_D,Green,RequiredProjectGates,GATE_GB_DEFINE,TRUE,80,Define Gate
+REQ_GB_GATE_M,Green,RequiredProjectGates,GATE_GB_MEASURE,TRUE,90,Measure Gate
+REQ_GB_GATE_A,Green,RequiredProjectGates,GATE_GB_ANALYZE,TRUE,100,Analyze Gate
+REQ_GB_GATE_I,Green,RequiredProjectGates,GATE_GB_IMPROVE,TRUE,110,Improve Gate
+REQ_GB_GATE_C,Green,RequiredProjectGates,GATE_GB_CONTROL,TRUE,120,Control Gate
+REQ_BB_M01,Black,ModulesComplete,BB_M01,TRUE,10,Master Black Belt Intro
+REQ_BB_DATA,Black,DataLoggedMinimum,500,TRUE,50,Log 500 data points
+REQ_BB_GATE,Black,RequiredProjectGates,GATE_BB_FINAL,TRUE,100,Final Defense

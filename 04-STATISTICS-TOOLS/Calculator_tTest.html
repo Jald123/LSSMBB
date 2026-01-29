@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Independent t-Test | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.6/jstat.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+
+    <style>
+        /* INTRO GRID - EXPANDED (8 Cards) */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .math-block {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            color: #BBB;
+            font-size: 11px;
+        }
+
+        /* STATS RESULTS */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: rgba(27, 107, 130, 0.1);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .stat-hint {
+            font-size: 11px;
+            color: var(--primary);
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .stat-box:hover .stat-hint {
+            opacity: 1;
+            height: auto;
+        }
+
+        .ai-panel {
+            background: linear-gradient(90deg, rgba(27, 107, 130, 0.1), rgba(0, 0, 0, 0));
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* TOGGLE */
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--text-secondary);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .toggle-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* EXAMPLE SELECTOR */
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .example-btn {
+            padding: 8px 4px;
+            font-size: 9px;
+            text-align: center;
+            background: var(--surface-2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .example-btn:hover {
+            background: var(--surface-3);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .example-btn .icon {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* REPORT SECTION */
+        .report-section {
+            background: var(--surface-2);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .report-header {
+            color: #ff6b35;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--surface-1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            transition: width 0.3s;
+        }
+
+        .report-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .report-btn-save {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .report-btn-save:hover {
+            background: #e55a2b;
+        }
+
+        .report-btn-print {
+            background: var(--surface-1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .report-btn-print:hover {
+            background: var(--surface-3);
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+
+            .card {
+                background: #f8f9fa !important;
+                border: 1px solid #ddd !important;
+            }
+
+            .stat-box {
+                background: #f0f0f0 !important;
+                border: 1px solid #ccc !important;
+            }
+
+            .stat-val {
+                color: #333 !important;
+            }
+
+            #printReport {
+                display: block !important;
+                page-break-before: always;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+
+        #printReport {
+            display: none;
+            padding: 40px;
+            background: white;
+            color: black;
+        }
+
+        #printReport h1 {
+            color: #1a365d;
+            border-bottom: 3px solid #1a365d;
+            padding-bottom: 15px;
+        }
+
+        #printReport .report-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        #printReport .report-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3182ce;
+        }
+
+        #printReport .metric-big {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2b6cb0;
+        }
+
+        #printReport .interpretation {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        #printReport table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #printReport th,
+        #printReport td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        #printReport th {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between no-print" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">PHASE: ANALYZE</span>
+                <div style="height: 15px;"></div>
+                <h1>Independent t-Test <span class="ai-badge">AI ENABLED</span></h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Prove Differences. <span style="color: var(--accent);">Compare Means.</span> Is Group A really
+                    better than Group B?
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-primary" onclick="openTTestInfo()" style="margin-right:10px;">💡 Simple
+                    Explanation</button>
+                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
+                    Hub</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID (8 Cards) -->
+        <div class="intro-grid no-print">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What Is It?</div>
+                <div class="intro-text">A statistical hypothesis test to determine if the means of two unrelated groups
+                    are significantly different.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When To Use?</div>
+                <div class="intro-text">When comparing two separate sets of data (e.g. Current Process vs New Process).
+                </div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why Use It?</div>
+                <div class="intro-text">To prove with 95% confidence that an "Improvement" is real and not just random
+                    luck.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">📋 Requirements</div>
+                <div class="intro-text">Normal Data. Independent Groups. Continuous Data (Measurements).</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="intro-card">
+                <div class="intro-title">📐 Standard Equation</div>
+                <div class="math-block">t = (x̄1 - x̄2) / √(s1²/n1 + s2²/n2)</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🧠 Interpretation</div>
+                <div class="intro-text">P-Value < 0.05: Difference IS Significant (Reject Null).<br>P-Value > 0.05: No
+                        Difference.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🎯 Reference Values</div>
+                <div class="intro-text">Confidence Level usually 95% (Alpha = 0.05).</div>
+            </div>
+            <div class="intro-card intro-card-phase">
+                <div class="intro-title">🚀 Phase Relevance</div>
+                <div class="intro-text"><strong>Analyze:</strong> Verify root cause.<br><strong>Improve:</strong>
+                    Validate solution success.</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+
+            <!-- SIDEBAR -->
+            <div class="card no-print">
+                <h3>1. Input Method</h3>
+                <div class="toggle-group">
+                    <button class="toggle-btn active" id="btnRaw" onclick="toggleInput('raw')">Raw Data</button>
+                    <button class="toggle-btn" id="btnSum" onclick="toggleInput('summary')">Summary Stats</button>
+                </div>
+
+                <!-- RAW DATA INPUT -->
+                <div id="inputRaw">
+                    <div class="form-group">
+                        <label>Group A Data</label>
+                        <textarea id="rawA" rows="4" placeholder="10, 12, 15..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Group B Data</label>
+                        <textarea id="rawB" rows="4" placeholder="14, 16, 18..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SUMMARY STATS INPUT -->
+                <div id="inputSummary" style="display:none;">
+                    <h4 style="color:var(--accent); margin-bottom:10px;">Group A (Baseline)</h4>
+                    <div class="grid-2">
+                        <input type="number" id="meanA" placeholder="Mean" value="100">
+                        <input type="number" id="stdA" placeholder="Std Dev" value="10">
+                        <input type="number" id="nA" placeholder="Count" value="30">
+                    </div>
+
+                    <h4 style="color:var(--accent); margin-bottom:10px; margin-top:15px;">Group B (New)</h4>
+                    <div class="grid-2">
+                        <input type="number" id="meanB" placeholder="Mean" value="105">
+                        <input type="number" id="stdB" placeholder="Std Dev" value="12">
+                        <input type="number" id="nB" placeholder="Count" value="30">
+                    </div>
+                </div>
+
+                <!-- EXAMPLES SELECTOR (MODERN DROPDOWN) -->
+                <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
+                    <label style="font-size:12px; color:var(--text-secondary);">Select Example Scenario:</label>
+                    <select id="scenarioSelect" class="btn btn-ghost"
+                        style="width:100%; margin:8px 0; padding:10px; font-size:13px; color:var(--text-primary); cursor:pointer;"
+                        onchange="loadScenario()">
+                        <option value="">-- Select Scenario --</option>
+                        <optgroup label="🏥 Healthcare Scenarios">
+                            <option value="hc_wait">ER Wait Times (Triage Alpha vs Beta)</option>
+                            <option value="hc_los">Length of Stay (Floor 1 vs Floor 2)</option>
+                            <option value="hc_bp">BP Reduction (Medication vs Placebo)</option>
+                        </optgroup>
+                        <optgroup label="🧪 General Scenarios">
+                            <option value="gen_mfg">Production Yield (Machine A vs B)</option>
+                            <option value="gen_nps">Customer NPS (Region X vs Y)</option>
+                        </optgroup>
+                    </select>
+
+                    <div id="scenarioDesc"
+                        style="font-size: 11px; color: var(--accent); margin: 5px 0; height: 30px; line-height: 1.3;">
+                        Select a scenario to load professional data.
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button id="btnNormal" class="btn btn-ghost"
+                            style="flex:1; font-size:11px; color:#2ecc71; border-color:rgba(46, 204, 113, 0.2);"
+                            onclick="toggleVariant('normal')">🟢 Normal</button>
+                        <button id="btnSkewed" class="btn btn-ghost"
+                            style="flex:1; font-size:11px; color:#e74c3c; border-color:rgba(231, 76, 60, 0.2);"
+                            onclick="toggleVariant('skewed')">🔴 Skewed</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="calculateTTest()"
+                    style="width: 100%; justify-content: center; margin-top: 20px;">
+                    🚀 Run t-Test
+                </button>
+            </div>
+
+            <!-- RESULTS -->
+            <div id="resultsPanel" style="display:none;">
+
+                <!-- METRICS -->
+                <div class="stat-grid">
+                    <div class="stat-box"
+                        onclick="explain('P-Value', 'The probability that the observed difference happened by random chance.<br><b>< 0.05</b> = Very unlikely to be luck. The difference is REAL.<br><b>> 0.05</b> = Could be luck. No statistical proof of difference.')">
+                        <div class="stat-label">P-Value</div>
+                        <div class="stat-val" id="resP">-</div>
+                        <div class="stat-hint">Click info</div>
+                    </div>
+                    <div class="stat-box"
+                        onclick="explain('Difference', 'The mathematical difference between Mean A and Mean B.<br>Check the Confidence Interval to see the range relative to zero.')">
+                        <div class="stat-label">Difference</div>
+                        <div class="stat-val" id="resDiff">-</div>
+                        <div class="stat-hint">Mean A - Mean B</div>
+                    </div>
+                    <div class="stat-box"
+                        onclick="explain('t-Statistic', 'The ratio of the difference to the variation.<br>High t-score (> +2 or < -2) usually means the groups are different.')">
+                        <div class="stat-label">t-Statistic</div>
+                        <div class="stat-val" id="resT">-</div>
+                        <div class="stat-hint">Signal / Noise</div>
+                    </div>
+                </div>
+
+                <!-- AUTO FINDINGS SUMMARY -->
+                <div id="analysisSummary"
+                    style="padding:15px; background:var(--surface-3); border-radius:6px; font-size:13px; line-height:1.5; color:var(--text-primary); margin-bottom:20px; display:none; border-left: 3px solid var(--accent);">
+                </div>
+
+                <!-- CHART -->
+                <div class="card" style="height: 300px; position:relative;">
+                    <div class="flex-between">
+                        <span style="font-size:12px; color:var(--text-secondary);">Distribution Overlay</span>
+                        <span style="font-size:10px; cursor:pointer;"
+                            onclick="explain('Overlay Plot', 'Visualizes the overlap between the two groups. <br>Less overlap = More significant difference.')">ℹ️
+                            Info</span>
+                    </div>
+                    <div class="chart-controls">
+                        <div class="control-btn" onclick="magnify('tChart', 't-Test Distribution Fit')">🔍</div>
+                        <div class="control-btn" onclick="downloadChart('tChart', 't-Test Distribution Fit')">⬇️</div>
+                    </div>
+                    <div class="chart-container"><canvas id="tChart"></canvas></div>
+                </div>
+
+                <!-- REPORT & EXPORT SECTION -->
+                <div class="report-section no-print">
+                    <div class="report-header">Report & Export</div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:center;">
+                        <div>
+                            <label style="font-size:12px; color:var(--text-secondary);">Analyst / Created By:</label>
+                            <input type="text" id="analystName" placeholder="Enter your name..."
+                                style="width:100%; padding:10px; background:var(--surface-1); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:white; margin-top:5px;"
+                                oninput="updateProgress()">
+                        </div>
+                        <div style="text-align:right;">
+                            <span id="completionPct" style="color:var(--text-secondary); font-size:12px;">0%
+                                Complete</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width:0%;"></div>
+                    </div>
+                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom:20px;">Progress tracks data
+                        entry completion and quality checks.</p>
+
+                    <div style="display:flex; gap:15px;">
+                        <button class="report-btn report-btn-save" onclick="saveResults()">
+                            💾 Save & Evaluate
+                        </button>
+                        <button class="report-btn report-btn-print" onclick="printReport()">
+                            🖨️ Print PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS -->
+                <div class="card no-print">
+                    <div class="flex-between">
+                        <h3>💡 Conclusion</h3>
+                        <button class="btn btn-ghost" onclick="askAICoach()" id="aiBtn">Ask Gemini</button>
+                    </div>
+
+                    <div style="margin-top:15px; font-size:16px; font-weight:bold; color:var(--text-primary);"
+                        id="resConclusion">
+                        -
+                    </div>
+
+                    <div class="ai-panel">
+                        <div id="aiOutput" style="font-size: 14px;">
+                            Click "Ask Gemini" to explain the business impact of this result.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- INFOGRAPHIC EXPLANATION MODAL -->
+    <div class="modal-overlay" id="hypothesisInfoModal"
+        onclick="if(event.target.id==='hypothesisInfoModal') this.style.display='none'" style="z-index:2000;">
+        <div class="modal-box" style="max-width:800px; width:95%; border: 3px solid #3b82f6;">
+            <span class="close-btn" style="float:right; cursor:pointer; font-size:24px;"
+                onclick="document.getElementById('hypothesisInfoModal').style.display='none'">&times;</span>
+            <div style="text-align:center; margin-bottom:20px;">
+                <h2 style="color:var(--accent); margin:0;" id="conceptTitle">Comparing Two Means 📊</h2>
+                <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">How to prove Group A ≠ Group B.
+                </p>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div id="conceptContent" style="min-height:250px;">
+                <!-- Content Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAGNIFY MODAL -->
+    <div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
+        <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
+            <span class="close-btn"
+                onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+            <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
+            <img id="magnifyImg" style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+        </div>
+    </div>
+
+    <!-- PRINT REPORT -->
+    <div id="printReport" class="print-only">
+        <h1>📊 Independent Two-Sample t-Test Report</h1>
+        <p><strong>Generated:</strong> <span id="printDate"></span> | <strong>Analyst:</strong> <span
+                id="printAnalyst"></span></p>
+
+        <div class="report-grid">
+            <div class="report-card">
+                <h3>t-Statistic</h3>
+                <div class="metric-big" id="printT">0.00</div>
+                <p>Signal-to-noise ratio</p>
+            </div>
+            <div class="report-card">
+                <h3>P-Value</h3>
+                <div class="metric-big" id="printP">0.0000</div>
+                <p id="printPtext">Statistical significance assessment</p>
+            </div>
+        </div>
+
+        <div class="report-grid">
+            <div class="report-card">
+                <h3>Mean Difference</h3>
+                <div class="metric-big" id="printDiff">0.00</div>
+                <p>Group A Mean - Group B Mean</p>
+            </div>
+            <div class="report-card">
+                <h3>Conclusion</h3>
+                <div class="metric-big" id="printVerdict" style="font-size:24px;">-</div>
+            </div>
+        </div>
+
+        <h3 style="margin-top:30px;">📋 Group Summary Statistics</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Group</th>
+                    <th>n</th>
+                    <th>Mean</th>
+                    <th>Std Dev</th>
+                </tr>
+            </thead>
+            <tbody id="printGroupBody"></tbody>
+        </table>
+
+        <div class="interpretation" id="printInterpretation">
+            <h3>📋 Expert Interpretation</h3>
+            <p id="printInterpText">Analysis pending...</p>
+        </div>
+
+        <div style="margin-top:30px;">
+            <h3>📈 Distribution Overlay</h3>
+            <img id="printChartImg" style="width:100%; max-width:600px; border:1px solid #ccc; border-radius:8px;" />
+        </div>
+
+        <div
+            style="margin-top:40px; padding-top:20px; border-top:2px solid #ccc; font-size:12px; color:#666; text-align:center;">
+            <p>Generated by Lean Six Sigma Interactive Platform | Black Belt Studio</p>
+        </div>
+    </div>
+
+    <script>
+        let chartInstance = null;
+        let mode = 'raw';
+        let currentResults = {};
+        let currentScenario = null;
+
+        // MASTER STATISTICAL SCENARIOS
+        const scenarioDB = {
+            'hc_wait': {
+                name: "ER Wait Times (Triage Protocol)",
+                desc: "Does Beta protocol reduce wait times more than Alpha?",
+                normal: { groupA: "45, 48, 52, 44, 50, 47, 49, 51, 46, 53", groupB: "32, 28, 35, 30, 31, 34, 29, 33, 30, 32" },
+                skewed: { groupA: "45, 48, 52, 44, 50, 47, 49, 120, 46, 53", groupB: "32, 28, 35, 30, 31, 85, 29, 33, 30, 32" }
+            },
+            'hc_los': {
+                name: "Length of Stay (Unit A vs B)",
+                desc: "Comparing discharge efficiency between wings.",
+                normal: { groupA: "4.2, 4.5, 4.8, 4.0, 4.3, 4.1, 4.4, 4.6", groupB: "3.1, 3.5, 3.2, 3.0, 3.3, 2.9, 3.4, 3.1" },
+                skewed: { groupA: "4.2, 4.5, 12.0, 4.0, 4.3, 4.1, 4.4, 4.6", groupB: "3.1, 3.5, 3.2, 3.0, 10.5, 2.9, 3.4, 3.1" }
+            },
+            'hc_bp': {
+                name: "BP Reduction Trial",
+                desc: "Medication vs Placebo systolic reduction.",
+                normal: { groupA: "125, 128, 122, 130, 126, 124, 127, 129", groupB: "142, 145, 140, 148, 144, 143, 146, 141" },
+                skewed: { groupA: "110, 128, 122, 150, 126, 124, 127, 129", groupB: "142, 175, 140, 148, 144, 110, 146, 141" }
+            },
+            'gen_mfg': {
+                name: "Production Yield (Machine A vs B)",
+                desc: "Is there a significant difference in machine accuracy?",
+                normal: { groupA: "98.2, 97.8, 98.5, 98.0, 97.9, 98.3", groupB: "94.2, 93.8, 94.5, 94.0, 93.5, 94.1" },
+                skewed: { groupA: "98.2, 70.0, 98.5, 98.0, 97.9, 98.3", groupB: "94.2, 93.8, 94.5, 60.0, 93.5, 94.1" }
+            },
+            'gen_nps': {
+                name: "Customer NPS (A vs B)",
+                desc: "Comparing customer satisfaction scores.",
+                normal: { groupA: "42, 45, 40, 43, 44, 41, 38, 46", groupB: "65, 68, 62, 70, 66, 64, 67, 69" },
+                skewed: { groupA: "42, 45, 10, 43, 44, 41, 38, 46", groupB: "65, 68, 100, 70, 66, 64, 67, 69" }
+            }
+        };
+
+        let currentVariant = 'normal';
+
+        function loadScenario() {
+            const key = document.getElementById('scenarioSelect').value;
+            if (!key) return;
+            document.getElementById('scenarioDesc').innerText = scenarioDB[key].desc;
+            applyData(key, currentVariant);
+        }
+
+        function toggleVariant(v) {
+            currentVariant = v;
+            document.getElementById('btnNormal').style.background = (v === 'normal') ? 'rgba(46,204,113,0.1)' : 'var(--surface-1)';
+            document.getElementById('btnSkewed').style.background = (v === 'skewed') ? 'rgba(231,76,60,0.1)' : 'var(--surface-1)';
+            const key = document.getElementById('scenarioSelect').value;
+            if (key) applyData(key, v);
+        }
+
+        function applyData(key, variant) {
+            const data = scenarioDB[key][variant];
+            document.getElementById('rawA').value = data.groupA;
+            document.getElementById('rawB').value = data.groupB;
+            toggleInput('raw');
+        }
+
+        function openTTestInfo() {
+            document.getElementById('hypothesisInfoModal').style.display = 'flex';
+            showConcept('ttest');
+        }
+
+        const concepts = {
+            ttest: {
+                title: "📊 Independent Two-Sample t-Test",
+                ideal: "Ideally use when: Comparing the averages (means) of two separate/unrelated groups to see if the difference is more than just luck.",
+                life: {
+                    title: "🚚 Delivery Routes",
+                    text: "Mean Wait Route A vs Route B. Use the t-Test to prove Route B is actually faster and not just lucky with traffic once.",
+                    icon: "🚛"
+                },
+                health: {
+                    title: "💊 Clinical Drug Trials",
+                    text: "Compare recovery time for Group A (New Drug) vs Group B (Control). If p < 0.05, you've proved the drug actually works.",
+                    icon: "🩺"
+                }
+            }
+        };
+
+        function showConcept(key) {
+            const c = concepts[key];
+            const contentDiv = document.getElementById('conceptContent');
+            const titleDiv = document.getElementById('conceptTitle');
+            titleDiv.innerText = c.title;
+
+            contentDiv.innerHTML = `
+                <div style="background:#1e3a8a; padding:15px; border-radius:8px; margin-bottom:20px; text-align:center; border:1px dashed #3b82f6;">
+                    <strong style="color:#facc15;">💡 ${c.ideal}</strong>
+                </div>
+
+                <div class="grid-2" style="gap:20px; margin-top:20px; display:grid; grid-template-columns:1fr 1fr;">
+                    <div style="background:#1e293b; padding:20px; border-radius:8px; border-top:4px solid #3b82f6;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.life.icon}</div>
+                        <h3 style="color:#3b82f6; margin-top:0;">Daily Life</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.life.text}</p>
+                    </div>
+                    <div style="background:#1e293b; padding:20px; border-radius:8px; border-top:4px solid #10b981;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.health.icon}</div>
+                        <h3 style="color:#10b981; margin-top:0;">Healthcare</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.health.text}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function explain(title, content) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
+            if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+        }
+
+        function magnify(canvasId, title) {
+            const original = document.getElementById(canvasId);
+            const modalImg = document.getElementById('magnifyImg');
+            modalImg.src = original.toDataURL();
+            document.getElementById('magnifyTitle').innerText = title;
+            document.getElementById('magnifyModal').style.display = 'flex';
+        }
+
+        function downloadChart(canvasId, title) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = title.replace(/\s+/g, '_') + '_Chart.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function toggleInput(m) {
+            mode = m;
+            document.getElementById('inputRaw').style.display = m === 'raw' ? 'block' : 'none';
+            document.getElementById('inputSummary').style.display = m === 'summary' ? 'block' : 'none';
+
+            document.getElementById('btnRaw').className = m === 'raw' ? 'toggle-btn active' : 'toggle-btn';
+            document.getElementById('btnSum').className = m === 'summary' ? 'toggle-btn active' : 'toggle-btn';
+        }
+
+        function loadExample(key) {
+            currentScenario = key;
+            const ex = examples[key];
+            if (ex) {
+                toggleInput('raw');
+                document.getElementById('rawA').value = ex.groupA.data;
+                document.getElementById('rawB').value = ex.groupB.data;
+            }
+        }
+
+        function calculateTTest() {
+            let mA, sA, nA, mB, sB, nB;
+            let arrA = [], arrB = [];
+
+            if (mode === 'raw') {
+                arrA = document.getElementById('rawA').value.split(',').map(Number).filter(x => !isNaN(x));
+                arrB = document.getElementById('rawB').value.split(',').map(Number).filter(x => !isNaN(x));
+                if (arrA.length < 2 || arrB.length < 2) { alert("Insufficient data"); return; }
+                mA = jStat.mean(arrA); sA = jStat.stdev(arrA, true); nA = arrA.length;
+                mB = jStat.mean(arrB); sB = jStat.stdev(arrB, true); nB = arrB.length;
+            } else {
+                mA = parseFloat(document.getElementById('meanA').value);
+                sA = parseFloat(document.getElementById('stdA').value);
+                nA = parseFloat(document.getElementById('nA').value);
+                mB = parseFloat(document.getElementById('meanB').value);
+                sB = parseFloat(document.getElementById('stdB').value);
+                nB = parseFloat(document.getElementById('nB').value);
+            }
+
+            // Welch's t-test (unequal variances assumed usually safer)
+            const num = mA - mB;
+            const den = Math.sqrt((sA * sA / nA) + (sB * sB / nB));
+            const t = num / den;
+
+            // Degrees of freedom (Welch-Satterthwaite)
+            const dfNum = Math.pow((sA * sA / nA) + (sB * sB / nB), 2);
+            const dfDen = (Math.pow(sA * sA / nA, 2) / (nA - 1)) + (Math.pow(sB * sB / nB, 2) / (nB - 1));
+            const df = dfNum / dfDen;
+
+            const p = (1 - jStat.studentt.cdf(Math.abs(t), df)) * 2; // Two-tailed
+
+            // Store results
+            currentResults = { mA, sA, nA, mB, sB, nB, t, p, df, diff: mA - mB };
+
+            // UI
+            document.getElementById('resultsPanel').style.display = 'block';
+            document.getElementById('resP').innerText = p < 0.001 ? "< 0.001" : p.toFixed(4);
+            document.getElementById('resP').style.color = p < 0.05 ? '#2ECC71' : '#E74C3C';
+            document.getElementById('resDiff').innerText = (mA - mB).toFixed(2);
+            document.getElementById('resT').innerText = t.toFixed(2);
+
+            generateAutoFindings(mA, mB, t, p);
+
+            const resText = document.getElementById('resConclusion');
+            if (p < 0.05) {
+                resText.innerHTML = `<span style="color:#2ECC71">✅ Significant Difference Detected.</span><br><span style="font-size:12px;color:#888">Reject Null Hypothesis. The groups are not the same.</span>`;
+            } else {
+                resText.innerHTML = `<span style="color:#E74C3C">⚠️ No Significant Difference.</span><br><span style="font-size:12px;color:#888">Fail to Reject Null. Groups likely same.</span>`;
+            }
+
+            renderChart(mA, sA, mB, sB);
+            updateProgress();
+        }
+
+        function generateAutoFindings(mA, mB, t, p) {
+            const div = document.getElementById('analysisSummary');
+            let html = "";
+
+            if (p < 0.05) {
+                const better = mA > mB ? "Group A" : "Group B";
+                const diff = Math.abs(mA - mB).toFixed(2);
+                html = `<span style='color:var(--success)'><b>✅ Significant Difference Confirmed:</b> The two groups have different means.</span><br>
+                    • <b>${better}</b> has a higher mean (difference = ${diff}).<br>
+                    • t-statistic = <b>${t.toFixed(2)}</b> (high absolute value indicates clear separation).<br>
+                    • <b>Confidence:</b> 95% certain this is not due to random chance.`;
+            } else {
+                html = `<span style='color:var(--warning)'><b>⚠️ No Significant Difference:</b> The two group means are statistically equivalent.</span><br>
+                    • The observed difference (${Math.abs(mA - mB).toFixed(2)}) is within normal random variation.<br>
+                    • t-statistic = <b>${t.toFixed(2)}</b> (low absolute value indicates overlap).<br>
+                    • <b>Conclusion:</b> Cannot claim the groups are different.`;
+            }
+
+            div.innerHTML = html;
+            div.style.display = 'block';
+        }
+
+        function renderChart(mA, sA, mB, sB) {
+            const ctx = document.getElementById('tChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            // Range
+            const minX = Math.min(mA - 4 * sA, mB - 4 * sB);
+            const maxX = Math.max(mA + 4 * sA, mB + 4 * sB);
+            const ptsA = [];
+            const ptsB = [];
+
+            for (let x = minX; x <= maxX; x += (maxX - minX) / 100) {
+                ptsA.push({ x, y: jStat.normal.pdf(x, mA, sA) });
+                ptsB.push({ x, y: jStat.normal.pdf(x, mB, sB) });
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        { label: 'Group A', data: ptsA, borderColor: '#29B6F6', backgroundColor: 'rgba(41, 182, 246, 0.1)', fill: true, pointRadius: 0 },
+                        { label: 'Group B', data: ptsB, borderColor: '#FF7043', backgroundColor: 'rgba(255, 112, 67, 0.1)', fill: true, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { x: { type: 'linear' }, y: { display: false } }
+                }
+            });
+        }
+
+        function updateProgress() {
+            let score = 0;
+            if (document.getElementById('rawA').value.trim() || document.getElementById('meanA').value) score += 25;
+            if (document.getElementById('rawB').value.trim() || document.getElementById('meanB').value) score += 25;
+            if (currentResults.p !== undefined) score += 30;
+            if (document.getElementById('analystName').value.trim()) score += 20;
+
+            document.getElementById('progressFill').style.width = score + '%';
+            document.getElementById('completionPct').innerText = score + '% Complete';
+        }
+
+        function saveResults() {
+            if (!currentResults.p) { alert("Please run t-Test first."); return; }
+
+            const data = {
+                analyst: document.getElementById('analystName').value || "Unknown",
+                date: new Date().toISOString(),
+                tStatistic: currentResults.t,
+                pValue: currentResults.p,
+                difference: currentResults.diff,
+                conclusion: currentResults.p < 0.05 ? "Significant Difference" : "No Difference",
+                scenario: currentScenario ? examples[currentScenario]?.name : "Custom"
+            };
+
+            localStorage.setItem('ttest_last_result', JSON.stringify(data));
+            alert("✅ Results saved to local storage!");
+        }
+
+        function printReport() {
+            if (!currentResults.p) {
+                alert("Please run the analysis first.");
+                return;
+            }
+
+            const analyst = document.getElementById('analystName').value || 'Statistical Expert';
+            const date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+            const canvas = document.getElementById('tChart');
+            const chartData = canvas.toDataURL();
+
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Statistical Analysis Report - ${analyst}</title>
+                    <style>
+                        body { font-family: 'Inter', 'Segoe UI', sans-serif; padding: 40px; color: #1e293b; line-height: 1.5; }
+                        .header { border-bottom: 3px solid #3b82f6; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; }
+                        .title { font-size: 26px; font-weight: 800; color: #1e3a8a; text-transform: uppercase; }
+                        .meta { text-align: right; font-size: 14px; color: #64748b; }
+                        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+                        .card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; }
+                        .label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+                        .val { font-size: 32px; font-weight: 800; color: #2563eb; margin: 10px 0; }
+                        .sig-pass { color: #059669; }
+                        .sig-fail { color: #dc2626; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th { background: #1e3a8a; color: white; padding: 12px; text-align: left; font-size: 13px; }
+                        td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+                        .insight-box { background: #eff6ff; border: 1px solid #dbeafe; padding: 25px; border-radius: 12px; margin-top: 30px; }
+                        .footer { margin-top: 50px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+                        .chart-img { width: 100%; max-width: 600px; border-radius: 12px; border: 1px solid #e2e8f0; display: block; margin: 30px auto; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div>
+                            <div class="title">📊 Independent t-Test Report</div>
+                            <div style="font-size:14px; color:#64748b;">Statistical Significance Profile</div>
+                        </div>
+                        <div class="meta">
+                            Analyst: ${analyst}<br>
+                            Date: ${date}<br>
+                            Ref ID: TST-${Math.floor(Math.random() * 9e5) + 1e5}
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        <div class="card">
+                            <div class="label">P-Value</div>
+                            <div class="val ${currentResults.p < 0.05 ? 'sig-pass' : 'sig-fail'}">${currentResults.p.toFixed(4)}</div>
+                            <div style="font-size:12px; font-weight:600;">${currentResults.p < 0.05 ? '✅ SIGNIFICANT' : '❌ NOT SIGNIFICANT'}</div>
+                        </div>
+                        <div class="card">
+                            <div class="label">Mean Difference</div>
+                            <div class="val">${currentResults.diff.toFixed(2)}</div>
+                            <div style="font-size:11px; color:#64748b;">Raw Variance Bridge</div>
+                        </div>
+                        <div class="card">
+                            <div class="label">t-Statistic</div>
+                            <div class="val">${currentResults.t.toFixed(3)}</div>
+                            <div style="font-size:11px; color:#64748b;">Signal vs Noise Ratio</div>
+                        </div>
+                    </div>
+
+                    <h3>📋 Sample Statistics</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Group Name</th>
+                                <th>Sample Count (n)</th>
+                                <th>Mean (x̄)</th>
+                                <th>Std Dev (σ)</th>
+                                <th>Variance (s²)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Group A</td>
+                                <td>${currentResults.nA}</td>
+                                <td>${currentResults.mA.toFixed(3)}</td>
+                                <td>${currentResults.sA.toFixed(3)}</td>
+                                <td>${(currentResults.sA ** 2).toFixed(3)}</td>
+                            </tr>
+                            <tr>
+                                <td>Group B</td>
+                                <td>${currentResults.nB}</td>
+                                <td>${currentResults.mB.toFixed(3)}</td>
+                                <td>${currentResults.sB.toFixed(3)}</td>
+                                <td>${(currentResults.sB ** 2).toFixed(3)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="insight-box">
+                        <h3 style="margin-top:0; color:#1e40af;">🔍 Executive Conclusion</h3>
+                        <p>${document.getElementById('analysisSummary').innerText}</p>
+                        <p style="margin-top:10px; font-size:13px; color:#475569;">
+                            This test was performed at a 95% confidence level (Alpha = 0.05). ${currentResults.p < 0.05 ?
+                    "The data provides sufficient evidence to reject the Null Hypothesis, confirming a systemic difference between the population means." :
+                    "The data fails to provide enough evidence to reject the Null Hypothesis. Any observed difference could be attributed to sampling variation."}
+                        </p>
+                    </div>
+
+                    <div style="page-break-before: always;">
+                        <h3 style="text-align:center;">📈 Visual Distribution Comparison</h3>
+                        <img class="chart-img" src="${chartData}">
+                    </div>
+
+                    <div class="footer">
+                        Generated by Six Sigma Analytical Engine - Professional Suite<br>
+                        Statistical Quality Compliance Documentation
+                    </div>
+                </body>
+                </html>
+            `);
+            win.document.close();
+            win.focus();
+            setTimeout(() => { win.print(); }, 500);
+        }
+
+        async function askAICoach() {
+            const p = document.getElementById('resP').innerText;
+            const t = document.getElementById('resT').innerText;
+            const diff = document.getElementById('resDiff').innerText;
+            const btn = document.getElementById('aiBtn');
+            btn.innerHTML = "Thinking...";
+            btn.disabled = true;
+
+            const prompt = `Act as a Master Black Belt. Independent t-Test Result: P-value = ${p}, t = ${t}, diff = ${diff}. Explain the business impact and risk of acting on this result in 2 clear sentences.`;
+
+            try {
+                const res = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const d = await res.json();
+                document.getElementById('aiOutput').innerText = d.candidates[0].content.parts[0].text;
+            } catch (e) { document.getElementById('aiOutput').innerText = "AI Offline."; }
+            finally { btn.innerHTML = "Ask Gemini"; btn.disabled = false; }
+        }
+    </script>
+</body>
+
+</html>

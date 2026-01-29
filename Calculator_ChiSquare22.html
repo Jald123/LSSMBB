@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi-Square Test | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.6/jstat.min.js"></script>
+
+    <style>
+        /* INTRO GRID - EXPANDED (8 Cards) */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .math-block {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            color: #BBB;
+            font-size: 11px;
+        }
+
+        /* STATS RESULTS */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: rgba(27, 107, 130, 0.1);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .stat-hint {
+            font-size: 11px;
+            color: var(--primary);
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .stat-box:hover .stat-hint {
+            opacity: 1;
+            height: auto;
+        }
+
+        .ai-panel {
+            background: linear-gradient(90deg, rgba(27, 107, 130, 0.1), rgba(0, 0, 0, 0));
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* MATRIX INPUT */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .matrix-header {
+            font-weight: bold;
+            text-align: center;
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .matrix-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--surface-1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .clickable-result {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .clickable-result:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .scenario-select {
+            width: 100%;
+            padding: 10px;
+            background: var(--surface-2);
+            color: white;
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .scenario-select option {
+            background: var(--surface-1);
+            color: white;
+        }
+
+        /* PREMIUM HEADER STYLES */
+        .glow-badge {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 0 10px #0072ff;
+            text-transform: uppercase;
+            margin-left: 15px;
+            display: inline-block;
+            vertical-align: middle;
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 5px #0072ff;
+            }
+
+            50% {
+                box-shadow: 0 0 15px #00c6ff;
+            }
+
+            100% {
+                box-shadow: 0 0 5px #0072ff;
+            }
+        }
+
+        .header-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .meta-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+
+        .meta-box:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .meta-label {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 11px;
+            /* Slightly smaller to fit 4 cols */
+            color: var(--text-secondary);
+            /* Match prev ext color */
+            line-height: 1.4;
+        }
+
+        /* Keep math block styling but adapted for meta-box */
+        .meta-box .math-block {
+            margin-top: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between"
+            style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+            <div>
+                <h1 style="display:flex; align-items:center; margin:0;">
+                    Chi-Square Test
+                    <span class="glow-badge">ANALYZE</span>
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Analyze Attributes. <span style="color: var(--accent);">Test Independence.</span> Does X affect Y?
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
+                    Back</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID (Updated to Premium Meta Grid) -->
+        <div class="header-meta-grid">
+            <div class="meta-box">
+                <span class="meta-label">🔍 What Is It?</span>
+                <div class="meta-value">Tests if two categorical variables (e.g. Shift vs Defect Type) are related or
+                    independent.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">⏱️ When To Use?</span>
+                <div class="meta-value">When analyzing discrete data (Counts like Pass/Fail) in a contingency table.
+                </div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">💡 Why Use It?</span>
+                <div class="meta-value">Proves that a pattern (e.g. Night shifts make more defects) is real and not
+                    random luck.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">📋 Requirements</span>
+                <div class="meta-value">Count Data (Integers). Expected Frequency > 5 per cell. Random Sampling.</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="meta-box">
+                <span class="meta-label">📐 Standard Equation</span>
+                <div class="math-block">χ² = Σ[(O - E)² / E]</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">🧠 Interpretation</span>
+                <div class="meta-value">
+                    <span style="color:#2ECC71">P &lt; 0.05: Dependent (Link Found)</span><br>
+                    <span style="color:#E74C3C">P &gt; 0.05: Independent (No Link)</span>
+                </div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">🎯 Reference Values</span>
+                <div class="meta-value">Critical Value for 2x2 table (1 df) = 3.841 at 95% Confidence.</div>
+            </div>
+            <div class="meta-box"
+                style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.05)); border-color: rgba(46, 204, 113, 0.3);">
+                <span class="meta-label" style="color:#2ecc71;">🚀 Phase Relevance</span>
+                <div class="meta-value" style="color:white;">
+                    <strong>Analyze:</strong> Find root causes.<br>
+                    <strong>Improve:</strong> Verify results.
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+
+            <!-- SIDEBAR -->
+            <div class="card">
+                <div class="flex-between">
+                    <h3>1. Scenario & Data</h3>
+                </div>
+
+                <label style="font-size:12px; color:var(--text-secondary);">Select Industry Scenario:</label>
+                <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()">
+                    <option value="">-- Custom Data --</option>
+                    <option value="manufacturing">⚙️ Manufacturing (Defects)</option>
+                    <option value="healthcare">🏥 Healthcare (Recovery)</option>
+                    <option value="service">🎧 Service (Satisfaction)</option>
+                </select>
+
+                <div class="matrix-grid" style="margin-top: 20px;">
+                    <div></div>
+                    <div class="matrix-header" id="colA">Group A<br>(e.g. Day)</div>
+                    <div class="matrix-header" id="colB">Group B<br>(e.g. Night)</div>
+
+                    <div class="matrix-header" style="text-align:right; padding-right:10px;" id="row1">Outcome
+                        1<br>(Good)</div>
+                    <input type="number" id="o11" class="matrix-input" placeholder="0">
+                    <input type="number" id="o12" class="matrix-input" placeholder="0">
+
+                    <div class="matrix-header" style="text-align:right; padding-right:10px;" id="row2">Outcome
+                        2<br>(Bad)</div>
+                    <input type="number" id="o21" class="matrix-input" placeholder="0">
+                    <input type="number" id="o22" class="matrix-input" placeholder="0">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-ghost" style="flex:1; font-size:11px; color: var(--success);"
+                        onclick="loadExample('linked')">🟢 Linked (Dep)</button>
+                    <button class="btn btn-ghost" style="flex:1; font-size:11px; color: var(--error);"
+                        onclick="loadExample('indep')">🔴 No Link (Ind)</button>
+                </div>
+
+                <button class="btn btn-primary" onclick="calculateChiSquare()"
+                    style="width: 100%; justify-content: center; margin-top: 20px;">
+                    🚀 Calculate Chi-Square
+                </button>
+            </div>
+
+            <!-- RESULTS -->
+            <div id="resultsPanel" style="display:none;">
+
+                <!-- METRICS -->
+                <div class="stat-grid">
+                    <div class="stat-box clickable-result" onclick="explain('chisq')">
+                        <div class="stat-label">Chi-Square (χ²) ❓</div>
+                        <div class="stat-val" id="resChi">-</div>
+                        <div class="stat-hint">Test Statistic</div>
+                    </div>
+                    <div class="stat-box clickable-result" onclick="explain('pvalue')">
+                        <div class="stat-label">P-value ❓</div>
+                        <div class="stat-val" id="resP">-</div>
+                        <div class="stat-hint">Significance</div>
+                    </div>
+                    <div class="stat-box clickable-result" onclick="explain('result')">
+                        <div class="stat-label">Result ❓</div>
+                        <div class="stat-val" id="resResult" style="font-size:18px;">-</div>
+                        <div class="stat-hint">Conclusion</div>
+                    </div>
+                </div>
+
+                <!-- AUTO FINDINGS SUMMARY -->
+                <div id="analysisSummary"
+                    style="padding:15px; background:var(--surface-3); border-radius:6px; font-size:13px; line-height:1.5; color:var(--text-primary); margin-bottom:20px; display:none; border-left: 3px solid var(--accent);">
+                </div>
+
+                <!-- CHART -->
+                <div class="card" style="height: 300px;">
+                    <div class="flex-between">
+                        <span style="font-size:12px; color:var(--text-secondary);">Proportion Comparison</span>
+                        <span style="font-size:10px; cursor:pointer;"
+                            onclick="explain('Stacked Bar Plot', 'Visualizes how the Proportions change between groups.<br>If the bars look different, the variables are likely related (Dependent).')">ℹ️
+                            Info</span>
+                    </div>
+                    <div class="chart-controls">
+                        <div class="control-btn" onclick="magnify('chiChart', 'Chi-Square Analysis')">🔍</div>
+                        <div class="control-btn" onclick="downloadChart('chiChart', 'Chi-Square Analysis')">⬇️</div>
+                    </div>
+                    <div class="chart-container"><canvas id="chiChart"></canvas></div>
+                </div>
+
+                <!-- ANALYTICS -->
+                <div class="card">
+                    <div class="flex-between">
+                        <h3>💡 Analysis</h3>
+                        <button class="btn btn-ghost" onclick="askAICoach()" id="aiBtn">Ask Gemini</button>
+                    </div>
+
+                    <div class="ai-panel">
+                        <div id="aiOutput" style="font-size: 14px;">
+                            Click "Ask Gemini" to interpret the business impact.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- EXPLANATION MODAL -->
+    <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+        <div class="modal-box">
+            <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+            <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
+            <p id="modalContent" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">Content...</p>
+        </div>
+    </div>
+
+    <!-- MAGNIFY MODAL -->
+    <div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
+        <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
+            <span class="close-btn"
+                onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+            <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
+            <img id="magnifyImg" style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+        </div>
+    </div>
+
+    <script>
+        Chart.defaults.color = '#90A4AE';
+        Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+        let chartInstance = null;
+        let currentScenario = null;
+
+        // SCENARIOS
+        const scenarios = {
+            'manufacturing': {
+                name: "Defects by Shift",
+                colA: "Day Shift", colB: "Night Shift",
+                row1: "Pass", row2: "Fail",
+                vals: [480, 420, 20, 80], // Night has way more fails
+                context: "Quality Control: Are specific shifts producing more scrap?",
+                reason: "If P < 0.05, it proves the 'Shift' causes the 'Defect Rate'."
+            },
+            'healthcare': {
+                name: "Recovery by Treatment",
+                colA: "Drug A", colB: "Placebo",
+                row1: "Recovered", row2: "Sick",
+                vals: [60, 30, 40, 70], // Drug A works better
+                context: "Clinical Trial: Does the new treatment actually work?",
+                reason: "A significant result means the drug creates a better outcome than doing nothing."
+            },
+            'service': {
+                name: "CSAT by Region",
+                colA: "US Support", colB: "Offshore",
+                row1: "Happy", row2: "Upset",
+                vals: [200, 150, 20, 70], // Offshore has bad ratio
+                context: "Customer Success: Is one team underperforming?",
+                reason: "Identify if location is linked to customer happiness."
+            }
+        };
+
+        // GLOSSARY
+        const glossary = {
+            "chisq": { title: "Chi-Square Statistic (χ²)", text: "A measure of 'surprise'. How different are the observed counts from what we would expect if everything was random?" },
+            "pvalue": { title: "P-Value (Probability)", text: "<b>< 0.05</b>: There is a REAL link. One variable affects the other.<br><b>> 0.05</b>: No link. Any difference is just coincidence." },
+            "result": { title: "Independence Test", text: "<b>Dependent (Linked):</b> The variables are connected (e.g., Smoking & Cancer).<br><b>Independent:</b> No connection (e.g., Hair Color & Driving Skill)." }
+        };
+
+        function explain(key) {
+            const item = glossary[key];
+            if (item) {
+                document.getElementById('modalTitle').innerText = item.title;
+                let content = item.text;
+
+                if (currentScenario && scenarios[currentScenario]) {
+                    const s = scenarios[currentScenario];
+                    content += `<div style='margin-top:15px; padding:10px; background:rgba(52, 152, 219, 0.1); border-left:3px solid #3498db; font-size:13px;'>
+                        <b>Scenario Context:</b> ${s.context}`;
+                    if (s.reason) content += `<br><br><b>Why it matters:</b> ${s.reason}`;
+                    content += "</div>";
+                }
+
+                document.getElementById('modalContent').innerHTML = content;
+                document.getElementById('infoModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal(e) { if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none'; }
+
+        function loadScenario() {
+            const sel = document.getElementById('scenarioSelect').value;
+            currentScenario = sel;
+
+            if (sel && scenarios[sel]) {
+                const s = scenarios[sel];
+                document.getElementById('colA').innerText = s.colA;
+                document.getElementById('colB').innerText = s.colB;
+                document.getElementById('row1').innerText = s.row1;
+                document.getElementById('row2').innerText = s.row2;
+
+                document.getElementById('o11').value = s.vals[0];
+                document.getElementById('o12').value = s.vals[1];
+                document.getElementById('o21').value = s.vals[2];
+                document.getElementById('o22').value = s.vals[3];
+            } else {
+                document.getElementById('colA').innerText = "Group A";
+                document.getElementById('colB').innerText = "Group B";
+                document.getElementById('row1').innerText = "Outcome 1";
+                document.getElementById('row2').innerText = "Outcome 2";
+            }
+        }
+
+        function loadExample(type) {
+            if (type === 'linked') {
+                document.getElementById('o11').value = 90;
+                document.getElementById('o12').value = 50;
+                document.getElementById('o21').value = 10;
+                document.getElementById('o22').value = 50;
+            } else {
+                document.getElementById('o11').value = 80;
+                document.getElementById('o12').value = 80;
+                document.getElementById('o21').value = 20;
+                document.getElementById('o22').value = 20;
+            }
+        }
+
+        function calculateChiSquare() {
+            const o11 = parseFloat(document.getElementById('o11').value) || 0;
+            const o12 = parseFloat(document.getElementById('o12').value) || 0;
+            const o21 = parseFloat(document.getElementById('o21').value) || 0;
+            const o22 = parseFloat(document.getElementById('o22').value) || 0;
+
+            const total = o11 + o12 + o21 + o22;
+            if (total === 0) { alert("Enter data first"); return; }
+
+            const row1 = o11 + o12;
+            const row2 = o21 + o22;
+            const col1 = o11 + o21;
+            const col2 = o12 + o22;
+
+            const e11 = (row1 * col1) / total;
+            const e12 = (row1 * col2) / total;
+            const e21 = (row2 * col1) / total;
+            const e22 = (row2 * col2) / total;
+
+            const chi =
+                Math.pow(o11 - e11, 2) / e11 +
+                Math.pow(o12 - e12, 2) / e12 +
+                Math.pow(o21 - e21, 2) / e21 +
+                Math.pow(o22 - e22, 2) / e22;
+
+            const p = 1 - jStat.chisquare.cdf(chi, 1);
+
+            // UI
+            document.getElementById('resultsPanel').style.display = 'block';
+            document.getElementById('resChi').innerText = chi.toFixed(2);
+
+            const pElem = document.getElementById('resP');
+            pElem.innerText = p < 0.001 ? "< 0.001" : p.toFixed(4);
+            pElem.style.color = p < 0.05 ? '#2ECC71' : '#E74C3C';
+
+            const resElem = document.getElementById('resResult');
+            if (p < 0.05) {
+                resElem.innerText = "Dependent (Linked)"; resElem.style.color = '#2ECC71';
+            } else {
+                resElem.innerText = "Independent"; resElem.style.color = '#E74C3C';
+            }
+
+            generateAutoFindings(p, o11, o12, o21, o22);
+            renderChart([o11, o12], [o21, o22]);
+        }
+
+        function generateAutoFindings(p, o11, o12, o21, o22) {
+            const div = document.getElementById('analysisSummary');
+            let html = "";
+            let colNameA = document.getElementById('colA').innerText.replace(/\n.*/g, '');
+            let colNameB = document.getElementById('colB').innerText.replace(/\n.*/g, '');
+            let rowNameBad = document.getElementById('row2').innerText.replace(/\n.*/g, '');
+
+            // Calculate "Bad" Rates
+            let rateA = o21 / (o11 + o21);
+            let rateB = o22 / (o12 + o22);
+
+            if (p < 0.05) {
+                let worst = rateA > rateB ? colNameA : colNameB;
+                let best = rateA > rateB ? colNameB : colNameA;
+
+                html = `<span style='color:var(--success)'><b>Significant Link Found:</b> The outcome depends on the group.</span><br>
+                • <b>${worst}</b> has a higher rate of '${rowNameBad}' (${(Math.max(rateA, rateB) * 100).toFixed(1)}%).<br>
+                • <b>${best}</b> is performing better (${(Math.min(rateA, rateB) * 100).toFixed(1)}%).<br>
+                Conclusion: Focus improvement efforts on <b>${worst}</b> as it is statistically the problem area.`;
+            } else {
+                html = `<span style='color:var(--warning)'><b>No Significant Link:</b> The differences are likely random chance.</span><br>
+                 Both groups perform similarly. Changing from ${colNameA} to ${colNameB} will likely NOT fix the problem.`;
+            }
+
+            div.innerHTML = html;
+            div.style.display = 'block';
+        }
+
+        function renderChart(pass, fail) {
+            const ctx = document.getElementById('chiChart').getContext('2d');
+            let colNameA = document.getElementById('colA').innerText.replace(/\n.*/g, '');
+            let colNameB = document.getElementById('colB').innerText.replace(/\n.*/g, '');
+            let rowNameGood = document.getElementById('row1').innerText.replace(/\n.*/g, '');
+            let rowNameBad = document.getElementById('row2').innerText.replace(/\n.*/g, '');
+
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [colNameA, colNameB],
+                    datasets: [
+                        { label: rowNameGood, data: pass, backgroundColor: '#29B6F6' },
+                        { label: rowNameBad, data: fail, backgroundColor: '#FF7043' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { x: { stacked: true }, y: { stacked: true } },
+                    plugins: { legend: { display: true } }
+                }
+            });
+        }
+
+        async function askAICoach() {
+            const p = document.getElementById('resP').innerText;
+            const res = document.getElementById('resResult').innerText;
+            const btn = document.getElementById('aiBtn');
+            btn.innerHTML = "Thinking...";
+            btn.disabled = true;
+
+            const prompt = `Act as a Statistician. Chi-Square Result: P=${p} (${res}). Explain simply.`;
+
+            try {
+                const r = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const d = await r.json();
+                document.getElementById('aiOutput').innerText = d.candidates[0].content.parts[0].text;
+            } catch (e) { document.getElementById('aiOutput').innerText = "AI Offline."; }
+            finally { btn.innerHTML = "Ask Gemini"; btn.disabled = false; }
+        }
+        function closeModal(e) {
+            if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
+            if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+        }
+
+        function magnify(canvasId, title) {
+            const original = document.getElementById(canvasId);
+            const modalImg = document.getElementById('magnifyImg');
+            modalImg.src = original.toDataURL();
+            document.getElementById('magnifyTitle').innerText = title;
+            document.getElementById('magnifyModal').style.display = 'flex';
+        }
+
+        function downloadChart(canvasId, title) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = title.replace(/\s+/g, '_') + '_Chart.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+    </script>
+</body>
+
+</html>

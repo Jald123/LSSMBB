@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sigma Level Calculator | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* INTRO GRID - EXPANDED (8 Cards) */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .math-block {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            color: #BBB;
+            font-size: 11px;
+        }
+
+        /* STATS RESULTS */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: rgba(27, 107, 130, 0.1);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .stat-hint {
+            font-size: 11px;
+            color: var(--primary);
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .stat-box:hover .stat-hint {
+            opacity: 1;
+            height: auto;
+        }
+
+        .ai-panel {
+            background: linear-gradient(90deg, rgba(27, 107, 130, 0.1), rgba(0, 0, 0, 0));
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* SIGMA METER */
+        .sigma-gauge-container {
+            position: relative;
+            height: 180px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sigma-score {
+            position: absolute;
+            bottom: 30px;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .clickable-result {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .clickable-result:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .scenario-select {
+            width: 100%;
+            padding: 10px;
+            background: var(--surface-2);
+            color: white;
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .scenario-select option {
+            background: var(--surface-1);
+            color: white;
+        }
+
+        /* INFOGRAPHIC MODAL STYLES */
+        .info-modal-content {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            width: 900px;
+            max-width: 95vw;
+            height: 90vh;
+            /* Fixed height for consistency */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .info-header {
+            background: #1e293b;
+            padding: 15px 25px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-body {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .toggle-capsule {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 30px;
+            padding: 4px;
+            display: inline-flex;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            padding: 8px 20px;
+            border-radius: 25px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active-life {
+            background: #eab308;
+            color: #fff;
+        }
+
+        /* Yellow for Life */
+        .toggle-btn.active-med {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        /* Blue for Healthcare */
+
+        .scene-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .comp-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* STAGES for Multi-step */
+        .stage-indicator {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .stage-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #334155;
+        }
+
+        .stage-dot.active {
+            background: #fff;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #print-report,
+            #print-report * {
+                visibility: visible;
+            }
+
+            #print-report {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+    <!-- JsPDF for professional PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">PHASE: DEFINE</span>
+                <div style="height: 15px;"></div>
+                <h1>Sigma Level Calculator <span class="ai-badge">AI ENABLED</span>
+                    <button class="btn btn-sm btn-ghost" onclick="openInfographic()"
+                        style="margin-left:10px; color:#facc15; border:1px solid #facc15; padding:2px 8px; font-size:11px; border-radius:12px;">
+                        💡 Simple Explanation
+                    </button>
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Measure Capability. <span style="color: var(--accent);">Benchmark Process.</span> How good is your
+                    process really?
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
+                    Back</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID (8 Cards) -->
+        <div class="intro-grid">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What Is It?</div>
+                <div class="intro-text">Converts your defect rate (DPMO) into a universal "Sigma Score" (0 to 6).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When To Use?</div>
+                <div class="intro-text">At the start (Define) to set a Baseline, and at the end (Control) to prove
+                    success.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why Use It?</div>
+                <div class="intro-text">Allows you to compare apples-to-oranges (e.g. HR Process vs Factory Line) on one
+                    scale.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">📋 Requirements</div>
+                <div class="intro-text">Count of defects, total units processed, and opportunities for error per unit
+                    available.</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="intro-card">
+                <div class="intro-title">📐 Standard Equation</div>
+                <div class="math-block">DPMO = (Defects / Opps) * 1M</div>
+                <div class="math-block">Z = NormInv(1 - DPMO/1M) + 1.5</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🧠 Interpretation</div>
+                <div class="intro-text">6σ = World Class (3.4 defects/M).<br>3σ = Average (66,807 defects/M).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🎯 Reference Values</div>
+                <div class="intro-text">A 1.5 Sigma Shift is traditionally added to estimating long-term capability.
+                </div>
+            </div>
+            <div class="intro-card intro-card-phase">
+                <div class="intro-title">🚀 Phase Relevance</div>
+                <div class="intro-text"><strong>Define:</strong> Problem Statement
+                    baseline.<br><strong>Control:</strong> Final validation.</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+
+            <!-- SIDEBAR -->
+            <div class="card">
+                <div class="flex-between">
+                    <h3>1. Scenario & Data</h3>
+                </div>
+
+                <label style="font-size:12px; color:var(--text-secondary);">Select Industry Scenario:</label>
+                <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()">
+                    <option value="">-- Custom Data --</option>
+                    <option value="manufacturing">⚙️ Manufacturing (Defects)</option>
+                    <option value="healthcare">🏥 Healthcare (Errors)</option>
+                    <option value="service">🎧 Service (Complaints)</option>
+                </select>
+
+                <div class="form-group">
+                    <label>Total Units Processed</label>
+                    <input type="number" id="units" placeholder="e.g. 1000">
+                    <small>How many items did you make?</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Total Defects Found</label>
+                    <input type="number" id="defects" placeholder="e.g. 50">
+                    <small>Total errors found (can be > units)</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Opportunities per Unit</label>
+                    <input type="number" id="opps" value="1">
+                    <small>How many ways to fail per item?</small>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-ghost" style="flex:1; font-size:11px; color: var(--success);"
+                        onclick="loadExample('six')">🟢 Six Sigma</button>
+                    <button class="btn btn-ghost" style="flex:1; font-size:11px; color: var(--warning);"
+                        onclick="loadExample('three')">🟠 Average (3σ)</button>
+                </div>
+
+                <button class="btn btn-primary" onclick="calculateSigma()"
+                    style="width: 100%; justify-content: center; margin-top: 20px;">
+                    🚀 Calculate Z
+                </button>
+
+                <!-- Report Section -->
+                <div class="card"
+                    style="margin-top: 20px; background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2);">
+                    <div style="font-size: 12px; color: var(--accent); font-weight: bold; margin-bottom: 10px;">REPORT &
+                        EXPORT</div>
+
+                    <div class="form-group">
+                        <label style="font-size:11px;">Analyst Name</label>
+                        <input type="text" id="analystName" placeholder="Enter your name..." oninput="updateProgress()"
+                            style="font-size:12px;">
+                    </div>
+
+                    <div style="margin-bottom:15px;">
+                        <div style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:5px;">
+                            <span>Analysis Progress</span>
+                            <span id="progressText">0% Complete</span>
+                        </div>
+                        <div style="width:100%; background:#0f172a; height:6px; border-radius:3px;">
+                            <div id="progressBar"
+                                style="width:0%; height:100%; background:var(--accent); border-radius:3px; transition:width 0.3s;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-ghost" onclick="printReport()"
+                        style="width:100%; justify-content:center; border:1px solid var(--text-secondary);">
+                        🖨️ Print Professional PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESULTS -->
+            <div id="resultsPanel" style="display:none;">
+
+                <!-- GAUGE -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="flex-between" style="margin-bottom:10px; justify-content:center;">
+                        <h3 style="margin:0;">Process Performance Gauge</h3>
+                    </div>
+                    <div class="chart-controls" style="margin-bottom: 10px;">
+                        <div class="control-btn" onclick="magnify('sigmaGauge', 'Sigma Performance Gauge')">🔍</div>
+                        <div class="control-btn" onclick="downloadChart('sigmaGauge', 'Sigma Performance Gauge')">⬇️
+                        </div>
+                    </div>
+                    <div class="sigma-gauge-container">
+                        <canvas id="sigmaGauge"></canvas>
+                        <div class="sigma-score" id="resSigmaBig">-</div>
+                    </div>
+                    <div style="text-align:center; font-size:12px; color:var(--text-secondary); margin-top:-20px;">World
+                        Class Target: 6.0</div>
+                </div>
+
+                <!-- METRICS -->
+                <div class="stat-grid">
+                    <div class="stat-box clickable-result" onclick="explain('dpmo')">
+                        <div class="stat-label">DPMO ❓</div>
+                        <div class="stat-val" id="resDPMO">-</div>
+                        <div class="stat-hint">Click info</div>
+                    </div>
+                    <div class="stat-box clickable-result" onclick="explain('yield')">
+                        <div class="stat-label">Yield ❓</div>
+                        <div class="stat-val" id="resYield">-</div>
+                        <div class="stat-hint">First Time Right</div>
+                    </div>
+                    <div class="stat-box clickable-result" style="border-color: var(--accent);"
+                        onclick="explain('sigma')">
+                        <div class="stat-label">Sigma (Z) ❓</div>
+                        <div class="stat-val" id="resSigma">-</div>
+                        <div class="stat-hint">Capability</div>
+                    </div>
+                </div>
+
+                <!-- AUTO FINDINGS SUMMARY -->
+                <div id="analysisSummary"
+                    style="padding:15px; background:var(--surface-3); border-radius:6px; font-size:13px; line-height:1.5; color:var(--text-primary); margin-bottom:20px; display:none; border-left: 3px solid var(--accent);">
+                </div>
+
+                <!-- ANALYTICS -->
+                <div class="card">
+                    <div class="flex-between">
+                        <h3>💡 AI Benchmarking</h3>
+                        <button class="btn btn-ghost" onclick="askAICoach()" id="aiBtn">Ask Gemini</button>
+                    </div>
+
+                    <div class="ai-panel">
+                        <div id="aiOutput" style="font-size: 14px;">
+                            Click "Ask Gemini" to compare this score against industry standards.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- EXPLANATION MODAL -->
+    <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+        <div class="modal-box">
+            <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+            <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
+            <p id="modalContent" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">Content...</p>
+        </div>
+    </div>
+
+    <!-- MAGNIFY MODAL -->
+    <div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
+        <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
+            <span class="close-btn"
+                onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+            <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
+            <img id="magnifyImg" style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+        </div>
+    </div>
+
+    <!-- INFOGRAPHIC MODAL -->
+    <div class="modal-overlay" id="infographicModal" style="display:none; z-index:2000;">
+        <div class="info-modal-content">
+            <!-- Header -->
+            <div class="info-header">
+                <div style="font-size:18px; font-weight:bold; color:white;">CAN YOU TRUST YOUR PROCESS? 🤔</div>
+                <div style="color: #94a3b8; font-size: 12px;" id="pageIndicator">Page 1/2: The Concept</div>
+                <div style="cursor:pointer; font-size:20px; color:#94a3b8;"
+                    onclick="document.getElementById('infographicModal').style.display='none'">×</div>
+            </div>
+
+            <!-- Body -->
+            <div class="info-body">
+
+                <!-- Toggle -->
+                <div class="toggle-capsule">
+                    <button class="toggle-btn active-life" id="btn-life" onclick="setInfoMode('life')">🍎 Daily Life
+                        (Pizza)</button>
+                    <button class="toggle-btn" id="btn-med" onclick="setInfoMode('med')">🏥 Healthcare</button>
+                </div>
+
+                <!-- CONTENT FOR PAGE 1 (Concept) -->
+                <div id="page1_content" style="width:100%; max-width:800px;">
+
+                    <!-- Scenario Card -->
+                    <div class="scene-card" style="border-left: 4px solid #eab308;" id="sceneCard">
+                        <h4 style="color:#eab308; margin-bottom:10px;" id="sceneTitle">🍕 The Pizza Delivery Scenario
+                        </h4>
+                        <p style="color:#cbd5e1; font-size:14px; line-height:1.6;" id="sceneText">
+                            You order a pizza. The promise is <strong>30 minutes or less</strong>.
+                            Every minute late is a "Defect".
+                        </p>
+                    </div>
+
+                    <!-- Comparison Grid -->
+                    <div class="comparison-grid">
+                        <div class="comp-box" style="border-top: 4px solid #f87171;">
+                            <div id="compA_icon" style="font-size:30px; margin-bottom:10px;">🚚💨</div>
+                            <h4 style="color:#f87171; margin-bottom:5px;">Process A (3 Sigma)</h4>
+                            <div id="compA_sub"
+                                style="font-size:12px; color:#94a3b8; font-weight:bold; text-transform:uppercase;">"The
+                                Average Shop"</div>
+                            <hr style="border-color:#334155; margin:10px 0; opacity:0.5;">
+                            <p id="compA_desc" style="font-size:13px; color:#cbd5e1;">
+                                Delivers <strong>66,800 late pizzas</strong> for every million orders.
+                            </p>
+                            <div
+                                style="margin-top:10px; background:rgba(248, 113, 113, 0.1); color:#f87171; font-size:11px; padding:5px; border-radius:4px;">
+                                ~7% Failure Rate
+                            </div>
+                        </div>
+
+                        <div class="comp-box" style="border-top: 4px solid #4ade80;">
+                            <div id="compB_icon" style="font-size:30px; margin-bottom:10px;">🚀✨</div>
+                            <h4 style="color:#4ade80; margin-bottom:5px;">Process B (6 Sigma)</h4>
+                            <div style="font-size:12px; color:#94a3b8; font-weight:bold; text-transform:uppercase;">
+                                "World Class"</div>
+                            <hr style="border-color:#334155; margin:10px 0; opacity:0.5;">
+                            <p id="compB_desc" style="font-size:13px; color:#cbd5e1;">
+                                Delivers only <strong>3.4 late pizzas</strong> for every million orders.
+                            </p>
+                            <div
+                                style="margin-top:10px; background:rgba(74, 222, 128, 0.1); color:#4ade80; font-size:11px; padding:5px; border-radius:4px;">
+                                99.9997% Success Rate
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CONTENT FOR PAGE 2 (Table) -->
+                <div id="page2_content" style="width:100%; max-width:800px; display:none;">
+                    <h3 style="color:white; text-align:center; margin-bottom:20px;">The Cost of Poor Quality</h3>
+                    <table style="width:100%; border-collapse:collapse; color:#cbd5e1; font-size:14px;">
+                        <tr style="background:#1e293b; color:white; font-weight:bold; border-bottom:2px solid #475569;">
+                            <td style="padding:12px;">Sigma Level</td>
+                            <td style="padding:12px;">Yield (Success)</td>
+                            <td style="padding:12px;">DPMO (Defects)</td>
+                            <td style="padding:12px;">Analogy</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #334155;">
+                            <td style="padding:12px; color:#4ade80; font-weight:bold;">6 σ</td>
+                            <td style="padding:12px;">99.9997%</td>
+                            <td style="padding:12px;">3.4</td>
+                            <td style="padding:12px;">One misspelled word in all the books in a small library.</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #334155;">
+                            <td style="padding:12px; color:#a3e635;">5 σ</td>
+                            <td style="padding:12px;">99.98%</td>
+                            <td style="padding:12px;">233</td>
+                            <td style="padding:12px;">One minute of unsafe drinking water every seven months.</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #334155;">
+                            <td style="padding:12px; color:#facc15;">4 σ</td>
+                            <td style="padding:12px;">99.4%</td>
+                            <td style="padding:12px;">6,210</td>
+                            <td style="padding:12px;">One hour of unsafe drinking water every month.</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #334155; background:rgba(248, 113, 113, 0.05);">
+                            <td style="padding:12px; color:#f87171;">3 σ</td>
+                            <td style="padding:12px;">93.3%</td>
+                            <td style="padding:12px;">66,807</td>
+                            <td style="padding:12px;">1.5 hours of unsafe drinking water EVERY DAY.</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #334155; background:rgba(248, 113, 113, 0.1);">
+                            <td style="padding:12px; color:#ef4444;">2 σ</td>
+                            <td style="padding:12px;">69.1%</td>
+                            <td style="padding:12px;">308,537</td>
+                            <td style="padding:12px;">Major crisis. System is broken.</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Footer / Navigation -->
+            <div
+                style="background:#1e293b; padding:15px; border-top:1px solid #334155; display:flex; justify-content:center; gap:20px;">
+                <button class="btn btn-ghost" onclick="prevPage()">← Back</button>
+                <div class="stage-indicator">
+                    <div class="stage-dot active" id="dot1"></div>
+                    <div class="stage-dot" id="dot2"></div>
+                </div>
+                <button class="btn btn-primary" onclick="nextPage()">Next: The Table →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIDDEN PRINT CONTAINER -->
+    <div id="print-report" style="display:none; padding:40px; background:white; color:black;"></div>
+
+    <script>
+        let chartInstance = null;
+        let currentScenario = null;
+
+        // SCENARIOS DATABASE
+        const scenarios = {
+            'manufacturing': {
+                name: "Production Line",
+                units: 10000, defects: 500, opps: 5,
+                context: "Assembly: A complex product with 5 check-points (opps) per unit.",
+                reason: "If Sigma < 3, investigate tooling calibration. If Sigma > 4.5, reduce inspection frequency."
+            },
+            'healthcare': {
+                name: "Medication Admin",
+                units: 5000, defects: 2, opps: 1,
+                context: "Patient Safety: Any error is critical. Target is > 5.5 Sigma.",
+                reason: "High yield (99%+) is mandatory here. DPMO must be minimized to near zero."
+            },
+            'service': {
+                name: "Service Levels",
+                units: 2000, defects: 150, opps: 1,
+                context: "Call Center: 'Defect' = Call dropped or customer unsatisfied.",
+                reason: "3-4 Sigma is typical for service industries. Above 4 requires automation."
+            }
+        };
+
+        // GLOSSARY
+        const glossary = {
+            "dpmo": { title: "DPMO (Defects Per Million Opportunities)", text: "If you ran this process a million times, how many failures would you see?<br>World Class is < 3.4.<br>Average is ~66,000." },
+            "yield": { title: "Process Yield", text: "The percentage of product/service done <b>Right First Time</b>.<br><b>93.3%</b> = 3 Sigma.<br><b>99.9997%</b> = 6 Sigma." },
+            "sigma": { title: "Sigma Score (Z)", text: "A universal benchmark score.<br><b>6.0</b> = Perfection.<br><b>3.0</b> = Average Performance.<br><b>1.0</b> = Poor Quality." }
+        };
+
+        function explain(key) {
+            const item = glossary[key];
+            if (item) {
+                document.getElementById('modalTitle').innerText = item.title;
+                let content = item.text;
+
+                // CONTEXT INJECTION
+                if (currentScenario && scenarios[currentScenario]) {
+                    const s = scenarios[currentScenario];
+                    content += `<div style='margin-top:15px; padding:10px; background:rgba(52, 152, 219, 0.1); border-left:3px solid #3498db; font-size:13px;'>
+                        <b>Scenario Context:</b> ${s.context}`;
+
+                    if (s.reason) content += `<br><br><b>Based On:</b> ${s.reason}`;
+                    content += "</div>";
+                }
+
+                document.getElementById('modalContent').innerHTML = content;
+                document.getElementById('infoModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal(e) { if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none'; }
+
+        function loadScenario() {
+            const sel = document.getElementById('scenarioSelect').value;
+            currentScenario = sel;
+            if (!sel) return;
+
+            const s = scenarios[sel];
+            document.getElementById('units').value = s.units;
+            document.getElementById('defects').value = s.defects;
+            document.getElementById('opps').value = s.opps;
+        }
+
+        function calculateSigma() {
+            const units = parseFloat(document.getElementById('units').value);
+            const defects = parseFloat(document.getElementById('defects').value);
+            const opps = parseFloat(document.getElementById('opps').value);
+
+            if (!units || !defects) { alert("Please enter valid data"); return; }
+
+            const totalOpps = units * opps;
+            const dpmo = (defects / totalOpps) * 1000000;
+            const yieldVal = ((totalOpps - defects) / totalOpps) * 100;
+
+            // Approx Sigma (Z-Score) logic
+            let sigma = 0;
+            if (dpmo <= 3.4) sigma = 6.0;
+            else if (dpmo > 999999) sigma = 0;
+            else {
+                sigma = 0.8406 + Math.sqrt(29.37 - 2.221 * Math.log(dpmo));
+                if (sigma > 6) sigma = 6.0;
+            }
+
+            // UI
+            document.getElementById('resultsPanel').style.display = 'block';
+            document.getElementById('resDPMO').innerText = Math.round(dpmo).toLocaleString();
+            document.getElementById('resYield').innerText = yieldVal.toFixed(2) + '%';
+
+            const sigText = sigma.toFixed(2) + ' σ';
+            document.getElementById('resSigma').innerText = sigText;
+            document.getElementById('resSigmaBig').innerText = sigText;
+
+            generateAutoFindings(sigma, dpmo, yieldVal);
+            renderGauge(sigma);
+        }
+
+        function generateAutoFindings(sigma, dpmo, yieldVal) {
+            const div = document.getElementById('analysisSummary');
+            let html = "<b>Performance Analysis:</b><br>";
+
+            if (sigma >= 6) {
+                html += "<span style='color:var(--success)'>• <b>World Class:</b> You have achieved Six Sigma level quality (< 3.4 DPMO).</span>";
+            } else if (sigma >= 3) {
+                html += "<span style='color:var(--warning)'>• <b>Average Industry Standard:</b> Process is capable but has room for improvement (Wait times, rework).</span>";
+            } else {
+                html += "<span style='color:var(--error)'>• <b>Poor Capability:</b> High defect rate detected. Immediate Root Cause Analysis (RCA) required.</span>";
+            }
+
+            html += `<br>• <b>Defect Rate:</b> You are generating ${Math.round(dpmo)} errors for every million opportunities.`;
+
+            div.innerHTML = html;
+            div.style.display = 'block';
+        }
+
+        function renderGauge(score) {
+            const ctx = document.getElementById('sigmaGauge').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            // Color based on Score
+            let color = '#E74C3C'; // Red
+            if (score >= 3) color = '#F39C12'; // Orange
+            if (score >= 4.5) color = '#2ECC71'; // Green
+
+            // Doughnut chart as semi-circle
+            const max = 6;
+            const val = Math.min(score, 6);
+            const empty = max - val;
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sigma Score', 'Gap'],
+                    datasets: [{
+                        data: [val, empty],
+                        backgroundColor: [color, 'rgba(255,255,255,0.05)'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                }
+            });
+        }
+
+        async function askAICoach() {
+            const s = document.getElementById('resSigma').innerText;
+            const d = document.getElementById('resDPMO').innerText;
+            const btn = document.getElementById('aiBtn');
+            btn.innerHTML = "Thinking...";
+            btn.disabled = true;
+
+            const prompt = `Act as a Quality Master Black Belt. Score: ${s}, ${d} DPMO. Compare this to industry standards in 1 sentence.`;
+
+            try {
+                const r = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const d = await r.json();
+                document.getElementById('aiOutput').innerText = d.candidates[0].content.parts[0].text;
+            } catch (e) { document.getElementById('aiOutput').innerText = "AI Offline."; }
+            finally { btn.innerHTML = "Ask Gemini"; btn.disabled = false; }
+        }
+
+
+        // Initialize
+        loadScenario();
+
+        function closeModal(e) {
+            if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
+            if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+        }
+
+        function magnify(canvasId, title) {
+            const original = document.getElementById(canvasId);
+            const modalImg = document.getElementById('magnifyImg');
+            modalImg.src = original.toDataURL();
+            document.getElementById('magnifyTitle').innerText = title;
+            document.getElementById('magnifyModal').style.display = 'flex';
+        }
+
+        function downloadChart(canvasId, title) {
+            // Gauge needs white background for download if transparent
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = title.replace(/\s+/g, '_') + '_Chart.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // --- INFOGRAPHIC LOGIC ---
+        let currentInfoPage = 1;
+        let currentInfoMode = 'life';
+
+        function openInfographic() {
+            document.getElementById('infographicModal').style.display = 'flex';
+            currentInfoPage = 1;
+            updateInfoPage();
+        }
+
+        function setInfoMode(mode) {
+            currentInfoMode = mode;
+            // Update Toggle UI
+            const btnLife = document.getElementById('btn-life');
+            const btnMed = document.getElementById('btn-med');
+
+            // Elements
+            const sceneCard = document.getElementById('sceneCard');
+            const sceneTitle = document.getElementById('sceneTitle');
+            const sceneText = document.getElementById('sceneText');
+
+            const cA_icon = document.getElementById('compA_icon');
+            const cA_sub = document.getElementById('compA_sub');
+            const cA_desc = document.getElementById('compA_desc');
+
+            const cB_icon = document.getElementById('compB_icon');
+            const cB_desc = document.getElementById('compB_desc');
+
+            if (mode === 'life') {
+                btnLife.className = "toggle-btn active-life";
+                btnMed.className = "toggle-btn";
+
+                // Content
+                sceneCard.style.borderLeftColor = "#eab308";
+                sceneTitle.innerHTML = "🍕 The Pizza Delivery Scenario";
+                sceneTitle.style.color = "#eab308";
+                sceneText.innerHTML = `You order a pizza. The promise is <strong>30 minutes or less</strong>.<br>Every minute late is a "Defect".`;
+
+                // Grid
+                cA_icon.innerText = "🚚💨";
+                cA_sub.innerText = '"The Average Shop"';
+                cA_desc.innerHTML = `Delivers <strong>66,800 late pizzas</strong> for every million orders.`;
+
+                cB_icon.innerText = "🚀✨";
+                cB_desc.innerHTML = `Delivers only <strong>3.4 late pizzas</strong> for every million orders.`;
+
+            } else {
+                btnLife.className = "toggle-btn";
+                btnMed.className = "toggle-btn active-med";
+
+                // Content
+                sceneCard.style.borderLeftColor = "#3b82f6";
+                sceneTitle.innerHTML = "💊 The Medication Dose Scenario";
+                sceneTitle.style.color = "#3b82f6";
+                sceneText.innerHTML = `A nurse administers medication. The promise is <strong>Zero Errors</strong>.<br>Every wrong dose or late timing is a "Defect".`;
+
+                // Grid
+                cA_icon.innerText = "⚠️💊";
+                cA_sub.innerText = '"Average Safety"';
+                cA_desc.innerHTML = `Makes <strong>66,800 dosing errors</strong> per million patients.`;
+
+                cB_icon.innerText = "🏥✅";
+                cB_desc.innerHTML = `Makes only <strong>3.4 errors</strong> per million patients (Near Zero).`;
+            }
+        }
+
+        function nextPage() {
+            if (currentInfoPage < 2) {
+                currentInfoPage++;
+                updateInfoPage();
+            } else {
+                document.getElementById('infographicModal').style.display = 'none';
+            }
+        }
+
+        function prevPage() {
+            if (currentInfoPage > 1) {
+                currentInfoPage--;
+                updateInfoPage();
+            }
+        }
+
+        function updateInfoPage() {
+            document.getElementById('pageIndicator').innerText = `Page ${currentInfoPage}/2: ` + (currentInfoPage === 1 ? "The Concept" : "The Sigma Table");
+
+            document.getElementById('page1_content').style.display = currentInfoPage === 1 ? 'block' : 'none';
+            document.getElementById('page2_content').style.display = currentInfoPage === 2 ? 'block' : 'none';
+
+            document.getElementById('dot1').className = currentInfoPage === 1 ? 'stage-dot active' : 'stage-dot';
+            document.getElementById('dot2').className = currentInfoPage === 2 ? 'stage-dot active' : 'stage-dot';
+        }
+
+        // --- REPORT & PRINT LOGIC ---
+        function updateProgress() {
+            let score = 0;
+            const name = document.getElementById('analystName').value;
+            const units = document.getElementById('units').value;
+
+            if (units && units > 0) score += 50;
+            if (name.length > 2) score += 50;
+
+            document.getElementById('progressBar').style.width = score + "%";
+            document.getElementById('progressText').innerText = score + "% Complete";
+
+            if (score === 100) document.getElementById('progressBar').style.background = "#2ecc71";
+        }
+
+        function printReport() {
+            const name = document.getElementById('analystName').value || "Unknown Analyst";
+            const date = new Date().toLocaleString();
+
+            // Get values
+            const dpmo = document.getElementById('resDPMO').innerText;
+            const sigma = document.getElementById('resSigma').innerText;
+            const yieldVal = document.getElementById('resYield').innerText;
+
+            // Get chart
+            const chartImg = document.getElementById('sigmaGauge').toDataURL("image/png");
+
+            // Build HTML
+            const html = `
+                <div style="font-family: Arial, sans-serif; color: #333; max-width:800px; margin:0 auto;">
+                    <div style="border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h1 style="margin:0; font-size:28px;">Sigma Level Report</h1>
+                            <div style="color: #666; font-size: 14px; margin-top:5px;">Process Capability Analysis</div>
+                        </div>
+                        <div style="text-align:right; font-size:12px;">
+                            <div><strong>Analyst:</strong> ${name}</div>
+                            <div><strong>Date:</strong> ${date}</div>
+                        </div>
+                    </div>
+
+                    <!-- EXECUTIVE SUMMARY -->
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                        <h3 style="margin-top:0; border-bottom:1px solid #ddd; padding-bottom:10px;">Executive Summary</h3>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; text-align:center;">
+                            <div>
+                                <div style="font-size:12px; color:#666; text-transform:uppercase;">Sigma Score</div>
+                                <div style="font-size:32px; font-weight:bold; color:#2c3e50;">${sigma}</div>
+                            </div>
+                            <div>
+                                <div style="font-size:12px; color:#666; text-transform:uppercase;">Yield</div>
+                                <div style="font-size:32px; font-weight:bold; color:#27ae60;">${yieldVal}</div>
+                            </div>
+                            <div>
+                                <div style="font-size:12px; color:#666; text-transform:uppercase;">DPMO</div>
+                                <div style="font-size:32px; font-weight:bold; color:#c0392b;">${dpmo}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHART SECTION -->
+                    <div style="margin-bottom: 30px; text-align:center;">
+                        <img src="${chartImg}" style="width: 400px; height:auto;">
+                    </div>
+
+                    <!-- BENCHMARK TABLE -->
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="border-bottom:1px solid #ddd; padding-bottom:10px;">Standard Reference Table</h3>
+                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                            <tr style="background:#eee; text-align:left;">
+                                <th style="padding:8px;">Sigma</th>
+                                <th style="padding:8px;">Yield</th>
+                                <th style="padding:8px;">DPMO</th>
+                            </tr>
+                            <tr style="border-bottom:1px solid #eee;">
+                                <td style="padding:8px;">6.0</td><td style="padding:8px;">99.9997%</td><td style="padding:8px;">3.4</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #eee; background:#fff3cd;">
+                                <td style="padding:8px;">3.0 (Average)</td><td style="padding:8px;">93.3%</td><td style="padding:8px;">66,807</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- RECOMMENDATION -->
+                    <div style="border-left: 4px solid #3498db; padding: 15px; background: #ebf5fb;">
+                        <strong>Recommendation:</strong>
+                        <p style="margin:5px 0 0 0; font-size:13px;">
+                            ${parseFloat(sigma) < 3 ? "Process is unstable. Immediate Root Cause Analysis (Fishbone/5-Why) is recommended." : "Process is performing at or above average. Iterate for continuous improvement."}
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            const printContainer = document.getElementById('print-report');
+            printContainer.innerHTML = html;
+            window.print();
+        }
+
+    </script>
+
+</body>
+
+</html>

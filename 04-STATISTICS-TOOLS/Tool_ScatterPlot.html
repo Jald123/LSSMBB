@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatter Plot Tool | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="flex-between">
+            <div>
+                <span class="phase-glow">PHASE: ANALYZE</span>
+                <h1>∴ Scatter Plot & Correlation</h1>
+            </div>
+            <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
+                Dashboard</button>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>X-Y Data Pairs</h3>
+                <p style="font-size:12px; color:var(--text-secondary);">One pair per line: X, Y</p>
+                <textarea id="dataInput" rows="10" placeholder="10, 25&#10;12, 30&#10;14, 35..."
+                    style="width:100%; background:var(--surface-1); color:white; padding:10px;"></textarea>
+                <button class="btn btn-primary" onclick="drawScatter()"
+                    style="width:100%; margin-top:10px;">Analyze</button>
+                <button class="btn btn-ghost" onclick="loadExample()" style="width:100%; margin-top:5px;">Load
+                    Example</button>
+            </div>
+            <div class="card">
+                <div class="flex-between">
+                    <h3>Correlation</h3>
+                    <div class="chart-controls">
+                        <div class="control-btn" onclick="downloadChart()">⬇️</div>
+                    </div>
+                </div>
+                <p id="corrOutput" style="font-size:14px; margin-bottom:10px; color:var(--accent);">Coefficient (r): --
+                </p>
+                <div class="chart-container"><canvas id="scatterChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let chart;
+        function loadExample() {
+            document.getElementById('dataInput').value = "10,25\n12,30\n14,35\n16,40\n18,48\n20,55";
+            drawScatter();
+        }
+        function drawScatter() {
+            const raw = document.getElementById('dataInput').value;
+            const lines = raw.split('\n');
+            const data = [];
+            let xSum = 0, ySum = 0, xxSum = 0, yySum = 0, xySum = 0, n = 0;
+
+            lines.forEach(l => {
+                const p = l.split(',').map(n => parseFloat(n));
+                if (p.length >= 2 && !isNaN(p[0]) && !isNaN(p[1])) {
+                    data.push({ x: p[0], y: p[1] });
+                    xSum += p[0]; ySum += p[1];
+                    xxSum += p[0] * p[0]; yySum += p[1] * p[1];
+                    xySum += p[0] * p[1];
+                    n++;
+                }
+            });
+
+            if (n < 2) return;
+
+            // Calculate r
+            const numerator = (n * xySum) - (xSum * ySum);
+            const denominator = Math.sqrt(((n * xxSum) - (xSum * xSum)) * ((n * yySum) - (ySum * ySum)));
+            const r = denominator ? numerator / denominator : 0;
+            document.getElementById('corrOutput').innerHTML = `Pearson (r) = <strong>${r.toFixed(4)}</strong>`;
+
+            const ctx = document.getElementById('scatterChart').getContext('2d');
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Data',
+                        data: data,
+                        backgroundColor: '#E67E22',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.1)' } },
+                        y: { grid: { color: 'rgba(255,255,255,0.1)' } }
+                    }
+                }
+            });
+        }
+        function downloadChart() {
+            const a = document.createElement('a');
+            a.download = 'ScatterPlot.png';
+            a.href = document.getElementById('scatterChart').toDataURL();
+            a.click();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sigma Conversion & Targets | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Tooltip & Help Styles */
+        .help-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .help-btn:hover {
+            transform: scale(1.1);
+            background: #fff;
+            color: var(--accent);
+        }
+
+        .slide-panel {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 450px;
+            height: 100vh;
+            background: var(--surface-1);
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            transition: 0.4s;
+            overflow-y: auto;
+            padding: 30px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slide-panel.open {
+            right: 0;
+        }
+
+        .slide-close {
+            font-size: 24px;
+            cursor: pointer;
+            float: right;
+            color: var(--text-secondary);
+        }
+
+        .info-tip {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 11px;
+            color: white;
+            cursor: help;
+            margin-left: 5px;
+        }
+
+        .info-tip:hover {
+            background: var(--accent);
+        }
+
+        .story-step {
+            border-left: 2px solid var(--primary);
+            padding-left: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .story-step::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        /* Table Styles */
+        .sigma-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .sigma-table th {
+            background: var(--surface-2);
+            padding: 12px;
+            text-align: left;
+            color: var(--accent);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .sigma-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .sigma-table tr:hover td {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .sigma-highlight {
+            color: var(--success) !important;
+            font-weight: bold;
+        }
+
+        .highlight-row {
+            background: rgba(46, 204, 113, 0.1) !important;
+            border-left: 3px solid var(--success);
+        }
+
+        /* Stat Grid */
+        .metric-card {
+            background: var(--surface-2);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+            cursor: help;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-val {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        /* Tabs */
+        .tab-nav {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--surface-2);
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">PHASE: MEASURE</span>
+                <div style="height: 15px;"></div>
+                <h1>Sigma Conversion & Targets</h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Calculate DPMO, Yield, and Sigma. <span style="color: var(--accent);">Set quality targets.</span>
+                    Reference standardized conversion tables.
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
+                    Back</button>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('calc')">📐 Calculator</button>
+            <button class="tab-btn" onclick="switchTab('target')">🎯 Target Setter (Planning)</button>
+            <button class="tab-btn" onclick="switchTab('table')">📊 Conversion Table</button>
+        </div>
+
+        <!-- TAB 1: CALCULATOR -->
+        <div id="calc" class="tab-content active">
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+
+                <!-- INPUTS -->
+                <div class="card">
+                    <h3>Input Data</h3>
+                    <div class="form-group">
+                        <label>Total Units Processed (N) <span class="info-tip"
+                                title="The total number of items, products, or units of service produced.">?</span></label>
+                        <input type="number" id="c_units" placeholder="e.g. 1000" oninput="calcMetrics()">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Defects (D) <span class="info-tip"
+                                title="The actual count of errors/defects found. Note: One unit can have multiple defects.">?</span></label>
+                        <input type="number" id="c_defects" placeholder="e.g. 50" oninput="calcMetrics()">
+                    </div>
+                    <div class="form-group">
+                        <label>Opportunities per Unit (O) <span class="info-tip"
+                                title="How many 'ways' can a single unit fail? E.g. A form field has 5 boxes = 5 opps.">?</span></label>
+                        <input type="number" id="c_opps" value="1" oninput="calcMetrics()">
+                        <small style="color:var(--text-secondary); font-size:11px;">Ways a single unit can fail.</small>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:10px;"
+                        onclick="calcMetrics()">Calculate</button>
+                </div>
+
+                <!-- OUTPUTS -->
+                <div>
+                    <div class="grid-2">
+                        <div class="metric-card"
+                            title="Defects per Opportunity: The probability of error on any single check.">
+                            <div class="metric-label">DPO (Defects Per Opp)</div>
+                            <div class="metric-val" id="res_dpo">-</div>
+                            <div style="font-size:10px; color:var(--text-secondary);">Defects / Total Opps</div>
+                        </div>
+                        <div class="metric-card"
+                            title="Defects Per Million Opportunities: The standard 'currency' of Six Sigma.">
+                            <div class="metric-label">DPMO</div>
+                            <div class="metric-val" id="res_dpmo" style="color:var(--accent);">-</div>
+                            <div style="font-size:10px; color:var(--text-secondary);">Defects per Million</div>
+                        </div>
+                        <div class="metric-card" title="Yield: The percentage of opportunities that are defect-free.">
+                            <div class="metric-label">Process Yield</div>
+                            <div class="metric-val" id="res_yield" style="color:var(--success);">-</div>
+                            <div style="font-size:10px; color:var(--text-secondary);">% Right First Time</div>
+                        </div>
+                        <div class="metric-card"
+                            style="border-color:var(--primary); background:rgba(27, 107, 130, 0.1);"
+                            title="Z-Score: Measures how many standard deviations fit between mean and spec limit.">
+                            <div class="metric-label">Sigma Level (Z)</div>
+                            <div class="metric-val" id="res_sigma" style="font-size:32px;">-</div>
+                            <div style="font-size:10px; color:var(--primary);">Includes 1.5 Shift</div>
+                        </div>
+                    </div>
+
+                    <!-- DYNAMIC INTERPRETATION -->
+                    <div id="calc_interp"
+                        style="margin-top:20px; padding:15px; background:var(--surface-2); border-left:4px solid var(--neutral); font-size:13px; line-height:1.5; color:var(--text-secondary);">
+                        Enter data to see expert interpretation.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: TARGET SETTER -->
+        <div id="target" class="tab-content">
+            <div class="card" style="max-width:800px; margin:0 auto;">
+                <div class="flex-between">
+                    <h3>Defects for Six Sigma Target (D_target)</h3>
+                    <span class="ai-badge">PLANNING TOOL</span>
+                </div>
+                <p style="color:var(--text-secondary); margin-bottom:20px;">
+                    Calculate the maximum number of defects allowed to achieve a desired Sigma Level.
+                </p>
+
+                <div class="grid-2">
+                    <div>
+                        <div class="form-group">
+                            <label>Planned Production Volume (Units)</label>
+                            <input type="number" id="t_units" placeholder="e.g. 100000" oninput="calcTarget()">
+                        </div>
+                        <div class="form-group">
+                            <label>Opportunities per Unit</label>
+                            <input type="number" id="t_opps" value="1" oninput="calcTarget()">
+                        </div>
+                        <div class="form-group">
+                            <label>Target Sigma Level</label>
+                            <select id="t_sigma" onchange="calcTarget()">
+                                <option value="6">6.0 (World Class)</option>
+                                <option value="5">5.0 (Excellent)</option>
+                                <option value="4">4.0 (Good)</option>
+                                <option value="3" selected>3.0 (Average)</option>
+                                <option value="2">2.0 (Poor)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div
+                        style="background:var(--bg-dark); padding:20px; border-radius:8px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+                        <div style="font-size:12px; color:var(--text-secondary); text-transform:uppercase;">Max Allowed
+                            Defects</div>
+                        <div id="res_max_defects"
+                            style="font-size:48px; font-weight:bold; color:var(--primary); margin:15px 0;">0</div>
+                        <div style="font-size:12px; color:var(--text-secondary);">
+                            To maintain <span id="target_sigma_disp" style="color:white; font-weight:bold;">3.0</span>
+                            Sigma
+                        </div>
+                        <div style="margin-top:20px; font-size:11px; color:var(--accent);">
+                            Target Yield: <span id="res_target_yield">93.32%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DYNAMIC INTERPRETATION TARGET -->
+                <div id="target_interp"
+                    style="margin-top:20px; padding:15px; background:var(--surface-1); border-left:4px solid var(--accent); font-size:13px; line-height:1.5; color:var(--text-secondary);">
+                    Select a target to see the strictness of requirements.
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: CONVERSION TABLE -->
+        <div id="table" class="tab-content">
+            <div class="card">
+                <h3>Six Sigma Conversion Table (With 1.5 Shift)</h3>
+                <div style="overflow-x:auto;">
+                    <table class="sigma-table" id="conversionTable">
+                        <thead>
+                            <tr>
+                                <th>Sigma Level (Z)</th>
+                                <th>DPMO</th>
+                                <th>Yield (%)</th>
+                                <th>Cp (Approx)</th>
+                                <th>Quality Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Generated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- HELP BUTTON & SLIDE PANEL -->
+    <button class="help-btn" onclick="toggleHelp()">?</button>
+    <div id="slidePanel" class="slide-panel">
+        <span class="slide-close" onclick="toggleHelp()">&times;</span>
+        <h2 style="color:var(--primary);">📘 Knowledge Base</h2>
+
+        <div style="margin-bottom:30px;">
+            <h3 style="color:var(--accent);">What, Why, When, How</h3>
+            <div class="story-step">
+                <strong>What:</strong> A calculator converting raw defect counts into a universal "Z-Score" or Sigma
+                Level. It normalizes performance across different industries.
+            </div>
+            <div class="story-step">
+                <strong>Why:</strong> To compare "Apples to Oranges". A hospital error rate can be compared to a factory
+                defect rate using Sigma Level.
+            </div>
+            <div class="story-step">
+                <strong>When:</strong>
+                <br>• <em>Define Phase:</em> To set the baseline (current state).
+                <br>• <em>Improve/Control Phase:</em> To validate the improvement (future state).
+            </div>
+            <div class="story-step">
+                <strong>How:</strong> Count total units. Identify opportunities per unit. Count total defects. Map to
+                standard table.
+            </div>
+        </div>
+
+        <div style="margin-bottom:30px;">
+            <h3 style="color:var(--accent);">Real-World Scenarios</h3>
+
+            <div
+                style="margin-bottom:15px; background:var(--surface-2); padding:10px; border-radius:6px; border-left:3px solid #2ecc71;">
+                <strong>🏥 Healthcare (Medication)</strong><br>
+                <small>Common</small><br>
+                <strong>Unit:</strong> 1 Patient Day.<br>
+                <strong>Opps:</strong> 5 (Drug ID, Dose, Time, Route, Patient).<br>
+                <strong>Defects:</strong> 2 Errors found.<br>
+                <strong>Goal:</strong> > 5.0 Sigma (High Safety).
+            </div>
+
+            <div
+                style="margin-bottom:15px; background:var(--surface-2); padding:10px; border-radius:6px; border-left:3px solid #3498db;">
+                <strong>⚙️ Manufacturing (Bolts)</strong><br>
+                <strong>Unit:</strong> 1 Bolt.<br>
+                <strong>Opps:</strong> 3 (Length, Diameter, Thread).<br>
+                <strong>Defects:</strong> 50 rejects in 10,000.<br>
+                <strong>Goal:</strong> > 4.0 Sigma.
+            </div>
+
+            <div
+                style="margin-bottom:15px; background:var(--surface-2); padding:10px; border-radius:6px; border-left:3px solid #f1c40f;">
+                <strong>🎧 Service (Call Center)</strong><br>
+                <strong>Unit:</strong> 1 Call.<br>
+                <strong>Opps:</strong> 1 (Satisfaction).<br>
+                <strong>Defects:</strong> 500 complaints in 10,000.<br>
+                <strong>Goal:</strong> > 3.0 Sigma.
+            </div>
+        </div>
+
+        <div style="margin-bottom:30px;">
+            <h3 style="color:var(--accent);">Requirements & Roles</h3>
+            <ul style="font-size:13px; color:var(--text-secondary); padding-left:20px;">
+                <li><strong>Pre-Reqs:</strong> Stable process (check Control Charts first), Validated Measurement System
+                    (MSA passed).</li>
+                <li><strong>Green Belt:</strong> Collects data, inputs into calculator, reports baseline.</li>
+                <li><strong>Black Belt:</strong> Validates MSA, interprets Sigma Shift, sets D_target for sub-teams.
+                </li>
+                <li><strong>Process Owner:</strong> Provides access to data, validates "Opportunity" definition.</li>
+            </ul>
+        </div>
+
+        <div style="margin-bottom:30px;">
+            <h3 style="color:var(--accent);">Standards & References</h3>
+            <ul style="font-size:13px; color:var(--text-secondary); padding-left:20px;">
+                <li><strong>1.5 Sigma Shift:</strong> Added by default to account for long-term variation.</li>
+                <li><strong>World Class:</strong> 6.0 Sigma (3.4 DPMO).</li>
+                <li><strong>Average:</strong> 3.0 Sigma (66,807 DPMO).</li>
+                <li><strong>Fail:</strong>
+                    < 2.0 Sigma.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function toggleHelp() {
+            const p = document.getElementById('slidePanel');
+            p.classList.toggle('open');
+        }
+
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // --- CALCULATOR LOGIC ---
+        function calcMetrics() {
+            const units = parseFloat(document.getElementById('c_units').value) || 0;
+            const defects = parseFloat(document.getElementById('c_defects').value) || 0;
+            const opps = parseFloat(document.getElementById('c_opps').value) || 1;
+
+            if (units === 0) return;
+
+            const totalOpps = units * opps;
+            const dpo = defects / totalOpps;
+            const dpmo = dpo * 1000000;
+            const yieldVal = (1 - dpo) * 100;
+
+            // Sigma Calc
+            let sigma = 0;
+            if (dpmo <= 3.4) sigma = 6.0;
+            else if (dpmo >= 1000000) sigma = 0;
+            else {
+                sigma = 0.8406 + Math.sqrt(29.37 - 2.221 * Math.log(dpmo));
+            }
+            if (sigma > 6) sigma = 6;
+            if (sigma < 0) sigma = 0;
+
+            document.getElementById('res_dpo').innerText = dpo.toFixed(5);
+            document.getElementById('res_dpmo').innerText = Math.round(dpmo).toLocaleString();
+            document.getElementById('res_yield').innerText = yieldVal.toFixed(3) + '%';
+            document.getElementById('res_sigma').innerText = sigma.toFixed(2) + ' σ';
+
+            // Interpretation
+            const interpEl = document.getElementById('calc_interp');
+            let iText = `<strong>Analysis:</strong> Process is operating at <strong>${sigma.toFixed(2)} Sigma</strong>. `;
+            if (sigma >= 5) iText += `<span style='color:var(--success)'>This is World Class performance. Minimal waste.</span>`;
+            else if (sigma >= 3) iText += `<span style='color:var(--warning)'>This is Average. Significant room for improvement (Cost of Poor Quality is high).</span>`;
+            else iText += `<span style='color:var(--error)'>This is Poor. Immediate Root Cause Analysis needed. Process is unstable or incapable.</span>`;
+
+            iText += `<br>With a yield of ${yieldVal.toFixed(2)}%, approx ${Math.ceil(defects)} items failed out of ${units}.`;
+            interpEl.innerHTML = iText;
+            interpEl.style.borderLeftColor = sigma >= 3 ? (sigma >= 5 ? 'var(--success)' : 'var(--warning)') : 'var(--error)';
+        }
+
+        // --- TARGET LOGIC ---
+        const sigmaMap = {
+            "6": { dpmo: 3.4, yield: 99.99966 },
+            "5": { dpmo: 233, yield: 99.9767 },
+            "4": { dpmo: 6210, yield: 99.38 },
+            "3": { dpmo: 66807, yield: 93.32 },
+            "2": { dpmo: 308538, yield: 69.15 },
+        };
+
+        function calcTarget() {
+            const units = parseFloat(document.getElementById('t_units').value) || 0;
+            const opps = parseFloat(document.getElementById('t_opps').value) || 1;
+            const target = document.getElementById('t_sigma').value;
+
+            if (!units) return;
+
+            const totalOpps = units * opps;
+            const targetDPMO = sigmaMap[target].dpmo;
+            const allowedDefects = (targetDPMO * totalOpps) / 1000000;
+
+            document.getElementById('res_max_defects').innerText = Math.floor(allowedDefects).toLocaleString();
+            document.getElementById('target_sigma_disp').innerText = target + '.0';
+            document.getElementById('res_target_yield').innerText = sigmaMap[target].yield + '%';
+
+            // Target Interp
+            const tEl = document.getElementById('target_interp');
+            tEl.innerHTML = `<strong>Planning Insight:</strong> To stay above ${target}.0 Sigma, you cannot afford more than <strong>${Math.floor(allowedDefects)}</strong> errors in your batch of ${units.toLocaleString()}. <br>If your current defect rate is higher, you need a DMAIC project.`;
+        }
+
+        // --- TABLE GENERATION ---
+        function renderTable() {
+            const tbody = document.querySelector('#conversionTable tbody');
+            const rows = [
+                { z: 6.0, dpmo: 3.4, yield: "99.99966%", cp: 2.0, desc: "World Class" },
+                { z: 5.5, dpmo: 32, yield: "99.9968%", cp: 1.83, desc: "Excellent" },
+                { z: 5.0, dpmo: 233, yield: "99.977%", cp: 1.67, desc: "High Quality" },
+                { z: 4.5, dpmo: 1350, yield: "99.865%", cp: 1.5, desc: "Good" },
+                { z: 4.0, dpmo: 6210, yield: "99.379%", cp: 1.33, desc: "Typical" },
+                { z: 3.5, dpmo: 22750, yield: "97.72%", cp: 1.17, desc: "Below Average" },
+                { z: 3.0, dpmo: 66807, yield: "93.32%", cp: 1.0, desc: "Average (Historic)" },
+                { z: 2.5, dpmo: 158655, yield: "84.13%", cp: 0.83, desc: "Poor" },
+                { z: 2.0, dpmo: 308537, yield: "69.15%", cp: 0.67, desc: "Non-Competitive" }
+            ];
+
+            tbody.innerHTML = rows.map(r => `
+                <tr class="${r.z === 6.0 ? 'highlight-row' : ''}">
+                    <td style="font-weight:bold; color:var(--primary);">${r.z.toFixed(1)}</td>
+                    <td style="font-family:monospace;">${r.dpmo.toLocaleString()}</td>
+                    <td>${r.yield}</td>
+                    <td>${r.cp}</td>
+                    <td><span class="${r.z >= 6 ? 'sigma-highlight' : ''}">${r.desc}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // Init
+        renderTable();
+    </script>
+</body>
+
+</html>

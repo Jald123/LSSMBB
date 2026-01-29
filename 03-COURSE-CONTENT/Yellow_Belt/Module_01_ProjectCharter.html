@@ -1,0 +1,146 @@
+<div style="max-width: 1000px; margin: 0 auto; padding: 20px;">
+
+    <div style="background: linear-gradient(135deg, #32A8C6 0%, #1B6F85 100%); 
+              color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h1 style="margin: 0;">📋 Project Charter Builder</h1>
+        <p style="margin: 5px 0 0 0;">Step-by-step guide to creating your project charter</p>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div style="background: #E8F4F8; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <div style="font-weight: bold; margin-bottom: 8px;">Progress: 1 of 5 Steps</div>
+        <div style="background: #DDD; height: 8px; border-radius: 4px;">
+            <div style="background: #32A8C6; height: 100%; width: 20%; border-radius: 4px;"></div>
+        </div>
+    </div>
+
+    <form style="background: white; padding: 20px; border: 1px solid #DDD; border-radius: 8px;">
+
+        <h3 style="color: #1B6F85; border-bottom: 2px solid #32A8C6; padding-bottom: 10px;">
+            Step 1: Project Basics
+        </h3>
+
+        <!-- FIELD 1: PROJECT TITLE -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                Project Title <span style="color: red;">*</span>
+            </label>
+            <input type="text" style="width: 100%; padding: 10px; border: 1px solid #CCC; 
+                               border-radius: 5px;" placeholder="E.g., Reduce Invoice Processing Time"
+                onchange="updateTemplateFields(this.value)">
+            <small style="color: #666;">Example: [Department] - [Problem] - [Solution]</small>
+        </div>
+
+        <!-- FIELD 2: PROBLEM STATEMENT -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                What is the Problem Statement? <span style="color: red;">*</span>
+            </label>
+            <textarea style="width: 100%; height: 100px; padding: 10px; border: 1px solid #CCC; 
+                       border-radius: 5px; font-family: Arial;"
+                placeholder="Be specific: Current state vs. Desired state, Metrics, Impact..."></textarea>
+            <small style="color: #666;">📝 Tip: Use "As-Is" vs "To-Be" format</small>
+        </div>
+
+        <!-- FIELD 3: BUSINESS CASE -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                Business Case (Why is this important?) <span style="color: red;">*</span>
+            </label>
+            <input type="text" style="width: 100%; padding: 10px; border: 1px solid #CCC; 
+                               border-radius: 5px;"
+                placeholder="E.g., Reduce costs by 20%, Improve customer satisfaction">
+        </div>
+
+        <!-- FIELD 4: BUSINESS IMPACT -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                Estimated Annual Savings (SAR) <span style="color: red;">*</span>
+            </label>
+            <input type="number" style="width: 100%; padding: 10px; border: 1px solid #CCC; 
+                                 border-radius: 5px;" placeholder="0" onchange="calculateROI(this.value)">
+            <small style="color: #666;">This affects ROI calculation and project prioritization</small>
+        </div>
+
+        <!-- AUTO-CALCULATED FIELD -->
+        <div style="background: #E8F4F8; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                🎯 Estimated Sigma Level Improvement
+            </label>
+            <div style="font-size: 24px; font-weight: bold; color: #32A8C6;">
+                2.5σ → 4.2σ <span style="font-size: 14px; color: #666;">(+1.7 levels)</span>
+            </div>
+            <small style="color: #666;">
+                ℹ️ Calculated based on industry benchmarks for your process type
+            </small>
+        </div>
+
+        <!-- FIELD 5: SPONSOR -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                Project Sponsor <span style="color: red;">*</span>
+            </label>
+            <input type="text" style="width: 100%; padding: 10px; border: 1px solid #CCC; 
+                               border-radius: 5px;" placeholder="Name of executive sponsor">
+        </div>
+
+        <!-- FIELD 6: PROJECT SCOPE -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                Scope: What's INCLUDED? <span style="color: red;">*</span>
+            </label>
+            <textarea style="width: 100%; height: 80px; padding: 10px; border: 1px solid #CCC; 
+                       border-radius: 5px; font-family: Arial;"
+                placeholder="Departments, processes, locations included in this project"></textarea>
+        </div>
+
+        <!-- FIELD 7: OUT OF SCOPE -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                Out of Scope: What's EXCLUDED?
+            </label>
+            <textarea style="width: 100%; height: 80px; padding: 10px; border: 1px solid #CCC; 
+                       border-radius: 5px; font-family: Arial;"
+                placeholder="What will NOT be addressed in this project"></textarea>
+        </div>
+
+        <!-- TIMELINE -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                    Start Date <span style="color: red;">*</span>
+                </label>
+                <input type="date" style="width: 100%; padding: 10px; border: 1px solid #CCC; border-radius: 5px;">
+            </div>
+            <div>
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">
+                    Target End Date <span style="color: red;">*</span>
+                </label>
+                <input type="date" style="width: 100%; padding: 10px; border: 1px solid #CCC; border-radius: 5px;">
+            </div>
+        </div>
+
+        <!-- SMART NOTIFICATION -->
+        <div
+            style="background: #D4EDDA; padding: 12px; border-radius: 5px; border-left: 4px solid #28A745; margin-bottom: 20px;">
+            <strong style="color: #155724;">✓ Great!</strong>
+            <p style="margin: 5px 0 0 0; color: #155724; font-size: 14px;">
+                Your answers are being saved automatically. Once you complete all sections,
+                you can download your charter as PDF or Excel.
+            </p>
+        </div>
+
+        <!-- BUTTONS -->
+        <div style="display: flex; gap: 10px; justify-content: space-between;">
+            <button type="button" style="padding: 12px 24px; background: #CCC; color: #333; 
+                                   border: none; border-radius: 5px; cursor: pointer;">
+                Cancel
+            </button>
+            <button type="button" style="padding: 12px 24px; background: #32A8C6; color: white; 
+                                   border: none; border-radius: 5px; cursor: pointer;">
+                Save & Continue to Step 2 →
+            </button>
+        </div>
+    </form>
+
+</div>

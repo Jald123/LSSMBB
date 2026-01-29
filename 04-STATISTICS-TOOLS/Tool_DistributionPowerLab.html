@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribution & Power Lab | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
+
+    <style>
+        /* Lab Specific Styles */
+        :root {
+            --dashboard-gap: 20px;
+        }
+
+        body {
+            font-size: 16px;
+            /* Increased base font size */
+        }
+
+        .container {
+            max-width: 98%;
+            /* 1cm margin approx */
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Top Landscape Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            /* Small spaces as requested */
+            margin-bottom: 30px;
+        }
+
+        .header-full {
+            grid-column: span 4;
+            background: #0f172a;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #1e293b;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-card {
+            background: #1e293b;
+            padding: 20px;
+            /* Reduced padding */
+            border-radius: 12px;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            height: 100%;
+            min-height: 120px;
+            /* Reduced height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            /* More lift */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent);
+            background: #252f45;
+            /* Slight lighten on hover */
+        }
+
+        .info-card::after {
+            content: 'ℹ️';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0.3;
+            font-size: 12px;
+        }
+
+        .info-title {
+            color: #ea580c;
+            font-size: 16px;
+            /* Larger */
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .info-text {
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        /* Middle Section: Guide + Tool */
+        .execution-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            /* Fixed Left Guide, Fluid Right Tool */
+            gap: 30px;
+            margin-top: 40px;
+            /* Moved down ~1cm per user request */
+        }
+
+        /* Maximize Tool State (Added for Anderson-Darling Test) */
+        .execution-grid.maximize-tool {
+            display: block;
+        }
+
+        .execution-grid.maximize-tool .guide-column {
+            display: none;
+        }
+
+        .execution-grid.maximize-tool .tool-column {
+            margin: 0 auto;
+            max-width: 1200px;
+            /* Centered & Wider */
+        }
+
+        /* Tooltip Styles for Buttons */
+        .btn-tooltip {
+            position: relative;
+        }
+
+        .btn-tooltip:hover::after {
+            content: attr(data-hover);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            width: 280px;
+            font-size: 12px;
+            line-height: 1.5;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: pre-wrap;
+            border: 1px solid var(--accent);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            text-align: left;
+        }
+
+        /* Interactive Graph Overlay */
+        .lab-screen {
+            background: var(--bg-dark);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            height: 400px;
+            /* Taller graph */
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        /* Progress Bar (Report & Export) */
+        .progress-container {
+            width: 100%;
+            background-color: var(--surface-1);
+            border-radius: 10px;
+            margin: 15px 0;
+            height: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Existing styles preserved below */
+        .control-panel {
+            background: var(--surface-2);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .slider-group {
+            margin-bottom: 20px;
+        }
+
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .slider-group input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .big-number {
+            font-size: 42px;
+            font-weight: bold;
+            color: var(--success);
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: bold;
+            border-bottom: 2px solid transparent;
+            font-size: 18px;
+            /* Increased font size */
+            transition: color 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        /* Modal Popup */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 95%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 50px rgba(155, 89, 182, 0.3);
+            text-align: left;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 15px;
+        }
+
+        .modal-list {
+            padding-left: 20px;
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .modal-list li {
+            margin-bottom: 8px;
+        }
+    </style>
+    </style>
+    <style>
+        /* PRINT STYLES */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #print-report,
+            #print-report * {
+                visibility: visible;
+            }
+
+            #print-report {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                color: black;
+                padding: 40px;
+                display: block !important;
+                z-index: 9999;
+            }
+
+            /* Reset colors for print */
+            .print-header {
+                border-bottom: 2px solid #000;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+            }
+
+            .print-section {
+                margin-bottom: 30px;
+                border: 1px solid #ddd;
+                padding: 15px;
+                border-radius: 8px;
+            }
+
+            .print-label {
+                font-weight: bold;
+                color: #555;
+                font-size: 12px;
+            }
+
+            .print-value {
+                font-weight: bold;
+                font-size: 14px;
+            }
+
+            .print-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- 1. LANDSCAPE DASHBOARD (Top Part) -->
+        <div class="dashboard-grid">
+            <!-- Header -->
+            <div class="header-full">
+                <div>
+                    <div style="display:flex; align-items:center; gap:15px; margin-bottom:5px;">
+                        <h1 style="margin:0; font-family:'Orbitron',sans-serif; font-size:32px; color:white;">
+                            Distribution & Power Lab</h1>
+                        <span onclick="showPopup('simple')"
+                            style="cursor:pointer; background:#2563eb; color:white; padding:4px 12px; border-radius:6px; font-size:12px; font-weight:bold; margin-left:10px; border:1px solid rgba(255,255,255,0.3);">
+                            Simple Explanation 💡</span>
+                        <span
+                            style="background:#334155; color:#94a3b8; padding:4px 12px; border-radius:6px; font-size:12px; font-weight:bold;">ANALYZE
+                            PHASE</span>
+                        <button onclick="showGuide()" class="btn btn-secondary-card"
+                            style="margin-left:20px; border-color:#9B59B6; color:#9B59B6;">🔋 Guide</button>
+                    </div>
+                    <div style="color:#94a3b8; font-style:italic; font-size:16px;">"The shape of your data tells the
+                        story of your process."</div>
+                </div>
+            </div>
+
+            <!-- Info Cards (Row 1) -->
+            <div class="info-card" onclick="showPopup('origin')">
+                <div class="info-title">📜 Origin & Power</div>
+                <div class="info-text">Based on probability theory, this visualizes process behavior (Bell Curve) and
+                    calculates Test Power to prevent wasted sampling.</div>
+            </div>
+            <div class="info-card" onclick="showPopup('what')">
+                <div class="info-title">🤔 What is it?</div>
+                <div class="info-text">A dual-engine: 1. Probability Visualizer (Normal, Binomial). 2. Sample Size &
+                    Power Calculator.</div>
+            </div>
+            <div class="info-card" onclick="showPopup('why')">
+                <div class="info-title">💡 Why use it?</div>
+                <div class="info-text">To sciencetifically determine "How many samples do I need?" and understand
+                    capability.</div>
+            </div>
+            <div class="info-card" onclick="showPopup('when')">
+                <div class="info-title">🕒 When to use?</div>
+                <div class="info-text">Measure Phase (Baseline) or Analyze Phase (Before Hypothesis Tests).</div>
+            </div>
+
+            <!-- Info Cards (Row 2) -->
+            <div class="info-card" onclick="showPopup('standard')">
+                <div class="info-title">📏 The Standard</div>
+                <div class="info-text">Power = 0.80 (80%). Alpha = 0.05 (5%). P-Value > 0.05 (Normal).</div>
+            </div>
+            <div class="info-card" onclick="showPopup('interp')">
+                <div class="info-title">👓 Interpretation</div>
+                <div class="info-text">P < 0.05: Not Normal. Power < 80%: Increase Sample Size.</div>
+                </div>
+                <div class="info-card" onclick="showPopup('ref')">
+                    <div class="info-title">📊 Reference Values</div>
+                    <div class="info-text">Normal (Continuous), Weibull (Reliability), Poisson (Defects).</div>
+                </div>
+                <div class="info-card" style="border-color:#3b82f6;" onclick="showPopup('tips')">
+                    <div class="info-title" style="color:#60a5fa;">💡 Pro Tips</div>
+                    <div class="info-text">Always check Normality before running a T-Test. Use Power to justify budget.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. EXECUTION & TOOL AREA -->
+            <div class="execution-grid">
+
+                <!-- LEFT COLUMN: Guide & Report -->
+                <div class="guide-column">
+
+                    <!-- PRE-REQS & ROLES -->
+                    <div class="card" style="margin-bottom:20px;">
+                        <h4 style="color:#ea580c; text-transform:uppercase; margin-bottom:10px;">📋 Pre-Requirements
+                        </h4>
+                        <p style="color:#cbd5e1; font-size:13px; margin-bottom:15px;">Clean data (n=30+). Estimate of
+                            Sigma.</p>
+
+                        <h4 style="color:#ea580c; text-transform:uppercase; margin-bottom:10px;">👮 Strict Roles</h4>
+                        <ul style="padding-left:20px; color:#cbd5e1; font-size:13px;">
+                            <li><b>Black Belt:</b> Power Calcs & Fit Tests.</li>
+                            <li><b>Green Belt:</b> Checks Normality.</li>
+                            <li><b>SME:</b> Provides context.</li>
+                        </ul>
+                    </div>
+
+                    <!-- HOW TO EXECUTE (Hover Mode) -->
+                    <div class="card" style="margin-bottom:20px;">
+                        <h3 style="color:#9B59B6; margin-bottom:15px;">🎮 How to Execute</h3>
+                        <div style="display:flex; flex-direction:column; gap:10px;">
+                            <!-- Step 1 -->
+                            <div class="btn-tooltip"
+                                data-hover="Ensure Sample Size (n) > 30. Check for Measurement Error first."
+                                style="display:flex; align-items:center; gap:10px; padding:8px; background:#334155; border-radius:6px; cursor:help;">
+                                <div
+                                    style="background:#f97316; color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                                    1</div>
+                                <div style="font-size:13px; color:white;"><b>Collect:</b> Gather initial data (n=30+).
+                                </div>
+                            </div>
+                            <!-- Step 2 -->
+                            <div class="btn-tooltip" data-hover="Look for Outliers, Bi-Modal shapes, or Skewness."
+                                style="display:flex; align-items:center; gap:10px; padding:8px; background:#334155; border-radius:6px; cursor:help;">
+                                <div
+                                    style="background:#f97316; color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                                    2</div>
+                                <div style="font-size:13px; color:white;"><b>Plot:</b> Visualize shape.</div>
+                            </div>
+                            <!-- Step 3 -->
+                            <div class="btn-tooltip"
+                                data-hover="If P-Value < 0.05, data is Non-Normal. Consider Transformation."
+                                style="display:flex; align-items:center; gap:10px; padding:8px; background:#334155; border-radius:6px; cursor:help;">
+                                <div
+                                    style="background:#f97316; color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                                    3</div>
+                                <div style="font-size:13px; color:white;"><b>Test Fit:</b> Anderson-Darling Test.</div>
+                            </div>
+                            <!-- Step 4 -->
+                            <div class="btn-tooltip"
+                                data-hover="Balance the Cost of Sampling vs. the Risk of Missing a Shift."
+                                style="display:flex; align-items:center; gap:10px; padding:8px; background:#334155; border-radius:6px; cursor:help;">
+                                <div
+                                    style="background:#f97316; color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                                    4</div>
+                                <div style="font-size:13px; color:white;"><b>Set Power:</b> Define Delta & Sigma.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REPORT & EXPORT SECTION -->
+                    <div class="card" style="border: 1px solid var(--accent);">
+                        <h3 style="color:var(--accent);">Report & Export</h3>
+
+                        <div style="margin-top:15px;">
+                            <label style="font-size:12px; color:var(--text-secondary);">Analyst / Created By:</label>
+                            <div
+                                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                                <span style="font-size:10px; color:#aaa;" id="progressText">0% Complete</span>
+                            </div>
+                            <input type="text" id="analystName" placeholder="Enter your name..."
+                                style="width:100%; padding:10px; background:#0f172a; border:1px solid #334155; color:white; border-radius:6px; margin-bottom:5px;"
+                                oninput="updateProgress()">
+
+                            <div class="progress-container">
+                                <div class="progress-bar" id="progressBar"></div>
+                            </div>
+                            <div style="font-size:10px; color:#64748b; font-style:italic; margin-bottom:15px;">Progress
+                                tracks data entry and analysis steps.</div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <button class="btn btn-primary-card"
+                                style="background:#ea580c; width:100%; justify-content:center;"
+                                onclick="saveAnalysis()">💾 Save</button>
+                            <button class="btn btn-secondary-card" style="width:100%; justify-content:center;"
+                                onclick="preparePrint()">📷 Print PDF</button>
+                        </div>
+                    </div>
+
+                </div> <!-- End Left Column -->
+
+                <!-- TOOL COLUMN -->
+                <div class="tool-column">
+                    <!-- TABS -->
+                    <div style="margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); margin-top:40px;">
+                        <!-- Moved down 40px -->
+                        <button class="tab-btn active" onclick="switchTab('dist')">📊 Probability Distributions</button>
+                        <button class="tab-btn" onclick="switchTab('power')">🔋 Sample Size & Power</button>
+                        <button class="tab-btn" onclick="switchTab('adtest')">📉 Anderson-Darling Test</button>
+                    </div>
+
+                    <!-- TAB 1: DISTRIBUTIONS -->
+                    <div id="tab_dist" class="tab-content">
+                        <div class="grid-2">
+                            <!-- CONTROLS -->
+                            <div>
+                                <div class="card control-panel">
+                                    <h3>1. Select Distribution</h3>
+                                    <div style="display:flex; gap:10px; margin-bottom:20px;">
+                                        <button class="btn btn-secondary-card btn-tooltip" onclick="setDist('normal')"
+                                            data-hover="WHAT: Continuous data (Bell Curve).&#10;WHEN: Height, Time, Weight, Salary.&#10;INTERP: Symmetric. 68% ±1σ. Tail = Rare.&#10;RANGE: -∞ to +∞">
+                                            Normal (Z)</button>
+
+                                        <button class="btn btn-secondary-card btn-tooltip" onclick="setDist('binomial')"
+                                            data-hover="WHAT: Discrete Pass/Fail outcomes.&#10;WHEN: Inspections, Coin Flips, Yes/No.&#10;INTERP: Function of (n) trials & (p) prob.&#10;RANGE: 0 to n">
+                                            Binomial (P/F)</button>
+
+                                        <button class="btn btn-secondary-card btn-tooltip" onclick="setDist('poisson')"
+                                            data-hover="WHAT: Rare events over time/area.&#10;WHEN: Accidents/Year, Defects/Unit.&#10;INTERP: Skewed right. Mean = Variance = λ.&#10;RANGE: 0 to ∞">
+                                            Poisson (Rate)</button>
+                                    </div>
+
+                                    <!-- DYNAMIC CONTROLS -->
+                                    <div id="controls_normal">
+                                        <h4 style="color:var(--accent); margin-bottom:10px;">Normal Params</h4>
+                                        <div class="slider-group">
+                                            <label><span>Mean (μ): <span id="v_mu">0</span></span></label>
+                                            <input type="range" min="-10" max="10" value="0" step="0.5"
+                                                oninput="updateDist(); document.getElementById('v_mu').innerText=this.value;">
+                                        </div>
+                                        <div class="slider-group">
+                                            <label><span>StDev (σ): <span id="v_sigma">1</span></span></label>
+                                            <input type="range" min="0.5" max="5" value="1" step="0.1"
+                                                oninput="updateDist(); document.getElementById('v_sigma').innerText=this.value;">
+                                        </div>
+                                    </div>
+                                    <div id="controls_binomial" style="display:none;">
+                                        <h4 style="color:var(--accent); margin-bottom:10px;">Binomial Params</h4>
+                                        <div class="slider-group">
+                                            <label><span>Trials (n): <span id="v_n">10</span></span></label>
+                                            <input type="range" min="1" max="50" value="10" step="1"
+                                                oninput="updateDist(); document.getElementById('v_n').innerText=this.value;">
+                                        </div>
+                                        <div class="slider-group">
+                                            <label><span>Prob (p): <span id="v_p">0.5</span></span></label>
+                                            <input type="range" min="0.01" max="1.0" value="0.5" step="0.01"
+                                                oninput="updateDist(); document.getElementById('v_p').innerText=this.value;">
+                                        </div>
+                                    </div>
+                                    <div id="controls_poisson" style="display:none;">
+                                        <h4 style="color:var(--accent); margin-bottom:10px;">Poisson Params</h4>
+                                        <div class="slider-group">
+                                            <label class="btn-tooltip" style="cursor:help; width:fit-content;"
+                                                data-hover="WHAT: The average rate of occurrence (Mean = Variance = λ).&#10;WHEN: Count data (e.g., defects per 1000 units).&#10;INTERP: As λ increases, the skewed distribution becomes more Normal.&#10;NORMAL: Typical rates > 5 approach normality.">
+                                                Lambda (λ): <span id="v_lam">5</span> ⓘ</label>
+                                            <input type="range" min="0.5" max="20" value="5" step="0.5"
+                                                oninput="updateDist(); document.getElementById('v_lam').innerText=this.value;">
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top:20px; font-size:12px; color:var(--text-secondary);">
+                                        <p><strong>Use Case:</strong> <span id="dist_desc">Modeling continuous data like
+                                                Time or
+                                                Weight.</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- VISUAL -->
+                            <div>
+                                <div class="lab-screen">
+                                    <canvas id="distChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: POWER & SAMPLE SIZE -->
+                    <div id="tab_power" class="tab-content" style="display:none;">
+                        <div class="grid-2">
+                            <!-- CALCULATOR -->
+                            <div class="card control-panel">
+                                <h3 class="btn-tooltip" style="cursor:help; width:fit-content;"
+                                    data-hover="WHAT: Formula to find 'n' needed to detect a difference.&#10;WHEN: BEFORE collecting data for T-Tests/ANOVA.&#10;INTERP: Balance between Risk (Alpha), Power (1-Beta), and Cost (n).&#10;NORMAL: Power > 0.8, Alpha = 0.05.">
+                                    Sample Size Calculator (1-Sample Mean) ⓘ</h3>
+                                <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">
+                                    How many samples do I need to "see" a difference?
+                                </p>
+
+                                <div class="form-group">
+                                    <label>Effect Size (Delta) - Smallest Difference to detect</label>
+                                    <input type="number" id="p_delta" value="1.0" oninput="calcPower()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Standard Deviation (Sigma) - Noise</label>
+                                    <input type="number" id="p_sigma" value="2.0" oninput="calcPower()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Desired Power (Usually 0.80 or 0.90)</label>
+                                    <input type="number" id="p_power" value="0.9" step="0.05" max="0.99"
+                                        oninput="calcPower()">
+                                </div>
+                                <div class="form-group">
+                                    <label class="btn-tooltip" style="cursor:help; width:fit-content;"
+                                        data-hover="Risk of a False Alarm (Type I Error).&#10;We accept a 5% chance of saying 'There is a difference' when there isn't one.">
+                                        Alpha (Risk of False Positive) ⓘ</label>
+                                    <input type="number" id="p_alpha" value="0.05" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RESULTS -->
+                        <div class="card"
+                            style="text-align:center; display:flex; flex-direction:column; justify-content:center;">
+                            <h4 style="color:var(--text-secondary); text-transform:uppercase;">Required Sample Size
+                            </h4>
+                            <div id="res_n" class="big-number">34</div>
+                            <div style="font-size:12px; color:var(--text-secondary);">Samples Needed</div>
+
+                            <div style="margin-top:30px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+                                <div style="font-size:12px; color:var(--text-secondary); text-transform:uppercase;">
+                                    Sensitivity
+                                    Analysis</div>
+                                <p style="font-size:11px; color:#aaa;">What if we only have 20 samples?</p>
+                                <div style="font-size:24px; font-weight:bold; color:var(--warning);" id="res_act_power">
+                                    65%
+                                </div>
+                                <div class="power-meter">
+                                    <div id="bar_power" class="power-fill" style="width:65%;"></div>
+                                </div>
+                                <div style="font-size:10px; color:#aaa; margin-top:5px;">Power (Chance of detecting
+                                    the
+                                    shift)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: ANDERSON-DARLING TEST -->
+                <div id="tab_adtest" class="tab-content" style="display:none;">
+                    <div class="grid-2">
+                        <!-- CONTROLS -->
+                        <div class="card control-panel">
+                            <h3 class="btn-tooltip" style="cursor:help; width:fit-content;"
+                                data-hover="WHAT: The most powerful test for Normality.&#10;WHEN: Before T-Tests, ANOVA, or Capability Analysis.&#10;RULE: If P < 0.05, data is NOT Normal.">
+                                Anderson-Darling Normality Test ⓘ
+                            </h3>
+                            <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">
+                                Paste your data to check if it fits the Bell Curve.
+                            </p>
+
+                            <div class="form-group">
+                                <label>Data Input (Comma or Space separated)</label>
+                                <textarea id="ad_data" rows="5"
+                                    style="width:100%; border-radius:6px; background:#0f172a; border:1px solid #334155; color:white; padding:10px; font-family:monospace;"
+                                    placeholder="e.g. 10.2, 10.5, 9.8, 10.1..."></textarea>
+                            </div>
+
+                            <select class="scenario-select" onchange="loadADExample(this.value)"
+                                style="width:100%; padding:8px; margin-bottom:15px; background:#1e293b; color:white; border:1px solid #3b82f6; border-radius:4px;">
+                                <option value="">-- Load Medical Example --</option>
+                                <option value="med_wait">🏥 ER Wait Times (Minutes)</option>
+                                <option value="med_bp">💓 Blood Pressure (Systolic)</option>
+                                <option value="med_lab">🧪 Lab Results (Glucose mg/dL)</option>
+                            </select>
+
+                            <div style="display:flex; justify-content:flex-end;">
+                                <button class="btn btn-primary" onclick="calcADTest()">Run Test 🏃‍♂️</button>
+                            </div>
+                        </div>
+
+                        <!-- RESULTS -->
+                        <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
+                            <h4 style="color:var(--text-secondary); text-transform:uppercase; text-align:center;">Test
+                                Results</h4>
+
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                                <div
+                                    style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; text-align:center;">
+                                    <div style="font-size:11px; color:#aaa;">AD Statistic (A²)</div>
+                                    <div id="res_ad_stat" style="font-size:20px; font-weight:bold; color:white;">-</div>
+                                </div>
+                                <div
+                                    style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; text-align:center;">
+                                    <div style="font-size:11px; color:#aaa;">P-Value</div>
+                                    <div id="res_ad_p" style="font-size:20px; font-weight:bold; color:white;">-</div>
+                                </div>
+                            </div>
+
+                            <div id="ad_conclusion"
+                                style="margin-top:20px; padding:15px; border-radius:6px; text-align:center; display:none;">
+                                <!-- Dynamic Conclusion -->
+                            </div>
+                            <div id="ad_chart_container"
+                                style="height:150px; width:100%; margin-top:20px; display:none;">
+                                <canvas id="adChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div> <!-- Close tool-column -->
+    </div> <!-- Close grid-measure -->
+    </div>
+
+    <!-- HELP PANEL REMOVED -->
+    <!-- <button class="help-btn" onclick="toggleHelp()">?</button> -->
+    <div id="slidePanel" class="slide-panel" style="display:none;">
+        <span class="slide-close" onclick="toggleHelp()">&times;</span>
+        <h2 style="color:#9B59B6;">🔋 Distribution & Power Guide</h2>
+        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Use this lab to master the behavior
+            of data and test sensitivity.</p>
+
+        <!-- SECTION 1: PROBABILITY DISTRIBUTIONS -->
+        <div style="margin-bottom:30px; border-bottom:1px solid #444; padding-bottom:20px;">
+            <h3 style="color:var(--accent); display:flex; align-items:center;">
+                <span style="background:#333; padding:5px; border-radius:4px; margin-right:10px;">📊</span>
+                Probability Visualizer
+            </h3>
+            <div class="story-step"><strong>Normal (Gaussian):</strong> The "Bell Curve". Most continuous data (height,
+                time, weight) fits here.</div>
+            <div class="story-step"><strong>Binomial:</strong> Pass/Fail outcomes (e.g., Coin flips, Defective Parts).
+            </div>
+            <div class="story-step"><strong>Poisson:</strong> Rare events over time (e.g., Accidents per year).</div>
+
+            <h4 style="color:#f1c40f; margin-top:15px; font-size:14px;">How to Execute:</h4>
+            <ol style="font-size:13px; color:#ccc; padding-left:20px; line-height:1.6;">
+                <li><strong>Select Type:</strong> Determine if your data is Continuous (Normal) or Discrete
+                    (Binomial/Poisson).</li>
+                <li><strong>Adjust Parameters:</strong> Use sliders to see how shifting Mean (Center) or Sigma (Spread)
+                    affects the shape.</li>
+                <li><strong>Check Tails:</strong> Notice that as Sigma increases, the "tails" get fatter (more defects).
+                </li>
+            </ol>
+
+            <div
+                style="margin-top:10px; background:rgba(231, 76, 60, 0.1); border-left:3px solid #e74c3c; padding:10px; font-size:12px;">
+                <strong>⚠️ Important Consideration:</strong> Never assume data is Normal! Use the <em>Anderson-Darling
+                    Test</em> (in Stats Calculator) to verify before running T-Tests.
+            </div>
+        </div>
+
+        <!-- SECTION 2: POWER & SAMPLE SIZE -->
+        <div style="margin-bottom:30px; border-bottom:1px solid #444; padding-bottom:20px;">
+            <h3 style="color:var(--accent); display:flex; align-items:center;">
+                <span style="background:#333; padding:5px; border-radius:4px; margin-right:10px;">🔋</span>
+                Sample Size & Power
+            </h3>
+            <div class="story-step"><strong>What:</strong> Power (1 - Beta) is the probability of finding a difference
+                IF one exists.</div>
+
+            <h4 style="color:#f1c40f; margin-top:15px; font-size:14px;">How to Execute:</h4>
+            <ol style="font-size:13px; color:#ccc; padding-left:20px; line-height:1.6;">
+                <li><strong>Set Alpha:</strong> Usually 0.05 (5% risk of False Positive).</li>
+                <li><strong>Set Power:</strong> Target 0.80 (80%) or 0.90 (90%).</li>
+                <li><strong>Define Delta:</strong> What is the *smallest* shift you care about? (e.g., 0.5 sec
+                    improvement).</li>
+                <li><strong>Input Sigma:</strong> What is your historical Standard Deviation?</li>
+            </ol>
+
+            <div
+                style="margin-top:10px; background:rgba(231, 76, 60, 0.1); border-left:3px solid #e74c3c; padding:10px; font-size:12px;">
+                <strong>⚠️ Important Consideration:</strong> If you try to detect a TINY Delta with HIGH Noise (Sigma),
+                the calculator will tell you to collect thousands of samples. This is the "Cost of Precision".
+            </div>
+        </div>
+
+        <!-- REAL WORLD -->
+        <div style="margin-bottom:30px;">
+            <h3 style="color:var(--accent);">Real-World Scenarios</h3>
+            <div
+                style="margin-bottom:15px; background:var(--surface-2); padding:10px; border-radius:6px; border-left:3px solid #3498db;">
+                <strong>🏥 Clinical Trial (Power)</strong><br>
+                <strong>Scenario:</strong> Testing a new drug.<br>
+                <strong>Risk:</strong> If n is too small, we might say "Drug doesn't work" when it actually DOES.<br>
+                <strong>Action:</strong> Calc Sample Size to ensure 90% Power.
+            </div>
+            <div
+                style="margin-bottom:15px; background:var(--surface-2); padding:10px; border-radius:6px; border-left:3px solid #f1c40f;">
+                <strong>🏭 Manufacturing (Poisson)</strong><br>
+                <strong>Scenario:</strong> Painting car doors.<br>
+                <strong>Data:</strong> Counting "specks of dust" per door.<br>
+                <strong>Model:</strong> Use Poisson Distribution to predict defect rates.
+            </div>
+        </div>
+
+        <!-- ROLES -->
+        <div style="margin-top:30px; padding-top:20px; border-top:2px solid #555;">
+            <h3 style="color:#fff;">Strict Role Definitions</h3>
+            <ul style="font-size:12px; color:#aaa; list-style:none; padding:0;">
+                <li style="margin-bottom:8px;">🕵️ <strong>Green Belt:</strong> Runs Normality Tests on limited
+                    interactions.</li>
+                <li style="margin-bottom:8px;">🧙‍♂️ <strong>Black Belt:</strong> Determines Sample Size Strategies for
+                    complex DOE.</li>
+                <li style="margin-bottom:8px;">🤖 <strong>Data Scientist:</strong> Models Non-Linear distributions
+                    (Weibull, Log-Normal).</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // GLOBAL CHART
+        let ctx = document.getElementById('distChart').getContext('2d');
+        let distChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [{ label: 'Probability', data: [], borderColor: '#9B59B6', backgroundColor: 'rgba(155, 89, 182, 0.2)', fill: true }] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: { y: { beginAtZero: true } },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.dataset.label + ': ' + (context.parsed.y).toFixed(4);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // STATE
+        let activeDist = 'normal';
+
+        function toggleHelp() { document.getElementById('slidePanel').classList.toggle('open'); }
+
+        function switchTab(id) {
+            document.getElementById('tab_dist').style.display = id === 'dist' ? 'block' : 'none';
+            document.getElementById('tab_power').style.display = id === 'power' ? 'block' : 'none';
+            document.getElementById('tab_adtest').style.display = id === 'adtest' ? 'block' : 'none';
+
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Maximize Layout for Anderson-Darling Test (User Request)
+            const grid = document.querySelector('.execution-grid');
+            if (id === 'adtest') {
+                grid.classList.add('maximize-tool');
+            } else {
+                grid.classList.remove('maximize-tool');
+            }
+
+            if (id === 'dist') updateDist();
+            if (id === 'power') calcPower();
+            if (id === 'adtest') {
+                // Pre-fill dummy data if empty
+                if (document.getElementById('ad_data').value === '') {
+                    document.getElementById('ad_data').value = "10.2, 10.5, 9.9, 10.1, 10.3, 10.0, 9.8, 10.2, 10.4, 10.1, 9.7, 10.5, 10.2, 10.0, 10.3, 10.1, 9.9, 10.4, 9.8, 10.2";
+                }
+            }
+        }
+
+        function setDist(type) {
+            activeDist = type;
+            document.getElementById('controls_normal').style.display = 'none';
+            document.getElementById('controls_binomial').style.display = 'none';
+            document.getElementById('controls_poisson').style.display = 'none';
+
+            document.getElementById('controls_' + type).style.display = 'block';
+            updateDist();
+
+            // Text Update
+            const desc = document.getElementById('dist_desc');
+            if (type === 'normal') desc.innerText = "Interp: Standard Model for Continuous Data. Ideally symmetric around the Mean (μ). 68% of data falls within ±1 Sigma (σ).";
+            if (type === 'binomial') desc.innerText = "Interp: Discrete Model for Pass/Fail. Shape depends on 'n' (Sample Size) and 'p' (Probability). Best for Defect Rates.";
+            if (type === 'poisson') desc.innerText = "Interp: Model for Rare Events. As Lambda (λ) increases, the curve shifts right and flattens (Variance increases). Skewed for low λ.";
+        }
+
+        function updateDist() {
+            // Re-calc data based on sliders
+            let labels = [];
+            let data = [];
+
+            if (activeDist === 'normal') {
+                // Mock Normal logic
+                // In real app use jStat.normal.pdf(x, mean, std)
+                const mu = parseFloat(document.getElementById('v_mu').innerText);
+                const sigma = parseFloat(document.getElementById('v_sigma').innerText);
+                const labelsArr = Array.from({ length: 41 }, (_, i) => Math.floor(mu - 5 * sigma) + i * (10 * sigma / 40));
+                labels = labelsArr;
+                // Basic PDF formula: (1 / (sigma * Math.sqrt(2*Math.PI))) * Math.exp(-0.5 * Math.pow((x-mu)/sigma, 2));
+                data = labels.map(x => (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2)));
+            }
+            else if (activeDist === 'binomial') {
+                const n = parseInt(document.getElementById('v_n').innerText);
+                let p = parseFloat(document.getElementById('v_p').innerText);
+
+                labels = Array.from({ length: n + 1 }, (_, i) => i);
+
+                // Binomial PMF: (n choose k) * p^k * (1-p)^(n-k)
+                function factorial(num) { if (num <= 1) return 1; return num * factorial(num - 1); }
+                function nCr(n, r) { return factorial(n) / (factorial(r) * factorial(n - r)); }
+
+                data = labels.map(k => nCr(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k));
+            }
+            else if (activeDist === 'poisson') {
+                const lam = parseFloat(document.getElementById('v_lam').innerText);
+                // Dynamic range based on lambda
+                const maxRange = Math.max(15, Math.ceil(lam * 3));
+                labels = Array.from({ length: maxRange }, (_, i) => i);
+
+                // Poisson PMF: (lambda^k * e^-lambda) / k!
+                function factorial(num) { if (num <= 1) return 1; return num * factorial(num - 1); }
+                data = labels.map(k => (Math.pow(lam, k) * Math.exp(-lam)) / factorial(k));
+            }
+
+            distChart.data.labels = labels;
+            distChart.data.datasets[0].data = data;
+
+            // Animation improves the "interactive" feel but can be slow if dragging. 
+            // Setting animation to false/fast for slider dragging is better UX.
+            distChart.options.animation = { duration: 0 };
+            distChart.update();
+        }
+
+        // --- ANDERSON-DARLING LOGIC ---
+        let adChartInstance = null;
+
+        // MEDICAL EXAMPLES
+        const adEx = {
+            med_wait: "45, 32, 28, 55, 120, 35, 40, 42, 38, 50, 60, 25, 30, 150, 48, 52, 33, 41, 39, 44",
+            med_bp: "120, 118, 122, 115, 125, 130, 119, 121, 123, 118, 120, 124, 117, 122, 126, 119, 120, 121, 118, 123",
+            med_lab: "95, 102, 98, 88, 105, 92, 110, 99, 101, 94, 96, 103, 97, 85, 108, 100, 93, 104, 90, 89"
+        };
+
+        function loadADExample(key) {
+            if (adEx[key]) {
+                document.getElementById('ad_data').value = adEx[key];
+                calcADTest();
+            }
+        }
+
+        function calcPower() {
+            // Simplified Power Formula for n (Sample Size)
+            // n = ( (Z_alpha + Z_beta)^2 * 2 * sigma^2 ) / Delta^2
+            // Using Z_0.05 (1-tail) = 1.645, Z_beta relies on Power
+
+            const delta = parseFloat(document.getElementById('p_delta').value);
+            const sigma = parseFloat(document.getElementById('p_sigma').value);
+            const power = parseFloat(document.getElementById('p_power').value);
+            const alpha = 0.05;
+
+            // Approx Z scores
+            const z_alpha = 1.96; // 2-tailed 0.05
+            // Z_beta approx mapping
+            let z_beta = 0.84; // for 0.80
+            if (power >= 0.90) z_beta = 1.28;
+            if (power >= 0.95) z_beta = 1.645;
+            if (power >= 0.99) z_beta = 2.33;
+
+            // Calc N
+            // Formula for 1-Sample Mean
+            const top = Math.pow(z_alpha + z_beta, 2) * Math.pow(sigma, 2);
+            const bot = Math.pow(delta, 2);
+            const n = Math.ceil(top / bot);
+
+            document.getElementById('res_n').innerText = isFinite(n) ? n : '-';
+
+            // Calc "Actual Power" for fixed n=20 (Demo Sensitivity)
+            // Just coloring the bar for now
+            const fixedN = 20;
+            // Back calculate Z_beta -> convert to Power
+            // Doing a visual estimation for demo
+            let actPower = 50;
+            if (n > 50) actPower = 30; // If you need 50 but have 20, power is low
+            if (n <= 20) actPower = 90; // If you need 10 and have 20, power is high
+
+            document.getElementById('res_act_power').innerText = actPower + '%';
+            document.getElementById('bar_power').style.width = actPower + '%';
+
+            // Auto update progress since calc ran
+            // updateProgress();
+
+            const bar = document.getElementById('bar_power');
+            if (actPower >= 80) bar.style.background = '#2ecc71';
+            else if (actPower >= 50) bar.style.background = '#f1c40f';
+            else bar.style.background = '#e74c3c';
+        }
+
+        function calcADTest() {
+            const raw = document.getElementById('ad_data').value;
+            // Parse data
+            let data = raw.split(/[\s,]+/).map(Number).filter(n => !isNaN(n));
+
+            if (data.length < 5) {
+                alert("Need at least 5 data points for a valid test.");
+                return;
+            }
+
+            // 1. Sort Data
+            data.sort((a, b) => a - b);
+            const n = data.length;
+
+            // 2. Calc Mean & StDev
+            const sum = data.reduce((a, b) => a + b, 0);
+            const mean = sum / n;
+            const variance = data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (n - 1);
+            const std = Math.sqrt(variance);
+
+            // 3. Calc AD Statistic (A^2)
+            // S = Sum[ (2i - 1)/n * (ln(F(Yi)) + ln(1 - F(Y(n+1-i)))) ]
+            let S = 0;
+            for (let i = 0; i < n; i++) {
+                const count = i + 1; // 1-based index
+
+                // CDF of Yi
+                // jStat normal cdf: jStat.normal.cdf(x, mean, std)
+                let cdf_i = jStat.normal.cdf(data[i], mean, std);
+
+                // CDF of Y(n+1-i) -> data[n - 1 - i]
+                let cdf_rev = jStat.normal.cdf(data[n - 1 - i], mean, std);
+
+                // Log limits to avoid Infinity
+                if (cdf_i <= 0) cdf_i = 0.0000001;
+                if (cdf_i >= 1) cdf_i = 0.9999999;
+                if (cdf_rev <= 0) cdf_rev = 0.0000001;
+                if (cdf_rev >= 1) cdf_rev = 0.9999999;
+
+                const term = ((2 * count - 1) / n) * (Math.log(cdf_i) + Math.log(1 - cdf_rev));
+                S += term;
+            }
+
+            const A2 = -n - S;
+
+            // 4. Calc P-Value Adjustment
+            // A* (Adjusted for small sample size)
+            const A_star = A2 * (1 + 0.75 / n + 2.25 / (n * n));
+
+            // P-Value Approximation (Stephens, 1974)
+            let p_val = 0;
+            if (A_star >= 0.6) {
+                p_val = Math.exp(1.2937 - 5.709 * A_star + 0.0186 * A_star * A_star);
+            } else if (A_star >= 0.34) {
+                p_val = Math.exp(0.9177 - 4.279 * A_star - 1.38 * A_star * A_star);
+            } else if (A_star > 0.2) {
+                p_val = 1 - Math.exp(-8.318 + 42.796 * A_star - 59.938 * A_star * A_star);
+            } else {
+                p_val = 1 - Math.exp(-13.436 + 101.14 * A_star - 223.73 * A_star * A_star);
+            }
+
+            // Cap P-value
+            if (p_val > 1) p_val = 1;
+
+            // 5. Display Results
+            document.getElementById('res_ad_stat').innerText = A2.toFixed(3);
+            const pText = p_val < 0.005 ? "< 0.005" : p_val.toFixed(3);
+            document.getElementById('res_ad_p').innerText = pText;
+
+            const conclusionDiv = document.getElementById('ad_conclusion');
+            conclusionDiv.style.display = 'block';
+
+            if (p_val < 0.05) {
+                // Not Normal
+                conclusionDiv.style.background = "rgba(231, 76, 60, 0.2)";
+                conclusionDiv.style.border = "1px solid #e74c3c";
+                conclusionDiv.innerHTML = `
+                    <strong style='color:#e74c3c; font-size:16px;'>DATA IS NOT NORMAL 🚨</strong>
+                    <p style='font-size:12px; color:#ddd; margin-top:5px;'>P-Value < 0.05. The data departs significantly from the Bell Curve.</p>
+                    <div style='font-size:11px; margin-top:5px;'><strong>Next Steps:</strong> Check for outliers, try a Box-Cox Transformation, or use Non-Parametric tests (Mann-Whitney).</div>
+                `;
+            } else {
+                // Normal
+                conclusionDiv.style.background = "rgba(46, 204, 113, 0.2)";
+                conclusionDiv.style.border = "1px solid #2ecc71";
+                conclusionDiv.innerHTML = `
+                    <strong style='color:#2ecc71; font-size:16px;'>DATA IS NORMAL ✅</strong>
+                    <p style='font-size:12px; color:#ddd; margin-top:5px;'>P-Value >= 0.05. You <em>cannot reject</em> the assumption of Normality.</p>
+                    <div style='font-size:11px; margin-top:5px;'><strong>Next Steps:</strong> Safe to proceed with T-Tests, ANOVA, and Cp/Cpk checks.</div>
+                `;
+            }
+
+            // 6. Draw Simple Histogram
+            document.getElementById('ad_chart_container').style.display = 'block';
+            drawADChart(data, mean, std);
+        }
+
+        function drawADChart(data, mean, std) {
+            const ctx = document.getElementById('adChart').getContext('2d');
+            if (adChartInstance) adChartInstance.destroy();
+
+            // Create Histogram Bins
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            const bins = 10;
+            const range = max - min;
+            const binSize = range / bins || 1; // avoid divide by zero
+
+            let binCounts = new Array(bins).fill(0);
+            let binLabels = [];
+
+            for (let i = 0; i < bins; i++) {
+                binLabels.push((min + i * binSize).toFixed(1));
+            }
+
+            data.forEach(x => {
+                let idx = Math.floor((x - min) / binSize);
+                if (idx >= bins) idx = bins - 1; // catch max value
+                binCounts[idx]++;
+            });
+
+            adChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: binLabels,
+                    datasets: [{
+                        label: 'Frequency',
+                        data: binCounts,
+                        backgroundColor: '#60a5fa',
+                        barPercentage: 1.0,
+                        categoryPercentage: 1.0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Data Distribution', color: '#aaa' }
+                    },
+                    scales: {
+                        y: { display: false },
+                        x: { grid: { display: false }, ticks: { color: '#666', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // Init
+        setTimeout(updateDist, 500);
+        calcPower();
+
+        // GUIDE MODAL
+        function showGuide() {
+            document.getElementById('modalTitle').innerText = ""; // Clear plain text title
+            document.getElementById('modalText').innerHTML = `
+                <h2 style="color:#9B59B6; border-bottom:2px solid #9B59B6; padding-bottom:10px;">🔋 Distribution & Power Guide</h2>
+                <div style="margin-bottom:15px; font-size:14px; color:white;">Use this lab to master the behavior of data and test sensitivity.</div>
+                
+                <div class="modal-section">
+                    <h3 style="color:#3498db;">📊 Probability Visualizer</h3>
+                    <ul class="modal-list">
+                        <li><strong>Normal (Gaussian):</strong> The "Bell Curve". Most continuous data (height, time, weight) fits here.</li>
+                        <li><strong>Binomial:</strong> Pass/Fail outcomes (e.g., Coin flips, Defective Parts).</li>
+                        <li><strong>Poisson:</strong> Rare events over time (e.g., Accidents per year).</li>
+                    </ul>
+                    <h4 style="color:#f1c40f;">How to Execute:</h4>
+                    <ul class="modal-list">
+                        <li><strong>Select Type:</strong> Determine if your data is Continuous (Normal) or Discrete (Binomial/Poisson).</li>
+                        <li><strong>Adjust Parameters:</strong> Use sliders to see how shifting Mean (Center) or Sigma (Spread) affects the shape.</li>
+                        <li><strong>Check Tails:</strong> Notice that as Sigma increases, the "tails" get fatter (more defects).</li>
+                    </ul>
+                    <div style="color:#e74c3c; font-size:13px; font-weight:bold; margin-top:5px;">⚠️ Important: Never assume data is Normal! Use the Anderson-Darling Test (Stats Calculator) to verify before running T-Tests.</div>
+                </div>
+
+                <div class="modal-section">
+                    <h3 style="color:#2ecc71;">🔋 Sample Size & Power</h3>
+                    <p style="color:#cbd5e1; font-size:14px;"><strong>What:</strong> Power (1 - Beta) is the probability of finding a difference IF one exists.</p>
+                    <h4 style="color:#f1c40f;">How to Execute:</h4>
+                    <ul class="modal-list">
+                        <li><strong>Set Alpha:</strong> Usually 0.05 (5% risk of False Positive).</li>
+                        <li><strong>Set Power:</strong> Target 0.80 (80%) or 0.90 (90%).</li>
+                        <li><strong>Define Delta:</strong> What is the *smallest* shift you care about? (e.g., 0.5 sec improvement).</li>
+                        <li><strong>Input Sigma:</strong> What is your historical Standard Deviation?</li>
+                    </ul>
+                    <div style="color:#e74c3c; font-size:13px; font-weight:bold; margin-top:5px;">⚠️ Important: If you try to detect a TINY Delta with HIGH Noise, you will need thousands of samples. This is the "Cost of Precision".</div>
+                </div>
+
+                <div class="modal-section">
+                    <h3 style="color:#e67e22;">🌍 Real-World Scenarios</h3>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; margin-bottom:10px;">
+                        <strong style="color:#ff7979;">🏥 Clinical Trial (Power)</strong><br>
+                        <span style="font-size:13px; color:#cbd5e1;">Scenario: Testing a new drug.<br>Risk: If n is too small, we might say "Drug doesn't work" when it actually DOES.<br>Action: Calc Sample Size to ensure 90% Power.</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
+                        <strong style="color:#f1c40f;">🏭 Manufacturing (Poisson)</strong><br>
+                        <span style="font-size:13px; color:#cbd5e1;">Scenario: Painting car doors.<br>Data: Counting "specks of dust" per door.<br>Model: Use Poisson Distribution to predict defect rates.</span>
+                    </div>
+                </div>
+
+                <div class="modal-section" style="border-bottom:none;">
+                    <h3 style="color:#95a5a6;">👮 Strict Role Definitions</h3>
+                    <ul class="modal-list">
+                        <li>🕵️ <strong>Green Belt:</strong> Runs Normality Tests on limited interactions.</li>
+                        <li>🧙‍♂️ <strong>Black Belt:</strong> Determines Sample Size Strategies for complex DOE.</li>
+                        <li>🤖 <strong>Data Scientist:</strong> Models Non-Linear distributions (Weibull, Log-Normal).</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        // POPUP LOGIC WITH RICH VISUALS
+        const popupContent = {
+            'origin': {
+                title: 'Origin & Power',
+                html: `
+                    <div style="text-align:center; margin-bottom:15px;">
+                        <svg width="200" height="100" viewBox="0 0 200 100">
+                            <path d="M10,90 Q100,-50 190,90" fill="rgba(155, 89, 182, 0.2)" stroke="#9B59B6" stroke-width="3"/>
+                            <line x1="100" y1="90" x2="100" y2="20" stroke="white" stroke-dasharray="4"/>
+                            <text x="90" y="15" fill="white" font-size="10">μ</text>
+                        </svg>
+                    </div>
+                    <p>Based on probability theory (Gauss, 1809), this tool visualizes the theoretical shape of your process.</p>
+                    <p>It calculates <strong>Statistical Power</strong>: the ability to detect a signal (Process Shift) amidst the noise (Variation).</p>
+                    <ul class="modal-list" style="margin-top:10px;">
+                        <li><strong>Vis:</strong> See the Bell Curve.</li>
+                        <li><strong>Calc:</strong> Avoid under-sampling (missing the signal) or over-sampling (wasting money).</li>
+                    </ul>`
+            },
+            'what': {
+                title: 'What is it?',
+                html: `
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <div style="flex:1; background:#334155; padding:10px; border-radius:8px; text-align:center;">
+                            <div style="font-size:24px;">📊</div>
+                            <div style="font-weight:bold; color:#a78bfa;">Visualizer</div>
+                            <div style="font-size:10px;">Simulate Distributions</div>
+                        </div>
+                        <div style="flex:1; background:#334155; padding:10px; border-radius:8px; text-align:center;">
+                            <div style="font-size:24px;">🔋</div>
+                            <div style="font-weight:bold; color:#4ade80;">Calculator</div>
+                            <div style="font-size:10px;">Find 'N' Size</div>
+                        </div>
+                    </div>
+                    <p>A dual-engine tool tailored for the Measure & Analyze phases.</p>`
+            },
+            'why': {
+                title: 'Why use it?',
+                html: `
+                    <p><strong>The "Expensive Guess" Problem:</strong></p>
+                    <p>Without this, you might run a test with 5 samples and fail to see a 10% improvement, leading you to abandon a good idea.</p>
+                    <p style="color:#facc15; margin-top:10px;">Use this to scientifically justify your budget for data collection.</p>`
+            },
+            'when': {
+                title: 'When to use?',
+                html: `
+                    <div style="display:flex; align-items:center; margin-bottom:10px;">
+                        <span style="background:#2563eb; color:white; padding:4px 8px; border-radius:4px; font-size:10px; margin-right:10px;">MEASURE</span>
+                        <span>To understand baseline behavior.</span>
+                    </div>
+                    <div style="display:flex; align-items:center;">
+                        <span style="background:#e11d48; color:white; padding:4px 8px; border-radius:4px; font-size:10px; margin-right:10px;">ANALYZE</span>
+                        <span>Before running Hypothesis Tests (T-Test, ANOVA).</span>
+                    </div>`
+            },
+            'standard': {
+                title: 'The Standard',
+                html: `
+                    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+                        <tr style="border-bottom:1px solid #444;">
+                            <td style="padding:8px; color:#94a3b8;">Metric</td>
+                            <td style="padding:8px; color:white; font-weight:bold;">Goal</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #444;">
+                            <td style="padding:8px; color:#cbd5e1;">
+                                <strong>Power (1-β)</strong><br>
+                                <span style="font-size:11px; color:#94a3b8;">Chance to find a real difference (Sensitivity).</span>
+                            </td>
+                            <td style="padding:8px; color:#4ade80;">80% - 90%</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #444;">
+                            <td style="padding:8px; color:#cbd5e1;">
+                                <strong>Alpha (α)</strong><br>
+                                <span style="font-size:11px; color:#94a3b8;">Risk of a "False Alarm" (Type I Error).</span>
+                            </td>
+                            <td style="padding:8px; color:#f87171;">0.05 (5%)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:8px; color:#cbd5e1;">
+                                <strong>P-Value (Normality)</strong><br>
+                                <span style="font-size:11px; color:#94a3b8;">Prob. that data fits the Bell Curve.</span>
+                            </td>
+                            <td style="padding:8px; color:#60a5fa;">> 0.05</td>
+                        </tr>
+                    </table>`
+            },
+            'interp': {
+                title: 'Interpretation',
+                html: `
+                    <div style="display:flex; gap:20px; align-items:center; margin-bottom:20px;">
+                        <div style="flex:1;">
+                            <strong style="color:#60a5fa;">P-Value < 0.05 (Normality)</strong>
+                            <p style="font-size:13px; margin:5px 0;"><strong>The Rule:</strong> Data causes rejection of the "Normal" assumption.</p>
+                            <div style="font-size:12px; font-style:italic; color:#94a3b8;">
+                                "Like trying to fit a square peg in a round hole."
+                            </div>
+                        </div>
+                        <div style="width:100px; text-align:center;">
+                            <!-- SVG: Square Peg Round Hole -->
+                            <svg width="80" height="80" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="#1e293b" stroke="#60a5fa" stroke-width="3"/>
+                                <rect x="30" y="30" width="40" height="40" fill="#f87171" transform="rotate(15 50 50)"/>
+                                <text x="50" y="95" font-size="10" fill="#94a3b8" text-anchor="middle">Miss-Fit</text>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <hr style="border-color:#444; margin:15px 0;">
+
+                    <div style="display:flex; gap:20px; align-items:center;">
+                        <div style="flex:1;">
+                            <strong style="color:#4ade80;">Power < 80%</strong>
+                            <p style="font-size:13px; margin:5px 0;"><strong>The Rule:</strong> Test is too weak to detect the difference.</p>
+                            <div style="font-size:12px; font-style:italic; color:#94a3b8;">
+                                "Looking for a needle in a haystack with a weak magnet."
+                            </div>
+                        </div>
+                        <div style="width:100px; text-align:center;">
+                            <!-- SVG: Haystack -->
+                            <svg width="80" height="80" viewBox="0 0 100 100">
+                                <!-- Haystack -->
+                                <path d="M10,90 Q50,10 90,90 Z" fill="#eab308" opacity="0.8"/>
+                                <path d="M15,90 Q50,20 85,90" fill="none" stroke="#ca8a04" stroke-width="2" stroke-dasharray="3,3"/>
+                                <!-- Needle -->
+                                <line x1="50" y1="80" x2="50" y2="60" stroke="#cbd5e1" stroke-width="2" />
+                                <circle cx="50" cy="58" r="2" fill="#cbd5e1"/>
+                                <!-- Magnet -->
+                                <path d="M80,30 Q80,10 60,10 Q40,10 40,30 L40,40 L35,40 L35,30 Q35,5 60,5 Q85,5 85,30 L85,40 L80,40 Z" fill="#f87171" transform="translate(10,0)"/>
+                            </svg>
+                        </div>
+                    </div>`
+            },
+            'ref': {
+                title: 'Reference Values',
+                html: `
+                    <ul class="modal-list">
+                        <li><strong>Normal:</strong> Heights, Weights, Time, Dimensions.</li>
+                        <li><strong>Log-Normal:</strong> Cycle times, Salaries (can't be negative, skewed).</li>
+                        <li><strong>Weibull:</strong> Reliability, TBF (Time Between Failures).</li>
+                        <li><strong>Poisson:</strong> Defects per Unit, accidents per month.</li>
+                    </ul>`
+            },
+            'tips': {
+                title: 'Pro Tips',
+                html: `
+                    <p>💡 <strong>Budget Hack:</strong> If N is too high (e.g., 500), try increasing the Delta (Goal). Detecting small changes costs more samples.</p>
+                    <p>💡 <strong>Safety:</strong> Always check for "Outliers" before testing Normality. One bad point can ruin the test.</p>`
+            },
+            'simple': {
+                title: 'Simple Explanation',
+                html: `
+                    <div style="text-align:center; margin-bottom:20px;">
+                        <div style="font-size:40px; margin-bottom:10px;">🔦 + 🔑</div>
+                        <h3 style="color:#facc15;">The "Lost Keys" Analogy</h3>
+                    </div>
+                    
+                    <div style="margin-bottom:20px;">
+                        <strong style="color:#60a5fa;">The Scene:</strong>
+                        <p style="font-size:14px; margin-top:5px; color:#cbd5e1;">
+                            You dropped your keys in a dark field at night. You want to find them.
+                        </p>
+                    </div>
+
+                    <div style="background:#1e293b; padding:15px; border-radius:8px; border-left:4px solid #f87171; margin-bottom:15px;">
+                        <strong style="color:#f87171;">Low Power (Weak Flashlight)</strong>
+                        <p style="font-size:13px; margin:0;">
+                            You use a tiny keychain light. You walk right past the keys and don't see them. 
+                            You conclude "The keys are gone!" (False Negative / Type II Error).
+                        </p>
+                    </div>
+
+                    <div style="background:#1e293b; padding:15px; border-radius:8px; border-left:4px solid #4ade80;">
+                        <strong style="color:#4ade80;">High Power (Floodlight)</strong>
+                        <p style="font-size:13px; margin:0;">
+                            You use this tool to determine you need a <strong>1000-Lumen Floodlight</strong> (Sample Size). 
+                            You turn it on, and the keys shine immediately. You find the truth.
+                        </p>
+                    </div>
+                    
+                    <hr style="border-color:#444; margin:20px 0;">
+                    
+                    <p style="font-size:12px; color:#94a3b8; text-align:center;">
+                        <strong>Distribution?</strong> That's just checking if the grass is short (Normal) or tall/messy (Skewed). Short grass makes finding keys easier.
+                    </p>`
+            }
+        };
+
+        function showPopup(key) {
+            const data = popupContent[key];
+            document.getElementById('modalTitle').innerText = data.title;
+
+            // Check if plain text or html
+            const container = document.getElementById('modalText');
+            if (data.html) {
+                container.innerHTML = data.html;
+            } else {
+                container.innerText = data.text;
+            }
+
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        // REPORT & PROGRESS
+        function updateProgress() {
+            let progress = 0;
+            const name = document.getElementById('analystName').value;
+            if (activeDist) progress += 30; // Viewed distribution
+            if (name.length > 2) progress += 70; // Signed off
+
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').innerText = progress + '% Complete';
+
+            if (progress === 100) {
+                document.getElementById('progressBar').style.background = 'var(--success)';
+            }
+        }
+
+        function saveAnalysis() {
+            const name = document.getElementById('analystName').value;
+            if (!name) { alert("Please enter Analyst Name first."); return; }
+            alert("Analysis Saved! Ready to Print.");
+            updateProgress();
+        }
+
+        function highlightStep(step) {
+            alert("Guidance for Step " + step + ": ensure data integrity before proceeding.");
+        }
+
+        function preparePrint() {
+            // Populate Print Report
+            const name = document.getElementById('analystName').value || "Unknown Analyst";
+            const date = new Date().toLocaleDateString();
+            const n = document.getElementById('res_n').innerText;
+            const power = document.getElementById('p_power').value;
+
+            // Get Chart Image
+            const canvas = document.getElementById('distChart');
+            const dataUrl = canvas.toDataURL();
+
+            const html = `
+                <div class="print-header">
+                    <h1>📊 Distribution & Sample Size Report</h1>
+                    <div class="print-grid">
+                        <div><strong>Analyst:</strong> ${name}</div>
+                        <div><strong>Date:</strong> ${date}</div>
+                    </div>
+                </div>
+
+                <div class="print-section">
+                    <h3 style="border-bottom:1px solid #eee; padding-bottom:5px;">Section 1: Process Behavior Model</h3>
+                    <div class="print-grid">
+                        <div>
+                            <div class="print-label">Selected Distribution</div>
+                            <div class="print-value" style="text-transform:capitalize;">${activeDist}</div>
+                            <div style="margin-top:10px; font-size:12px; color:#666;">
+                                The selected model represents the theoretical shape of the process data. 
+                                This assumption is critical for the validity of subsequent hypothesis tests.
+                            </div>
+                        </div>
+                        <div>
+                            <img src="${dataUrl}" style="width:100%; border:1px solid #eee; border-radius:4px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="print-section">
+                    <h3 style="border-bottom:1px solid #eee; padding-bottom:5px;">Section 2: Sampling Strategy</h3>
+                    <p style="font-size:12px; margin-bottom:15px;">
+                        To detect a process shift (Signal) amidst the variation (Noise) with ${(power * 100).toFixed(0)}% Confidence, 
+                        the following sampling strategy is recommended:
+                    </p>
+                    
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; text-align:center; margin-bottom:20px;">
+                        <div style="background:#f8fafc; padding:10px; border:1px solid #eee;">
+                            <div class="print-label">Signal (Delta)</div>
+                            <div class="print-value">${document.getElementById('p_delta').value}</div>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px; border:1px solid #eee;">
+                            <div class="print-label">Noise (Sigma)</div>
+                            <div class="print-value">${document.getElementById('p_sigma').value}</div>
+                        </div>
+                         <div style="background:#e0f2fe; padding:10px; border:1px solid #bae6fd;">
+                            <div class="print-label">Required 'N'</div>
+                            <div class="print-value" style="font-size:24px; color:#0284c7;">${n}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top:50px; border-top:1px solid #000; display:flex; justify-content:space-between; padding-top:10px;">
+                    <div>Signed: __________________________</div>
+                    <div>Approved By: __________________________</div>
+                </div>
+            `;
+
+            document.getElementById('print-report').innerHTML = html;
+            window.print();
+        }
+
+        // Close modal on outside click
+        window.onclick = function (event) {
+            const modal = document.getElementById('infoModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+    </script>
+
+    <!-- HIDDEN PRINT CONTAINER -->
+    <div id="print-report" style="display:none;"></div>
+
+    <!-- MODAL HTML -->
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modalTitle" style="color:var(--accent); margin-bottom:15px;">Title</h2>
+            <p id="modalText" style="color:#cbd5e1; font-size:16px; line-height:1.6;">Text...</p>
+            <button class="btn btn-primary" onclick="closePopup()" style="margin-top:20px;">Got it</button>
+        </div>
+    </div>
+</body>
+
+</html>

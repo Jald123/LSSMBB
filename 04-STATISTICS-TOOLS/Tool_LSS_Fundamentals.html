@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- 
+        Step Id: 673
+        Refactored Tool_LSS_Fundamentals.html to be more visual, categorized, and informative 
+        as requested by the user, incorporating content from the provided slides.
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSS Fundamentals | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <style>
+        /* Fundamentals Specific Styles */
+        :root {
+            --lean-color: #2ecc71;
+            --ss-color: #9b59b6;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-card {
+            background: var(--surface-2);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            background: var(--surface-1);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Comparison Table */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .comp-card {
+            background: var(--surface-1);
+            padding: 30px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comp-lean {
+            border-top: 4px solid var(--lean-color);
+        }
+
+        .comp-ss {
+            border-top: 4px solid var(--ss-color);
+        }
+
+        .comp-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .comp-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .comp-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+        }
+
+        .comp-list li::before {
+            content: '•';
+            font-size: 20px;
+        }
+
+        .comp-lean .comp-list li::before {
+            color: var(--lean-color);
+        }
+
+        .comp-ss .comp-list li::before {
+            color: var(--ss-color);
+        }
+
+        /* History Timeline Vertical */
+        .history-track {
+            position: relative;
+            padding: 20px;
+            border-left: 3px solid var(--accent);
+            margin-left: 20px;
+        }
+
+        .history-node {
+            position: relative;
+            margin-bottom: 40px;
+            padding-left: 30px;
+        }
+
+        .history-node::before {
+            content: '';
+            position: absolute;
+            left: -29px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            background: var(--bg-dark);
+            border: 3px solid var(--accent);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .history-card {
+            background: var(--surface-2);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .history-year {
+            color: var(--accent);
+            font-weight: 800;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        /* Bell Curve Visual */
+        .bell-curve-container {
+            background: #000;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            border: 1px solid #333;
+        }
+
+        .bell-curve-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Value Logic */
+        .value-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .value-card {
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .va-card {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid #3498db;
+        }
+
+        .nva-card {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- TOP NAVIGATION BAR -->
+        <div class="flex-between"
+            style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-ghost" onclick="window.location.href='Tool_WorkflowHub.html'">⟵ Workflow
+                    Hub</button>
+            </div>
+            <h2 style="margin:0; font-size:18px; color:var(--text-secondary);">COURSE MODULE: FUNDAMENTALS</h2>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-ghost" onclick="history.back()">Previous Step</button>
+                <button class="btn btn-accent" onclick="window.location.href='Stats_Calculator_Main.html'">Stats Engine
+                    🧮</button>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero-section">
+            <h1 style="font-size: 42px; margin-bottom: 10px;">Lean <span style="color:var(--text-secondary);">&</span>
+                Six Sigma</h1>
+            <p style="font-size: 18px; color:var(--text-secondary); max-width: 700px; margin: 0 auto;">
+                The powerful fusion of two methodologies: <strong>Speed</strong> (Lean) and <strong>Quality</strong>
+                (Six Sigma).
+                Use these principles to transform healthcare delivery.
+            </p>
+        </div>
+
+        <!-- MODULE NAVIGATION -->
+        <div class="nav-grid">
+            <div class="nav-card" onclick="openSection('intro')">
+                <div style="font-size:30px; margin-bottom:10px;">☯️</div>
+                <h3>Methodology Overview</h3>
+                <div style="font-size:12px; color:var(--text-secondary);">Lean vs. Six Sigma comparison</div>
+            </div>
+            <div class="nav-card" onclick="openSection('history')">
+                <div style="font-size:30px; margin-bottom:10px;">📜</div>
+                <h3>History & Evolution</h3>
+                <div style="font-size:12px; color:var(--text-secondary);">From Ford to Healthcare</div>
+            </div>
+            <div class="nav-card" onclick="openSection('value')">
+                <div style="font-size:30px; margin-bottom:10px;">💎</div>
+                <h3>Defining Value</h3>
+                <div style="font-size:12px; color:var(--text-secondary);">VA vs NVA (Muda)</div>
+            </div>
+        </div>
+
+        <!-- SECTION 1: METHODOLOGY -->
+        <div id="intro" class="content-section active">
+            <h2 style="text-align:center; margin-bottom:30px;">The Power of Combined Approach</h2>
+            <div class="comparison-container">
+                <!-- LEAN -->
+                <div class="comp-card comp-lean">
+                    <div style="text-align:center;">
+                        <span class="comp-icon">🏎️</span>
+                        <h2 style="color:var(--lean-color);">LEAN</h2>
+                        <p style="font-size:14px; color:#aaa;">Focus on <strong>Speed</strong> &
+                            <strong>Efficiency</strong>
+                        </p>
+                    </div>
+                    <ul class="comp-list">
+                        <li>Eliminates WASTE (Muda) from processes</li>
+                        <li>Streamlines workflows & reduces wait times</li>
+                        <li>Optimizes resource utilization</li>
+                        <li>Focuses on "Flow" and "Pull"</li>
+                        <li><strong>Goal:</strong> Faster Care Delivery</li>
+                    </ul>
+                </div>
+
+                <!-- SIX SIGMA -->
+                <div class="comp-card comp-ss">
+                    <div style="text-align:center;">
+                        <span class="comp-icon">🎯</span>
+                        <h2 style="color:var(--ss-color);">SIX SIGMA</h2>
+                        <p style="font-size:14px; color:#aaa;">Focus on <strong>Quality</strong> &
+                            <strong>Consistency</strong>
+                        </p>
+                    </div>
+                    <ul class="comp-list">
+                        <li>Reduces VARIATION in processes</li>
+                        <li>Data-driven decision making (DMAIC)</li>
+                        <li>Minimizes defects and medical errors</li>
+                        <li>Improves process capability (Cp/Cpk)</li>
+                        <li><strong>Goal:</strong> Better Outcomes & Safety</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE SIGMA SIMULATOR -->
+            <div style="margin-top:40px;">
+                <h3 style="color:var(--ss-color); text-align:center;">Interactive Sigma Simulator</h3>
+                <p style="text-align:center; color:var(--text-secondary); max-width:600px; margin:0 auto 20px auto;">
+                    <strong>Experience the Concept:</strong> Adjust the process variation or move the specification
+                    limits to see how "Sigma Level" changes.
+                    Hover over elements for deep-dive definitions.
+                    <span style="display:block; font-size:12px; color:var(--accent); margin-top:5px;">(Click "Teach Me"
+                        for a guided tour!)</span>
+                </p>
+
+                <!-- TOOLBAR -->
+                <div style="display:flex; justify-content:center; gap:20px; margin-bottom:20px;">
+                    <button class="btn btn-sm btn-accent" onclick="toggleDrawingMode()">✏️ Teach Me (Draw
+                        Steps)</button>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <label style="color:#aaa; font-size:12px;">Variation (σ):</label>
+                        <input type="range" id="sigmaSlider" min="10" max="60" value="30" oninput="updateCurve()"
+                            style="width:100px;">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <label style="color:#aaa; font-size:12px;">Limits Width:</label>
+                        <input type="range" id="limitSlider" min="100" max="280" value="180" oninput="updateCurve()"
+                            style="width:100px;">
+                    </div>
+                </div>
+
+                <div class="bell-curve-container" id="curveContainer"
+                    style="height:400px; cursor:crosshair; position:relative; background:#0F0F1E; border:1px solid #333;">
+                    <svg class="bell-curve-svg" viewBox="0 0 600 400" id="mainSvg" style="width:100%; height:100%;">
+                        <defs>
+                            <linearGradient id="fillGrad" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="var(--ss-color)" stop-opacity="0.2" />
+                                <stop offset="100%" stop-color="var(--ss-color)" stop-opacity="0" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Dynamic Elements -->
+                        <path id="curvePath" fill="url(#fillGrad)" stroke="var(--ss-color)" stroke-width="3" />
+                        <line id="meanLine" stroke="#fff" stroke-width="2" stroke-dasharray="5,5" />
+                        <text id="meanLabel" fill="#fff" font-size="14" text-anchor="middle">Mean (μ)</text>
+
+                        <!-- Limits -->
+                        <line id="lslLine" stroke="var(--accent)" stroke-width="3" />
+                        <text id="lslLabel" fill="var(--accent)" font-size="14" font-weight="bold"
+                            text-anchor="middle">LSL</text>
+
+                        <line id="uslLine" stroke="var(--accent)" stroke-width="3" />
+                        <text id="uslLabel" fill="var(--accent)" font-size="14" font-weight="bold"
+                            text-anchor="middle">USL</text>
+
+                        <!-- Sigma Divisions Group (Hidden by default) -->
+                        <g id="sigmaLines" opacity="0"></g>
+
+                        <!-- Metrics Overlay -->
+                        <foreignObject x="450" y="20" width="140" height="100">
+                            <div xmlns="http://www.w3.org/1999/xhtml"
+                                style="background:rgba(0,0,0,0.6); padding:10px; border-radius:8px; border:1px solid #444; color:white; font-size:11px;">
+                                <div style="color:#aaa;">Sigma Level:</div>
+                                <div id="sigmaMetric" style="font-size:18px; font-weight:bold; color:var(--success);">
+                                    6.0σ</div>
+                                <div style="margin-top:5px; color:#aaa;">Est. Defects/Million:</div>
+                                <div id="dpmoMetric" style="color:#e74c3c;">3.4</div>
+                            </div>
+                        </foreignObject>
+
+                        <!-- Interactive Tooltip Overlay -->
+                        <text id="tooltipText" x="300" y="380" fill="#ccc" font-size="14" text-anchor="middle"
+                            opacity="0">Hover over elements</text>
+                    </svg>
+                </div>
+            </div>
+
+            <script>
+                // LSS SCRIPT ENGINE
+                const svg = document.getElementById('mainSvg');
+                const width = 600;
+                const height = 400;
+                const centerY = 350;
+                const centerX = 300;
+                let currentSigma = 30; // Standard Deviation spread
+                let limitSpread = 180; // Distance from center
+
+                function gaussian(x, mean, sigma) {
+                    const a = 1 / (sigma * Math.sqrt(2 * Math.PI));
+                    const b = -0.5 * Math.pow((x - mean) / sigma, 2);
+                    return a * Math.exp(b);
+                }
+
+                function updateCurve() {
+                    currentSigma = parseInt(document.getElementById('sigmaSlider').value);
+                    limitSpread = parseInt(document.getElementById('limitSlider').value);
+
+                    // 1. Draw Curve
+                    let pathD = `M 0 ${centerY}`;
+                    let maxVal = gaussian(centerX, centerX, currentSigma);
+
+                    for (let i = 0; i <= width; i += 5) {
+                        let yVal = gaussian(i, centerX, currentSigma);
+                        // Scale it visually to fit box
+                        let scaledY = centerY - (yVal / maxVal * 300);
+                        pathD += ` L ${i} ${scaledY}`;
+                    }
+                    pathD += ` L ${width} ${centerY}`; // Close loop
+                    document.getElementById('curvePath').setAttribute('d', pathD);
+
+                    // 2. Update Lines
+                    // Mean
+                    let meanX = centerX;
+                    document.getElementById('meanLine').setAttribute('x1', meanX);
+                    document.getElementById('meanLine').setAttribute('y1', 50);
+                    document.getElementById('meanLine').setAttribute('x2', meanX);
+                    document.getElementById('meanLine').setAttribute('y2', centerY);
+                    document.getElementById('meanLabel').setAttribute('x', meanX);
+                    document.getElementById('meanLabel').setAttribute('y', 40);
+
+                    // LSL / USL
+                    let lslX = centerX - limitSpread;
+                    let uslX = centerX + limitSpread;
+
+                    document.getElementById('lslLine').setAttribute('x1', lslX);
+                    document.getElementById('lslLine').setAttribute('y1', 80);
+                    document.getElementById('lslLine').setAttribute('x2', lslX);
+                    document.getElementById('lslLine').setAttribute('y2', centerY + 20);
+                    document.getElementById('lslLabel').setAttribute('x', lslX);
+                    document.getElementById('lslLabel').setAttribute('y', 70);
+
+                    document.getElementById('uslLine').setAttribute('x1', uslX);
+                    document.getElementById('uslLine').setAttribute('y1', 80);
+                    document.getElementById('uslLine').setAttribute('x2', uslX);
+                    document.getElementById('uslLine').setAttribute('y2', centerY + 20);
+                    document.getElementById('uslLabel').setAttribute('x', uslX);
+                    document.getElementById('uslLabel').setAttribute('y', 70);
+
+                    // 3. Calculate Sigma Level (Z-Score)
+                    // Z = (Limit - Mean) / Sigma
+                    let zScore = limitSpread / currentSigma;
+                    let sigmaLvl = zScore.toFixed(1);
+
+                    document.getElementById('sigmaMetric').textContent = sigmaLvl + "σ";
+
+                    // Color Code
+                    const sEl = document.getElementById('sigmaMetric');
+                    if (zScore >= 6) sEl.style.color = "#2ecc71"; // Green
+                    else if (zScore >= 3) sEl.style.color = "#f1c40f"; // Yellow
+                    else sEl.style.color = "#e74c3c"; // Red
+
+                    // DPMO Approx (simplified lookup logic for visuals)
+                    // 1s=690k, 2s=308k, 3s=66k, 4s=6k, 5s=230, 6s=3.4
+                    let dpmo = 0;
+                    if (zScore >= 6) dpmo = 3.4;
+                    else if (zScore >= 5) dpmo = 230;
+                    else if (zScore >= 4) dpmo = 6210;
+                    else if (zScore >= 3) dpmo = 66800;
+                    else if (zScore >= 2) dpmo = 308500;
+                    else dpmo = 690000;
+
+                    document.getElementById('dpmoMetric').textContent = dpmo.toLocaleString();
+
+                    // 4. Update Sigma Steps if Teach Mode
+                    drawSigmaLines();
+                }
+
+                function drawSigmaLines() {
+                    const g = document.getElementById('sigmaLines');
+                    g.innerHTML = ''; // Clear
+
+                    // Draw 1s, 2s, 3s lines
+                    for (let i = 1; i <= 6; i++) {
+                        let xPosR = centerX + (i * currentSigma);
+                        let xPosL = centerX - (i * currentSigma);
+
+                        // Only draw if within view
+                        if (xPosR < width) createSigmaMarker(g, xPosR, i);
+                        if (xPosL > 0) createSigmaMarker(g, xPosL, "-" + i);
+                    }
+                }
+
+                function createSigmaMarker(group, x, label) {
+                    let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", x);
+                    line.setAttribute("y1", centerY);
+                    line.setAttribute("x2", x);
+                    line.setAttribute("y2", centerY - 10);
+                    line.setAttribute("stroke", "rgba(255,255,255,0.3)");
+                    group.appendChild(line);
+
+                    let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", centerY + 15);
+                    text.setAttribute("fill", "rgba(255,255,255,0.5)");
+                    text.setAttribute("font-size", "10");
+                    text.setAttribute("text-anchor", "middle");
+                    text.textContent = label + "σ";
+                    group.appendChild(text);
+                }
+
+                // Animation Logic
+                let isAnimating = false;
+                function toggleDrawingMode() {
+                    if (isAnimating) return;
+                    isAnimating = true;
+
+                    // Reset lines first 
+                    document.getElementById('sigmaLines').innerHTML = ''; // visual reset 
+
+                    const path = document.getElementById('curvePath');
+                    path.style.transition = 'none';
+                    path.setAttribute('stroke-dasharray', '2000');
+                    path.setAttribute('stroke-dashoffset', '2000'); // hide
+
+                    document.getElementById('sigmaLines').style.opacity = '1';
+
+                    // Animate Curve
+                    setTimeout(() => {
+                        path.style.transition = 'stroke-dashoffset 2s ease-in-out';
+                        path.setAttribute('stroke-dashoffset', '0');
+                    }, 100);
+
+                    // Show tooltips in sequence
+                    const tip = document.getElementById('tooltipText');
+                    tip.style.opacity = 1;
+
+                    sequence([
+                        () => { tip.textContent = "1. Process creates a Bell Curve..."; tip.setAttribute('fill', '#fff'); },
+                        () => { tip.textContent = "2. The Mean (Center) is the average..."; tip.setAttribute('fill', '#fff'); },
+                        () => {
+                            drawSigmaLines(); // Reveal lines now
+                            tip.textContent = "3. Standard Deviation (σ) is the width..."; tip.setAttribute('fill', 'var(--ss-color)');
+                        },
+                        () => { tip.textContent = "4. Limits (LSL/USL) are Customer Needs..."; tip.setAttribute('fill', 'var(--accent)'); },
+                        () => {
+                            tip.textContent = "Interactive Mode Ready. Try the sliders!";
+                            isAnimating = false;
+                        }
+                    ], 2000);
+                }
+
+                function sequence(funcs, delay) {
+                    funcs.forEach((fn, i) => {
+                        setTimeout(fn, i * delay);
+                    });
+                }
+
+                // Init
+                updateCurve();
+
+                // Hover Interactions (Simple Hit Testing)
+                svg.addEventListener('mousemove', (e) => {
+                    if (isAnimating) return;
+                    let pt = svg.createSVGPoint();
+                    pt.x = e.clientX; pt.y = e.clientY;
+                    let svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+                    const tip = document.getElementById('tooltipText');
+                    tip.style.opacity = 1;
+
+                    if (Math.abs(svgP.x - centerX) < 30) {
+                        tip.textContent = "MEAN (μ): The average of your data.";
+                        tip.setAttribute('fill', '#fff');
+                    }
+                    else if (Math.abs(svgP.x - (centerX - limitSpread)) < 30) {
+                        tip.textContent = "LSL: Lower Specification Limit (Customer's Bottom Line)";
+                        tip.setAttribute('fill', 'var(--accent)');
+                    }
+                    else if (Math.abs(svgP.x - (centerX + limitSpread)) < 30) {
+                        tip.textContent = "USL: Upper Specification Limit (Customer's Top Line)";
+                        tip.setAttribute('fill', 'var(--accent)');
+                    }
+                    else {
+                        tip.textContent = "Adjust sliders above to test logic.";
+                        tip.setAttribute('fill', '#777');
+                    }
+                });
+
+            </script>
+        </div>
+
+        <!-- SECTION 2: HISTORY -->
+        <div id="history" class="content-section">
+            <h2 style="text-align:center; margin-bottom:30px;">The Evolution of Excellence</h2>
+            <div class="history-track">
+
+                <div class="history-node">
+                    <div class="history-year">Early 1900s: The Foundation</div>
+                    <div class="history-card">
+                        <strong style="color:white;">Henry Ford & Frederick Taylor</strong>
+                        <p style="font-size:14px; margin-top:5px; color:#aaa;">
+                            Ford's Assembly Line reduced production time from 12 hours to 93 minutes. Taylor introduced
+                            scientific management and improved efficiency.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="history-node">
+                    <div class="history-year">1940s-80s: The Birth of Lean</div>
+                    <div class="history-card" style="border-left: 3px solid var(--lean-color);">
+                        <strong style="color:var(--lean-color);">Toyota Production System (TPS)</strong>
+                        <p style="font-size:14px; margin-top:5px; color:#aaa;">
+                            Taiichi Ohno developed JIT (Just-In-Time) and defined the 7 Wastes to solve lack of
+                            resources in post-war Japan. The term "Lean" emerges in the 80s via MIT.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="history-node">
+                    <div class="history-year">1980s: Six Sigma Emerges</div>
+                    <div class="history-card" style="border-left: 3px solid var(--ss-color);">
+                        <strong style="color:var(--ss-color);">Motorola & Bill Smith</strong>
+                        <p style="font-size:14px; margin-top:5px; color:#aaa;">
+                            Motorola aimed to reduce defect rates in electronics. Coined "Six Sigma" (3.4 defects per
+                            million).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="history-node">
+                    <div class="history-year">1990s: The Powerhouse</div>
+                    <div class="history-card">
+                        <strong style="color:white;">General Electric (GE)</strong>
+                        <p style="font-size:14px; margin-top:5px; color:#aaa;">
+                            Jack Welch made Six Sigma a strategic priority, proving it could save billions. It became
+                            the global gold standard for business.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="history-node">
+                    <div class="history-year">2000s - Present: Healthcare Integration</div>
+                    <div class="history-card">
+                        <strong style="color:#3498db;">Cleveland Clinic, Mayo, John Hopkins</strong>
+                        <p style="font-size:14px; margin-top:5px; color:#aaa;">
+                            Hospitals began adopting LSS to improve patient safety (reducing medical errors) and
+                            efficiency (discharge times).
+                            Today, it drives <strong>Value-Based Care</strong>.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 3: VALUE -->
+        <div id="value" class="content-section">
+            <h2 style="text-align:center; margin-bottom:10px;">Defining "Value" in Healthcare</h2>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:30px;">
+                In Lean, value is defined ONLY by the customer (The Patient).
+            </p>
+
+            <div class="value-grid">
+                <!-- VALUE ADDED -->
+                <div class="value-card va-card">
+                    <h3 style="color:#3498db; display:flex; align-items:center; gap:10px;">
+                        <span>👍</span> Value-Added (VA)
+                    </h3>
+                    <ul class="comp-list" style="margin-top:20px;">
+                        <li>Directly improves patient health/outcomes</li>
+                        <li>The patient "cares" about this step</li>
+                        <li>Standard of care procedures</li>
+                        <li><strong>Examples:</strong> Diagnosis, Treatment, Nursing Care, Surgery.</li>
+                    </ul>
+                </div>
+
+                <!-- NON VALUE ADDED -->
+                <div class="value-card nva-card">
+                    <h3 style="color:#e74c3c; display:flex; align-items:center; gap:10px;">
+                        <span>👎</span> Non-Value-Added (NVA)
+                    </h3>
+                    <ul class="comp-list" style="margin-top:20px;">
+                        <li>Consumes resources but adds no health value</li>
+                        <li>Patient would not pay for it if they had a choice</li>
+                        <li>Can be "Necessary" (Regulatory) or "Waste" (Pure muda)</li>
+                        <li><strong>Examples:</strong> Waiting, Redundant Paperwork, Searching for supplies, Re-testing.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:30px; text-align:center; background:var(--surface-1);">
+                <h4 style="color:white;">The 3 Key Questions to Identify Flow:</h4>
+                <div style="display:flex; justify-content:center; gap:30px; margin-top:20px; flex-wrap:wrap;">
+                    <div class="prio-badge prio-crit" style="font-size:12px; padding:10px;">Does it change the outcome?
+                    </div>
+                    <div class="prio-badge prio-rec" style="font-size:12px; padding:10px;">Is it done right the first
+                        time?</div>
+                    <div class="prio-badge prio-opt" style="font-size:12px; padding:10px;">Does the patient care?</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openSection(id) {
+            // Hide all
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            // Show target
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

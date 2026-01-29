@@ -1,0 +1,144 @@
+<div style="max-width: 1100px; margin: 0 auto; padding: 20px;">
+
+    <!-- HEADER -->
+    <div style="background: linear-gradient(135deg, #32A8C6 0%, #1B6F85 100%); 
+              color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h1 style="margin: 0;">📊 SIPOC Diagram (Suppliers, Inputs, Process, Outputs, Customers)</h1>
+        <p style="margin: 10px 0 0 0; font-size: 13px;">Define Phase • Yellow Belt</p>
+    </div>
+
+    <!-- SIPOC VISUAL DIAGRAM -->
+    <div style="background: white; border: 2px solid #32A8C6; padding: 30px; 
+              border-radius: 8px; margin-bottom: 30px;">
+
+        <!-- SIPOC TABLE -->
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+
+            <!-- SUPPLIERS ROW -->
+            <tr>
+                <td style="text-align: center; padding: 20px; background: #E3F2FD; 
+                   border: 2px solid #2196F3; border-radius: 5px; width: 18%;">
+                    <strong style="display: block; margin-bottom: 10px; color: #1565C0;">SUPPLIERS</strong>
+                    <textarea style="width: 100%; height: 80px; padding: 8px; border: none; 
+                          resize: none; border-radius: 3px; font-size: 12px;"
+                        placeholder="Who provides input?&#10;&#10;e.g., Vendors, IT, HR"></textarea>
+                </td>
+                <td style="width: 2%; text-align: center; font-size: 20px; color: #666;">→</td>
+
+                <!-- INPUTS ROW -->
+                <td style="text-align: center; padding: 20px; background: #FFF3E0; 
+                   border: 2px solid #FF9800; border-radius: 5px; width: 18%;">
+                    <strong style="display: block; margin-bottom: 10px; color: #E65100;">INPUTS</strong>
+                    <textarea style="width: 100%; height: 80px; padding: 8px; border: none; 
+                          resize: none; border-radius: 3px; font-size: 12px;"
+                        placeholder="What do they provide?&#10;&#10;e.g., Data, Forms, Requests"></textarea>
+                </td>
+                <td style="width: 2%; text-align: center; font-size: 20px; color: #666;">→</td>
+
+                <!-- PROCESS ROW -->
+                <td style="text-align: center; padding: 20px; background: #E8F5E9; 
+                   border: 2px solid #4CAF50; border-radius: 5px; width: 18%;">
+                    <strong style="display: block; margin-bottom: 10px; color: #2E7D32;">PROCESS</strong>
+                    <textarea style="width: 100%; height: 80px; padding: 8px; border: none; 
+                          resize: none; border-radius: 3px; font-size: 12px; font-weight: bold;"
+                        placeholder="What do we do?&#10;&#10;e.g., Invoice Processing"></textarea>
+                </td>
+                <td style="width: 2%; text-align: center; font-size: 20px; color: #666;">→</td>
+
+                <!-- OUTPUTS ROW -->
+                <td style="text-align: center; padding: 20px; background: #F3E5F5; 
+                   border: 2px solid #9C27B0; border-radius: 5px; width: 18%;">
+                    <strong style="display: block; margin-bottom: 10px; color: #6A1B9A;">OUTPUTS</strong>
+                    <textarea style="width: 100%; height: 80px; padding: 8px; border: none; 
+                          resize: none; border-radius: 3px; font-size: 12px;"
+                        placeholder="What do we produce?&#10;&#10;e.g., Processed Invoices"></textarea>
+                </td>
+                <td style="width: 2%; text-align: center; font-size: 20px; color: #666;">→</td>
+
+                <!-- CUSTOMERS ROW -->
+                <td style="text-align: center; padding: 20px; background: #FCE4EC; 
+                   border: 2px solid #E91E63; border-radius: 5px; width: 18%;">
+                    <strong style="display: block; margin-bottom: 10px; color: #AD1457;">CUSTOMERS</strong>
+                    <textarea style="width: 100%; height: 80px; padding: 8px; border: none; 
+                          resize: none; border-radius: 3px; font-size: 12px;"
+                        placeholder="Who receives output?&#10;&#10;e.g., Finance Team, Vendors"></textarea>
+                </td>
+            </tr>
+
+        </table>
+
+        <!-- LEGEND -->
+        <div style="text-align: center; color: #666; font-size: 12px;">
+            Suppliers → Inputs → Process (✓ Focus Area) → Outputs → Customers
+        </div>
+
+    </div>
+
+    <!-- QUESTIONS SECTION -->
+    <div style="background: #F9F9F9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3 style="color: #1B6F85; margin-top: 0;">Guiding Questions</h3>
+
+        <div style="margin-bottom: 20px;">
+            <strong style="color: #333;">1. Who are the SUPPLIERS?</strong>
+            <p style="color: #666; margin: 5px 0 0 0;">
+                List all internal and external sources that provide inputs to your process.
+            </p>
+            <small style="color: #999;">
+                Examples: Vendors, other departments, customers, systems
+            </small>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <strong style="color: #333;">2. What are the key INPUTS?</strong>
+            <p style="color: #666; margin: 5px 0 0 0;">
+                List the materials, information, or services that enter your process.
+            </p>
+            <small style="color: #999;">
+                Examples: Raw materials, data, forms, requests, customer information
+            </small>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <strong style="color: #333;">3. What is the PROCESS?</strong>
+            <p style="color: #666; margin: 5px 0 0 0;">
+                Describe the main steps or activities in your process (in 2-5 words).
+            </p>
+            <small style="color: #999;">
+                Examples: Invoice Processing, Order Fulfillment, Customer Service
+            </small>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <strong style="color: #333;">4. What are the key OUTPUTS?</strong>
+            <p style="color: #666; margin: 5px 0 0 0;">
+                What does your process produce or deliver?
+            </p>
+            <small style="color: #999;">
+                Examples: Processed invoices, delivered products, resolved issues
+            </small>
+        </div>
+
+        <div style="margin-bottom: 0;">
+            <strong style="color: #333;">5. Who are the CUSTOMERS?</strong>
+            <p style="color: #666; margin: 5px 0 0 0;">
+                Who uses or receives your outputs (internal or external customers)?
+            </p>
+            <small style="color: #999;">
+                Examples: Finance team, external clients, warehouse, next process step
+            </small>
+        </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div style="display: flex; gap: 10px; justify-content: space-between;">
+        <button style="padding: 12px 24px; background: #CCC; color: #333; 
+                   border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            ← Back
+        </button>
+        <button style="padding: 12px 24px; background: #32A8C6; color: white; 
+                   border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            Save SIPOC & Generate Process Map →
+        </button>
+    </div>
+
+</div>

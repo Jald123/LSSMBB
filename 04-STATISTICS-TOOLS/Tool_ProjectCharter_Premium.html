@@ -1,0 +1,2371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Charter | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <!-- Chart.js for Gantt/Finance visual -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-hover: #1e40af;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(59, 130, 246, 0.2);
+            --text-secondary: #94a3b8;
+        }
+
+        /* MODERN SUITE LAYOUT */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 340px;
+            height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1e293b 0%, #080c14 100%);
+        }
+
+        .sidebar-left {
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(59, 130, 246, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .main-workspace {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .report-sidebar {
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(15px);
+            border-left: 1px solid rgba(59, 130, 246, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            color: #FF6B35;
+            font-family: 'Orbitron';
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* INFOGRAPHIC MODAL (Professional Style) */
+        .info-overlay,
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: none;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        /* Generic Modal Box */
+        .modal-box {
+            background: #0f172a;
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .info-box-premium {
+            width: 90%;
+            max-width: 900px;
+            background: #0f172a;
+            border-radius: 32px;
+            border: 2px solid var(--accent);
+            padding: 50px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(255, 107, 53, 0.2);
+        }
+
+        .info-title-pro {
+            text-align: center;
+            font-family: 'Orbitron';
+            color: var(--accent);
+            font-size: 28px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        .info-grid-pro {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .info-card-pro {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 25px;
+            border-left: 5px solid var(--accent);
+        }
+
+        .info-card-pro h4 {
+            color: var(--accent);
+            font-size: 12px;
+            text-transform: uppercase;
+            margin: 0 0 10px;
+        }
+
+        .info-card-pro p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .close-pro {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 32px;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-pro:hover {
+            color: white;
+        }
+
+        /* INPUT OVERRIDES */
+        .card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .premium-input,
+        .premium-textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 15px !important;
+            border-radius: 12px;
+            font-family: 'Inter';
+            line-height: 1.6;
+            resize: vertical;
+            transition: 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .premium-input:focus,
+        .premium-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 107, 53, 0.05);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.1);
+        }
+
+        .copq-box {
+            background: rgba(46, 204, 113, 0.05);
+            border: 1px dashed var(--success);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* PREMIUM PRINT ARCHITECTURE */
+        @media print {
+            @page {
+                size: portrait;
+                margin: 15mm;
+            }
+
+            body {
+                background: white !important;
+                color: #0f172a !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+            }
+
+            .sidebar-left,
+            .report-sidebar,
+            header,
+            .no-print,
+            .btn,
+            .ai-rewrite-btn,
+            .guide-tabs,
+            .phase-glow,
+            .lss-intro-box,
+            .modal-overlay,
+            #premiumInfoModal {
+                display: none !important;
+            }
+
+            .app-container {
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                padding: 0 !important;
+                background: white !important;
+            }
+
+            .main-workspace {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .card {
+                border: 2px solid #e2e8f0 !important;
+                background: white !important;
+                border-radius: 12px !important;
+                box-shadow: none !important;
+                padding: 25px !important;
+                margin-bottom: 25px !important;
+                page-break-inside: avoid;
+            }
+
+            .print-header {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+                padding-bottom: 30px;
+                border-bottom: 4px solid #0f172a;
+                margin-bottom: 40px;
+            }
+
+            .print-audit-badge {
+                padding: 6px 14px;
+                background: #0f172a;
+                color: white;
+                font-weight: 900;
+                font-size: 10px;
+                border-radius: 6px;
+                text-transform: uppercase;
+                margin-bottom: 15px;
+                display: inline-block;
+            }
+
+            .print-footer {
+                display: flex !important;
+                justify-content: space-between;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                font-size: 9px;
+                color: #64748b;
+                border-top: 1px solid #e2e8f0;
+                padding: 10px 0;
+            }
+
+            #print-summary-page {
+                display: block !important;
+                page-break-after: always;
+                padding: 0;
+                border: none;
+            }
+
+            .audit-grid {
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 20px;
+                background: #f8fafc !important;
+                padding: 25px !important;
+                border-radius: 16px !important;
+                border: 1px solid #e2e8f0 !important;
+                margin-bottom: 40px !important;
+            }
+
+            .audit-item {
+                text-align: center;
+                border-right: 1px solid #e2e8f0;
+            }
+
+            .audit-item:last-child {
+                border-right: none;
+            }
+
+            .audit-val {
+                font-size: 20px;
+                font-weight: 800;
+                color: #0f172a;
+                display: block;
+            }
+
+            .audit-label {
+                font-size: 9px;
+                color: #64748b;
+                text-transform: uppercase;
+            }
+
+            textarea,
+            input {
+                border: none !important;
+                background: transparent !important;
+                color: #0f172a !important;
+                padding: 5px 0 !important;
+                width: 100% !important;
+                font-size: 14px !important;
+                height: auto !important;
+                resize: none !important;
+            }
+        }
+
+        /* PROJECT GUIDE ENHANCEMENTS */
+        .guide-modal-box {
+            width: 95%;
+            max-width: 1200px;
+            height: 85vh;
+            background: #0f172a;
+            border-radius: 24px;
+            border: 1px solid var(--accent);
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+        }
+
+        .guide-sidebar {
+            background: #080c14;
+            padding: 30px 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            overflow-y: auto;
+        }
+
+        .guide-side-btn {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #94a3b8;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s;
+        }
+
+        .guide-side-btn:hover,
+        .guide-side-btn.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .guide-main-content {
+            padding: 40px;
+            overflow-y: auto;
+            background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.05), transparent);
+        }
+
+        .guide-detail-card {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .guide-detail-card.active {
+            display: block;
+        }
+
+        .mbb-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 12px;
+        }
+
+        .mbb-table th {
+            background: rgba(0, 0, 0, 0.3);
+            text-align: left;
+            padding: 12px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .mbb-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: top;
+        }
+
+        .do-tag {
+            color: #10b981;
+            font-weight: 800;
+        }
+
+        .dont-tag {
+            color: #ef4444;
+            font-weight: 800;
+        }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        /* ULTRA MODERN GUIDE CSS */
+        .mbb-bp-card {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .mbb-bp-card h4 {
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 0;
+        }
+
+        .bp-example-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .bp-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 11px;
+            border-left: 3px solid var(--success);
+            color: #cbd5e1;
+        }
+
+        .critique-section {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .critique-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bad-text {
+            color: #ef4444;
+            font-weight: 700;
+            text-decoration: underline dotted;
+        }
+
+        .critique-reason {
+            display: block;
+            margin-top: 8px;
+            font-size: 10px;
+            color: #94a3b8;
+            padding-left: 10px;
+            border-left: 2px solid #ef4444;
+        }
+
+        .reason-tag {
+            background: #ef4444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            margin-right: 5px;
+            text-transform: uppercase;
+        }
+
+        .golden-standard-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.08));
+            border: 2px solid rgba(245, 158, 11, 0.5);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .golden-standard-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            to {
+                left: 200%;
+            }
+        }
+
+        .equation-box {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Orbitron';
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--accent);
+            text-align: center;
+            border: 2px dashed var(--accent);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .morale-wisdom-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            margin-top: 25px;
+        }
+
+        .morale-wisdom-box h4 {
+            color: #a78bfa !important;
+            font-family: 'Orbitron';
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .morale-wisdom-box p {
+            font-style: italic;
+            color: #d8b4fe;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .reduction-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin: 15px 0;
+            outline: none;
+        }
+
+        .reduction-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .wisdom-tag {
+            background: linear-gradient(90deg, var(--accent), #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron';
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .calc-tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .calc-tooltip:hover::after {
+            content: "Savings = Cost x Volume x Reduction Target";
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            width: 180px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- EXECUTIVE AUDIT SUMMARY (Strategic Layout) -->
+    <div id="print-summary-page"
+        style="display: flex; flex-direction: column; min-height: 297mm; background: #f8fafc; padding: 60px; color: #0f172a; font-family: 'Inter', sans-serif; box-sizing: border-box;">
+        <!-- Header (Always at Top) -->
+        <div class="print-header"
+            style="display: flex; justify-content: space-between; align-items: start; border-bottom: 5px solid #0f172a; padding-bottom: 30px;">
+            <div>
+                <div
+                    style="background: #0f172a; color: white; padding: 6px 16px; font-size: 11px; font-weight: 800; border-radius: 6px; display: inline-block; margin-bottom: 15px; font-family: 'Orbitron'; letter-spacing: 2px;">
+                    PROJECT ARCHITECTURE: VERIFIED</div>
+                <h1
+                    style="margin: 0; font-size: 42px; font-weight: 900; letter-spacing: -2px; text-transform: uppercase; line-height: 0.9; color: #0f172a;">
+                    EXECUTIVE<br>PROJECT AUDIT</h1>
+                <div style="font-size: 16px; color: #64748b; margin-top: 10px; font-weight: 500;">Lean Six Sigma DMAIC |
+                    Define Phase Charter</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">GEN. DATE: <span id="printDateSummary"
+                        style="color: #0f172a; font-weight: 700;"></span></div>
+                <div
+                    style="background: rgba(15, 23, 42, 0.05); padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 800; color: #0f172a; border: 1px solid rgba(15, 23, 42, 0.1);">
+                    REF: LSS-CHARTER-2026</div>
+            </div>
+        </div>
+
+        <div style="flex-grow: 1;"></div> <!-- Massive spacing to push content to bottom -->
+
+        <!-- Audit Details (At Absolute Bottom) -->
+        <div class="audit-grid"
+            style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; background: white; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 5px 15px rgba(0,0,0,0.02);">
+            <div class="audit-item" style="text-align: center; border-right: 1px solid #f1f5f9;">
+                <span class="audit-label"
+                    style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 5px;">Audit
+                    Score</span>
+                <span id="print-score-val" class="audit-val"
+                    style="font-size: 28px; font-weight: 900; color: #0f172a; display: block;">0%</span>
+            </div>
+            <div class="audit-item" style="text-align: center; border-right: 1px solid #f1f5f9;">
+                <span class="audit-label"
+                    style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 5px;">Financial
+                    Status</span>
+                <span id="print-fin-status" class="audit-val"
+                    style="font-size: 28px; font-weight: 900; color: #166534; display: block;">VALIDATED</span>
+            </div>
+            <div class="audit-item" style="text-align: center; border-right: 1px solid #f1f5f9;">
+                <span class="audit-label"
+                    style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 5px;">Strategic
+                    Fit</span>
+                <span class="audit-val"
+                    style="font-size: 28px; font-weight: 900; color: #1e40af; display: block;">OPTIMIZED</span>
+            </div>
+            <div class="audit-item" style="text-align: center;">
+                <span class="audit-label"
+                    style="font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 5px;">Project
+                    Lead</span>
+                <span id="print-lead-name" class="audit-val"
+                    style="font-size: 28px; font-weight: 900; color: #0f172a; display: block;">TBD</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRINT FOOTER -->
+    <div class="print-footer">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div style="width:12px; height:12px; border:2px solid #0f172a; border-radius:50%;"></div>
+                <span style="font-weight:700; color:#0f172a;">LSS MASTER ARCHITECT</span>
+            </div>
+            <span style="font-style:italic;">Official Executive Project Charter Audit | DMAIC Define Phase</span>
+            <span>Ref: LSS-CHARTER-2026</span>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- TOOLKIT SELECTOR (LEFT) -->
+        <div class="sidebar-left">
+            <div
+                style="font-family:'Orbitron'; font-size:16px; color:var(--accent); margin-bottom:30px; text-align:center;">
+                DMAIC SUITE</div>
+            <button class="btn btn-primary" style="width:100%; justify-content:flex-start; margin-bottom:10px;"><i
+                    class="fas fa-file-signature"></i> Project Charter</button>
+            <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; margin-bottom:10px;"
+                onclick="showGuide()"><i class="fas fa-book"></i> Project Guide</button>
+            <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; margin-bottom:10px;"
+                onclick="openPremiumInfo('charter')"><i class="fas fa-brain"></i> Strategic Lab</button>
+
+            <button class="btn btn-ghost" style="width:100%; margin-top:auto;"
+                onclick="window.location.href='Tool_WorkflowHub.html'"><i class="fas fa-home"></i> Main Hub</button>
+        </div>
+
+        <!-- MAIN WORKSPACE (CENTER) -->
+        <div class="main-workspace">
+            <header class="flex-between" style="margin-bottom:30px;">
+                <div>
+                    <span class="phase-glow">DEFINE PHASE</span>
+                    <h1>Project Charter MASTER</h1>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <span style="font-size:10px; color:#94a3b8; text-transform:uppercase;">Simulation Case:</span>
+                    <select id="scenarioSelect" onchange="loadScenario()"
+                        style="background:#0f172a; border:1px solid var(--accent); color:white; padding:8px 12px; border-radius:10px; font-size:12px; cursor:pointer;">
+                        <option value="">-- CUSTOM CHARTER --</option>
+                        <option value="manufacturing">⚙️ Case: Manufacturing Scrap</option>
+                        <option value="healthcare">🏥 Case: Patient Flow</option>
+                        <option value="service">🖥️ Case: IT Service Resolution</option>
+                    </select>
+                    <button class="btn btn-accent" onclick="autoFillAI()"><i class="fas fa-robot"></i> AI Draft</button>
+                    <button class="btn"
+                        style="background:rgba(255,107,53,0.1); border:1px solid var(--accent); color:var(--accent); padding:8px 15px;"
+                        onclick="openPremiumInfo('charter')">
+                        <i class="fas fa-info-circle"></i> STRATEGY
+                    </button>
+                </div>
+            </header>
+
+            <div class="card" style="border-left:5px solid var(--accent);">
+                <div class="flex-between">
+                    <h2 style="margin:0;">1. Strategic Intent</h2>
+                    <div
+                        style="font-size:10px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px;">
+                        <i class="fas fa-shield-alt"></i> MASTER ARCHITECT MODE
+                    </div>
+                </div>
+
+                <div style="margin-top:25px;">
+                    <span class="sidebar-label">Project Title <i class="fas fa-info-circle" onclick="explain('title')"
+                            style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></span>
+                    <input type="text" id="projectTitle" class="premium-input" placeholder="Enter high-level goal...">
+
+                    <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:30px; align-items: start;">
+                        <div>
+                            <span class="sidebar-label">Business Case <i class="fas fa-info-circle"
+                                    onclick="explain('business_case')"
+                                    style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></span>
+                            <div class="input-wrapper">
+                                <textarea id="businessCase" class="premium-textarea" rows="3"
+                                    placeholder="Why now? Strategic alignment..."></textarea>
+                                <button class="ai-rewrite-btn"
+                                    onclick="reviewInput('businessCase', 'Business Case')">🥋</button>
+                            </div>
+                        </div>
+                        <div
+                            style="background:rgba(139, 92, 246, 0.05); border:1px solid rgba(139, 92, 246, 0.2); border-radius:15px; padding:15px; margin-top:20px;">
+                            <span class="wisdom-tag">🥋 MBB WISDOM</span>
+                            <p style="font-size:11px; color:#d8b4fe; line-height:1.5; font-style:italic; margin:0;">
+                                "Precision is the prerequisite for performance. If the Business Case doesn't bleed, the
+                                executives won't lead. Make the pain impossible to ignore."
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:20px;">
+                        <span class="sidebar-label">Problem Statement <i class="fas fa-info-circle"
+                                onclick="explain('problem_stmt')"
+                                style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></span>
+                        <div class="input-wrapper">
+                            <textarea id="problemStmt" class="premium-textarea" rows="3"
+                                placeholder="Quantify the pain: What, Where, When, Extent..."></textarea>
+                            <button class="ai-rewrite-btn"
+                                onclick="reviewInput('problemStmt', 'Problem Statement')">🥋</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:20px;">
+                        <span class="sidebar-label">SMART Goal <i class="fas fa-info-circle" onclick="explain('goal')"
+                                style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></span>
+                        <div class="input-wrapper">
+                            <textarea id="goalStmt" class="premium-textarea" rows="2"
+                                placeholder="Specific, Measurable, Achievable..."></textarea>
+                            <button class="ai-rewrite-btn"
+                                onclick="reviewInput('goalStmt', 'Goal Statement')">🥋</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>2. Execution Scope</h2>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                    <div>
+                        <span class="sidebar-label">In-Scope (Focus Areas)</span>
+                        <textarea id="inScope" class="premium-textarea" rows="4"></textarea>
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Out-of-Scope (Boundaries)</span>
+                        <textarea id="outScope" class="premium-textarea" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>3. Governance Team</h2>
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;">
+                    <div><span class="sidebar-label">Executive Sponsor</span><input type="text" id="sponsor"
+                            class="premium-input"></div>
+                    <div><span class="sidebar-label">Process Owner</span><input type="text" id="processOwner"
+                            class="premium-input"></div>
+                    <div><span class="sidebar-label">Lead Belt</span><input type="text" id="beltName"
+                            class="premium-input"></div>
+                </div>
+            </div>
+
+            <!-- CARD 4: FINANCIAL IMPACT (COPQ) -->
+            <div class="card" style="border-left:5px solid var(--success);">
+                <div class="flex-between">
+                    <h2>4. Financial Impact (COPQ)</h2>
+                    <button onclick="showCOPQCalc()"
+                        style="background: var(--accent); color: white; border: none; padding: 5px 15px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 800; font-family:'Orbitron';">
+                        AUDIT FORMULA <i class="fas fa-calculator"></i>
+                    </button>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px; margin-top:20px;">
+                    <div>
+                        <label class="sidebar-label">Avg Defect Cost ($)</label>
+                        <input type="number" id="costPerDefect" value="150" class="premium-input"
+                            oninput="calcSavings()">
+
+                        <label class="sidebar-label">Annual Unit Volume</label>
+                        <input type="number" id="annualDefects" value="1200" class="premium-input"
+                            oninput="calcSavings()">
+                    </div>
+                    <div>
+                        <label class="sidebar-label">Reduction Target <span id="rangeVal"
+                                style="color:var(--accent); font-weight:800; float:right;">50%</span></label>
+                        <input type="range" id="reductionTarget" min="10" max="100" value="50" class="reduction-slider"
+                            oninput="updateRangeVal(this.value); calcSavings()">
+
+                        <div class="copq-box"
+                            style="margin-top:25px; height: 100px; display: flex; flex-direction: column; justify-content: center;">
+                            <div
+                                style="font-size:10px; text-transform:uppercase; color:var(--text-secondary); letter-spacing:1px; margin-bottom:5px;">
+                                Projected Net Savings</div>
+                            <div id="savingsDisplay"
+                                style="font-size:36px; font-weight:800; color:var(--success); text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);">
+                                $90,000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 5: EXECUTIVE PROJECT AUDIT (Consolidated) -->
+            <div class="card" style="border-top:5px solid #0f172a; background:rgba(255,255,255,0.02);">
+                <div class="flex-between"
+                    style="border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:15px; margin-bottom:20px;">
+                    <h2 style="margin:0;"><i class="fas fa-shield-check"></i> 5. Executive Project Audit</h2>
+                    <div style="font-family:'Orbitron'; font-size:10px; color:#64748b;">VERSION 2.4 | LSS-CHARTER-2026
+                    </div>
+                </div>
+
+                <div class="audit-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                    <div onclick="explain('audit_score')"
+                        style="text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor:pointer; transition: transform 0.2s, background 0.2s;">
+                        <span class="sidebar-label" style="margin-bottom:10px;">Audit Score</span>
+                        <div id="audit-score-screen" style="font-size:28px; font-weight:900; color:var(--accent);">0%
+                        </div>
+                        <div class="progress-container" style="height:6px; margin-top:10px;">
+                            <div id="screen-progress-bar" class="progress-bar"></div>
+                        </div>
+                        <div style="font-size:9px; color:#555; margin-top:8px;">CLICK TO AUDIT</div>
+                    </div>
+                    <div onclick="explain('audit_fin_status')"
+                        style="text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor:pointer;">
+                        <span class="sidebar-label" style="margin-bottom:10px;">Financial Status</span>
+                        <div id="fin-status-screen" style="font-size:18px; font-weight:800; color:var(--success);">
+                            VALIDATED</div>
+                        <div style="font-size:9px; color:#555; margin-top:8px;">CLICK FOR CRITERIA</div>
+                    </div>
+                    <div onclick="explain('audit_strat_fit')"
+                        style="text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor:pointer;">
+                        <span class="sidebar-label" style="margin-bottom:10px;">Strategic Fit</span>
+                        <div style="font-size:18px; font-weight:800; color:#3b82f6;">OPTIMIZED</div>
+                        <div style="font-size:9px; color:#555; margin-top:8px;">DMAIC ALIGNMENT</div>
+                    </div>
+                    <div onclick="explain('audit_lead')"
+                        style="text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); cursor:pointer;">
+                        <span class="sidebar-label" style="margin-bottom:10px;">Lead Specialist</span>
+                        <div id="lead-name-screen" style="font-size:18px; font-weight:800; color:white;">TBD</div>
+                        <div style="font-size:9px; color:#555; margin-top:8px;">SPECIALIST CHECK</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REPORT SIDEBAR (RIGHT) -->
+        <div class="report-sidebar">
+            <h2 class="sidebar-title">Project Control</h2>
+
+            <div class="card" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05);">
+                <span class="sidebar-label">Timeline Milestones</span>
+                <div style="margin-top:10px; display:flex; flex-direction:column; gap:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+                        <span>Define</span><input type="date"
+                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+                        <span>Measure</span><input type="date"
+                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+                        <span>Analyze</span><input type="date"
+                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+                        <span>Improve</span><input type="date"
+                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+                        <span>Control</span><input type="date"
+                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr; gap:12px; margin-top:20px;">
+                <button class="btn btn-primary" onclick="checkProgress()"><i class="fas fa-save"></i> Save
+                    Charter</button>
+                <button class="btn btn-ghost" onclick="window.print()"><i class="fas fa-file-pdf"></i> Export
+                    Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STRATEGIC INFO POPUP -->
+    <div id="premiumInfoModal" class="info-overlay">
+        <div class="info-box-premium">
+            <span class="close-pro" onclick="closePremiumInfo()">&times;</span>
+            <div class="info-title-pro" id="premium-modal-title">Strategic Insight</div>
+            <div class="info-grid-pro" id="premium-modal-grid">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPLANATION MODAL (Generic) -->
+    <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+        <div class="modal-box">
+            <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+            <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
+            <p id="modalContent" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">
+                Content...</p>
+        </div>
+    </div>
+
+    <!-- ENHANCED PROJECT GUIDE MODAL (ULTRA VERSION) -->
+    <div class="modal-overlay" id="guideModal" onclick="if(event.target===this) this.style.display='none'">
+        <div class="guide-modal-box">
+            <span class="close-pro" onclick="document.getElementById('guideModal').style.display='none'">&times;</span>
+
+            <div class="guide-sidebar">
+                <div
+                    style="font-family:'Orbitron'; font-size:16px; color:var(--accent); margin-bottom:25px; text-align:center;">
+                    GUIDE LAB</div>
+                <button class="guide-side-btn active" onclick="switchSuperTab('intro', this)"><i
+                        class="fas fa-play"></i> Getting Started</button>
+                <button class="guide-side-btn" onclick="switchSuperTab('title', this)"><i class="fas fa-heading"></i>
+                    Project Title</button>
+                <button class="guide-side-btn" onclick="switchSuperTab('business', this)"><i
+                        class="fas fa-briefcase"></i> Business Case</button>
+                <button class="guide-side-btn" onclick="switchSuperTab('problem', this)"><i
+                        class="fas fa-exclamation-triangle"></i> Problem Stmt</button>
+                <button class="guide-side-btn" onclick="switchSuperTab('goal', this)"><i class="fas fa-bullseye"></i>
+                    SMART Goal</button>
+                <button class="guide-side-btn" onclick="switchSuperTab('scope', this)"><i
+                        class="fas fa-vector-square"></i> Scope Control</button>
+                <button class="guide-side-btn" onclick="switchSuperTab('governance', this)"><i class="fas fa-users"></i>
+                    Governance</button>
+                <button class="guide-side-btn" onclick="switchSuperTab('financial', this)"><i
+                        class="fas fa-chart-line"></i> COPQ & Savings</button>
+                <button class="guide-side-btn" onclick="switchSuperTab('timeline', this)"><i
+                        class="fas fa-calendar-alt"></i> Milestones</button>
+                <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.05);"></div>
+                <button class="guide-side-btn" onclick="switchSuperTab('templates', this)"
+                    style="color:var(--success);"><i class="fas fa-magic"></i> Templates Lab</button>
+            </div>
+
+            <div class="guide-main-content">
+                <!-- INTRO -->
+                <div id="super_intro" class="guide-detail-card active">
+                    <h1 style="color:var(--accent); font-family:'Orbitron'; font-size:28px; margin-bottom:10px;">The
+                        DMAIC Charter Philosophy</h1>
+                    <p style="color:#94a3b8; font-size:15px; line-height:1.7;">A Project Charter is not just a document;
+                        it is a <b>governance contract</b> between the project lead and executive sponsors. It
+                        establishes the authority to occupy resources and the commitment to hit specified financial
+                        targets.</p>
+                    <div class="example-box">
+                        <strong style="color:var(--accent); display:block; margin-bottom:10px;">🥋 Master Black Belt
+                            Hint:</strong>
+                        <p style="font-size:13px; color:#ddd; line-height:1.6;">"A project without a charter is a hobby.
+                            A project with a bad charter is a liability. Focus on the 'Problem Statement' first—it is
+                            the heart that drives the entire DMAIC machine."</p>
+                    </div>
+                </div>
+
+                <!-- TITLE -->
+                <div id="super_title" class="guide-detail-card">
+                    <h2 style="color:var(--accent); display:flex; align-items:center; gap:12px;">
+                        <i class="fas fa-heading"></i> 1. Project Title
+                    </h2>
+
+                    <div style="display:flex; flex-direction:column; gap:25px; margin-top:20px;">
+                        <div class="example-box" style="margin:0;">
+                            <h4 style="color:var(--accent); margin-top:0;">What & Why?</h4>
+                            <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:10px;">
+                                A concise label describing the focus. It serves as the "Elevator Pitch" for your project
+                                in leadership portfolios.
+                            </p>
+                            <div class="golden-standard-box">
+                                <strong style="color:#f59e0b; font-size:14px;">🏆 MBB GOLDEN STANDARD:</strong>
+                                <p
+                                    style="font-size:16px; color:white; margin-top:10px; font-style:italic; font-weight:600;">
+                                    "[Verb] + [Improvement Object] + [Specific Process/Location]"</p>
+                            </div>
+                            <div class="equation-box">
+                                CLARITY + CORE METRIC + SCOPE = PERFECT TITLE
+                            </div>
+                        </div>
+
+                        <div class="mbb-bp-card" style="margin:0;">
+                            <h4><i class="fas fa-award"></i> Master Black Belt Best Practice</h4>
+                            <div class="bp-example-list" style="grid-template-columns: 1fr;">
+                                <div class="bp-item">"Reduce Lead Time in Hiring Process"</div>
+                                <div class="bp-item">"Optimize Fuel Consumption in Fleet B"</div>
+                                <div class="bp-item">"Decrease Bed Turnover Lag (Ward 4)"</div>
+                                <div class="bp-item">"Eliminate Billing Errors in AP Dept"</div>
+                                <div class="bp-item">"Improve Order Pick Accuracy (Warehouse X)"</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="critique-section">
+                        <h4 style="color:#ef4444; display:flex; align-items:center; gap:10px; margin-top:0;">
+                            <i class="fas fa-exclamation-triangle"></i> Poor Content Critique
+                        </h4>
+                        <div class="critique-item">
+                            <span class="bad-text">"Fix the Hospital"</span>
+                            <span class="critique-reason"><span class="reason-tag">Vague</span> Too broad. An MBB cannot
+                                tell if this is about surgery, floors, or finance.</span>
+                        </div>
+                        <div class="critique-item">
+                            <span class="bad-text">"Install SAP Software"</span>
+                            <span class="critique-reason"><span class="reason-tag">Solutioneering</span> This is a task,
+                                not a problem. The title should focus on the *gap* the software fixes.</span>
+                        </div>
+                        <div class="critique-item">
+                            <span class="bad-text">"Project Quality"</span>
+                            <span class="critique-reason"><span class="reason-tag">No Verb</span> Lacks directional
+                                intent (Reduce/Increase). It's a category, not a project title.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BUSINESS CASE -->
+                <div id="super_business" class="guide-detail-card">
+                    <h2 style="color:var(--accent); display:flex; align-items:center; gap:12px;">
+                        <i class="fas fa-briefcase"></i> 2. Business Case
+                    </h2>
+
+                    <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:30px; margin-top:20px;">
+                        <div style="display:flex; flex-direction:column; gap:25px;">
+                            <div class="example-box" style="margin:0;">
+                                <h4 style="color:var(--accent); margin-top:0;">What & Why?</h4>
+                                <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:10px;">
+                                    The strategic justification. Why is this project more important than 10 others?
+                                    Focus on Money, Risk, or Market survival.
+                                </p>
+                                <div class="golden-standard-box">
+                                    <strong style="color:#f59e0b; font-size:14px;">🏆 MBB GOLDEN STANDARD:</strong>
+                                    <p
+                                        style="font-size:16px; color:white; margin-top:10px; font-style:italic; font-weight:600;">
+                                        "Currently [Problem] is costing $[Amount]. If not solved, we risk [Loss of
+                                        Customers/Market/Compliance]."</p>
+                                </div>
+                                <div class="equation-box">
+                                    STRATEGIC PAIN + FINANCIAL LEAK + RISK = COMPELLING CASE
+                                </div>
+                            </div>
+
+                            <div class="mbb-bp-card" style="margin:0;">
+                                <h4><i class="fas fa-award"></i> MBB Best Practice</h4>
+                                <div class="bp-example-list" style="grid-template-columns: 1fr;">
+                                    <div class="bp-item">"Currently losing $1.2M annually due to inventory spoilage."
+                                    </div>
+                                    <div class="bp-item">"Missed delivery targets are causing 12% customer churn."</div>
+                                    <div class="bp-item">"New regulatory compliance requires < 1% error by Q4."</div>
+                                            <div class="bp-item">"Reducing downtime will unlock $500k in hidden
+                                                capacity."</div>
+                                            <div class="bp-item">"Strategic goal to be market leader in speed; we are
+                                                40% slower than competition."</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="morale-wisdom-box">
+                                <h4>🛡️ STRATEGIC MORALE</h4>
+                                <p>
+                                    "A business case is not just about the numbers; it's about the <strong>will to
+                                        survive</strong>.
+                                    In Lean Six Sigma, we don't fix processes for the sake of efficiency—we fix them to
+                                    protect our people's focus and our organization's future.
+                                    If the case doesn't bleed red ink, the management won't see green light."
+                                </p>
+                                <div
+                                    style="margin-top:20px; font-family:'Orbitron'; font-size:10px; color:rgba(216, 180, 254, 0.5);">
+                                    MBB WISDOM #42</div>
+                            </div>
+                        </div>
+
+                        <div class="critique-section">
+                            <h4 style="color:#ef4444; display:flex; align-items:center; gap:10px; margin-top:0;">
+                                <i class="fas fa-exclamation-triangle"></i> Poor Content Critique
+                            </h4>
+                            <div class="critique-item">
+                                <span class="bad-text">"Everyone thinks we need to do this."</span>
+                                <span class="critique-reason"><span class="reason-tag">Emotional</span> Lacks data. An
+                                    executive cannot fund 'feelings'. Mention the financial impact or missed
+                                    KPIs.</span>
+                            </div>
+                            <div class="critique-item">
+                                <span class="bad-text">"This is a great chance to learn Six Sigma."</span>
+                                <span class="critique-reason"><span class="reason-tag">Self-Serving</span> A business
+                                    case is for the *business*, not your personal training. Focus on organizational
+                                    ROI.</span>
+                            </div>
+                            <div class="critique-item">
+                                <span class="bad-text">"Better quality will result in good things."</span>
+                                <span class="critique-reason"><span class="reason-tag">Vague</span> What 'good things'?
+                                    Be specific (e.g., lower warranty costs, higher NPS).</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROBLEM STATEMENT -->
+                    <div id="super_problem" class="guide-detail-card">
+                        <h2 style="color:var(--accent); display:flex; align-items:center; gap:12px;">
+                            <i class="fas fa-exclamation-triangle"></i> 3. Problem Statement
+                        </h2>
+
+                        <div style="display:flex; flex-direction:column; gap:25px; margin-top:20px;">
+                            <div class="example-box" style="margin:0;">
+                                <h4 style="color:var(--accent); margin-top:0;">What & Why?</h4>
+                                <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:10px;">
+                                    The core of the charter. Must define What, Where, When, and Extent. Never include a
+                                    cause or solution.
+                                </p>
+                                <div class="golden-standard-box">
+                                    <strong style="color:#f59e0b; font-size:14px;">🏆 MBB GOLDEN STANDARD:</strong>
+                                    <p
+                                        style="font-size:16px; color:white; margin-top:10px; font-style:italic; font-weight:600;">
+                                        "Since [Date], [Process] at [Location] is [Problem Metric] resulting in [Direct
+                                        Impact]."</p>
+                                </div>
+                                <div class="equation-box">
+                                    4 W'S (WHAT, WHERE, WHEN, WHY) + BASELINE DATA = HIGH IQ PROB STMT
+                                </div>
+                            </div>
+                            <div class="mbb-bp-card" style="margin:0;">
+                                <h4><i class="fas fa-award"></i> MBB Best Practice</h4>
+                                <div class="bp-example-list" style="grid-template-columns: 1fr;">
+                                    <div class="bp-item">"In 2025, Line A reports 8% scrap rate vs 2% goal, costing
+                                        $50k/mo."</div>
+                                    <div class="bp-item">"Current Discharge lag in Ward 4 is 4.2 hrs (Target < 2
+                                            hrs)."</div>
+                                            <div class="bp-item">"Since Q1, 15% of invoices contain price errors,
+                                                causing rework."</div>
+                                            <div class="bp-item">"Technical support FCR is 45%, benchmark is 80%."</div>
+                                            <div class="bp-item">"Employee turnover in Sales is 22% (Last 12 months)."
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="critique-section">
+                                <h4 style="color:#ef4444; display:flex; align-items:center; gap:10px; margin-top:0;">
+                                    <i class="fas fa-exclamation-triangle"></i> Poor Content Critique
+                                </h4>
+                                <div class="critique-item">
+                                    <span class="bad-text">"Scrap is high because the <span class="badge-critique"
+                                            style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">CAUSE</span>
+                                        machine is old."</span>
+                                    <span class="critique-reason"><span class="reason-tag">Bias</span> You've already
+                                        diagnosed the problem. DMAIC's goal is to *prove* the cause, not guess it in
+                                        'Define'.</span>
+                                </div>
+                                <div class="critique-item">
+                                    <span class="bad-text">"Discharge process <span class="badge-critique"
+                                            style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">SOLUTION</span>
+                                        needs new software."</span>
+                                    <span class="critique-reason"><span class="reason-tag">Solutioneering</span> You are
+                                        pushing a solution. Focus only on the 'Gap' or 'Pain' right now.</span>
+                                </div>
+                                <div class="critique-item">
+                                    <span class="bad-text">"Our processing is <span class="badge-critique"
+                                            style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">NO
+                                            DATA</span> too slow."</span>
+                                    <span class="critique-reason"><span class="reason-tag">Opinion</span> 'Too slow' is
+                                        subjective. Use seconds, minutes, or percentages.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SMART GOAL -->
+                        <div id="super_goal" class="guide-detail-card">
+                            <h2 style="color:var(--accent); display:flex; align-items:center; gap:12px;">
+                                <i class="fas fa-bullseye"></i> 4. SMART Goal Statement
+                            </h2>
+
+                            <div style="display:flex; flex-direction:column; gap:25px; margin-top:20px;">
+                                <div class="example-box" style="margin:0;">
+                                    <h4 style="color:var(--accent); margin-top:0;">What & Why?</h4>
+                                    <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:10px;">
+                                        The target state. It must be Specific, Measurable, Achievable, Relevant, and
+                                        Time-bound. It is your yardstick of success.
+                                    </p>
+                                    <div class="golden-standard-box">
+                                        <strong style="color:#f59e0b; font-size:14px;">🏆 MBB GOLDEN STANDARD:</strong>
+                                        <p
+                                            style="font-size:16px; color:white; margin-top:10px; font-style:italic; font-weight:600;">
+                                            "To [Improve/Reduce] [Metric] from [Baseline] to [Target] by [Specific
+                                            Deadline]."</p>
+                                    </div>
+                                    <div class="equation-box">
+                                        BASELINE TARGET + DEADLINE + MEASURABLE METRIC = SUCCESS
+                                    </div>
+                                </div>
+                                <div class="mbb-bp-card" style="margin:0;">
+                                    <h4><i class="fas fa-award"></i> MBB Best Practice</h4>
+                                    <div class="bp-example-list" style="grid-template-columns: 1fr;">
+                                        <div class="bp-item">"Reduce Lead Time from 12 to 5 days by Dec 31."</div>
+                                        <div class="bp-item">"Decrease Scrap from 8.2% to 2.0% within 6 months."</div>
+                                        <div class="bp-item">"Increase FCR from 45% to 75% for Q3 results."</div>
+                                        <div class="bp-item">"Lower Bed Turnaround to < 2 hrs by Aug."</div>
+                                                <div class="bp-item">"Reduce Price Errors to < 0.5% by Year End."</div>
+                                                </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="critique-section">
+                                        <h4
+                                            style="color:#ef4444; display:flex; align-items:center; gap:10px; margin-top:0;">
+                                            <i class="fas fa-exclamation-triangle"></i> Poor Content Critique
+                                        </h4>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"Improve quality <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">VAGUE</span>
+                                                as much as possible."</span>
+                                            <span class="critique-reason"><span class="reason-tag">No Measure</span>
+                                                'As
+                                                much as possible' cannot be benchmarked. Use a number.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"Fix the error rate <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">NO
+                                                    TIME</span>."</span>
+                                            <span class="critique-reason"><span class="reason-tag">No
+                                                    Deadline</span>
+                                                Without a 'By When', projects linger forever without urgency.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"Achieve zero errors <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">UNACHIEVABLE</span>
+                                                in 2 days."</span>
+                                            <span class="critique-reason"><span class="reason-tag">Timeline</span>
+                                                DMAIC
+                                                takes weeks/months. 'Zero' is rarely achievable in a single
+                                                sprint.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SCOPE CONTROL -->
+                                <div id="super_scope" class="guide-detail-card">
+                                    <h2 style="color:var(--accent); display:flex; align-items:center; gap:12px;">
+                                        <i class="fas fa-vector-square"></i> 5. Scope Control
+                                    </h2>
+
+                                    <div style="display:flex; flex-direction:column; gap:25px; margin-top:20px;">
+                                        <div class="example-box" style="margin:0;">
+                                            <h4 style="color:var(--accent); margin-top:0;">What & Why?</h4>
+                                            <p
+                                                style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:10px;">
+                                                Defines the boundaries. Protects the project from "Scope Creep"—the slow
+                                                expansion of tasks that kills timelines.
+                                            </p>
+                                            <div class="golden-standard-box">
+                                                <strong style="color:#f59e0b; font-size:14px;">🏆 MBB GOLDEN
+                                                    STANDARD:</strong>
+                                                <p
+                                                    style="font-size:16px; color:white; margin-top:10px; font-style:italic; font-weight:600;">
+                                                    "Focus on [Process A], [Location B], [Shift C]. Excludes [Process
+                                                    D]."</p>
+                                            </div>
+                                            <div class="equation-box">
+                                                CLEAR BOUNDARIES + STAKEHOLDER AGREEMENT = NO CREEP
+                                            </div>
+                                        </div>
+
+                                        <div class="mbb-bp-card" style="margin:0;">
+                                            <h4><i class="fas fa-award"></i> MBB Best Practice</h4>
+                                            <div class="bp-example-list" style="grid-template-columns: 1fr;">
+                                                <div class="bp-item">In: Dept A only. Out: All shared services.</div>
+                                                <div class="bp-item">In: Manual Data Entry. Out: System automation.
+                                                </div>
+                                                <div class="bp-item">In: Day Shift. Out: Night/Weekend Shifts.</div>
+                                                <div class="bp-item">In: Triage to Bed. Out: Discharge process.</div>
+                                                <div class="bp-item">In: Product X. Out: Product Y and Z.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="critique-section">
+                                        <h4
+                                            style="color:#ef4444; display:flex; align-items:center; gap:10px; margin-top:0;">
+                                            <i class="fas fa-exclamation-triangle"></i> Poor Content Critique
+                                        </h4>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"Fix <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">ALL</span>
+                                                hospital operations."</span>
+                                            <span class="critique-reason"><span class="reason-tag">Ocean
+                                                    Boiling</span>
+                                                Too big to succeed. An MBB would reject this to prevent project
+                                                failure.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"In-Scope: Everything."</span>
+                                            <span class="critique-reason"><span class="reason-tag">No Shield</span>
+                                                'Everything' means you can't say 'No' to any request. You'll never
+                                                finish.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"N/A <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">MISSING</span>"</span>
+                                            <span class="critique-reason"><span class="reason-tag">Dangerous</span>
+                                                Leaving the boundary undefined is an open invitation for scope
+                                                creep.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- GOVERNANCE -->
+                                <div id="super_governance" class="guide-detail-card">
+                                    <h2 style="color:var(--accent); display:flex; align-items:center; gap:12px;">
+                                        <i class="fas fa-users"></i> 6. Governance
+                                    </h2>
+
+                                    <div style="display:flex; flex-direction:column; gap:25px; margin-top:20px;">
+                                        <div class="example-box" style="margin:0;">
+                                            <h4 style="color:var(--accent); margin-top:0;">What & Why?</h4>
+                                            <p
+                                                style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:10px;">
+                                                Roles define authority. A project without a real Sponsor is just a
+                                                suggestion.
+                                            </p>
+                                            <div class="golden-standard-box">
+                                                <strong style="color:#f59e0b; font-size:14px;">🏆 MBB GOLDEN
+                                                    STANDARD:</strong>
+                                                <p
+                                                    style="font-size:16px; color:white; margin-top:10px; font-style:italic; font-weight:600;">
+                                                    "SPONSOR = Budget Authority. OWNER = Process Receiver. BELT = Expert
+                                                    Diver."</p>
+                                            </div>
+                                            <div class="equation-box">
+                                                RIGHT PEOPLE + RIGHT ROLES + EXECUTIVE SPONSOR = GOVERNANCE
+                                            </div>
+                                        </div>
+
+                                        <div class="mbb-bp-card" style="margin:0;">
+                                            <h4><i class="fas fa-award"></i> MBB Best Practice</h4>
+                                            <div class="bp-example-list" style="grid-template-columns: 1fr;">
+                                                <div class="bp-item">Sponsor: VP Operations. Authority to sign budget.
+                                                </div>
+                                                <div class="bp-item">Process Owner: Warehouse Mgr. Owns the results.
+                                                </div>
+                                                <div class="bp-item">Black Belt: Senior Analyst. Expert lead.</div>
+                                                <div class="bp-item">Finance: AP Director. Validates savings.</div>
+                                                <div class="bp-item">HR: Benefits Lead. In-scope SME.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="critique-section">
+                                        <h4
+                                            style="color:#ef4444; display:flex; align-items:center; gap:10px; margin-top:0;">
+                                            <i class="fas fa-exclamation-triangle"></i> Poor Content Critique
+                                        </h4>
+                                        <div class="critique-item">
+                                            <span class="bad-text">Sponsor: <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">NAME
+                                                    ONLY</span> John Doe</span>
+                                            <span class="critique-reason"><span class="reason-tag">Low Power</span>
+                                                If
+                                                John Doe has no budget authority over the process, the project will
+                                                stall.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">Owner: Same as Lead.</span>
+                                            <span class="critique-reason"><span class="reason-tag">Conflict</span>
+                                                The
+                                                Belt Lead can't 'own' the process they are fixing; results must be
+                                                handed back to a line manager.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">Team: Everyone in the dept.</span>
+                                            <span class="critique-reason"><span class="reason-tag">Unmanageable</span>
+                                                Too many stakeholders. Keep core teams to 5-7 dedicated
+                                                people.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- FINANCIAL COPQ -->
+                                <div id="super_financial" class="guide-detail-card">
+                                    <h2 style="color:var(--accent); display:flex; align-items:center; gap:12px;">
+                                        <i class="fas fa-chart-line"></i> 7. COPQ & Savings
+                                    </h2>
+
+                                    <div style="display:flex; flex-direction:column; gap:25px; margin-top:20px;">
+                                        <div class="example-box" style="margin:0;">
+                                            <h4 style="color:var(--accent); margin-top:0;">What & Why?</h4>
+                                            <p
+                                                style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:10px;">
+                                                The financial justification. Must show the "Hard Dollars" to be saved.
+                                                CFOs focus here.
+                                            </p>
+                                            <div class="golden-standard-box">
+                                                <strong style="color:#f59e0b; font-size:14px;">🏆 MBB GOLDEN
+                                                    STANDARD:</strong>
+                                                <p
+                                                    style="font-size:16px; color:white; margin-top:10px; font-style:italic; font-weight:600;">
+                                                    "COPQ = [Defect Rate] x [Unit Cost] x [Volume]. GOAL = Hard $
+                                                    Impact."</p>
+                                            </div>
+                                            <div class="equation-box">
+                                                REDUCTION IN WASTE x UNIT COST = HARD PROFIT
+                                            </div>
+                                        </div>
+
+                                        <div class="mbb-bp-card" style="margin:0;">
+                                            <h4><i class="fas fa-award"></i> MBB Best Practice</h4>
+                                            <div class="bp-example-list" style="grid-template-columns: 1fr;">
+                                                <div class="bp-item">Material scrap cost: $250k / yr.</div>
+                                                <div class="bp-item">Rework labor: 40 hrs/wk @ $50/hr.</div>
+                                                <div class="bp-item">Overtime savings: $120k / yr target.</div>
+                                                <div class="bp-item">Capacity gain: Add $400k in revenue capability.
+                                                </div>
+                                                <div class="bp-item">Inventory carry cost: 15% reduction goal.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="critique-section">
+                                        <h4
+                                            style="color:#ef4444; display:flex; align-items:center; gap:10px; margin-top:0;">
+                                            <i class="fas fa-exclamation-triangle"></i> Poor Content Critique
+                                        </h4>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"Savings will be <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">HUGE</span>."</span>
+                                            <span class="critique-reason"><span
+                                                    class="reason-tag">Non-Quantitative</span>
+                                                Use numbers. "Huge"
+                                                is
+                                                not a line item on a balance sheet.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"Saves <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">TIME</span>
+                                                for everyone."</span>
+                                            <span class="critique-reason"><span class="reason-tag">Soft Only</span>
+                                                Unless you decrease headcount or increase billable output, time
+                                                alone
+                                                isn't 'Hard Savings'.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">No baseline used.</span>
+                                            <span class="critique-reason"><span class="reason-tag">Baseless</span>
+                                                You
+                                                can't calculate a reduction if you don't know the current loss
+                                                value.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- TIMELINE MILESTONES -->
+                                <div id="super_timeline" class="guide-detail-card">
+                                    <h2 style="color:var(--accent); display:flex; align-items:center; gap:12px;">
+                                        <i class="fas fa-calendar-alt"></i> 8. Milestones
+                                    </h2>
+
+                                    <div style="display:flex; flex-direction:column; gap:25px; margin-top:20px;">
+                                        <div class="example-box" style="margin:0;">
+                                            <h4 style="color:var(--accent); margin-top:0;">What & Why?</h4>
+                                            <p
+                                                style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:10px;">
+                                                The 5 DMAIC Phase dates. It creates accountability and prevents "Project
+                                                Fatigue".
+                                            </p>
+                                            <div class="golden-standard-box">
+                                                <strong style="color:#f59e0b; font-size:14px;">🏆 MBB GOLDEN
+                                                    STANDARD:</strong>
+                                                <p
+                                                    style="font-size:16px; color:white; margin-top:10px; font-style:italic; font-weight:600;">
+                                                    "Define (Wk 2), Measure (Wk 6), Analyze (Wk 9), Improve (Wk 14),
+                                                    Control (Wk 18)."</p>
+                                            </div>
+                                            <div class="equation-box">
+                                                FIXED DEADLINES + GATE REVIEWS = VELOCITY
+                                            </div>
+                                        </div>
+
+                                        <div class="mbb-bp-card" style="margin:0;">
+                                            <h4><i class="fas fa-award"></i> MBB Best Practice</h4>
+                                            <div class="bp-example-list" style="grid-template-columns: 1fr;">
+                                                <div class="bp-item">Define Gate: Week 2 Close.</div>
+                                                <div class="bp-item">Measure Gate: Week 5 Close.</div>
+                                                <div class="bp-item">Analyze Gate: Week 9 Close.</div>
+                                                <div class="bp-item">Improve Gate: Week 13 Close.</div>
+                                                <div class="bp-item">Control Gate: Week 16 Close.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="critique-section">
+                                        <h4
+                                            style="color:#ef4444; display:flex; align-items:center; gap:10px; margin-top:0;">
+                                            <i class="fas fa-exclamation-triangle"></i> Poor Content Critique
+                                        </h4>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"All phases <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">SAME
+                                                    DATE</span> in Dec."</span>
+                                            <span class="critique-reason"><span class="reason-tag">Impossible</span>
+                                                DMAIC is sequential. You cannot finish 'Measure' and 'Improve' on
+                                                the
+                                                same day.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">Total project time: <span class="badge-critique"
+                                                    style="background:#ef4444; color:white; padding:2px 4px; border-radius:3px; font-size:9px;">TOO
+                                                    LONG</span> 2 Years.</span>
+                                            <span class="critique-reason"><span class="reason-tag">Fatigue</span>
+                                                Six
+                                                Sigma projects should ideally land between 3-6 months. 2 years is a
+                                                capital build, not DMAIC.</span>
+                                        </div>
+                                        <div class="critique-item">
+                                            <span class="bad-text">"TBD" for all dates.</span>
+                                            <span class="critique-reason"><span class="reason-tag">No
+                                                    Commitment</span>
+                                                Leadership won't sign a charter with an open-ended timeline.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- TEMPLATES -->
+                                <div id="super_templates" class="guide-detail-card">
+                                    <h2 style="color:var(--success);">Templates Lab 🧪</h2>
+                                    <p style="font-size:14px; color:#94a3b8; margin-bottom:20px;">Select a premium
+                                        template to
+                                        pre-fill
+                                        the Project Charter Master.</p>
+                                    <div class="template-grid">
+                                        <div class="temp-card" onclick="loadSuperTemplate('mfg_scrap')">
+                                            <i class="fas fa-industry"></i> Manufacturing Scrap
+                                        </div>
+                                        <div class="temp-card" onclick="loadSuperTemplate('hc_cycle')">
+                                            <i class="fas fa-hospital-user"></i> Patient Flow
+                                        </div>
+                                        <div class="temp-card" onclick="loadSuperTemplate('it_tickets')">
+                                            <i class="fas fa-ticket-alt"></i> IT Service Desk
+                                        </div>
+                                        <div class="temp-card" onclick="loadSuperTemplate('fin_accuracy')">
+                                            <i class="fas fa-calculator"></i> Finance Accuracy
+                                        </div>
+                                        <div class="temp-card" onclick="loadSuperTemplate('hr_onboard')">
+                                            <i class="fas fa-user-plus"></i> HR Onboarding
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI REVIEW MODAL -->
+                    <div class="modal-overlay" id="aiReviewModal" onclick="closeModal(event)">
+                        <div class="modal-box"
+                            style="border-color: #a855f7; box-shadow: 0 0 40px rgba(168, 85, 247, 0.3);">
+                            <span class="close-btn"
+                                onclick="document.getElementById('aiReviewModal').style.display='none'">&times;</span>
+                            <h3 style="color: #a855f7; margin-bottom: 5px; display:flex; align-items:center; gap:10px;">
+                                <span>🥋 MBB Review</span>
+                            </h3>
+                            <p style="font-size:12px; color:#aaa; margin-bottom:15px;">Reviewing your content
+                                against
+                                Master
+                                Black Belt
+                                standards...</p>
+                            <div id="aiReviewContent">
+                                <!-- Content injected by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        // AI REVIEW LOGIC
+                        let currentReviewField = null;
+
+                        async function reviewInput(fieldId, label) {
+                            const content = document.getElementById(fieldId).value.trim();
+
+                            if (!content) {
+                                alert(`Please enter some text in "${label}" first, so the MBB can review it!`);
+                                return;
+                            }
+
+                            currentReviewField = fieldId;
+                            document.getElementById('aiReviewModal').style.display = 'flex';
+                            document.getElementById('aiReviewContent').innerHTML = `
+                <div style="text-align:center; padding:30px; color:#ccc;">
+                    <div style="font-size:24px; margin-bottom:10px; animation:pulseGlow 1s infinite;">🥋</div>
+                    Analyzing your ${label}...<br>
+                    <span style="font-size:12px; color:#666;">Applying Six Sigma Best Practices</span>
+                </div>`;
+
+                            const prompt = `
+            Act as a strict yet helpful Lean Six Sigma Master Black Belt.
+            Review this specific Project Charter field: "${label}".
+            
+            User's Current Draft:
+            "${content}"
+            
+            Task:
+            1. Rate the quality from 1 (Very Weak) to 5 (Master Black Belt Standard).
+            2. Identify the single STRONGEST aspect.
+            3. Identify the single WEAKEST aspect.
+            4. Generate 2 DISTINCT rewrite options that are Master Black Belt level (High quality, concise, professional).
+            
+            Return ONLY a valid JSON object with no markdown:
+            {
+                "score": 3,
+                "strength": "Your strength text...",
+                "weakness": "Your weakness text...",
+                "critique": "Overall critique...",
+                "option1": "First rewrite option...",
+                "option2": "Second rewrite option..."
+            }
+            `;
+
+                            try {
+                                const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                                });
+
+                                const data = await response.json();
+
+                                if (data.error) throw new Error(data.error.message);
+
+                                let rawText = data.candidates[0].content.parts[0].text;
+                                rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                                const res = JSON.parse(rawText);
+
+                                // Determine Score Color
+                                let scoreColor = '#ef4444'; // Red (1-2)
+                                if (res.score === 3) scoreColor = '#f59e0b'; // Yellow (3)
+                                if (res.score >= 4) scoreColor = '#10b981'; // Green (4-5)
+
+                                const html = `
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; background:rgba(255,255,255,0.03); padding:15px; border-radius:8px;">
+                        <div>
+                            <div style="font-size:10px; text-transform:uppercase; color:#aaa; letter-spacing:1px; margin-bottom:5px;">MBB RATING</div>
+                            <div style="font-size:28px; font-weight:800; color:${scoreColor}; line-height:1;">${res.score}<span style="font-size:14px; color:#666; font-weight:400;">/5</span></div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="display:inline-block; padding:4px 12px; background:${scoreColor}20; border:1px solid ${scoreColor}; color:${scoreColor}; border-radius:20px; font-size:11px; font-weight:bold;">
+                                ${res.score >= 4 ? 'EXCELLENT' : (res.score === 3 ? 'AVERAGE' : 'NEEDS WORK')}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
+                        <div style="background:rgba(16, 185, 129, 0.1); padding:10px; border-radius:6px; border-left:3px solid #10b981;">
+                            <strong style="display:block; font-size:11px; color:#10b981; margin-bottom:5px; text-transform:uppercase;">💪 Strongest Point</strong>
+                            <div style="font-size:12px; color:#ddd; line-height:1.4;">${res.strength}</div>
+                        </div>
+                        <div style="background:rgba(239, 68, 68, 0.1); padding:10px; border-radius:6px; border-left:3px solid #ef4444;">
+                            <strong style="display:block; font-size:11px; color:#ef4444; margin-bottom:5px; text-transform:uppercase;">⚠️ Weakest Point</strong>
+                            <div style="font-size:12px; color:#ddd; line-height:1.4;">${res.weakness}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-option-card" onclick="applyRewrite(this)">
+                        <span class="ai-tag">Option 1: Professional Refinement</span>
+                        <div class="opt-text" style="font-size:13px; line-height:1.5;">${res.option1}</div>
+                        <div style="text-align:right; font-size:11px; color:var(--accent); margin-top:5px; font-weight:bold;">Click to Replace ⚡</div>
+                    </div>
+                    
+                    <div class="ai-option-card" onclick="applyRewrite(this)">
+                        <span class="ai-tag">Option 2: Data-Driven / SMART Focus</span>
+                        <div class="opt-text" style="font-size:13px; line-height:1.5;">${res.option2}</div>
+                        <div style="text-align:right; font-size:11px; color:var(--accent); margin-top:5px; font-weight:bold;">Click to Replace ⚡</div>
+                    </div>
+                `;
+
+                                document.getElementById('aiReviewContent').innerHTML = html;
+
+                            } catch (error) {
+                                console.error(error);
+                                document.getElementById('aiReviewContent').innerHTML = `<div style="color:#ef4444; text-align:center; padding:20px;">
+                    <b>Analysis Failed</b><br>
+                    ${error.message || "Please check your API key or connection."}
+                </div>`;
+                            }
+                        }
+
+                        function applyRewrite(cardEl) {
+                            if (currentReviewField) {
+                                const text = cardEl.querySelector('.opt-text').innerText;
+                                document.getElementById(currentReviewField).value = text;
+                                document.getElementById('aiReviewModal').style.display = 'none';
+
+                                // Trigger Visual Feedback
+                                const field = document.getElementById(currentReviewField);
+                                field.style.transition = 'background 0.3s';
+                                field.style.background = 'rgba(46, 204, 113, 0.2)';
+                                setTimeout(() => field.style.background = '', 1000);
+
+                                if (currentReviewField === 'goalStmt') {
+                                    document.getElementById('smartCheck').style.display = 'block';
+                                }
+                            }
+                        }
+
+                        function closeModal(e) {
+                            if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
+                            if (e.target.id === 'guideModal') document.getElementById('guideModal').style.display = 'none';
+                            if (e.target.id === 'aiReviewModal') document.getElementById('aiReviewModal').style.display = 'none';
+                        }
+
+                        function updateRangeVal(val) {
+                            document.getElementById('rangeVal').innerText = val + "%";
+                        }
+
+
+                        function calcSavings() {
+                            const costField = document.getElementById('costPerDefect');
+                            const countField = document.getElementById('annualDefects');
+                            const targetField = document.getElementById('reductionTarget');
+
+                            if (!costField || !countField) return;
+
+                            const cost = parseFloat(costField.value) || 0;
+                            const count = parseFloat(countField.value) || 0;
+                            const targetVal = targetField ? parseFloat(targetField.value) : 50;
+                            const target = targetVal / 100;
+
+                            const totalCOPQ = cost * count;
+                            const savings = totalCOPQ * target;
+
+                            document.getElementById('savingsDisplay').innerText = "$" + savings.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                        }
+
+                        function showCOPQCalc() {
+                            const costField = document.getElementById('costPerDefect');
+                            const countField = document.getElementById('annualDefects');
+                            const targetField = document.getElementById('reductionTarget');
+
+                            const cost = parseFloat(costField.value) || 0;
+                            const count = parseFloat(countField.value) || 0;
+                            const target = parseFloat(targetField.value) || 0;
+
+                            const totalCOPQ = cost * count;
+                            const savings = totalCOPQ * (target / 100);
+
+                            // Maturity Scoring (1-5)
+                            let copqScore = 0;
+                            if (cost > 0) copqScore++;
+                            if (count > 0) copqScore++;
+                            if (target >= 50) copqScore++;
+                            if (totalCOPQ > 10000) copqScore++;
+                            if (savings > 5000) copqScore++;
+
+                            const modal = document.getElementById('infoModal');
+                            const title = document.getElementById('modalTitle');
+                            const content = document.getElementById('modalContent');
+
+                            title.innerHTML = `<i class="fas fa-calculator"></i> COPQ Intelligence Hub`;
+                            content.innerHTML = `
+                                <div style="margin-bottom:20px; padding:15px; background:rgba(59, 130, 246, 0.1); border-radius:12px; border:1px solid rgba(59, 130, 246, 0.2);">
+                                    <h4 style="color:var(--accent); font-size:14px; margin-top:0; display:flex; align-items:center; gap:8px;">
+                                        <i class="fas fa-info-circle"></i> What is COPQ?
+                                    </h4>
+                                    <p style="font-size:12px; color:#cbd5e1; line-height:1.6; margin:0;">
+                                        <strong>COPQ (Cost of Poor Quality)</strong> represents the total financial loss incurred because a process is not perfect. It stands for the expenses associated with providing poor quality products or services. In Six Sigma, COPQ is the 'Internal Waste' that, when reduced, flows directly to the bottom line as profit.
+                                    </p>
+                                </div>
+
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:rgba(0,0,0,0.2); padding:15px; border-radius:10px;">
+                                    <div>
+                                        <span style="font-size:10px; color:#aaa; text-transform:uppercase; letter-spacing:1px;">COPQ MATURITY SCORE</span>
+                                        <div style="font-size:24px; font-weight:900; color:var(--success);">${copqScore}<span style="font-size:12px; color:#666;">/5</span></div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <span style="font-size:10px; color:#aaa; text-transform:uppercase; letter-spacing:1px;">AUDIT STATUS</span>
+                                        <div style="font-size:12px; font-weight:700; color:${copqScore >= 4 ? 'var(--success)' : 'var(--warning)'};">
+                                            ${copqScore >= 4 ? 'MBB VALIDATED' : 'DATA PENDING'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; margin-bottom:20px; border-left: 5px solid var(--accent);">
+                                    <p style="font-size:12px; color:var(--accent); margin-bottom:10px; text-transform: uppercase; font-weight:800; letter-spacing:1px;">Phase 1: Baseline Leakage</p>
+                                    <div style="font-family:'Orbitron'; font-size:20px; color:white;">
+                                        $${cost.toLocaleString()} × ${count.toLocaleString()} = <span style="color:var(--accent);">$${totalCOPQ.toLocaleString()}</span>
+                                    </div>
+                                    <p style="font-size:10px; color:#64748b; margin-top:8px;">(Individual Defect Cost × Annual Defect Volume)</p>
+                                </div>
+                                
+                                <div style="background:rgba(16, 185, 129, 0.1); padding:20px; border-radius:12px; border-left: 5px solid var(--success);">
+                                    <p style="font-size:12px; color:var(--success); margin-bottom:10px; text-transform: uppercase; font-weight:800; letter-spacing:1px;">Phase 2: Projected Net Savings</p>
+                                    <div style="font-family:'Orbitron'; font-size:20px; color:white;">
+                                        $${totalCOPQ.toLocaleString()} × ${target}% = <span style="color:var(--success);">$${savings.toLocaleString()}</span>
+                                    </div>
+                                    <p style="font-size:10px; color:#64748b; margin-top:8px;">(Total COPQ Baseline × Strategic Reduction Target)</p>
+                                </div>
+                            `;
+                            modal.style.display = 'flex';
+                        }
+
+                        let currentScenario = null;
+
+                        const scenarios = {
+                            'manufacturing': {
+                                data: {
+                                    title: "Reduce Scrap Rate in Line A",
+                                    businessCase: "High scrap rates (5%) are costing $90k/year and delaying shipments.",
+                                    problem: "Since Jan 2024, Line A has produced 5% defective parts during the curing phase.",
+                                    goal: "Reduce scrap from 5% to 2% by Dec 31st.",
+                                    inScope: "Line A curing oven parameters.",
+                                    outScope: "Line B, Mixing process.",
+                                    sponsor: "Plant Manager",
+                                    owner: "Production Lead",
+                                    cost: 150,
+                                    count: 1200
+                                },
+                                context: "Manufacturing Focus: Physical defects are the primary driver of cost. Focus on input variables (X's).",
+                                reason: "Scrap is a visible waste. Reducing it directly improves the Bottom Line."
+                            },
+                            'healthcare': {
+                                data: {
+                                    title: "Reduce Patient Discharge Time",
+                                    businessCase: "Long discharge times (avg 4h) reduce bed turnover and patient satisfaction.",
+                                    problem: "In Q1, average discharge time was 4 hours, exceeding the 2-hour target.",
+                                    goal: "Reduce discharge time to < 2 hours by Q3.",
+                                    inScope: "Ward 3 Discharge process.",
+                                    outScope: "ER, ICU transfers.",
+                                    sponsor: "Director of Nursing",
+                                    owner: "Ward Manager",
+                                    cost: 500, // Opportunity cost of bed
+                                    count: 300 // Delayed patients
+                                },
+                                context: "Healthcare Focus: Flow and Time. Bed availability is the critical resource.",
+                                reason: "Faster discharge = More capacity for new patients = Higher revenue and better care."
+                            },
+                            'service': {
+                                data: {
+                                    title: "Improve First Call Resolution",
+                                    businessCase: "Repeat calls increase operational cost by 20% and lower NPS.",
+                                    problem: "Currently only 60% of tickets are resolved on the first call.",
+                                    goal: "Increase First Call Resolution (FCR) from 60% to 80% by year end.",
+                                    inScope: "Tier 1 Support Team.",
+                                    outScope: "Field Service Engineers.",
+                                    sponsor: "VP of Support",
+                                    owner: "Support Manager",
+                                    cost: 25, // Cost per call
+                                    count: 5000 // Repeat calls
+                                },
+                                context: "Service Focus: Customer Experience and Efficiency. FCR is the 'Golden Metric'.",
+                                reason: "Solving it once prevents future rework and frustration."
+                            }
+                        };
+
+                        const glossary = {
+                            "business_case": { title: "Business Case", text: "Why does the business care? Connect the project to Money, Strategy, or Risk.<br><i>'If we don't fix this, we lose $X or Customer Y.'</i>" },
+                            "problem_stmt": { title: "Problem Statement", text: "Objective description of the pain.<br><b>Must have:</b><br>&bull; What is wrong?<br>&bull; Where is it happening?<br>&bull; Since when?<br>&bull; What is the magnitude?" },
+                            "copq": { title: "Cost of Poor Quality (COPQ)", text: "The financial justification for the project.<br>Includes: Scrap, Rework, Warranty claims, Lost Capacity, and Inspection costs." },
+                            "timeline": {
+                                title: "Timeline Milestones (MBB Best Practice)",
+                                text: "<b>The Pulse of Project Execution.</b><br><br>An MBB views the timeline not as suggestions, but as <b>commitments</b> to leadership.<br><br><b>Standard DMAIC Duration:</b><br>&bull; <b>Define:</b> 2-3 Weeks (Scope & Charter)<br>&bull; <b>Measure:</b> 2-4 Weeks (Data Collection)<br>&bull; <b>Analyze:</b> 3-5 Weeks (Root Cause Validation)<br>&bull; <b>Improve:</b> 3-6 Weeks (Pilot & Implementation)<br>&bull; <b>Control:</b> 2-4 Weeks (Sustainment & Handover)<br><br><i>Warning: Projects exceeding 6 months suffer from 'Scope Creep' and leadership fatigue.</i>"
+                            },
+                            "savings": {
+                                title: "Projected Annual Savings Calculation",
+                                text: "<b>Hard Savings = Count × Cost × Reduction %</b><br><br>This calculation represents the '<b>Hard Savings</b>' (Type 1) that will impact the P&L (Profit & Loss) statement.<br><br><b>Formula Components:</b><br>&bull; <b>Avg Defect Cost ($):</b> The total burdened cost of one failure (material + labor + overhead).<br>&bull; <b>Annual Defects:</b> The volume of failures in the baseline year.<br>&bull; <b>Target Reduction (%):</b> The committed improvement goal (typically 50-90% for Six Sigma).<br><br><i>Note: Soft Savings (avoidance, capacity) are valuable but secondary to Hard Savings in the Charter.</i>"
+                            },
+                            "audit_score": {
+                                title: "Audit Score Calculation",
+                                text: "<b>MBB Readiness Algorithm:</b><br><br>The score is a weighted assessment of the Charter's 5 core pillars:<br>&bull; <b>Strategic Intent (40%):</b> Business Case & Problem Statement completeness.<br>&bull; <b>Execution Logic (20%):</b> Clear In-Scope/Out-Scope boundaries.<br>&bull; <b>Governance (10%):</b> Assigned Sponsor, Owner, and Lead.<br>&bull; <b>Financial Rigor (20%):</b> Quantified COPQ and Hard Savings.<br>&bull; <b>Timeline (10%):</b> Defined DMAIC Phase gates.<br><br><i>Threshold: >80% required for Executive Sign-off.</i>"
+                            },
+                            "audit_fin_status": {
+                                title: "Financial Status Validation",
+                                text: "<b>Criteria for 'VALIDATED' Status:</b><br><br>1. <b>Baseline Data:</b> Individual defect cost and annual volume must be non-zero.<br>2. <b>Rigor:</b> Reduction target must be based on historical capability, not guesswork.<br>3. <b>Hard Savings:</b> Must reflect direct P&L impact (Type 1 savings).<br><br><b>Special Consideration:</b> If time savings are claimed, they must be converted to labor-cost reduction or billable capacity to be validated."
+                            },
+                            "audit_strat_fit": {
+                                title: "Strategic Fit & DMAIC Alignment",
+                                text: "<b>Master Architect Check:</b><br><br>&bull; <b>Methodology:</b> Does the problem follow a 'Root Cause Unknown' path? (If the solution is known, it's a project, but not DMAIC).<br>&bull; <b>Scope:</b> Is the boundary small enough to succeed in 3-6 months? 'Boiling the Ocean' leads to Strategic Mismatch.<br>&bull; <b>ROI:</b> Does the effort of the Belt team justify the financial or customer experience gain?"
+                            },
+                            "audit_lead": {
+                                title: "Lead Specialist Accountability",
+                                text: "<b>Accountability Standards:</b><br><br>&bull; <b>Certification:</b> Does the Lead possess the technical skills (Green/Black Belt) to execute the tools?<br>&bull; <b>Authority:</b> Has the Lead been granted 'Hunting License' status by the Sponsor to investigate across departments?<br>&bull; <b>Focus:</b> Is the Lead dedicated to process improvement, or are they also the process owner? (Separation of duties is preferred during the improvement phase)."
+                            }
+                        };
+
+                        function loadScenario() {
+                            const sel = document.getElementById('scenarioSelect').value;
+                            currentScenario = sel;
+                            if (sel && scenarios[sel]) {
+                                const s = scenarios[sel].data;
+                                document.getElementById('projectTitle').value = s.title;
+                                document.getElementById('businessCase').value = s.businessCase;
+                                document.getElementById('problemStmt').value = s.problem;
+                                document.getElementById('goalStmt').value = s.goal;
+                                document.getElementById('inScope').value = s.inScope;
+                                document.getElementById('outScope').value = s.outScope;
+                                document.getElementById('sponsor').value = s.sponsor;
+                                document.getElementById('processOwner').value = s.owner;
+                                document.getElementById('costPerDefect').value = s.cost;
+                                document.getElementById('annualDefects').value = s.count;
+                                document.getElementById('smartCheck').style.display = 'block';
+                                calcSavings();
+                            }
+                        }
+
+                        function explain(key) {
+                            const item = glossary[key];
+                            if (item) {
+                                document.getElementById('modalTitle').innerText = item.title;
+                                let content = item.text;
+
+                                if (currentScenario && scenarios[currentScenario]) {
+                                    const s = scenarios[currentScenario];
+                                    content += `<div style='margin-top:15px; padding:10px; background:rgba(52, 152, 219, 0.1); border-left:3px solid #3498db; font-size:13px;'>
+                        <b>Scenario Context:</b> ${s.context}<br><br>${s.reason}</div>`;
+                                }
+
+                                document.getElementById('modalContent').innerHTML = content;
+                                document.getElementById('infoModal').style.display = 'flex';
+                            }
+                        }
+
+                        function closeModal(e) {
+                            if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
+                            if (e.target.id === 'guideModal') document.getElementById('guideModal').style.display = 'none';
+                            if (e.target.id === 'aiReviewModal') document.getElementById('aiReviewModal').style.display = 'none';
+                        }
+
+                        function typeWriter(id, text, i) {
+                            if (i < text.length) {
+                                const el = document.getElementById(id);
+                                if (el) el.value += text.charAt(i);
+                                i++;
+                                setTimeout(function () { typeWriter(id, text, i); }, 10);
+                            }
+                        }
+
+                        async function autoFillAI() {
+                            // Keep existing AI logic but update it to handle partial fills
+                            const titleInput = document.getElementById('projectTitle');
+                            let title = titleInput.value.trim();
+
+                            if (!title) {
+                                title = "Reduce Customer Complaints";
+                                typeWriter('projectTitle', title, 0);
+                            }
+
+                            const button = document.querySelector('button[onclick="autoFillAI()"]');
+                            const originalText = button.innerHTML;
+                            button.innerHTML = "⏳ Thinking (Gemini)...";
+                            button.disabled = true;
+
+                            try {
+                                const prompt = `
+                Act as a Six Sigma Black Belt. Generate a Project Charter for a project titled "${title}".
+                Return ONLY a JSON object with these keys (no markdown formatting):
+                {
+                    "businessCase": "Financial impact and strategic reason...",
+                    "problemStatement": "Specific problem with baseline data...",
+                    "goalStatement": "SMART goal with target...",
+                    "inScope": "What is included...",
+                    "outScope": "What is excluded...",
+                    "sponsor": "Role of sponsor...",
+                    "processOwner": "Role of owner...",
+                    "avgDefectCost": 150,
+                    "annualDefects": 1000
+                }
+            `;
+
+                                const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                        contents: [{ parts: [{ text: prompt }] }]
+                                    })
+                                });
+
+                                const data = await response.json();
+
+                                if (data.error) {
+                                    console.error("Gemini Error:", data.error);
+                                    alert("AI Error: " + data.error.message);
+                                    return;
+                                }
+
+                                // Clean '```json' wrapper if present
+                                let rawText = data.candidates[0].content.parts[0].text;
+                                rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+
+                                const aiContent = JSON.parse(rawText);
+
+                                // Populate Fields with Simple Set (Typewriter is too slow for all fields)
+                                document.getElementById('businessCase').value = aiContent.businessCase;
+                                document.getElementById('problemStmt').value = aiContent.problemStatement;
+                                document.getElementById('goalStmt').value = aiContent.goalStatement;
+                                document.getElementById('inScope').value = aiContent.inScope;
+                                document.getElementById('outScope').value = aiContent.outScope;
+                                document.getElementById('sponsor').value = aiContent.sponsor;
+                                document.getElementById('processOwner').value = aiContent.processOwner;
+                                document.getElementById('costPerDefect').value = aiContent.avgDefectCost;
+                                document.getElementById('annualDefects').value = aiContent.annualDefects;
+
+                                calcSavings();
+
+
+                            } catch (error) {
+                                console.error("AI Error:", error);
+                                alert("AI Generation failed. Please try again.");
+                            } finally {
+                                button.innerHTML = originalText;
+                                button.disabled = false;
+                            }
+                        }
+
+                        // --- NEW: SAVE & EVALUATE MBB LOGIC ---
+                        function checkProgress() {
+                            let score = 0;
+                            let maxScore = 5; // Total MBB Criteria
+                            let feedback = [];
+
+                            // 1. Business Case: Financial Keyword Check
+                            const bc = document.getElementById('businessCase').value.toLowerCase();
+                            if (bc.length > 20 && (bc.includes('$') || bc.includes('cost') || bc.includes('revenue') || bc.includes('profit') || bc.includes('loss'))) {
+                                score++;
+                            } else {
+                                feedback.push("Business Case lacks explicit financial impact ($).");
+                            }
+
+                            // 2. Problem Statement: Baseline Data Check
+                            const ps = document.getElementById('problemStmt').value.toLowerCase();
+                            if (ps.length > 20 && /\d/.test(ps)) { // Contains numbers
+                                score++;
+                            } else {
+                                feedback.push("Problem Statement missing baseline data (numbers/dates).");
+                            }
+
+                            // 3. Goal Statement: Directional Keyword Check
+                            const gs = document.getElementById('goalStmt').value.toLowerCase();
+                            if (gs.includes('reduce') || gs.includes('increase') || gs.includes('improve') || gs.includes('decrease')) {
+                                score++;
+                            } else {
+                                feedback.push("Goal Statement lacks directional verb (Reduce/Increase).");
+                            }
+
+                            // 4. Scope: defined
+                            if (document.getElementById('inScope').value.length > 10 && document.getElementById('outScope').value.length > 10) {
+                                score++;
+                            } else {
+                                feedback.push("Scope (In/Out) is too vague or empty.");
+                            }
+
+                            // 5. Savings Calculated
+                            const savings = parseFloat(document.getElementById('savingsDisplay').innerText.replace(/[^0-9.-]+/g, ""));
+                            if (savings > 0) {
+                                score++;
+                            } else {
+                                feedback.push("No Annual Savings calculated (check Cost * Count).");
+                            }
+
+                            // Calculate Percentage
+                            const pct = Math.round((score / maxScore) * 100);
+
+                            // Save to LocalStorage
+                            const progressData = {
+                                date: new Date().toISOString(),
+                                score: pct,
+                                fields: {
+                                    project: document.getElementById('projectTitle').value,
+                                    // ... other fields could be saved here
+                                }
+                            };
+                            localStorage.setItem('CharterProgress', JSON.stringify(progressData));
+
+                            // Update Visual Progress Bars (Screen & Print)
+                            const barWidth = pct + '%';
+                            const barColor = pct >= 80 ? '#4caf50' : (pct >= 50 ? '#ff9800' : '#f44336');
+
+                            // Screen Bar
+                            const screenBar = document.getElementById('screen-progress-bar');
+                            if (screenBar) { screenBar.style.width = barWidth; screenBar.style.backgroundColor = barColor; }
+
+                            const screenScore = document.getElementById('audit-score-screen');
+                            if (screenScore) screenScore.innerText = pct + '%';
+
+                            const screenStatus = document.getElementById('fin-status-screen');
+                            if (screenStatus) {
+                                screenStatus.innerText = pct > 60 ? "VALIDATED" : "PENDING";
+                                screenStatus.style.color = pct > 60 ? "var(--success)" : "var(--warning)";
+                            }
+
+                            const screenLead = document.getElementById('lead-name-screen');
+                            if (screenLead) screenLead.innerText = document.getElementById('beltName').value || "TBD";
+
+                            // Print Bar
+                            const printBar = document.getElementById('print-progress-bar');
+                            if (printBar) { printBar.style.width = barWidth; printBar.style.backgroundColor = barColor; }
+
+                            // Update Print Summary Fields
+                            document.getElementById('print-score-val').innerText = pct + '%';
+                            document.getElementById('print-project-title').innerText = document.getElementById('projectTitle').value || "Untitled Project";
+                            document.getElementById('printDateSummary').innerText = new Date().toLocaleDateString();
+                            document.getElementById('print-lead-name').innerText = document.getElementById('beltName').value || "TBD";
+                            document.getElementById('print-prob-summary').innerText = document.getElementById('problemStmt').value;
+                            document.getElementById('print-goal-summary').innerText = document.getElementById('goalStmt').value;
+                            document.getElementById('print-fin-status').innerText = pct > 60 ? "VALIDATED" : "PENDING AUDIT";
+                            document.getElementById('print-fin-status').style.color = pct > 60 ? "#166534" : "#991b1b";
+
+                            // Show Result
+                            let msg = `💾 Progress Saved!\n\n🥋 MBB Readiness Score: ${pct}%\n`;
+                            if (pct === 100) {
+                                msg += "\n✅ EXCELLENT! This Charter is ready for sign-off.";
+                            } else {
+                                msg += "\n⚠️ Improvement Areas:\n" + feedback.map(f => "- " + f).join("\n");
+                            }
+                            alert(msg);
+                        }
+
+                        function updatePrintName(val) {
+                            const printNameEl = document.getElementById('print-candidate-name');
+                            if (printNameEl) printNameEl.innerText = val || "TBD";
+                        }
+
+                        // --- ON LOAD: Set Date for Print ---
+                        window.onload = function () {
+                            const now = new Date();
+                            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+                            const shortDate = now.toLocaleDateString();
+
+                            const dateEl = document.getElementById('printDate');
+                            if (dateEl) dateEl.innerText = dateStr;
+
+                            const footerDate = document.getElementById('printDateFooter');
+                            if (footerDate) footerDate.innerText = shortDate;
+
+                            // Initialize Calc
+                            calcSavings();
+                        };
+
+                        function openPremiumInfo(type) {
+                            const modal = document.getElementById('premiumInfoModal');
+                            const grid = document.getElementById('premium-modal-grid');
+
+                            grid.innerHTML = `
+                <div class="info-card-pro"><h4>What is it?</h4><p>The Project Charter is the foundational contract between the team and leadership. It defines scope, goals, and authority.</p></div>
+                <div class="info-card-pro"><h4>Why use it?</h4><p>To prevent scope creep and ensure executive alignment. It provides the "North Star" for the entire DMAIC journey.</p></div>
+                <div class="info-card-pro"><h4>When to add?</h4><p>Initiated at the start of the <strong>Define</strong> phase, and updated if scope shifts significantly (>20%).</p></div>
+                <div class="info-card-pro"><h4>MBB Power Tip</h4><p>Never start data collection without a signed charter. It is your legal shield against competing organizational interests.</p></div>
+            `;
+                            modal.style.display = 'flex';
+                        }
+
+                        function closePremiumInfo() {
+                            document.getElementById('premiumInfoModal').style.display = 'none';
+                        }
+
+                        function togglePower() {
+                            const content = document.getElementById('powerContent');
+                            const icon = document.getElementById('powerIcon');
+                            if (content.style.display === 'block') {
+                                content.style.display = 'none';
+                                icon.innerText = '▼';
+                            } else {
+                                content.style.display = 'block';
+                                icon.innerText = '▲';
+                            }
+                        }
+
+                        function showGuide() {
+                            document.getElementById('guideModal').style.display = 'flex';
+                        }
+
+                        function switchSuperTab(tabId, btn) {
+                            document.querySelectorAll('.guide-detail-card').forEach(c => c.classList.remove('active'));
+                            document.querySelectorAll('.guide-side-btn').forEach(b => b.classList.remove('active'));
+                            document.getElementById('super_' + tabId).classList.add('active');
+                            btn.classList.add('active');
+                        }
+
+                        const superTemplates = {
+                            'mfg_scrap': {
+                                title: "Reduce Scrap Rate in Die-Casting Line A",
+                                business: "Current scrap rate of 5.2% leads to $120k annual material loss and restricts capacity.",
+                                problem: "Since Q3 2025, Line A has experienced a 5% scrap rate during the injection phase, causing $10k/month in waste.",
+                                goal: "Reduce scrap rate from 5.2% to 1.5% by Dec 31, 2026.",
+                                in: "Die-casting Line A, Injection parameters, Cooling cycle.",
+                                out: "Assembly line, Line B, Tooling design.",
+                                sponsor: "Plant Manager", owner: "Production Lead", belt: "Green Belt Joe",
+                                cost: 250, count: 500
+                            },
+                            'hc_cycle': {
+                                title: "Optimize Discharge-to-Bed Turnover Time",
+                                business: "Average turnover delay of 4 hours causes ER diversions and $200k/year in lost revenue.",
+                                problem: "Daily turnaround time for Ward 4 beds is 4.2 hours vs the 2.0 hour enterprise goal, since Jan 2026.",
+                                goal: "Reduce average bed turnover time from 4.2 hours to 2.1 hours by Q3 2026.",
+                                in: "Ward 4 Nursing discharge, Housekeeping notification.",
+                                out: "Patient transport to home, Admissions from ER.",
+                                sponsor: "Chief Nursing Officer", owner: "Ward 4 Manager", belt: "Black Belt Sarah",
+                                cost: 600, count: 400
+                            },
+                            'it_tickets': {
+                                title: "Improve First Call Resolution for Service Desk",
+                                business: "Low FCR (40%) leads to ticket backlog and $30/repeat call. Customer NPS is dropping.",
+                                problem: "Currently, 60% of Tier 1 IT tickets are escalated, causing a resolution delay of 3 days on avg.",
+                                goal: "Increase First Call Resolution from 40% to 75% by end of year.",
+                                in: "Tier 1 Software support, Password resets, Hardware intake.",
+                                out: "Tier 2 Engineering, On-site infrastructure repairs.",
+                                sponsor: "CIO", owner: "Service Desk Manager", belt: "Lean Lead Mark",
+                                cost: 30, count: 2000
+                            },
+                            'fin_accuracy': {
+                                title: "Reduce Accounts Payable Reconciliation Errors",
+                                business: "Manual reconciliations produce 12% error rate, requiring 40 hours of monthly rework.",
+                                problem: "AP team reports a 12% invoice error rate in the legacy ERP system since the Q2 merger.",
+                                goal: "Achieve < 2% invoice reconciliation error rate by Oct 2026.",
+                                in: "Vendor invoice matching, PO validation.",
+                                out: "Treasury disbursements, Tax reporting.",
+                                sponsor: "CFO", owner: "Finance Controller", belt: "Black Belt Emily",
+                                cost: 100, count: 800
+                            },
+                            'hr_onboard': {
+                                title: "Acceleration of New Hire Productive Days",
+                                business: "Onboarding currently takes 14 days, delaying time-to-market and increasing hiring cost.",
+                                problem: "New hires spend 14 days in orientation before first billable work, costing $50k in idle salary.",
+                                goal: "Reduce onboarding setup time from 14 days to 3 business days by Aug 2026.",
+                                in: "IT access, Desk setup, Benefit enrollment.",
+                                out: "Role-specific skill training, Clinical competency.",
+                                sponsor: "CHRO", owner: "HR Operations Lead", belt: "Green Belt Alex",
+                                cost: 400, count: 150
+                            }
+                        };
+
+                        function loadSuperTemplate(key) {
+                            console.log("Loading Template:", key);
+                            const t = superTemplates[key];
+                            if (!t) { console.error("Template not found:", key); return; }
+
+                            document.getElementById('projectTitle').value = t.title;
+                            document.getElementById('businessCase').value = t.business;
+                            document.getElementById('problemStmt').value = t.problem;
+                            document.getElementById('goalStmt').value = t.goal;
+                            document.getElementById('inScope').value = t.in;
+                            document.getElementById('outScope').value = t.out;
+                            document.getElementById('sponsor').value = t.sponsor;
+                            document.getElementById('processOwner').value = t.owner;
+                            document.getElementById('beltName').value = t.belt;
+                            document.getElementById('costPerDefect').value = t.cost;
+                            document.getElementById('annualDefects').value = t.count;
+
+                            calcSavings();
+                            document.getElementById('guideModal').style.display = 'none';
+                        }
+
+                        function typeWriter(id, text, i) {
+                            if (i < text.length) {
+                                const el = document.getElementById(id);
+                                if (el) el.value += text.charAt(i);
+                                i++;
+                                setTimeout(function () { typeWriter(id, text, i); }, 30);
+                            }
+                        }
+
+                        function generatePDF() {
+                            alert("Generating Premium PDF Report... (Feature placeholder for prototype)");
+                        }
+
+                        // Initialize calculation on load
+                        calcSavings();
+                    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Timelines | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <style>
+        /* LSSMBB GOLD STANDARD PREMIUM STYLES */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(255, 107, 53, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 5px rgba(255, 107, 53, 0.2);
+            }
+        }
+
+        .lss-intro-box {
+            background: linear-gradient(135deg, rgba(20, 20, 40, 0.95) 0%, rgba(30, 30, 60, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 5px solid var(--accent);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.8s ease-out;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .lss-intro-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .lss-intro-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .belt-badge-premium {
+            background: linear-gradient(45deg, #111, #333);
+            color: #ffd700;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.15);
+        }
+
+        .lss-intro-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #e0e0e0;
+            font-weight: 300;
+            padding-left: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lss-power-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 13px;
+            padding: 14px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-top: 25px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .lss-power-btn:hover {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .lss-power-content {
+            display: none;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #ddd;
+            border-left: 3px solid var(--accent);
+            animation: fadeInUp 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .lss-guide-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #FF6B35, #FCA311);
+            color: #000;
+            font-weight: 800;
+            padding: 16px 32px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+            cursor: pointer;
+            z-index: 999;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .lss-guide-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7);
+            background: linear-gradient(135deg, #ff8c61, #ffb74d);
+        }
+
+        /* Modal for Guide */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .guide-section-title {
+            color: var(--accent);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Guide Tabs */
+        .guide-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .guide-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px;
+            color: #aaa;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: 0.3s;
+            font-family: 'Orbitron';
+            font-size: 12px;
+        }
+
+        .guide-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .guide-tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .guide-content {
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 95%;
+            max-height: 95%;
+            overflow: auto;
+        }
+
+        .floating-legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 11px;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        .legend-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+        }
+
+        .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            color: #555;
+        }
+
+        /* EHR CLINICAL LAYOUT */
+        .ehr-container {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .ehr-input-panel {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+        }
+
+        .ehr-findings-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .findings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e3e6ea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .findings-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clinical-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .clinical-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .clinical-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .task-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .task-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .phase-define {
+            background: #fee;
+            color: #e74c3c;
+        }
+
+        .phase-measure {
+            background: #ffc;
+            color: #f39c12;
+        }
+
+        .phase-analyze {
+            background: #def;
+            color: #3498db;
+        }
+
+        .phase-improve {
+            background: #dfd;
+            color: #27ae60;
+        }
+
+        .phase-control {
+            background: #f3e5f5;
+            color: #9b59b6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" style="max-width: 1800px;"> <!-- Wide layout -->
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">PROJECT MANAGEMENT</span>
+                <div style="height: 15px;"></div>
+                <h1>Project Timelines & Dependencies</h1>
+            </div>
+            <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
+                Dashboard</button>
+        </div>
+
+        <!-- LSSMBB HOOK & ORIGIN -->
+        <div class="lss-intro-box">
+            <div class="lss-intro-title">
+                <span>⏱️ Mastering Time & Flow</span>
+                <span class="belt-badge-premium">MBB Standard</span>
+            </div>
+            <p class="lss-intro-text">
+                A Project Charter defines "Where we are going," but the Gantt Chart defines "How long the journey
+                takes." This tool identifies the <b>Critical Path</b>—the specific sequence of tasks that, if delayed by
+                1 day, delays the entire project by 1 day.
+            </p>
+
+            <button class="lss-power-btn" onclick="togglePower()">
+                <span>🦅 Origin & Power: Why this tool exists</span>
+                <span id="powerIcon">▼</span>
+            </button>
+            <div id="powerContent" class="lss-power-content">
+                <b>Origin:</b> Validated by Henry Gantt (1917) for WWI logistics. Before this, factories ran on "gut
+                feel." It revolutionized the ability to predict delivery dates.<br><br>
+                <b>The Power of Visualization:</b>
+                <ul>
+                    <li><b>Dependency Logic:</b> Shows that you cannot "Pilot" (Phase 4) until you "Measure" (Phase 2).
+                    </li>
+                    <li><b>Resource Conflicts:</b> Reveals when one person is assigned to 3 tasks at once.</li>
+                    <li><b>Reality Check:</b> Most projects underestimate time by 50%. This tool forces you to map every
+                        day.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- GUIDE BUTTON & MODAL -->
+        <button class="lss-guide-btn" onclick="showGuide()"><i>💡</i> MBB PRO TIPS</button>
+
+        <div class="modal-overlay" id="guideModal" onclick="closeModal(event)">
+            <div class="modal-box">
+                <span class="slide-close"
+                    onclick="document.getElementById('guideModal').style.display='none'">&times;</span>
+                <h2 style="color:var(--accent); text-align:center; font-family:'Orbitron'">Master Black Belt Guide 🥋
+                </h2>
+                <p style="text-align:center; font-size:13px; color:#aaa; margin-bottom:20px;">Critical Path Management
+                </p>
+
+                <!-- TABS -->
+                <div class="guide-tabs">
+                    <button class="guide-tab active" onclick="switchGuideTab('strategy', event)">Strategic
+                        Guide</button>
+                    <button class="guide-tab" onclick="switchGuideTab('knowledge', event)">Reference Library</button>
+                </div>
+
+                <!-- CONTENT 1: STRATEGY -->
+                <div id="guide_strategy" class="guide-content">
+                    <div class="guide-section-title">🔎 THE "CRITICAL PATH"</div>
+                    <p style="font-size:14px; line-height:1.6;">Focus 80% of your energy on the "Critical Path" tasks.
+                        If a
+                        non-critical task slips by a week, it doesn't matter (Slack Time). If a Critical Task slips by
+                        an
+                        hour, you are late.</p>
+
+                    <div class="guide-section-title">⚠️ COMMON TRAPS</div>
+                    <ul style="font-size:13px; line-height:1.6; color:#ddd;">
+                        <li><b>Analysis Paralysis:</b> Listing every single email as a task. Keep tasks to >1 day
+                            duration.
+                        </li>
+                        <li><b>Padding:</b> Adding "buffer" to every task. Instead, add one "Project Buffer" at the end.
+                        </li>
+                        <li><b>Ignoring Weekends:</b> This tool assumes working days. Remember that 5 days duration = 1
+                            calendar week.</li>
+                    </ul>
+                </div>
+
+                <!-- CONTENT 2: KNOWLEDGE -->
+                <div id="guide_knowledge" class="guide-content" style="display:none;">
+                    <div class="guide-section-title">🔗 VISUAL DEPENDENCY TYPES</div>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:4px;">
+                        <strong style="color:#2ecc71;">1. Finish-to-Start (FS)</strong>
+                        <p style="font-size:12px; margin:5px 0;">"Task B starts after Task A finishes." (Standard)</p>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:4px;">
+                        <strong style="color:#3498db;">2. Start-to-Start (SS)</strong>
+                        <p style="font-size:12px; margin:5px 0;">"Task B starts when Task A starts." (Parallel work)</p>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:4px;">
+                        <strong style="color:#f1c40f;">3. Finish-to-Finish (FF)</strong>
+                        <p style="font-size:12px; margin:5px 0;">"Task A and B must finish at the same time."</p>
+                    </div>
+
+                    <div class="guide-section-title">🌍 REAL-WORLD SCENARIOS</div>
+                    <div
+                        style="margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; border-left:3px solid #27ae60;">
+                        <strong>🏥 Hospital (Hospital Wing)</strong><br>
+                        <small>SS Dependency: "Staff Training" starts while "Equipment Installation" is still
+                            ongoing.</small>
+                    </div>
+                    <div
+                        style="margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; border-left:3px solid #e74c3c;">
+                        <strong>🏭 Manufacturing (New Line)</strong><br>
+                        <small>FS Dependency: "Pour Concrete" must finish 7 days before "Install Robots". (Critical Path
+                            risk)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EHR CLINICAL LAYOUT -->
+        <div class="ehr-container">
+            <!-- LEFT: TASK PARAMETERS -->
+            <div class="ehr-input-panel">
+                <div class="findings-header">📋 Project Tasks</div>
+
+                <div style="display:flex; gap:8px; margin-bottom:15px;">
+                    <button class="btn btn-ghost" onclick="clearTasks()" style="flex:1; font-size:12px;">Clear
+                        All</button>
+                    <button class="btn btn-ghost" onclick="loadExample()" style="flex:1; font-size:12px;">Load
+                        Demo</button>
+                </div>
+
+                <div id="tasksList">
+                    <!-- Dynamic Task Inputs -->
+                </div>
+
+                <button class="btn btn-ghost" onclick="addTask()"
+                    style="width:100%; border:1px dashed #adb5bd; margin-bottom:15px; font-size:12px;">+ Add
+                    Task</button>
+
+                <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="renderGantt()">🔄
+                    Generate Timeline</button>
+            </div>
+
+            <!-- RIGHT: CLINICAL FINDINGS -->
+            <div class="ehr-findings-panel">
+                <!-- FINDING: GANTT VISUALIZATION -->
+                <div class="findings-section">
+                    <div class="findings-header">📊 Project Timeline Visualization</div>
+
+                    <!-- FLOATING LEGEND -->
+                    <div class="floating-legend">
+                        <div class="legend-header">Project Phases</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#e74c3c"></span> Define</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#f1c40f"></span> Measure
+                        </div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#3498db"></span> Analyze
+                        </div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#2ecc71"></span> Improve
+                        </div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#9b59b6"></span> Control
+                        </div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#34495e"></span> Critical
+                            Path</div>
+                    </div>
+
+                    <div id="svgWrapper" class="svg-container" onclick="openZoom()" title="Click to Zoom"
+                        style="background: radial-gradient(circle at center, #fff, #f8f9fa); border-radius:8px;">
+                        <!-- SVG Injected Here -->
+                    </div>
+
+                    <div style="text-align:center; margin-top:15px;">
+                        <span style="font-size:11px; color:#6c757d; cursor:pointer;" onclick="openZoom()">🔍 Click chart
+                            to enlarge</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ZOOM MODAL -->
+    <div id="zoomModal" class="modal-overlay" onclick="closeZoom(event)">
+        <div class="modal-content" id="zoomContent">
+            <!-- Cloned SVG goes here -->
+        </div>
+    </div>
+
+    <!-- KNOWLEDGE BASE MERGED INTO GUIDE MODAL -->
+
+    <script>
+        let tasks = [];
+        const svgNS = "http://www.w3.org/2000/svg";
+
+        // INIT
+        loadExample();
+
+        function addTask(data = null) {
+            const id = tasks.length + 1;
+            const t = data || {
+                id: id,
+                name: `Task ${id}`,
+                phase: 'define',
+                start: new Date().toISOString().split('T')[0],
+                duration: 5,
+                progress: 0,
+                milestone: false,
+                dep: ''
+            };
+            tasks.push(t);
+            renderInputs();
+        }
+
+        function renderInputs() {
+            const container = document.getElementById('tasksList');
+            container.innerHTML = '';
+
+            tasks.forEach((t, index) => {
+                const div = document.createElement('div');
+                div.className = 'task-card';
+
+                div.innerHTML = `
+                    <div class="task-header">
+                        <strong style="color:#2c3e50; font-size:13px;">Task #${index + 1}</strong>
+                        <button onclick="deleteTask(${index})" style="background:none; border:none; color:#dc3545; cursor:pointer; font-size:18px; opacity:0.7; transition:0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom:8px;">
+                        <div class="clinical-label">Task Name</div>
+                        <input type="text" class="clinical-input" value="${t.name}" onchange="updateTask(${index}, 'name', this.value)">
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+                        <div>
+                            <div class="clinical-label">Phase</div>
+                            <select class="clinical-input" onchange="updateTask(${index}, 'phase', this.value)" style="padding:6px;">
+                                <option value="define" ${t.phase === 'define' ? 'selected' : ''}>Define</option>
+                                <option value="measure" ${t.phase === 'measure' ? 'selected' : ''}>Measure</option>
+                                <option value="analyze" ${t.phase === 'analyze' ? 'selected' : ''}>Analyze</option>
+                                <option value="improve" ${t.phase === 'improve' ? 'selected' : ''}>Improve</option>
+                                <option value="control" ${t.phase === 'control' ? 'selected' : ''}>Control</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div class="clinical-label">Dependency</div>
+                            <input type="text" class="clinical-input" placeholder="e.g. 1FS" value="${t.dep}" onchange="updateTask(${index}, 'dep', this.value)">
+                        </div>
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px;">
+                        <div>
+                            <div class="clinical-label">Start Date</div>
+                            <input type="date" class="clinical-input" value="${t.start}" onchange="updateTask(${index}, 'start', this.value)" style="padding:6px;">
+                        </div>
+                        <div>
+                            <div class="clinical-label">Days</div>
+                            <input type="number" class="clinical-input" value="${t.duration}" onchange="updateTask(${index}, 'duration', this.value)" style="padding:6px;">
+                        </div>
+                        <div>
+                            <div class="clinical-label">% Done</div>
+                            <input type="number" class="clinical-input" max="100" value="${t.progress}" onchange="updateTask(${index}, 'progress', this.value)" style="padding:6px;">
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" ${t.milestone ? 'checked' : ''} onchange="updateTask(${index}, 'milestone', this.checked)" style="width:auto;">
+                        <label class="clinical-label" style="margin:0;">Milestone (Flag)</label>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateTask(index, field, value) {
+            if (field === 'duration' || field === 'progress') value = Number(value);
+            tasks[index][field] = value;
+            // No auto render to avoid lag
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            renderInputs();
+        }
+
+        function clearTasks() {
+            tasks = [];
+            renderInputs();
+            document.getElementById('svgWrapper').innerHTML = '';
+        }
+
+        function loadExample() {
+            const today = new Date();
+            const fmt = (days) => new Date(today.getTime() + (days * 86400000)).toISOString().split('T')[0];
+
+            tasks = [
+                { id: 1, name: "Project Charter Approved", phase: 'define', start: fmt(0), duration: 0, progress: 100, milestone: true, dep: '' },
+                { id: 2, name: "Data Collection Plan", phase: 'measure', start: fmt(2), duration: 5, progress: 60, milestone: false, dep: '1FS' },
+                { id: 3, name: "Measure Baseline Data", phase: 'measure', start: fmt(7), duration: 8, progress: 20, milestone: false, dep: '2FS' },
+                { id: 4, name: "Root Cause Analysis", phase: 'analyze', start: fmt(10), duration: 7, progress: 0, milestone: false, dep: '3SS' },
+                { id: 5, name: "Pilot Solution", phase: 'improve', start: fmt(20), duration: 10, progress: 0, milestone: false, dep: '4FS' },
+                { id: 6, name: "Final Sign-off", phase: 'control', start: fmt(32), duration: 0, progress: 0, milestone: true, dep: '5FS' }
+            ];
+            renderInputs();
+            setTimeout(renderGantt, 100);
+        }
+
+        /* ========================
+           SVG RENDER LOGIC
+           ======================== */
+        function renderGantt() {
+            if (tasks.length === 0) return;
+
+            const wrapper = document.getElementById('svgWrapper');
+            const rowHeight = 40;
+            const headerHeight = 30;
+            const dayWidth = 35; // Pixels per day (Increased for visibility)
+            const paddingLeft = 10;
+
+            // 1. Calculate Date Range
+            let minDate = new Date(tasks[0].start);
+            let maxDate = new Date(tasks[0].start);
+
+            tasks.forEach(t => {
+                const s = new Date(t.start);
+                const e = new Date(s.getTime() + (t.duration * 86400000));
+                if (s < minDate) minDate = s;
+                if (e > maxDate) maxDate = e;
+            });
+
+            // Pad range
+            minDate = new Date(minDate.getTime() - (2 * 86400000));
+            maxDate = new Date(maxDate.getTime() + (8 * 86400000));
+
+            const totalDays = Math.ceil((maxDate - minDate) / 86400000);
+            const width = Math.max(800, totalDays * dayWidth + 50);
+            const height = (tasks.length * rowHeight) + headerHeight + 50;
+
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("width", width);
+            svg.setAttribute("height", height);
+            svg.style.fontFamily = "Arial, sans-serif";
+
+            const getX = (dateStr) => {
+                const d = new Date(dateStr);
+                const diff = (d - minDate) / 86400000;
+                return paddingLeft + (diff * dayWidth);
+            };
+
+            // Grid & Header
+            const gridGroup = document.createElementNS(svgNS, "g");
+            for (let i = 0; i <= totalDays; i++) {
+                const x = paddingLeft + (i * dayWidth);
+                const d = new Date(minDate.getTime() + (i * 86400000));
+
+                const line = document.createElementNS(svgNS, "line");
+                line.setAttribute("x1", x); line.setAttribute("y1", headerHeight);
+                line.setAttribute("x2", x); line.setAttribute("y2", height);
+                line.setAttribute("stroke", "#eee");
+                line.setAttribute("stroke-width", 1);
+                if (d.getDay() === 0 || d.getDay() === 6) line.setAttribute("stroke", "#f5f5f5");
+                gridGroup.appendChild(line);
+
+                if (i % 1 === 0) { // Show all days if enough space or every 2nd
+                    const text = document.createElementNS(svgNS, "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", 20);
+                    text.setAttribute("font-size", "10");
+                    text.setAttribute("fill", "#999");
+                    text.textContent = `${d.getDate()}/${d.getMonth() + 1}`;
+                    gridGroup.appendChild(text);
+                }
+            }
+            svg.appendChild(gridGroup);
+
+            // Task Bars
+            const taskGroup = document.createElementNS(svgNS, "g");
+            const coords = {};
+
+            tasks.forEach((t, i) => {
+                const y = headerHeight + (i * rowHeight);
+                const startX = getX(t.start);
+                const endX = t.duration === 0 ? startX : getX(new Date(new Date(t.start).getTime() + (t.duration * 86400000)));
+                const barWidth = Math.max(0, endX - startX);
+
+                // Row Zebra
+                if (i % 2 === 0) {
+                    const rowBg = document.createElementNS(svgNS, "rect");
+                    rowBg.setAttribute("x", 0); rowBg.setAttribute("y", y);
+                    rowBg.setAttribute("width", width); rowBg.setAttribute("height", rowHeight);
+                    rowBg.setAttribute("fill", "#fafafa");
+                    taskGroup.appendChild(rowBg);
+                }
+
+                let fill = "url(#grad-define)";
+                if (t.phase === 'measure') fill = "url(#grad-measure)";
+                if (t.phase === 'analyze') fill = "url(#grad-analyze)";
+                if (t.phase === 'improve') fill = "url(#grad-improve)";
+                if (t.phase === 'control') fill = "url(#grad-control)";
+
+                coords[i + 1] = {
+                    startX: startX, endX: t.milestone ? startX : endX,
+                    y: y + (rowHeight / 2)
+                };
+
+                if (t.milestone) {
+                    const size = 12;
+                    const cy = y + (rowHeight / 2);
+                    const pts = `${startX},${cy - size} ${startX + size},${cy} ${startX},${cy + size} ${startX - size},${cy}`;
+                    const poly = document.createElementNS(svgNS, "polygon");
+                    poly.setAttribute("points", pts);
+                    poly.setAttribute("fill", "url(#grad-milestone)");
+                    poly.setAttribute("filter", "drop-shadow(2px 2px 2px rgba(0,0,0,0.3))");
+                    poly.setAttribute("stroke", "#333");
+                    taskGroup.appendChild(poly);
+
+                    const texts = document.createElementNS(svgNS, "text");
+                    texts.setAttribute("x", startX + 15);
+                    texts.setAttribute("y", cy + 4);
+                    texts.setAttribute("font-size", "11");
+                    texts.setAttribute("font-weight", "bold");
+                    texts.textContent = t.name;
+                    taskGroup.appendChild(texts);
+
+                } else {
+                    const barH = 18;
+                    const barY = y + (rowHeight - barH) / 2;
+
+                    const rect = document.createElementNS(svgNS, "rect");
+                    rect.setAttribute("x", startX);
+                    rect.setAttribute("y", barY);
+                    rect.setAttribute("width", barWidth);
+                    rect.setAttribute("height", barH);
+                    rect.setAttribute("fill", fill);
+                    rect.setAttribute("filter", "drop-shadow(1px 2px 3px rgba(0,0,0,0.2))");
+                    rect.setAttribute("rx", 4);
+
+                    const texts = document.createElementNS(svgNS, "text");
+                    let textX = startX + 5;
+                    let textColor = "white";
+
+                    if (barWidth < 50) { textX = endX + 5; textColor = "#333"; }
+
+                    texts.setAttribute("x", textX);
+                    texts.setAttribute("y", barY + 13);
+                    texts.setAttribute("font-size", "11");
+                    texts.setAttribute("fill", textColor);
+                    texts.textContent = `${t.name} (${t.progress}%)`;
+
+                    const progW = barWidth * (t.progress / 100);
+                    if (progW > 0) {
+                        const progRect = document.createElementNS(svgNS, "rect");
+                        progRect.setAttribute("x", startX);
+                        progRect.setAttribute("y", barY + barH - 4);
+                        progRect.setAttribute("width", progW);
+                        progRect.setAttribute("height", 4);
+                        progRect.setAttribute("fill", "rgba(255,255,255,0.7)");
+                        taskGroup.appendChild(progRect);
+                    }
+
+                    taskGroup.appendChild(rect);
+                    taskGroup.appendChild(texts);
+                }
+            });
+            svg.appendChild(taskGroup);
+
+            // Gradients Defs
+            const defs = document.createElementNS(svgNS, "defs");
+
+            const gradients = {
+                'define': ['#e74c3c', '#c0392b'],
+                'measure': ['#f1c40f', '#f39c12'],
+                'analyze': ['#3498db', '#2980b9'],
+                'improve': ['#2ecc71', '#27ae60'],
+                'control': ['#9b59b6', '#8e44ad'],
+                'milestone': ['#34495e', '#2c3e50']
+            };
+
+            for (const [key, colors] of Object.entries(gradients)) {
+                const grad = document.createElementNS(svgNS, "linearGradient");
+                grad.setAttribute("id", `grad-${key}`);
+                grad.setAttribute("x1", "0%"); grad.setAttribute("y1", "0%");
+                grad.setAttribute("x2", "0%"); grad.setAttribute("y2", "100%");
+
+                const stop1 = document.createElementNS(svgNS, "stop");
+                stop1.setAttribute("offset", "0%"); stop1.setAttribute("stop-color", colors[0]);
+                grad.appendChild(stop1);
+
+                const stop2 = document.createElementNS(svgNS, "stop");
+                stop2.setAttribute("offset", "100%"); stop2.setAttribute("stop-color", colors[1]);
+                grad.appendChild(stop2);
+
+                defs.appendChild(grad);
+            }
+
+            // Marker
+            const marker = document.createElementNS(svgNS, "marker");
+            marker.setAttribute("id", "arrowhead");
+            marker.setAttribute("markerWidth", "10");
+            marker.setAttribute("markerHeight", "7");
+            marker.setAttribute("refX", "9");
+            marker.setAttribute("refY", "3.5");
+            marker.setAttribute("orient", "auto");
+            const poly = document.createElementNS(svgNS, "polygon");
+            poly.setAttribute("points", "0 0, 10 3.5, 0 7");
+            poly.setAttribute("fill", "#555");
+            marker.appendChild(poly);
+            defs.appendChild(marker);
+
+            svg.appendChild(defs);
+
+            // Dependencies Group
+            const arrowGroup = document.createElementNS(svgNS, "g");
+
+            tasks.forEach((t, i) => {
+                if (t.dep) {
+                    const deps = t.dep.split(',');
+                    deps.forEach(dStr => {
+                        let type = "FS";
+                        let predId = parseInt(dStr);
+                        if (dStr.toUpperCase().includes("SS")) type = "SS";
+                        else if (dStr.toUpperCase().includes("FF")) type = "FF";
+                        else if (dStr.toUpperCase().includes("SF")) type = "SF";
+
+                        const match = dStr.match(/\d+/);
+                        if (match) predId = parseInt(match[0]);
+
+                        const predIdx = tasks.findIndex(x => x.id === predId);
+                        if (predIdx > -1) {
+                            const pCoord = coords[predIdx + 1];
+                            const cCoord = coords[i + 1];
+                            let x1, y1, x2, y2;
+
+                            if (type === 'FS' || type === 'FF') x1 = pCoord.endX;
+                            else x1 = pCoord.startX;
+                            y1 = pCoord.y;
+
+                            if (type === 'FS' || type === 'SS') x2 = cCoord.startX;
+                            else x2 = cCoord.endX;
+                            y2 = cCoord.y;
+
+                            const cp1x = x1 + 15;
+                            const cp2x = x2 - 15;
+                            const pathD = `M ${x1} ${y1} C ${cp1x} ${y1}, ${cp2x} ${y2}, ${x2} ${y2}`;
+
+                            const path = document.createElementNS(svgNS, "path");
+                            path.setAttribute("d", pathD);
+                            path.setAttribute("stroke", "#555");
+                            path.setAttribute("stroke-width", "1.5");
+                            path.setAttribute("fill", "none");
+                            path.setAttribute("marker-end", "url(#arrowhead)");
+                            arrowGroup.appendChild(path);
+                        }
+                    });
+                }
+            });
+            svg.appendChild(arrowGroup);
+
+            wrapper.innerHTML = '';
+            wrapper.appendChild(svg);
+        }
+
+        // ZOOM LOGIC
+        function openZoom() {
+            const svgContainer = document.getElementById('svgWrapper');
+            const zoomContent = document.getElementById('zoomContent');
+            zoomContent.innerHTML = svgContainer.innerHTML; // Clone
+            document.getElementById('zoomModal').style.display = 'flex';
+        }
+
+        function closeZoom(e) {
+            if (e.target.id === 'zoomModal') {
+                document.getElementById('zoomModal').style.display = 'none';
+            }
+        }
+
+        // --- NEW MBB FUNCTIONS ---
+        function togglePower() {
+            const content = document.getElementById('powerContent');
+            const icon = document.getElementById('powerIcon');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                icon.innerText = '▼';
+            } else {
+                content.style.display = 'block';
+                icon.innerText = '▲';
+            }
+        }
+
+        function showGuide() {
+            document.getElementById('guideModal').style.display = 'flex';
+        }
+
+        function switchGuideTab(tabId, event) {
+            document.querySelectorAll('.guide-content').forEach(e => e.style.display = 'none');
+            document.querySelectorAll('.guide-tab').forEach(e => e.classList.remove('active'));
+            document.getElementById('guide_' + tabId).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'guideModal') document.getElementById('guideModal').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

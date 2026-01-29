@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression Analysis | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.6/jstat.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+
+    <style>
+        /* INTRO GRID - EXPANDED (8 Cards) */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .math-block {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            color: #BBB;
+            font-size: 11px;
+        }
+
+        /* STATS RESULTS */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: rgba(27, 107, 130, 0.1);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .stat-hint {
+            font-size: 11px;
+            color: var(--primary);
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .stat-box:hover .stat-hint {
+            opacity: 1;
+            height: auto;
+        }
+
+        .ai-panel {
+            background: linear-gradient(90deg, rgba(27, 107, 130, 0.1), rgba(0, 0, 0, 0));
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .clickable-result {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .clickable-result:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* EXAMPLE SELECTOR */
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .example-btn {
+            padding: 10px 5px;
+            font-size: 10px;
+            text-align: center;
+            background: var(--surface-2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .example-btn:hover {
+            background: var(--surface-3);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .example-btn .icon {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* REPORT SECTION */
+        .report-section {
+            background: var(--surface-2);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .report-header {
+            color: #ff6b35;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--surface-1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            transition: width 0.3s;
+        }
+
+        .report-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .report-btn-save {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .report-btn-save:hover {
+            background: #e55a2b;
+        }
+
+        .report-btn-print {
+            background: var(--surface-1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .report-btn-print:hover {
+            background: var(--surface-3);
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+
+            .card {
+                background: #f8f9fa !important;
+                border: 1px solid #ddd !important;
+            }
+
+            .stat-box {
+                background: #f0f0f0 !important;
+                border: 1px solid #ccc !important;
+            }
+
+            .stat-val {
+                color: #333 !important;
+            }
+
+            .intro-card {
+                border-left-color: #333 !important;
+            }
+
+            #printReport {
+                display: block !important;
+                page-break-before: always;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+
+        #printReport {
+            display: none;
+            padding: 40px;
+            background: white;
+            color: black;
+        }
+
+        #printReport h1 {
+            color: #1a365d;
+            border-bottom: 3px solid #1a365d;
+            padding-bottom: 15px;
+        }
+
+        #printReport .report-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        #printReport .report-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3182ce;
+        }
+
+        #printReport .metric-big {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2b6cb0;
+        }
+
+        #printReport .interpretation {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between no-print" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">PHASE: ANALYZE</span>
+                <div style="height: 15px;"></div>
+                <h1>Simple Regression <span class="ai-badge">AI ENABLED</span></h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Find Relationships. <span style="color: var(--accent);">Predict Outcomes.</span> Does X really
+                    impact Y?
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-primary" onclick="openRegInfo()" style="margin-right:10px;">💡 Simple
+                    Explanation</button>
+                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
+                    Hub</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID (8 Cards) -->
+        <div class="intro-grid no-print">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What Is It?</div>
+                <div class="intro-text">Models the mathematical relationship between an Input (X) and an Output (Y).
+                </div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When To Use?</div>
+                <div class="intro-text">To prove correlation (e.g. Does increasing Oven Temp really increase Cookie
+                    Hardness?).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why Use It?</div>
+                <div class="intro-text">Builds a prediction model (Y = mX + c) so you can control the outcome.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">📋 Requirements</div>
+                <div class="intro-text">Continuous Data. Linear Relationship. Normal Residuals. No Autocorrelation.
+                </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="intro-card">
+                <div class="intro-title">📐 Standard Equation</div>
+                <div class="math-block">Y = β0 + β1*X + ε</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🧠 Interpretation</div>
+                <div class="intro-text">R-Squared > 80% = Strong Model.<br>P-Value < 0.05=Relationship is Real.</div>
+                </div>
+                <div class="intro-card">
+                    <div class="intro-title">🎯 Reference Values</div>
+                    <div class="intro-text">Correlation (r) from -1 (Perfect Negative) to +1 (Perfect Positive).</div>
+                </div>
+                <div class="intro-card intro-card-phase">
+                    <div class="intro-title">🚀 Phase Relevance</div>
+                    <div class="intro-text"><strong>Analyze:</strong> Verify root causes.<br><strong>Improve:</strong>
+                        optimize settings.</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+
+                <!-- SIDEBAR -->
+                <div class="card no-print">
+                    <h3>1. Input Data</h3>
+
+                    <div class="form-group">
+                        <label>X Variable (Input)</label>
+                        <textarea id="xInput" rows="5" placeholder="10, 20, 30, 40..."
+                            style="width:100%; font-family:monospace;"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Y Variable (Output)</label>
+                        <textarea id="yInput" rows="5" placeholder="2.5, 4.0, 5.1, 8.2..."
+                            style="width:100%; font-family:monospace;"></textarea>
+                    </div>
+
+                    <!-- EXAMPLES SELECTOR (MODERN DROPDOWN) -->
+                    <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
+                        <label style="font-size:12px; color:var(--text-secondary);">Select Industry Scenario:</label>
+                        <select id="scenarioSelect" class="btn btn-ghost"
+                            style="width:100%; margin:8px 0; padding:10px; font-size:13px; color:var(--text-primary); cursor:pointer;"
+                            onchange="loadScenario()">
+                            <option value="">-- Custom Data --</option>
+                            <optgroup label="🏥 Healthcare Scenarios">
+                                <option value="hc_staff">ER Wait vs Nurse Ratio (Strong Fit)</option>
+                                <option value="hc_noise">ER Wait vs Nurse Ratio (Weak Fit)</option>
+                                <option value="hc_falls">Patient Falls vs Staff Hours (Strong Fit)</option>
+                            </optgroup>
+                            <optgroup label="🧪 General Scenarios">
+                                <option value="gen_mfg">Output Yield vs Oven Temp (Strong Fit)</option>
+                                <option value="gen_nps">Customer Loyalty vs Spend (Strong Fit)</option>
+                            </optgroup>
+                        </select>
+
+                        <div id="scenarioDesc"
+                            style="font-size: 11px; color: var(--accent); margin: 5px 0; height: 30px; line-height: 1.3;">
+                            Model relationships (Y = mX + c) to predict outcomes.
+                        </div>
+                    </div>
+
+                    <button class="btn btn-ghost" style="width:100%; margin-top:15px; font-size:11px;"
+                        onclick="autoFixData()">✨ Auto-Fix Formatting</button>
+
+                    <button class="btn btn-primary" onclick="calculateRegression()"
+                        style="width: 100%; justify-content: center; margin-top: 15px;">
+                        🚀 Calculate Model
+                    </button>
+                </div>
+
+                <!-- RESULTS -->
+                <div id="resultsPanel" style="display:none;">
+
+                    <!-- EQUATION -->
+                    <div id="resEquation"
+                        style="background: rgba(41, 182, 246, 0.1); color: #29B6F6; text-align: center; font-size: 24px; padding: 15px; border-radius: 8px; font-weight: bold; margin-bottom: 20px;">
+                        Y = mx + c
+                    </div>
+
+                    <!-- METRICS -->
+                    <div class="stat-grid">
+                        <div class="stat-box clickable-result" onclick="explain('r2')">
+                            <div class="stat-label">R-Squared (R²) ❓</div>
+                            <div class="stat-val" id="resR2">-</div>
+                            <div class="stat-hint">Fit Strength</div>
+                        </div>
+                        <div class="stat-box clickable-result" onclick="explain('correlation')">
+                            <div class="stat-label">Correlation (r) ❓</div>
+                            <div class="stat-val" id="resR">-</div>
+                            <div class="stat-hint">Direction</div>
+                        </div>
+                        <div class="stat-box clickable-result" onclick="explain('pvalue')">
+                            <div class="stat-label">P-value ❓</div>
+                            <div class="stat-val" id="resP">-</div>
+                            <div class="stat-hint">Significance</div>
+                        </div>
+                    </div>
+
+                    <!-- AUTO FINDINGS SUMMARY -->
+                    <div id="analysisSummary"
+                        style="padding:15px; background:var(--surface-3); border-radius:6px; font-size:13px; line-height:1.5; color:var(--text-primary); margin-bottom:20px; display:none; border-left: 3px solid var(--accent);">
+                    </div>
+
+                    <!-- CHART -->
+                    <div class="card" style="height: 350px;">
+                        <div class="flex-between">
+                            <span style="font-size:12px; color:var(--text-secondary);">Fitted Line Plot (Scatter +
+                                Trendline)</span>
+                            <span style="font-size:10px; cursor:pointer;"
+                                onclick="explain('Scatter Plot', 'The Dots are real data (Reality). The Line is the Model (Prediction).<br>The closer the dots are to the line, the better the model.')">ℹ️
+                                Info</span>
+                        </div>
+                        <div class="chart-controls">
+                            <div class="control-btn" onclick="magnify('regChart', 'Regression Plot')">🔍</div>
+                            <div class="control-btn" onclick="downloadChart('regChart', 'Regression Plot')">⬇️</div>
+                        </div>
+                        <div class="chart-container"><canvas id="regChart"></canvas></div>
+                    </div>
+
+                    <!-- REPORT & EXPORT SECTION -->
+                    <div class="report-section no-print">
+                        <div class="report-header">Report & Export</div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:center;">
+                            <div>
+                                <label style="font-size:12px; color:var(--text-secondary);">Analyst / Created
+                                    By:</label>
+                                <input type="text" id="analystName" placeholder="Enter your name..."
+                                    style="width:100%; padding:10px; background:var(--surface-1); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:white; margin-top:5px;"
+                                    oninput="updateProgress()">
+                            </div>
+                            <div style="text-align:right;">
+                                <span id="completionPct" style="color:var(--text-secondary); font-size:12px;">0%
+                                    Complete</span>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width:0%;"></div>
+                        </div>
+                        <p style="font-size:11px; color:var(--text-secondary); margin-bottom:20px;">Progress tracks data
+                            entry completion and quality checks.</p>
+
+                        <div style="display:flex; gap:15px;">
+                            <button class="report-btn report-btn-save" onclick="saveResults()">
+                                💾 Save & Evaluate
+                            </button>
+                            <button class="report-btn report-btn-print" onclick="printReport()">
+                                🖨️ Print PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- AI -->
+                    <div class="card no-print">
+                        <div class="flex-between">
+                            <h3>💡 AI Prediction</h3>
+                            <button class="btn btn-ghost" onclick="askAICoach()" id="aiBtn">Ask Gemini</button>
+                        </div>
+                        <div class="ai-panel">
+                            <div id="aiOutput" style="font-size: 14px;">
+                                Click "Ask Gemini" to interpret this relationship.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- INFOGRAPHIC EXPLANATION MODAL -->
+        <div class="modal-overlay" id="hypothesisInfoModal"
+            onclick="if(event.target.id==='hypothesisInfoModal') this.style.display='none'" style="z-index:2000;">
+            <div class="modal-box" style="max-width:800px; width:95%; border: 3px solid #f97316;">
+                <span class="close-btn" style="float:right; cursor:pointer; font-size:24px;"
+                    onclick="document.getElementById('hypothesisInfoModal').style.display='none'">&times;</span>
+                <div style="text-align:center; margin-bottom:20px;">
+                    <h2 style="color:var(--accent); margin:0;" id="conceptTitle">Linear Regression Analysis 📉</h2>
+                    <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">Modeling the quantitative
+                        link between Input (X) and Output (Y).</p>
+                </div>
+
+                <!-- CONTENT AREA -->
+                <div id="conceptContent" style="min-height:250px;">
+                    <!-- Content Injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAGNIFY MODAL -->
+    <div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
+        <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
+            <span class="close-btn"
+                onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+            <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
+            <img id="magnifyImg" style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+        </div>
+    </div>
+
+    <!-- PRINT REPORT (Hidden until print) -->
+    <div id="printReport" class="print-only">
+        <h1>📊 Simple Regression Analysis Report</h1>
+        <p><strong>Generated:</strong> <span id="printDate"></span> | <strong>Analyst:</strong> <span
+                id="printAnalyst"></span></p>
+
+        <div class="report-grid">
+            <div class="report-card">
+                <h3>Regression Equation</h3>
+                <div class="metric-big" id="printEquation">Y = mX + c</div>
+            </div>
+            <div class="report-card">
+                <h3>Model Strength</h3>
+                <div class="metric-big" id="printR2">0%</div>
+                <p>R-Squared (Variance Explained)</p>
+            </div>
+        </div>
+
+        <div class="report-grid">
+            <div class="report-card">
+                <h3>Correlation Coefficient</h3>
+                <div class="metric-big" id="printCorr">0.000</div>
+                <p id="printCorrType">Direction of relationship</p>
+            </div>
+            <div class="report-card">
+                <h3>Statistical Significance</h3>
+                <div class="metric-big" id="printPval">0.0000</div>
+                <p id="printSigText">P-Value Assessment</p>
+            </div>
+        </div>
+
+        <div class="interpretation" id="printInterpretation">
+            <h3>📋 Expert Interpretation</h3>
+            <p id="printInterpText">Analysis pending...</p>
+        </div>
+
+        <div style="margin-top:30px;">
+            <h3>📈 Fitted Line Plot</h3>
+            <img id="printChartImg" style="width:100%; max-width:600px; border:1px solid #ccc; border-radius:8px;" />
+        </div>
+
+        <div
+            style="margin-top:40px; padding-top:20px; border-top:2px solid #ccc; font-size:12px; color:#666; text-align:center;">
+            <p>Generated by Lean Six Sigma Interactive Platform | Black Belt Studio</p>
+        </div>
+    </div>
+
+    <script>
+        let chartInstance = null;
+        let currentScenario = null;
+        let currentResults = {};
+
+        // MASTER REGRESSION SCENARIOS
+        const scenarioDB = {
+            'hc_staff': {
+                name: "ER Staffing vs Wait Time",
+                desc: "Does adding RN staffing (X) predictably reduce wait times (Y)?",
+                x: "2, 3, 4, 5, 6, 7, 8, 9, 10",
+                y: "45, 42, 38, 35, 30, 28, 25, 22, 20"
+            },
+            'hc_noise': {
+                name: "ER Staffing vs Wait Time (Noise Only)",
+                desc: "Demonstrate a weak model where staffing doesn't explain variation.",
+                x: "2, 3, 4, 5, 6, 7, 8, 9, 10",
+                y: "35, 42, 28, 45, 32, 40, 38, 25, 36"
+            },
+            'hc_falls': {
+                name: "Staff Hours vs Patient Falls",
+                desc: "Analyze if safety improves with increased floor presence.",
+                x: "1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0",
+                y: "12, 10, 8, 6, 5, 4, 3, 2"
+            },
+            'gen_mfg': {
+                name: "Yield vs Temperature",
+                desc: "Find the optimal temperature for manufacturing output.",
+                x: "100, 120, 140, 160, 180, 200, 220, 240",
+                y: "50, 55, 62, 68, 75, 82, 88, 95"
+            },
+            'gen_nps': {
+                name: "Loyalty vs Reward Spend",
+                desc: "Does investment in rewards correlate with brand NPS?",
+                x: "1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000",
+                y: "15, 22, 28, 35, 42, 48, 55, 62"
+            }
+        };
+
+        function loadScenario() {
+            const key = document.getElementById('scenarioSelect').value;
+            if (!key) return;
+            const s = scenarioDB[key];
+            document.getElementById('scenarioDesc').innerText = s.desc;
+            document.getElementById('xInput').value = s.x;
+            document.getElementById('yInput').value = s.y;
+            calculateRegression();
+        }
+
+        function openRegInfo() {
+            document.getElementById('hypothesisInfoModal').style.display = 'flex';
+            showConcept('regression');
+        }
+
+        const concepts = {
+            regression: {
+                title: "📉 Simple Linear Regression",
+                ideal: "Ideally use when: Predicting a numeric value (Y) based on another numeric value (X). It finds the 'Line of Best Fit'.",
+                life: {
+                    title: "⛽ Fuel Efficiency",
+                    text: "Driving Speed vs Gas Used. Regression tells you exactly how much extra gas you burn for every 10mph faster you go.",
+                    icon: "🏎️"
+                },
+                health: {
+                    title: "💊 Dosage Response",
+                    text: "Drug Dosage vs BP Reduction. Regression helps MDs calculate exactly how many mg are needed to reach a target pressure.",
+                    icon: "⚖️"
+                }
+            }
+        };
+
+        function showConcept(key) {
+            const c = concepts[key];
+            const contentDiv = document.getElementById('conceptContent');
+            const titleDiv = document.getElementById('conceptTitle');
+            titleDiv.innerText = c.title;
+
+            contentDiv.innerHTML = `
+                <div style="background:#431407; padding:15px; border-radius:8px; margin-bottom:20px; text-align:center; border:1px dashed #f97316;">
+                    <strong style="color:#f97316;">💡 ${c.ideal}</strong>
+                </div>
+
+                <div class="grid-2" style="gap:20px; margin-top:20px; display:grid; grid-template-columns:1fr 1fr;">
+                    <div style="background:#1e293b; padding:20px; border-radius:8px; border-top:4px solid #f97316;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.life.icon}</div>
+                        <h3 style="color:#f97316; margin-top:0;">Daily Life</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.life.text}</p>
+                    </div>
+                    <div style="background:#1e293b; padding:20px; border-radius:8px; border-top:4px solid #10b981;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.health.icon}</div>
+                        <h3 style="color:#10b981; margin-top:0;">Healthcare</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.health.text}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // GLOSSARY
+        const glossary = {
+            "r2": { title: "R-Squared (R²)", text: "How much of the result is controlled by the input?<br><b>80%+:</b> Strong Model (Predictable).<br><b>< 50%:</b> Weak Model (Too much noise)." },
+            "correlation": { title: "Correlation (r)", text: "<b>+1.0:</b> Both go up together.<br><b>-1.0:</b> As one goes up, the other goes down.<br><b>0.0:</b> No relationship." },
+            "pvalue": { title: "P-Value (Significance)", text: "Is the relationship real or just random luck?<br><b>< 0.05:</b> REAL Relationship.<br><b>> 0.05:</b> Fluke." }
+        };
+
+        function explain(key) {
+            const item = glossary[key];
+            if (item) {
+                document.getElementById('modalTitle').innerText = item.title;
+                let content = item.text;
+
+                if (currentScenario && examples[currentScenario]) {
+                    const s = examples[currentScenario];
+                    content += `<div style='margin-top:15px; padding:10px; background:rgba(52, 152, 219, 0.1); border-left:3px solid #3498db; font-size:13px;'>
+                            <b>Scenario Context:</b> ${s.context}</div>`;
+                }
+
+                document.getElementById('modalContent').innerHTML = content;
+                document.getElementById('infoModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
+            if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+        }
+
+        function magnify(canvasId, title) {
+            const original = document.getElementById(canvasId);
+            const modalImg = document.getElementById('magnifyImg');
+            modalImg.src = original.toDataURL();
+            document.getElementById('magnifyTitle').innerText = title;
+            document.getElementById('magnifyModal').style.display = 'flex';
+        }
+
+        function downloadChart(canvasId, title) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = title.replace(/\s+/g, '_') + '_Chart.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function loadExample(key) {
+            currentScenario = key;
+            const ex = examples[key];
+            if (ex) {
+                document.getElementById('xInput').value = ex.x;
+                document.getElementById('yInput').value = ex.y;
+            }
+        }
+
+        function autoFixData() {
+            ['xInput', 'yInput'].forEach(id => {
+                let el = document.getElementById(id);
+                el.value = el.value.replace(/,/g, '\n').replace(/[^\d.\-\n]/g, '').split('\n').filter(x => x).join(', ');
+            });
+        }
+
+        function calculateRegression() {
+            const xData = document.getElementById('xInput').value.split(',').map(Number).filter(x => !isNaN(x));
+            const yData = document.getElementById('yInput').value.split(',').map(Number).filter(x => !isNaN(x));
+
+            if (xData.length !== yData.length || xData.length < 2) { alert("X and Y must be matched pairs."); return; }
+
+            const n = xData.length;
+            // Simple Linear Regression Math
+            const sumX = jStat.sum(xData);
+            const sumY = jStat.sum(yData);
+            const sumXY = jStat.sum(xData.map((x, i) => x * yData[i]));
+            const sumXX = jStat.sum(xData.map(x => x * x));
+            const sumYY = jStat.sum(yData.map(y => y * y));
+
+            const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            const intercept = (sumY - slope * sumX) / n;
+
+            // R2
+            const rNum = (n * sumXY - sumX * sumY);
+            const rDen = Math.sqrt((n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY));
+            const r = rDen === 0 ? 0 : rNum / rDen;
+            const r2 = r * r;
+
+            // P-value (t-test for slope significance)
+            const yEst = xData.map(x => slope * x + intercept);
+            const ssResid = jStat.sum(yData.map((y, i) => Math.pow(y - yEst[i], 2)));
+            const seResid = Math.sqrt(ssResid / (n - 2));
+            const ssX = jStat.sum(xData.map(x => Math.pow(x - (sumX / n), 2)));
+            const seSlope = seResid / Math.sqrt(ssX);
+            const tStat = seSlope === 0 ? 0 : slope / seSlope;
+            const pVal = 2 * (1 - jStat.studentt.cdf(Math.abs(tStat), n - 2));
+
+            // Store results
+            currentResults = { slope, intercept, r, r2, pVal, n, xData, yData };
+
+            // UI
+            document.getElementById('resultsPanel').style.display = 'block';
+            document.getElementById('resEquation').innerText = `Y = ${slope.toFixed(3)}X ${intercept >= 0 ? '+' : '-'} ${Math.abs(intercept).toFixed(3)}`;
+            document.getElementById('resR2').innerText = (r2 * 100).toFixed(1) + "%";
+            document.getElementById('resR').innerText = r.toFixed(3);
+
+            const pElem = document.getElementById('resP');
+            pElem.innerText = pVal < 0.001 ? "< 0.001" : pVal.toFixed(4);
+            pElem.style.color = pVal < 0.05 ? '#2ECC71' : '#E74C3C';
+
+            generateAutoFindings(slope, intercept, r2, pVal);
+            renderChart(xData, yData, slope, intercept);
+            updateProgress();
+        }
+
+        function generateAutoFindings(slope, intercept, r2, pVal) {
+            const div = document.getElementById('analysisSummary');
+            let html = "";
+
+            if (pVal < 0.05) {
+                const direction = slope > 0 ? "positive (both increase together)" : "negative (inverse relationship)";
+                html = `<span style='color:var(--success)'><b>✅ Strong Relationship Confirmed:</b> The input (X) significantly drives the output (Y).</span><br>
+                    • The relationship is <b>${direction}</b>.<br>
+                    • For every <b>1 unit increase in X</b>, the Output Y changes by <b>${slope.toFixed(3)}</b>.<br>
+                    • The Model predicts <b>${(r2 * 100).toFixed(0)}%</b> of the variation. ${r2 > 0.8 ? "This is a highly reliable predictor." : "Consider additional factors."}`;
+            } else {
+                html = `<span style='color:var(--warning)'><b>⚠️ No Significant Relationship:</b> Changes in X do not reliably predict Y.</span><br>
+                    • The trend observed is likely random noise (P > 0.05).<br>
+                    • Do not use this model for prediction or control.<br>
+                    • Consider: Other variables, measurement error, or non-linear relationships.`;
+            }
+
+            div.innerHTML = html;
+            div.style.display = 'block';
+        }
+
+        function renderChart(x, y, m, c) {
+            const ctx = document.getElementById('regChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            const points = x.map((v, i) => ({ x: v, y: y[i] }));
+            const minX = Math.min(...x);
+            const maxX = Math.max(...x);
+            const linePoints = [
+                { x: minX, y: m * minX + c },
+                { x: maxX, y: m * maxX + c }
+            ];
+
+            chartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        { label: 'Observed Data', data: points, backgroundColor: '#29B6F6', pointRadius: 6 },
+                        { type: 'line', label: 'Prediction Model', data: linePoints, borderColor: '#FF7043', borderWidth: 2, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { x: { type: 'linear', position: 'bottom' } }
+                }
+            });
+        }
+
+        function updateProgress() {
+            let score = 0;
+            if (document.getElementById('xInput').value.trim()) score += 25;
+            if (document.getElementById('yInput').value.trim()) score += 25;
+            if (currentResults.r2 !== undefined) score += 30;
+            if (document.getElementById('analystName').value.trim()) score += 20;
+
+            document.getElementById('progressFill').style.width = score + '%';
+            document.getElementById('completionPct').innerText = score + '% Complete';
+        }
+
+        function printReport() {
+            if (!currentResults.r2) { alert("Please calculate model first."); return; }
+
+            const analyst = document.getElementById('analystName').value || 'Statistical Lead';
+            const date = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+            const canvas = document.getElementById('regChart');
+            const chartData = canvas.toDataURL();
+
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Regression Summary Report - ${analyst}</title>
+                    <style>
+                        body { font-family: 'Inter', 'Segoe UI', sans-serif; padding: 40px; color: #1e293b; line-height: 1.5; }
+                        .header { border-bottom: 3px solid #f97316; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; }
+                        .title { font-size: 26px; font-weight: 800; color: #7c2d12; text-transform: uppercase; }
+                        .meta { text-align: right; font-size: 14px; color: #64748b; }
+                        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+                        .card { background: #fff7ed; border: 1px solid #ffedd5; border-radius: 12px; padding: 20px; text-align: center; }
+                        .label { font-size: 11px; font-weight: 700; color: #9a3412; text-transform: uppercase; letter-spacing: 0.5px; }
+                        .val { font-size: 32px; font-weight: 800; color: #7c2d12; margin: 10px 0; }
+                        .sig-pass { color: #059669; }
+                        .sig-fail { color: #dc2626; }
+                        .eq-box { background: #7c2d12; color: white; padding: 20px; border-radius: 12px; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 30px; }
+                        .insight-box { background: #fff7ed; border: 1px solid #ffedd5; padding: 25px; border-radius: 12px; margin-top: 30px; }
+                        .footer { margin-top: 50px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+                        .chart-img { width: 100%; max-width: 600px; border-radius: 12px; border: 1px solid #ffedd5; display: block; margin: 30px auto; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div>
+                            <div class="title">📉 Simple Linear Regression Report</div>
+                            <div style="font-size:14px; color:#64748b;">Mathematical Relationship Assessment</div>
+                        </div>
+                        <div class="meta">
+                            Analyst: ${analyst}<br>
+                            Date: ${date}<br>
+                            Ref ID: REG-${Math.floor(Math.random() * 9e5) + 1e5}
+                        </div>
+                    </div>
+
+                    <div class="eq-box">
+                        <div style="font-size:11px; text-transform:uppercase; opacity:0.8; margin-bottom:5px;">Mathematical Model</div>
+                        ${document.getElementById('resEquation').innerText}
+                    </div>
+
+                    <div class="grid">
+                        <div class="card">
+                            <div class="label">R-Squared (R²)</div>
+                            <div class="val">${(currentResults.r2 * 100).toFixed(1)}%</div>
+                            <div style="font-size:12px; font-weight:600;">${currentResults.r2 > 0.8 ? '✅ HIGH PRECISION' : '⚠️ MODERATE FIT'}</div>
+                        </div>
+                        <div class="card">
+                            <div class="label">Correlation (r)</div>
+                            <div class="val">${currentResults.r.toFixed(3)}</div>
+                            <div style="font-size:11px; color:#64748b;">Direction: ${currentResults.r > 0 ? 'Positive' : 'Negative'}</div>
+                        </div>
+                        <div class="card">
+                            <div class="label">P-Value</div>
+                            <div class="val ${currentResults.pVal < 0.05 ? 'sig-pass' : 'sig-fail'}">${currentResults.pVal < 0.001 ? '< 0.001' : currentResults.pVal.toFixed(4)}</div>
+                            <div style="font-size:12px; font-weight:600;">${currentResults.pVal < 0.05 ? '✅ SIGNIFICANT' : '❌ NOT SIGNIFICANT'}</div>
+                        </div>
+                    </div>
+
+                    <div class="insight-box">
+                        <h3 style="margin-top:0; color:#7c2d12;">🔍 Executive Interpretation</h3>
+                        <p>${document.getElementById('analysisSummary').innerText}</p>
+                        <p style="margin-top:10px; font-size:13px; color:#9a3412;">
+                            The model indicates that for every 1 unit increase in X, Y is expected to change by ${currentResults.slope.toFixed(3)} units. 
+                            ${currentResults.r2 > 0.7 ? "The high R-squared suggests this model is reliable for forecasting." : "The moderate R-squared suggests other lurking variables are influencing the outcome."}
+                        </p>
+                    </div>
+
+                    <div style="page-break-before: always;">
+                        <h3 style="text-align:center;">📈 Fitted Line Plot</h3>
+                        <img class="chart-img" src="${chartData}">
+                    </div>
+
+                    <div class="footer">
+                        Statistical Excellence Portfolio | Lean Six Sigma Master Black Belt Series<br>
+                        Confidential Regression Compliance Documentation
+                    </div>
+                </body>
+                </html>
+            `);
+            win.document.close();
+            win.focus();
+            setTimeout(() => { win.print(); }, 500);
+        }
+
+        async function askAICoach() {
+            const r2 = document.getElementById('resR2').innerText;
+            const p = document.getElementById('resP').innerText;
+            const btn = document.getElementById('aiBtn');
+            btn.innerHTML = "Thinking...";
+            btn.disabled = true;
+
+            const prompt = `Act as a Master Black Belt. Linear Regression Result: R2 = ${r2}, P-value = ${p}. Explain the business impact and risk of using this model for prediction in 2 clear sentences.`;
+
+            try {
+                const res = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const d = await res.json();
+                document.getElementById('aiOutput').innerText = d.candidates[0].content.parts[0].text;
+            } catch (e) { document.getElementById('aiOutput').innerText = "AI Offline."; }
+            finally { btn.innerHTML = "Ask Gemini"; btn.disabled = false; }
+        }
+    </script>
+
+</body>
+
+</html>

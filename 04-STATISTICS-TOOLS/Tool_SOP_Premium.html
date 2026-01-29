@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOP Engine | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* MODERN SUITE LAYOUT */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 340px;
+            height: 100vh;
+            overflow: hidden;
+            background: #050505;
+        }
+
+        .sidebar-left {
+            background: #0a0a0a;
+            border-right: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .main-workspace {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .report-sidebar {
+            background: #0a0a0a;
+            border-left: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            color: #3b82f6;
+            font-family: 'Orbitron';
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* INFOGRAPHIC MODAL */
+        .info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.98);
+            display: none;
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .info-box-premium {
+            width: 95%;
+            max-width: 1000px;
+            background: #0f172a;
+            border-radius: 32px;
+            border: 2px solid #3b82f6;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(59, 130, 246, 0.2);
+        }
+
+        .info-header-pro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .info-title-pro {
+            font-family: 'Orbitron';
+            color: #3b82f6;
+            font-size: 28px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .info-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .info-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .info-tab-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .info-grid-pro {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-card-pro {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 20px;
+            border-left: 5px solid #3b82f6;
+        }
+
+        .info-card-pro h4 {
+            color: #3b82f6;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin: 0 0 10px;
+        }
+
+        .info-card-pro p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .example-box {
+            grid-column: span 2;
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            display: none;
+        }
+
+        .example-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .close-pro {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 30px;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-pro:hover {
+            color: white;
+        }
+
+        /* SOP TABLE / BUILDER */
+        .sop-step-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .sop-step-row {
+            display: grid;
+            grid-template-columns: 50px 1fr 200px 50px;
+            gap: 15px;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step-num {
+            font-family: 'Orbitron';
+            font-size: 18px;
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        .premium-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Inter';
+        }
+
+        .premium-select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #3b82f6;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Inter';
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR LEFT -->
+        <div class="sidebar-left">
+            <div style="font-family:'Orbitron'; font-size:16px; color:#3b82f6; margin-bottom:30px; text-align:center;">
+                CONTROL SUITE</div>
+
+            <div class="card"
+                style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); padding:15px;">
+                <span class="sidebar-label">Library Templates</span>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(0)">🏥 Patient Triage Process</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(1)">🏥 High-Alert Med Admin</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(2)">🏥 Discharge Workflow</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(3)">⚙️ CNC Setup Procedure</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(4)">📞 Customer Escalation</button>
+                </div>
+            </div>
+
+            <button class="btn btn-ghost" style="margin-top:auto;"
+                onclick="window.location.href='Tool_Improve_Control_Suite.html'"><i class="fas fa-arrow-left"></i> Back
+                to Suite</button>
+        </div>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="main-workspace">
+            <header class="flex-between" style="margin-bottom:30px;">
+                <div>
+                    <span class="phase-glow"
+                        style="background:#3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);">CONTROL PHASE</span>
+                    <h1>SOP Engine</h1>
+                    <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">Standardizing Excellence
+                        through rigorous procedure design.</p>
+                </div>
+                <button class="btn" style="background:rgba(59,130,246,0.1); border:1px solid #3b82f6; color:#3b82f6;"
+                    onclick="openInfo()">
+                    <i class="fas fa-file-invoice"></i> STRATEGY INSIGHT
+                </button>
+            </header>
+
+            <div class="card" style="padding:40px;">
+                <!-- 1. DOCUMENT CONTROL -->
+                <h2
+                    style="color:#3b82f6; font-size:16px; margin-bottom:15px; border-bottom:1px solid rgba(59,130,246,0.3); padding-bottom:5px;">
+                    1. Document Control Information</h2>
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; margin-bottom:20px;">
+                    <div style="grid-column: span 2;">
+                        <span class="sidebar-label">SOP Title</span>
+                        <input type="text" id="sopTitle" class="premium-input"
+                            placeholder="e.g., Monthly Payroll Processing">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">SOP ID Number</span>
+                        <input type="text" id="sopId" class="premium-input" placeholder="e.g., OPS-001">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Version</span>
+                        <input type="text" id="sopVersion" class="premium-input" placeholder="e.g., v1.0">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Effective Date</span>
+                        <input type="date" id="sopEffectiveDate" class="premium-input">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Department</span>
+                        <input type="text" id="sopDept" class="premium-input" placeholder="e.g., Operations">
+                    </div>
+                </div>
+
+                <!-- 2. PURPOSE & SCOPE -->
+                <h2
+                    style="color:#3b82f6; font-size:16px; margin-bottom:15px; border-bottom:1px solid rgba(59,130,246,0.3); padding-bottom:5px;">
+                    2. Purpose & Scope</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px;">
+                    <div>
+                        <span class="sidebar-label">Purpose</span>
+                        <textarea id="sopPurpose" class="premium-input" rows="3"
+                            placeholder="Why does this SOP exist?"></textarea>
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Scope</span>
+                        <textarea id="sopScope" class="premium-input" rows="3"
+                            placeholder="Who does this apply to?"></textarea>
+                    </div>
+                </div>
+
+                <!-- 3. ROLES (RACI) -->
+                <h2
+                    style="color:#3b82f6; font-size:16px; margin-bottom:15px; border-bottom:1px solid rgba(59,130,246,0.3); padding-bottom:5px;">
+                    3. Roles & Responsibilities (RACI)</h2>
+                <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:15px; margin-bottom:20px;">
+                    <div><span class="sidebar-label">Responsible (Doer)</span><input type="text" id="raciR"
+                            class="premium-input"></div>
+                    <div><span class="sidebar-label">Accountable (Approver)</span><input type="text" id="raciA"
+                            class="premium-input"></div>
+                    <div><span class="sidebar-label">Consulted (SME)</span><input type="text" id="raciC"
+                            class="premium-input"></div>
+                    <div><span class="sidebar-label">Informed (Updates)</span><input type="text" id="raciI"
+                            class="premium-input"></div>
+                </div>
+
+                <!-- 4. PREREQUISITES & 5. SAFETY -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px;">
+                    <div>
+                        <h2
+                            style="color:#3b82f6; font-size:16px; margin-bottom:15px; border-bottom:1px solid rgba(59,130,246,0.3); padding-bottom:5px;">
+                            4. Prerequisites</h2>
+                        <textarea id="sopPrereq" class="premium-input" rows="4"
+                            placeholder="Tools, Software, Access needed..."></textarea>
+                    </div>
+                    <div>
+                        <h2
+                            style="color:#ef4444; font-size:16px; margin-bottom:15px; border-bottom:1px solid rgba(239,68,68,0.3); padding-bottom:5px;">
+                            5. ⚠️ Health, Safety & Compliance</h2>
+                        <textarea id="sopSafety" class="premium-input" rows="4" style="border-color: #ef4444;"
+                            placeholder="⚠️ Critical warnings, PPE, GDPR..."></textarea>
+                    </div>
+                </div>
+
+                <!-- 6. EXECUTION -->
+                <h2
+                    style="color:#3b82f6; font-size:16px; margin-bottom:15px; border-bottom:1px solid rgba(59,130,246,0.3); padding-bottom:5px;">
+                    6. Execution Procedure</h2>
+                <textarea id="sopProcedure" class="premium-input" rows="10"
+                    placeholder="Phase 1: Preparation...&#10;1. Action...&#10;2. Action...&#10;&#10;Phase 2: Execution..."></textarea>
+
+                <!-- 7. TROUBLESHOOTING & 8. REFS -->
+                <div
+                    style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:20px; margin-bottom:20px;">
+                    <div>
+                        <span class="sidebar-label">7. Troubleshooting</span>
+                        <textarea id="sopTroubleshoot" class="premium-input" rows="3"
+                            placeholder="Issue: ... Solution: ..."></textarea>
+                    </div>
+                    <div>
+                        <span class="sidebar-label">8. References</span>
+                        <textarea id="sopRefs" class="premium-input" rows="3"
+                            placeholder="Related SOPs, Definitions..."></textarea>
+                    </div>
+                </div>
+
+                <!-- 9. REVISION HISTORY -->
+                <h2
+                    style="color:#3b82f6; font-size:16px; margin-bottom:15px; border-bottom:1px solid rgba(59,130,246,0.3); padding-bottom:5px;">
+                    9. Revision History</h2>
+                <table class="sop-step-table" style="margin-bottom:20px;">
+                    <thead>
+                        <tr style="text-align:left; color:#94a3b8; font-size:11px; text-transform:uppercase;">
+                            <th style="padding:10px;">Version</th>
+                            <th style="padding:10px;">Date</th>
+                            <th style="padding:10px;">Author</th>
+                            <th style="padding:10px;">Description of Changes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="revisionBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REPORT SIDEBAR -->
+        <div class="report-sidebar">
+            <h2 class="sidebar-title">SOP Compliance</h2>
+
+            <div class="input-group">
+                <span class="sidebar-label">Document Owner:</span>
+                <input type="text" id="analystName" class="premium-input" placeholder="Name...">
+            </div>
+
+            <div class="card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);">
+                <span class="sidebar-label">Draft Completion</span>
+                <div style="height:8px; background:rgba(0,0,0,0.3); border-radius:4px; overflow:hidden; margin:10px 0;">
+                    <div id="progressFill" style="height:100%; background:#3b82f6; width:0%; transition:1s;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-secondary);">
+                    <span>Logic Check</span>
+                    <span id="progressText">0%</span>
+                </div>
+            </div>
+
+            <div style="display:grid; gap:12px; margin-top:auto;">
+                <button class="btn btn-primary" style="background:#3b82f6;" onclick="saveSOP()"><i
+                        class="fas fa-save"></i> Finalize Standard</button>
+                <button class="btn btn-ghost" onclick="window.print()"><i class="fas fa-print"></i> Export SOP
+                    (PDF)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STRATEGIC INFO POPUP -->
+    <div id="infoModal" class="info-overlay">
+        <!-- ... (Modal content remains same) ... -->
+        <div class="info-box-premium">
+            <span class="close-pro" onclick="closeInfo()">&times;</span>
+            <div class="info-header-pro">
+                <div class="info-title-pro">SOP STRATEGIC INSIGHT</div>
+                <div class="info-tabs">
+                    <button class="info-tab-btn active" onclick="switchExample('general')">🍎 General Principle</button>
+                    <button class="info-tab-btn" onclick="switchExample('learnmore')">🚀 Learn more</button>
+                </div>
+            </div>
+
+            <!-- GENERAL PRINCIPLE TAB -->
+            <div id="ex-general" class="example-box active" style="background:none; border:none; padding:0;">
+                <div class="info-grid-pro">
+                    <!-- History (Top, Full Width) -->
+                    <div class="info-card-pro"
+                        style="grid-column: span 2; display:flex; gap:20px; align-items:center; border-left: 5px solid #f59e0b;">
+                        <div style="flex:1;">
+                            <h4 style="color:#f59e0b;">HISTORY OF ORIGIN</h4>
+                            <p>Rooted in Frederick Taylor's Scientific Management (1900s). Refined by Lean into "Visual
+                                Standards" where instructions must be simple and visual.</p>
+                        </div>
+                        <img src="assets/frederick_taylor.png"
+                            style="height:100px; width:100px; object-fit:cover; border-radius:50%; border:2px solid #f59e0b;">
+                    </div>
+
+                    <!-- What is it? -->
+                    <div class="info-card-pro">
+                        <h4>WHAT IS IT?</h4>
+                        <p>An SOP is a set of step-by-step instructions compiled by an organization to help workers
+                            carry out complex routine operations.</p>
+                    </div>
+
+                    <!-- Why use it? -->
+                    <div class="info-card-pro">
+                        <h4>WHY USE IT?</h4>
+                        <p>To achieve efficiency, quality output, and uniformity of performance, while reducing
+                            miscommunication and failure to comply with standards.</p>
+                    </div>
+
+                    <!-- When to add? (Full Width) -->
+                    <div class="info-card-pro" style="grid-column: span 2;">
+                        <h4>WHEN TO ADD?</h4>
+                        <p>Created during the <strong>Control</strong> phase to ensure the improved process remains
+                            stable and sustainable over time.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEARN MORE TAB (Visual Examples) -->
+            <div id="ex-learnmore" class="example-box" style="background:none; border:none; padding:0;">
+                <h4
+                    style="color:#3b82f6; margin-bottom:20px; text-align:center; text-transform:uppercase; letter-spacing:1px;">
+                    Visual SOP Examples</h4>
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px;">
+                    <div
+                        style="background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
+                        <img src="assets/hand_hygiene_5_moments.png"
+                            style="width:100%; height:auto; border-radius:8px; display:block;" alt="Hand Hygiene">
+                        <p style="text-align:center; color:#94a3b8; font-size:11px; margin-top:10px;">Healthcare: 5
+                            Moments</p>
+                    </div>
+                    <div
+                        style="background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
+                        <img src="assets/spill_kit_instructions.png"
+                            style="width:100%; height:auto; border-radius:8px; display:block;" alt="Spill Kit">
+                        <p style="text-align:center; color:#94a3b8; font-size:11px; margin-top:10px;">Safety: Spill
+                            Response</p>
+                    </div>
+                    <div
+                        style="background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
+                        <img src="assets/sop_checklist.png"
+                            style="width:100%; height:auto; border-radius:8px; display:block;" alt="Checklist">
+                        <p style="text-align:center; color:#94a3b8; font-size:11px; margin-top:10px;">Operations: Visual
+                            Checklist</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openInfo() {
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeInfo() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        function switchExample(type) {
+            document.querySelectorAll('.info-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.example-box').forEach(e => e.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('ex-' + type).classList.add('active');
+        }
+
+        const examples = [
+            {
+                title: "Patient Triage Standard",
+                id: "ED-TRI-001",
+                version: "v2.0",
+                date: "2024-03-15",
+                dept: "Emergency Medicine",
+                raciR: "Triage Nurse",
+                raciA: "Charge Nurse",
+                raciC: "ED Physician",
+                raciI: "Registration Clerk",
+                purpose: "To standardize the rapid assessment of patient severity upon arrival to ensure patients with life-threatening conditions receive immediate care.",
+                scope: "Applies to all patients entering the Emergency Department via walk-in or ambulance. Excludes direct admits.",
+                procedure: "Phase 1: Initial Contact\n1. Assess airway and breathing immediately upon arrival. (Critical)\n2. Verify patient identity using 2 independent identifiers (Name & DOB). (Critical)\n\nPhase 2: Assessment\n3. Record vital signs: HR, BP, SpO2, Temp within 5 minutes.\n4. Calculate ESI (Emergency Severity Index) level based on acuity algorythm.\n\nPhase 3: Disposition\n5. Escort to appropriate care area immediately if ESI 1-2. (Safety)",
+                safety: "⚠️ Standard Precautions (Gloves/Mask) required for all patient interactions.\n⚠️ Ensure HIPAA compliance during intake interview.\n⚠️ Immediate escalation for Chest Pain or Stroke symptoms.",
+                prereq: "Vital Signs Monitor, Triage Computer, ID Scanner, ESI Handbook",
+                troubleshoot: "Issue: Patient creates disturbance. Solution: Activate 'Code Grey' protocol and notify security.\nIssue: ESI unclear. Solution: Consult Charge Nurse for secondary assessment.",
+                refs: "Related SOP: ED-ADM-002 (Patient Admission). Dictionary: ESI (Emergency Severity Index)."
+            },
+            {
+                title: "High-Alert Med Administration",
+                id: "NURS-MED-HIGH",
+                version: "v3.1",
+                date: "2024-02-10",
+                dept: "Inpatient Nursing",
+                raciR: "Certified Nurse",
+                raciA: "Nurse Manager",
+                raciC: "Pharmacist",
+                raciI: "Attending Physician",
+                purpose: "To prevent medication errors during the administration of high-alert drugs (e.g., Insulin, Heparin) that carry a higher risk of patient harm.",
+                scope: "All clinical staff responding to medication orders for high-alert classifications.",
+                procedure: "1. Retrieve medication from automated dispensing cabinet.\n2. Scan medication barcode at the cabinet. (Critical)\n3. Perform independent 2nd Clinician Double-Check for dose calculation. (Critical)\n4. Verify patient identity via wristband scan at bedside.\n5. Administer medication and observe for 5 mins. (Safety)",
+                safety: "⚠️ High-Alert meds require mandatory independent double-check.\n⚠️ Stop process immediately if barcode scan fails.\n⚠️ Never bypass soft-alerts without clinical justification.",
+                prereq: "eMAR System, Barcode Scanner, Automated Medication Cabinet",
+                troubleshoot: "Issue: Barcode not scanning. Solution: Clean scanner lens or request new label from Pharmacy.\nIssue: Discrepancy in count. Solution: Do not remove med; file Incident Report immediately.",
+                refs: "Policy: Medication Safety 504. Link: ISMP List of High-Alert Medications."
+            },
+            {
+                title: "Patient Discharge Protocol",
+                id: "CM-DIS-105",
+                version: "v1.5",
+                date: "2024-04-20",
+                dept: "Case Management",
+                raciR: "Case Manager",
+                raciA: "Attending Physician",
+                raciC: "Social Worker",
+                raciI: "Billing Dept",
+                purpose: "To ensure safe transition of care and prevent readmissions through thorough education and resource verification.",
+                scope: "All inpatient discharges to home or skilled nursing facilities.",
+                procedure: "1. Confirm physician discharge order is entered in EMR.\n2. Complete medication reconciliation form with patient. (Critical)\n3. Provide patient with written aftercare plan and education material.\n4. Remove peripheral IV line safely.\n5. Escort patient to discharge lounge via wheelchair.",
+                safety: "⚠️ Verify patient understanding using Teach-back method.\n⚠️ Ensure IV site hemostasis before patient dresses.\n⚠️ Do not discharge if vital signs are unstable.",
+                prereq: "Discharge Packet, Wheelchair, Transportation Voucher",
+                troubleshoot: "Issue: Patient lacks transport. Solution: Arranage medical taxi voucher via Social Work.\nIssue: Meds not ready. Solution: Call outpatient pharmacy; delay discharge until meds in hand.",
+                refs: "Guidelines: CMS Readmission Reduction Program."
+            },
+            {
+                title: "CNC Machine Setup",
+                id: "MFG-CNC-04",
+                version: "v4.0",
+                date: "2024-01-05",
+                dept: "Manufacturing",
+                raciR: "CNC Operator",
+                raciA: "Shop Floor Lead",
+                raciC: "Process Engineer",
+                raciI: "Maintenance Tech",
+                purpose: "To prepare CNC machinery for safe and accurate production of Series-X components.",
+                scope: "Machine Shop - Lathe and Mill stations 4 through 8.",
+                procedure: "Phase 1: Prep\n1. Clean workspace and inspect for debris in chuck. (Safety)\n2. Mount workpiece securely in vise; torque to spec.\n\nPhase 2: Load\n3. Upload G-Code program to controller.\n4. Perform dry-run without tool to verify path. (Critical)\n5. Commence production run and gauge first part.",
+                safety: "⚠️ Safety Glasses and Steel-toe boots required at all times.\n⚠️ Lock-out Tag-out must be applied if entering machine enclosure.\n⚠️ Keep hands clear of spindle during operation.",
+                prereq: "Calipers, Torque Wrench, G-Code Files, Raw Material Stock",
+                troubleshoot: "Issue: Chatter marks on surface. Solution: Check tool wear or increase coolant flow.\nIssue: G-Code error. Solution: Stop immediately; consult Process Engineer.",
+                refs: "Manual: Haas CNC Operator Guide. Spec: ISO 9001 Process Control."
+            },
+            {
+                title: "Customer Account Escalation",
+                id: "CS-ESC-99",
+                version: "v2.2",
+                date: "2024-05-12",
+                dept: "Customer Support (CS)",
+                raciR: "Tier 1 Support",
+                raciA: "Support Manager",
+                raciC: "Product Manager",
+                raciI: "Sales Rep",
+                purpose: "To resolve high-priority customer issues efficiently and maintain high NPS scores.",
+                scope: "Customer Support Department handling Enterprise Clients.",
+                procedure: "1. Document detailed customer issue in CRM notes.\n2. Search knowledge base for quick fix or known bugs.\n3. Flag as 'High Priority' if SLA < 2 hours or 'System Down'. (Critical)\n4. Warm transfer call to Tier 2 Lead (do not cold drop).\n5. Confirm receipt by Tier 2 and close initial ticket.",
+                safety: "⚠️ Verify caller identity before discussing account details (Data Privacy/GDPR).\n⚠️ Do not promise fixes/dates without Engineering confirmation.",
+                prereq: "CRM Access (Salesforce), Knowledge Base, Headset",
+                troubleshoot: "Issue: Tier 2 unavailable. Solution: Take message and assign ticket to Tier 2 Queue with 'Urgent' tag.\nIssue: Customer abusive. Solution: Follow 'Abusive Caller' protocol; termination allowed after 2 warnings.",
+                refs: "Policy: Enterprise SLA Agreement. Guide: De-escalation Techniques."
+            }
+        ];
+
+        function loadExample(idx) {
+            const ex = examples[idx];
+            document.getElementById('sopTitle').value = ex.title;
+            document.getElementById('sopId').value = ex.id;
+            document.getElementById('sopVersion').value = ex.version;
+            document.getElementById('sopEffectiveDate').value = ex.date;
+            document.getElementById('sopDept').value = ex.dept;
+
+            document.getElementById('raciR').value = ex.raciR;
+            document.getElementById('raciA').value = ex.raciA;
+            document.getElementById('raciC').value = ex.raciC;
+            document.getElementById('raciI').value = ex.raciI;
+
+            document.getElementById('sopPurpose').value = ex.purpose;
+            document.getElementById('sopScope').value = ex.scope;
+            document.getElementById('sopProcedure').value = ex.procedure;
+            document.getElementById('sopSafety').value = ex.safety;
+            document.getElementById('sopPrereq').value = ex.prereq;
+            document.getElementById('sopTroubleshoot').value = ex.troubleshoot;
+            document.getElementById('sopRefs').value = ex.refs;
+
+            // Populate Revision History (Mock logic based on version)
+            const tbody = document.getElementById('revisionBody');
+            tbody.innerHTML = `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <td style="padding:10px; color:white;">v1.0</td>
+                    <td style="padding:10px; color:#94a3b8;">${new Date(ex.date).getFullYear() - 1}-01-01</td>
+                    <td style="padding:10px; color:#94a3b8;">${ex.raciR}</td>
+                    <td style="padding:10px; color:#94a3b8;">Initial Draft</td>
+                </tr>
+                <tr>
+                    <td style="padding:10px; color:white;">${ex.version}</td>
+                    <td style="padding:10px; color:#94a3b8;">${ex.date}</td>
+                    <td style="padding:10px; color:#94a3b8;">${ex.raciA}</td>
+                    <td style="padding:10px; color:#94a3b8;">Updated for compliance / process change.</td>
+                </tr>
+            `;
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            let score = 0;
+            // Simple logic: check if fields have length
+            const fields = ['sopTitle', 'sopId', 'sopPurpose', 'sopScope', 'raciR', 'sopProcedure', 'sopSafety', 'sopTroubleshoot'];
+            let filled = 0;
+            fields.forEach(f => {
+                if (document.getElementById(f).value.length > 0) filled++;
+            });
+
+            score = Math.floor((filled / fields.length) * 100);
+            if (score > 100) score = 100;
+
+            document.getElementById('progressFill').style.width = score + '%';
+            document.getElementById('progressText').innerText = score + '%';
+        }
+
+        // Add Listeners
+        const inputs = ['sopTitle', 'sopId', 'sopVersion', 'sopEffectiveDate', 'sopDept', 'sopPurpose', 'sopScope', 'raciR', 'raciA', 'raciC', 'raciI', 'sopPrereq', 'sopSafety', 'sopProcedure', 'sopTroubleshoot', 'sopRefs'];
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', updateProgress);
+            }
+        });
+
+        window.onload = () => {
+            loadExample(0); // Load first example by default
+        };
+
+        function saveSOP() {
+            alert('SOP Standard Finalized & Saved!');
+        }
+    </script>
+    <style>
+        @media print {
+
+            .sidebar-left,
+            .report-sidebar,
+            .app-container header {
+                display: none !important;
+            }
+
+            .app-container {
+                display: block;
+                height: auto;
+                background: white;
+            }
+
+            .main-workspace {
+                padding: 0;
+                overflow: visible;
+            }
+
+            .card {
+                border: none !important;
+                background: white !important;
+                padding: 0 !important;
+                color: black !important;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            input,
+            textarea {
+                color: black !important;
+                background: white !important;
+                border: 1px solid #ccc !important;
+            }
+
+            h1,
+            h2,
+            span,
+            p,
+            th,
+            td {
+                color: black !important;
+            }
+
+            /* Hide placeholder/ghost text if needed or style properly */
+        }
+    </style>
+</body>
+
+</html>

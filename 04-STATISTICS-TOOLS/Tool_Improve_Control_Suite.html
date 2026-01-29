@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.W.I.M. Improvement & Control Studio | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #050505;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent),
+                radial-gradient(circle at bottom left, rgba(244, 114, 182, 0.1), transparent);
+        }
+
+        .hub-container {
+            width: 90%;
+            max-width: 1200px;
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        header {
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-family: 'Orbitron';
+            font-size: 42px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .hub-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .hub-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .hub-card i {
+            font-size: 50px;
+            transition: 0.3s;
+        }
+
+        .hub-card h2 {
+            font-family: 'Orbitron';
+            font-size: 18px;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .hub-card p {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .hub-card.poka:hover i {
+            color: #f472b6;
+            text-shadow: 0 0 20px rgba(244, 114, 182, 0.5);
+        }
+
+        .hub-card.sop:hover i {
+            color: #3b82f6;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .hub-card.risk:hover i {
+            color: #f59e0b;
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .btn-back {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hub-footer {
+            margin-top: 60px;
+            font-size: 12px;
+            color: #475569;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="Tool_WorkflowHub.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Workflow Hub</a>
+
+    <div class="hub-container">
+        <header>
+            <div
+                style="color:#3b82f6; font-family:'Orbitron'; font-size:12px; font-weight:800; letter-spacing:4px; margin-bottom:10px;">
+                IMPROVE & CONTROL</div>
+            <h1>The Solution Factory</h1>
+            <p style="color:#94a3b8; font-size:16px;">Advanced Mistake-Proofing, Standardization, and Risk Management
+                Studio.</p>
+        </header>
+
+        <div class="hub-grid">
+            <div class="hub-card poka" onclick="window.location.href='Tool_PokaYoke_Premium.html'">
+                <i class="fas fa-shield-alt" style="color:#f472b6;"></i>
+                <h2>Poka-Yoke Builder</h2>
+                <p>Design mechanical and digital safeguards to make errors physically impossible.</p>
+                <button class="btn btn-ghost"
+                    style="border:1px solid rgba(244, 114, 182, 0.3); color:#f472b6; font-size:10px; margin-top:10px;">OPEN
+                    ARCHITECT</button>
+            </div>
+
+            <div class="hub-card sop" onclick="window.location.href='Tool_SOP_Premium.html'">
+                <i class="fas fa-file-invoice" style="color:#3b82f6;"></i>
+                <h2>SOP Engine</h2>
+                <p>Standardize sequences and critical quality checks into rigorous operational guides.</p>
+                <button class="btn btn-ghost"
+                    style="border:1px solid rgba(59, 130, 246, 0.3); color:#3b82f6; font-size:10px; margin-top:10px;">OPEN
+                    ENGINE</button>
+            </div>
+
+            <div class="hub-card risk" onclick="window.location.href='Tool_RiskRegistrar_Premium.html'">
+                <i class="fas fa-biohazard" style="color:#f59e0b;"></i>
+                <h2>Risk Registrar</h2>
+                <p>Predict failure modes, assess project impact, and lock in mitigation strategies.</p>
+                <button class="btn btn-ghost"
+                    style="border:1px solid rgba(245, 158, 11, 0.3); color:#f59e0b; font-size:10px; margin-top:10px;">OPEN
+                    REGISTRAR</button>
+            </div>
+        </div>
+
+        <div class="hub-footer">
+            Execution Excellence • Zero Defects • Sustainability
+        </div>
+    </div>
+</body>
+
+</html>
