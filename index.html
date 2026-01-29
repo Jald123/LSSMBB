@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lean Six Sigma Interactive Platform | Health Quality Leaders</title>
+    <meta name="description"
+        content="Professional Lean Six Sigma training platform with interactive tools, calculators, and certification resources.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f1c;
+            --bg-secondary: #111827;
+            --bg-card: rgba(30, 41, 59, 0.6);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-yellow: #fbbf24;
+            --accent-green: #10b981;
+            --accent-black: #1e293b;
+            --accent-blue: #3b82f6;
+            --gold: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(251, 191, 36, 0.05) 0%, transparent 60%);
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Main Content */
+        main {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Category Section */
+        .category {
+            margin-bottom: 3rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .category-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Tool Grid */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+        }
+
+        .tool-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .tool-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .tool-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 0.75rem;
+        }
+
+        .badge-premium {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .badge-calculator {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .badge-tool {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        /* Belt Levels */
+        .belt-section {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0 3rem;
+            flex-wrap: wrap;
+        }
+
+        .belt-badge {
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .belt-yellow {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+            border: 2px solid var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        .belt-green {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            border: 2px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .belt-black {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.6));
+            border: 2px solid #64748b;
+            color: #f8fafc;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon">🏆</div>
+            <div>
+                <h1>LEAN SIX SIGMA</h1>
+                <div class="tagline">Interactive Platform • Health Quality Leaders</div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Belt Levels -->
+        <div class="belt-section">
+            <div class="belt-badge belt-yellow">🥇 Yellow Belt</div>
+            <div class="belt-badge belt-green">🥈 Green Belt</div>
+            <div class="belt-badge belt-black">🏅 Black Belt</div>
+        </div>
+
+        <!-- Statistical Calculators -->
+        <section class="category">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(59, 130, 246, 0.2);">📊</div>
+                <h2 class="category-title">STATISTICAL CALCULATORS</h2>
+            </div>
+            <div class="tool-grid">
+                <a href="04-STATISTICS-TOOLS/Stats_Calculator_Main.html" class="tool-card">
+                    <div class="tool-name">📈 Stats Calculator Hub</div>
+                    <div class="tool-desc">Central hub for all statistical calculations</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Calculator_DescriptiveStats.html" class="tool-card">
+                    <div class="tool-name">📊 Descriptive Statistics</div>
+                    <div class="tool-desc">Mean, median, mode, standard deviation & more</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Calculator_ProcessCapability.html" class="tool-card">
+                    <div class="tool-name">🎯 Process Capability</div>
+                    <div class="tool-desc">Cp, Cpk, Pp, Ppk capability indices</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Calculator_ControlCharts.html" class="tool-card">
+                    <div class="tool-name">📉 Control Charts</div>
+                    <div class="tool-desc">X-bar, R, S charts for process monitoring</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Calculator_ANOVA.html" class="tool-card">
+                    <div class="tool-name">🔬 ANOVA Calculator</div>
+                    <div class="tool-desc">Analysis of variance testing</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Calculator_tTest.html" class="tool-card">
+                    <div class="tool-name">📏 t-Test Calculator</div>
+                    <div class="tool-desc">Paired & independent t-tests</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Calculator_ChiSquare.html" class="tool-card">
+                    <div class="tool-name">✓ Chi-Square Calculator</div>
+                    <div class="tool-desc">Chi-square test for independence</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Calculator_Regression.html" class="tool-card">
+                    <div class="tool-name">📈 Regression Analysis</div>
+                    <div class="tool-desc">Linear regression and correlation</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Calculator_SampleSize.html" class="tool-card">
+                    <div class="tool-name">🎲 Sample Size Calculator</div>
+                    <div class="tool-desc">Determine optimal sample sizes</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Calculator_SigmaLevel.html" class="tool-card">
+                    <div class="tool-name">σ Sigma Level</div>
+                    <div class="tool-desc">Calculate process sigma levels</div>
+                    <span class="tool-badge badge-calculator">Calculator</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Premium Tools -->
+        <section class="category">
+            <div class="category-header">
+                <div class="category-icon"
+                    style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.2));">⭐
+                </div>
+                <h2 class="category-title">PREMIUM TOOLS</h2>
+            </div>
+            <div class="tool-grid">
+                <a href="04-STATISTICS-TOOLS/Tool_ProjectCharter_Premium.html" class="tool-card">
+                    <div class="tool-name">📋 Project Charter</div>
+                    <div class="tool-desc">Professional DMAIC project charters</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_FMEA_Premium.html" class="tool-card">
+                    <div class="tool-name">⚠️ FMEA Analysis</div>
+                    <div class="tool-desc">Failure Mode & Effects Analysis</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_MSA_Premium.html" class="tool-card">
+                    <div class="tool-name">📐 MSA / Gage R&R</div>
+                    <div class="tool-desc">Measurement System Analysis</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_DOE_Premium.html" class="tool-card">
+                    <div class="tool-name">🧪 DOE Designer</div>
+                    <div class="tool-desc">Design of Experiments</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_RACI_Premium.html" class="tool-card">
+                    <div class="tool-name">👥 RACI Matrix</div>
+                    <div class="tool-desc">Responsibility assignment matrix</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_SOP_Premium.html" class="tool-card">
+                    <div class="tool-name">📖 SOP Generator</div>
+                    <div class="tool-desc">Standard Operating Procedures</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_RiskRegistrar_Premium.html" class="tool-card">
+                    <div class="tool-name">🛡️ Risk Registrar</div>
+                    <div class="tool-desc">Risk identification & mitigation</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_HypothesisWizard_Premium.html" class="tool-card">
+                    <div class="tool-name">🧙 Hypothesis Wizard</div>
+                    <div class="tool-desc">Statistical hypothesis testing guide</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_PokaYoke_Premium.html" class="tool-card">
+                    <div class="tool-name">🔒 Poka-Yoke Designer</div>
+                    <div class="tool-desc">Error-proofing solutions</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_CertGenerator_Premium.html" class="tool-card">
+                    <div class="tool-name">🏆 Certificate Generator</div>
+                    <div class="tool-desc">Professional LSS certificates</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Lean Tools -->
+        <section class="category">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(16, 185, 129, 0.2);">🔧</div>
+                <h2 class="category-title">LEAN TOOLS</h2>
+            </div>
+            <div class="tool-grid">
+                <a href="04-STATISTICS-TOOLS/Tool_VSM.html" class="tool-card">
+                    <div class="tool-name">🗺️ Value Stream Mapping</div>
+                    <div class="tool-desc">Visualize and optimize value flow</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_LeanWorkshop.html" class="tool-card">
+                    <div class="tool-name">🏭 Lean Workshop</div>
+                    <div class="tool-desc">Interactive flowcharts & swimlanes</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_8Wastes_DOWNTIME.html" class="tool-card">
+                    <div class="tool-name">🗑️ 8 Wastes (DOWNTIME)</div>
+                    <div class="tool-desc">Identify & eliminate waste</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_KaizenPDCA.html" class="tool-card">
+                    <div class="tool-name">🔄 Kaizen PDCA</div>
+                    <div class="tool-desc">Plan-Do-Check-Act cycles</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_Swimlane_Advanced.html" class="tool-card">
+                    <div class="tool-name">🏊 Swimlane Diagram</div>
+                    <div class="tool-desc">Cross-functional process flows</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_GanttChart.html" class="tool-card">
+                    <div class="tool-name">📅 Gantt Chart</div>
+                    <div class="tool-desc">Project timeline management</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Analysis Tools -->
+        <section class="category">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(139, 92, 246, 0.2);">🔍</div>
+                <h2 class="category-title">ANALYSIS TOOLS</h2>
+            </div>
+            <div class="tool-grid">
+                <a href="04-STATISTICS-TOOLS/Tool_ParetoAnalysis.html" class="tool-card">
+                    <div class="tool-name">📊 Pareto Analysis</div>
+                    <div class="tool-desc">80/20 rule visualization</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_Histogram.html" class="tool-card">
+                    <div class="tool-name">📊 Histogram Builder</div>
+                    <div class="tool-desc">Distribution visualization</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_BoxPlot.html" class="tool-card">
+                    <div class="tool-name">📦 Box Plot Creator</div>
+                    <div class="tool-desc">Statistical distribution plots</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_KanoModel.html" class="tool-card">
+                    <div class="tool-name">😊 Kano Model</div>
+                    <div class="tool-desc">Customer satisfaction analysis</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_QFD_HouseOfQuality.html" class="tool-card">
+                    <div class="tool-name">🏠 House of Quality</div>
+                    <div class="tool-desc">QFD matrix planning</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_StakeholderAnalysis.html" class="tool-card">
+                    <div class="tool-name">👥 Stakeholder Analysis</div>
+                    <div class="tool-desc">Stakeholder mapping & engagement</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_Benchmarking.html" class="tool-card">
+                    <div class="tool-name">🏆 Benchmarking</div>
+                    <div class="tool-desc">Performance comparison analysis</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_Financials_ROI.html" class="tool-card">
+                    <div class="tool-name">💰 ROI Calculator</div>
+                    <div class="tool-desc">Financial impact analysis</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Certification -->
+        <section class="category">
+            <div class="category-header">
+                <div class="category-icon" style="background: rgba(251, 191, 36, 0.2);">🎓</div>
+                <h2 class="category-title">CERTIFICATION & TRAINING</h2>
+            </div>
+            <div class="tool-grid">
+                <a href="04-STATISTICS-TOOLS/Tool_QualificationTranscript.html" class="tool-card">
+                    <div class="tool-name">📜 Qualification Transcript</div>
+                    <div class="tool-desc">Belt certification transcripts</div>
+                    <span class="tool-badge badge-premium">Premium</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_ExamEngine.html" class="tool-card">
+                    <div class="tool-name">📝 Exam Engine</div>
+                    <div class="tool-desc">Practice exams & assessments</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_LSS_Fundamentals.html" class="tool-card">
+                    <div class="tool-name">📚 LSS Fundamentals</div>
+                    <div class="tool-desc">Core LSS concepts & training</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+                <a href="04-STATISTICS-TOOLS/Tool_DistributionPowerLab.html" class="tool-card">
+                    <div class="tool-name">🔬 Distribution Power Lab</div>
+                    <div class="tool-desc">Interactive statistical distributions</div>
+                    <span class="tool-badge badge-tool">Tool</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 Health Quality Leaders | Lean Six Sigma Interactive Platform</p>
+        <p style="margin-top: 0.5rem;">Powered by <a href="https://supabase.com" target="_blank">Supabase</a></p>
+    </footer>
+</body>
+
+</html>
