@@ -1118,8 +1118,8 @@
                 // 2. Configure watermark and badge images
                 const logoSrc = SECURITY_MAP.logo || (typeof BADGE_IMAGES !== 'undefined' ? BADGE_IMAGES.logo : '');
                 const badgeSrc = typeof BADGE_IMAGES !== 'undefined' ? BADGE_IMAGES[CURRENT_BELT] : '';
-                // Use uploaded watermark if available (for local file:// protocol), otherwise use file path
-                const watermarkSrc = SECURITY_MAP.watermark || '../assets/belt_watermark.jpg';
+                // Use uploaded watermark if available, otherwise use the new default background
+                const watermarkSrc = SECURITY_MAP.watermark || '../assets/certificate_bg_default.png';
 
                 pdfWrapper.innerHTML = `
                     <!-- Watermark Background Layer -->
