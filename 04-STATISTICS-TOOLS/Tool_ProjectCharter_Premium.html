@@ -1027,7 +1027,11 @@
                         <option value="healthcare">🏥 Case: Patient Flow</option>
                         <option value="service">🖥️ Case: IT Service Resolution</option>
                     </select>
-                    <button class="btn btn-accent" onclick="autoFillAI()"><i class="fas fa-robot"></i> AI Draft</button>
+                    <button class="btn"
+                        style="background:rgba(239, 68, 68, 0.1); border:1px solid #ef4444; color:#ef4444; padding:8px 15px;"
+                        onclick="openScopeCreepModal()">
+                        <i class="fas fa-exclamation-triangle"></i> SCOPE CREEP?
+                    </button>
                     <button class="btn"
                         style="background:rgba(255,107,53,0.1); border:1px solid var(--accent); color:var(--accent); padding:8px 15px;"
                         onclick="openPremiumInfo('charter')">
@@ -1264,6 +1268,59 @@
         </div>
     </div>
 
+    <!-- SCOPE CREEP POPUP (HEALTHCARE FOCUS) -->
+    <div id="scopeCreepModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+        <div class="modal-box"
+            style="max-width: 900px; padding: 0; overflow: hidden; background: #080c14; border: 2px solid #ef4444;">
+            <div
+                style="padding: 20px; background: #ef4444; color: white; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-family: 'Orbitron'; letter-spacing: 1px;">CRITICAL ALERT: SCOPE CREEP</h3>
+                <span class="close-pro" style="position: static; color: white;"
+                    onclick="document.getElementById('scopeCreepModal').style.display='none'">&times;</span>
+            </div>
+            <div style="padding: 30px;">
+                <img src="scope_creep_healthcare.png"
+                    style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);">
+
+                <div
+                    style="margin-top: 30px; background: rgba(239, 68, 68, 0.05); border-left: 5px solid #ef4444; padding: 25px; border-radius: 0 12px 12px 0;">
+                    <h4 style="color: #ef4444; font-family: 'Orbitron'; font-size: 16px; margin-top: 0;">
+                        <i class="fas fa-hospital-user"></i> The Clinical Impact: Why It Risks Patient Care
+                    </h4>
+                    <p style="color: #cbd5e1; font-size: 14px; line-height: 1.8; margin-bottom: 0;">
+                        In healthcare, <strong>Scope Creep</strong> is like a virus that infects your project timeline.
+                        What starts as a simple mission—like <em>"Reducing Patient Discharge Time"</em>—can quickly
+                        mutate into <em>"Redesigning Pharmacy Workflows"</em> or <em>"Training Nursing Staff on New
+                            Tablets."</em>
+                        <br><br>
+                        <strong>The Result?</strong> Resources are bleed dry, frontline staff face burnout from "change
+                        fatigue," and the original goal—improving patient flow—is never achieved. <strong>In Six Sigma,
+                            if you try to fix everything at once, you fix nothing.</strong>
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px;">
+                        <span
+                            style="display: block; color: #ef4444; font-weight: 800; font-size: 11px; text-transform: uppercase; margin-bottom: 5px;">Simplified
+                            Rule</span>
+                        <p style="color: #94a3b8; font-size: 12px; margin: 0;">If it's not in the original
+                            <strong>Project Charter</strong>, it doesn't exist. Lock the door to "While we're at it..."
+                            requests.
+                        </p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px;">
+                        <span
+                            style="display: block; color: #10b981; font-weight: 800; font-size: 11px; text-transform: uppercase; margin-bottom: 5px;">Master
+                            Tip</span>
+                        <p style="color: #94a3b8; font-size: 12px; margin: 0;">Use the <strong>Out-of-Scope</strong>
+                            section of this tool as your shield. Defend it fiercely to hit your financial targets.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ENHANCED PROJECT GUIDE MODAL (ULTRA VERSION) -->
     <div class="modal-overlay" id="guideModal" onclick="if(event.target===this) this.style.display='none'">
         <div class="guide-modal-box">
@@ -1274,24 +1331,29 @@
                     style="font-family:'Orbitron'; font-size:16px; color:var(--accent); margin-bottom:25px; text-align:center;">
                     GUIDE LAB</div>
                 <button class="guide-side-btn active" onclick="switchSuperTab('intro', this)"><i
-                        class="fas fa-play"></i> Project Philosophy</button>
+                        class="fas fa-play"></i>
+                    Project Philosophy</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('title', this)"><i class="fas fa-tag"></i>
                     Project Title</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('business', this)"><i
                         class="fas fa-hand-holding-usd"></i> Business Case</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('problem', this)"><i
-                        class="fas fa-search-plus"></i> Problem Statement</button>
+                        class="fas fa-search-plus"></i>
+                    Problem Statement</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('goal', this)"><i class="fas fa-bullseye"></i>
                     SMART Goal</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('scope', this)"><i
-                        class="fas fa-vector-square"></i> Scope Control</button>
+                        class="fas fa-vector-square"></i>
+                    Scope Control</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('governance', this)"><i
                         class="fas fa-users-cog"></i>
                     Governance</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('financial', this)"><i
-                        class="fas fa-funnel-dollar"></i> COPQ & Savings</button>
+                        class="fas fa-funnel-dollar"></i>
+                    COPQ & Savings</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('timeline', this)"><i
-                        class="fas fa-calendar-alt"></i> Milestones</button>
+                        class="fas fa-calendar-alt"></i>
+                    Milestones</button>
                 <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.05);"></div>
                 <button class="guide-side-btn" onclick="switchSuperTab('templates', this)"
                     style="color:var(--success);"><i class="fas fa-magic"></i> Templates Lab</button>
@@ -2521,6 +2583,10 @@
                             // Initialize Calc
                             calcSavings();
                         };
+
+                        function openScopeCreepModal() {
+                            document.getElementById('scopeCreepModal').style.display = 'flex';
+                        }
 
                         function openPremiumInfo(type) {
                             const modal = document.getElementById('premiumInfoModal');
