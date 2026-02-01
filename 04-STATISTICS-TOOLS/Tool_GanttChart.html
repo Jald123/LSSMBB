@@ -412,8 +412,8 @@
             margin-right: 5px;
         }
 
-        /* TIMELINE BIBLE STYLES */
-        .bible-btn {
+        /* TIMELINE STRATEGY STYLES */
+        .strategy-btn {
             background: linear-gradient(135deg, #FFD700, #FCA311);
             color: #000;
             border: none;
@@ -432,12 +432,12 @@
             text-transform: uppercase;
         }
 
-        .bible-btn:hover {
+        .strategy-btn:hover {
             transform: scale(1.05) translateY(-2px);
             box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
         }
 
-        .bible-overlay {
+        .strategy-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -451,13 +451,13 @@
             padding: 50px 20px;
         }
 
-        .bible-content {
+        .strategy-content {
             max-width: 1200px;
             margin: 0 auto;
             color: white;
         }
 
-        .bible-section {
+        .strategy-section {
             margin-bottom: 80px;
             opacity: 0;
             transform: translateY(30px);
@@ -468,12 +468,12 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .bible-section.visible {
+        .strategy-section.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .bible-hook {
+        .strategy-hook {
             font-family: 'Orbitron', sans-serif;
             font-size: 32px;
             color: var(--accent);
@@ -481,7 +481,7 @@
             text-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
         }
 
-        .bible-text {
+        .strategy-text {
             font-size: 18px;
             line-height: 1.8;
             color: #ccc;
@@ -489,7 +489,7 @@
             max-width: 800px;
         }
 
-        .bible-img-wrapper {
+        .strategy-img-wrapper {
             width: 100%;
             border-radius: 12px;
             overflow: hidden;
@@ -497,12 +497,12 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .bible-img {
+        .strategy-img {
             width: 100%;
             display: block;
         }
 
-        .bible-close {
+        .strategy-close {
             position: fixed;
             top: 30px;
             right: 30px;
@@ -520,17 +520,17 @@
             transition: 0.3s;
         }
 
-        .bible-close:hover {
+        .strategy-close:hover {
             background: #e74c3c;
             transform: rotate(90deg);
         }
 
-        .bible-header {
+        .strategy-header {
             text-align: center;
             margin-bottom: 60px;
         }
 
-        .bible-header h1 {
+        .strategy-header h1 {
             font-family: 'Orbitron', sans-serif;
             font-size: 48px;
             background: linear-gradient(to right, #fff, var(--accent));
@@ -552,7 +552,8 @@
                 <span class="phase-glow">PROJECT MANAGEMENT</span>
                 <div style="height: 15px;"></div>
                 <h1>Project Timelines & Dependencies
-                    <button class="bible-btn" onclick="openBible()"><span>📖</span> TIMELINE VISUAL BIBLE</button>
+                    <button class="strategy-btn" onclick="openStrategy()"><span>📖</span> TIMELINE VISUAL
+                        STRATEGY</button>
                 </h1>
             </div>
             <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
@@ -757,77 +758,79 @@
     </div>
 
     <!-- ZOOM MODAL -->
-    <!-- TIMELINE VISUAL BIBLE MODAL -->
-    <div id="bibleModal" class="bible-overlay" onclick="closeBible(event)">
-        <span class="bible-close" onclick="document.getElementById('bibleModal').style.display='none'">&times;</span>
-        <div class="bible-content" id="bibleInner">
-            <div class="bible-header">
-                <h1>The Timeline Master's Bible</h1>
+    <!-- TIMELINE VISUAL STRATEGY MODAL -->
+    <div id="strategyModal" class="strategy-overlay" onclick="closeStrategy(event)">
+        <span class="strategy-close"
+            onclick="document.getElementById('strategyModal').style.display='none'">&times;</span>
+        <div class="strategy-content" id="strategyInner">
+            <div class="strategy-header">
+                <h1>The Timeline Master Guide</h1>
                 <p style="color: #888; letter-spacing: 2px;">Visualizing Project Flow & Dependency Logic</p>
             </div>
 
             <!-- SECTION 1: CRITICAL PATH -->
-            <div class="bible-section">
-                <div class="bible-hook">⚖️ The Path of Life or Death</div>
-                <p class="bible-text">
+            <div class="strategy-section">
+                <div class="strategy-hook">⚖️ The Path of Life or Death</div>
+                <p class="strategy-text">
                     In high-stakes environments like the OR, a 1-hour delay in anesthesia means an entire surgery
                     slips.
                     This is the <b>Critical Path</b>. Great managers don't monitor every task equally—they focus 90%
                     of
                     their energy on the tasks with <b>Zero Slack</b>.
                 </p>
-                <div class="bible-img-wrapper">
-                    <img src="assets/timelines/LSS_CriticalPath.png" class="bible-img" alt="Critical Path Infographic">
+                <div class="strategy-img-wrapper">
+                    <img src="assets/timelines/LSS_CriticalPath.png" class="strategy-img"
+                        alt="Critical Path Infographic">
                 </div>
             </div>
 
             <!-- SECTION 2: DEPENDENCY FLAVORS -->
-            <div class="bible-section">
-                <div class="bible-hook">🧪 The Four Flavors of Logic</div>
-                <p class="bible-text">
+            <div class="strategy-section">
+                <div class="strategy-hook">🧪 The Four Flavors of Logic</div>
+                <p class="strategy-text">
                     Sequence is the law. Understanding project logic goes beyond "this before that". Master the
                     four universal relationships to build resilient schedules that survive real-world chaos.
                 </p>
-                <div class="bible-img-wrapper">
-                    <img src="assets/timelines/LSS_Dependencies.png" class="bible-img" alt="Dependency Flavors">
+                <div class="strategy-img-wrapper">
+                    <img src="assets/timelines/LSS_Dependencies.png" class="strategy-img" alt="Dependency Flavors">
                 </div>
             </div>
 
             <!-- SECTION 3: BROOKS'S LAW -->
-            <div class="bible-section">
-                <div class="bible-hook">🌊 Adding Water to a Drowning Project</div>
-                <p class="bible-text">
+            <div class="strategy-section">
+                <div class="strategy-hook">🌊 Adding Water to a Drowning Project</div>
+                <p class="strategy-text">
                     <b>Brooks's Law:</b> "Adding manpower to a late project makes it later."
                     Learn why increasing team size creates communication overhead and training burdens that actually
                     slow down delivery when the clock is ticking.
                 </p>
-                <div class="bible-img-wrapper">
-                    <img src="assets/timelines/LSS_BrooksLaw.png" class="bible-img" alt="Brooks Law">
+                <div class="strategy-img-wrapper">
+                    <img src="assets/timelines/LSS_BrooksLaw.png" class="strategy-img" alt="Brooks Law">
                 </div>
             </div>
 
             <!-- SECTION 4: LEAD vs LAG -->
-            <div class="bible-section">
-                <div class="bible-hook">⏱️ Cheating the Clock</div>
-                <p class="bible-text">
+            <div class="strategy-section">
+                <div class="strategy-hook">⏱️ Cheating the Clock</div>
+                <p class="strategy-text">
                     Master the art of <b>Lead Time</b> (overlapping tasks to compress timelines) and respect the
                     science of <b>Lag Time</b> (mandatory physical or biological waiting periods).
                     Timing isn't just a number; it's a strategic resource.
                 </p>
-                <div class="bible-img-wrapper">
-                    <img src="assets/timelines/LSS_LeadLag.png" class="bible-img" alt="Lead and Lag Time">
+                <div class="strategy-img-wrapper">
+                    <img src="assets/timelines/LSS_LeadLag.png" class="strategy-img" alt="Lead and Lag Time">
                 </div>
             </div>
 
             <!-- SECTION 5: CONE OF UNCERTAINTY -->
-            <div class="bible-section">
-                <div class="bible-hook">🌪️ Navigating the Fog of Initiation</div>
-                <p class="bible-text">
+            <div class="strategy-section">
+                <div class="strategy-hook">🌪️ Navigating the Fog of Initiation</div>
+                <p class="strategy-text">
                     Early precision is a looming disaster. The <b>Cone of Uncertainty</b> teaches us to use ranges
                     early and narrow our focus only as knowledge is gained. Respect the precision paradox.
                 </p>
-                <div class="bible-img-wrapper">
-                    <img src="assets/timelines/LSS_ConeUncertainty.png" class="bible-img" alt="Cone of Uncertainty">
+                <div class="strategy-img-wrapper">
+                    <img src="assets/timelines/LSS_ConeUncertainty.png" class="strategy-img" alt="Cone of Uncertainty">
                 </div>
             </div>
         </div>
@@ -1336,13 +1339,13 @@
             if (e.target.id === 'guideModal') document.getElementById('guideModal').style.display = 'none';
         }
 
-        // --- BIBLE LOGIC ---
-        function openBible() {
-            const modal = document.getElementById('bibleModal');
+        // --- STRATEGY GUIDE LOGIC ---
+        function openStrategy() {
+            const modal = document.getElementById('strategyModal');
             modal.style.display = 'block';
 
             // Animation for sections
-            const sections = document.querySelectorAll('.bible-section');
+            const sections = document.querySelectorAll('.strategy-section');
             sections.forEach((s, i) => {
                 setTimeout(() => {
                     s.classList.add('visible');
@@ -1350,9 +1353,9 @@
             });
         }
 
-        function closeBible(e) {
-            if (e.target.id === 'bibleModal') {
-                document.getElementById('bibleModal').style.display = 'none';
+        function closeStrategy(e) {
+            if (e.target.id === 'strategyModal') {
+                document.getElementById('strategyModal').style.display = 'none';
             }
         }
     </script>
