@@ -441,18 +441,27 @@
         /* GANTT TOOLTIP */
         .gantt-tooltip {
             position: fixed;
-            background: rgba(10, 10, 30, 0.95);
+            background: rgba(10, 10, 30, 0.98);
             color: white;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 13px;
             z-index: 10000;
             pointer-events: none;
             display: none;
-            max-width: 300px;
+            max-width: 320px;
             border: 1px solid var(--accent);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            transition: opacity 0.1s ease;
+        }
+
+        .dependency-hit-area {
+            cursor: help;
+        }
+
+        .dependency-path {
+            transition: stroke 0.2s, stroke-width 0.2s;
         }
 
         .error-flag-icon {
@@ -1482,13 +1491,47 @@
                             const cp2x = x2 - 15;
                             const pathD = `M ${x1} ${y1} C ${cp1x} ${y1}, ${cp2x} ${y2}, ${x2} ${y2}`;
 
+                            // Transparent Thicker Hit Area for Easier Hover
+                            const hitArea = document.createElementNS(svgNS, "path");
+                            hitArea.setAttribute("d", pathD);
+                            hitArea.setAttribute("stroke", "transparent");
+                            hitArea.setAttribute("stroke-width", "12");
+                            hitArea.setAttribute("fill", "none");
+                            hitArea.setAttribute("class", "dependency-hit-area");
+
+                            // Visual Dependency Path
                             const path = document.createElementNS(svgNS, "path");
                             path.setAttribute("d", pathD);
-                            path.setAttribute("stroke", "#555");
+                            path.setAttribute("stroke", "#7f8c8d");
                             path.setAttribute("stroke-width", "1.5");
                             path.setAttribute("fill", "none");
                             path.setAttribute("marker-end", "url(#arrowhead)");
+                            path.setAttribute("class", "dependency-path");
+
+                            // Interaction Data
+                            const depDetails = {
+                                type: 'dependency',
+                                logic: type,
+                                from: tasks[predIdx].name,
+                                to: t.name,
+                                dStr: dStr
+                            };
+
+                            // Multi-Area Responsive Hover
+                            hitArea.onmouseenter = (e) => {
+                                path.setAttribute("stroke", "var(--accent)");
+                                path.setAttribute("stroke-width", "3");
+                                showGanttTooltip(e, depDetails);
+                            };
+                            hitArea.onmousemove = (e) => moveGanttTooltip(e);
+                            hitArea.onmouseleave = () => {
+                                path.setAttribute("stroke", "#7f8c8d");
+                                path.setAttribute("stroke-width", "1.5");
+                                hideGanttTooltip();
+                            };
+
                             arrowGroup.appendChild(path);
+                            arrowGroup.appendChild(hitArea);
                         }
                     });
                 }
@@ -1502,66 +1545,56 @@
         // --- GANTT TOOLTIP LOGIC ---
         function showGanttTooltip(e, t) {
             const tooltip = document.getElementById('chartTooltip');
-            let content = `<div style="margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px;">`;
-            content += `<strong style="color:var(--accent); font-size:14px;">${t.name}</strong></div>`;
+            let content = "";
 
-            content += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:11px; margin-bottom:10px;">`;
-            content += `<span>📅 Duration: <b>${t.duration}d</b></span>`;
-            content += `<span>📈 Progress: <b>${t.progress}%</b></span>`;
-            content += `</div>`;
+            if (t.type === 'dependency') {
+                content += `<div style="margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px;">`;
+                content += `<strong style="color:var(--accent); font-size:14px;">🔗 Dependency Logic</strong></div>`;
 
-            // LSS METRICS SECTION
-            content += `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:4px; font-size:11px;">`;
+                let logicFull = "";
+                if (t.logic === "FS") logicFull = "<b>Finish-to-Start</b>: The standard logic. Task B cannot start until Task A is finished.";
+                if (t.logic === "SS") logicFull = "<b>Start-to-Start</b>: Parallel work. Task B starts at the same time Task A starts.";
+                if (t.logic === "FF") logicFull = "<b>Finish-to-Finish</b>: Simultaneous completion. Task B must finish exactly when Task A finishes.";
+                if (t.logic === "SF") logicFull = "<b>Start-to-Finish</b>: Task B cannot finish until Task A starts.";
 
-            // 1. Dependency Analysis
-            if (t.dep) {
-                const deps = t.dep.split(',').map(d => d.trim());
-                deps.forEach(dStr => {
-                    let type = "FS"; // default
-                    if (dStr.toUpperCase().includes("SS")) type = "SS";
-                    else if (dStr.toUpperCase().includes("FF")) type = "FF";
-                    else if (dStr.toUpperCase().includes("SF")) type = "SF";
+                content += `<div style="font-size:12px; line-height:1.5;">`;
+                content += `<span style="color:#3498db;">Predecessor:</span> <i>${t.from}</i><br>`;
+                content += `<span style="color:#2ecc71;">Successor:</span> <i>${t.to}</i><br><br>`;
+                content += `<p style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; margin:0; border:1px solid rgba(255,255,255,0.1);">${logicFull}</p>`;
 
-                    const matchId = dStr.match(/\d+/);
-                    const predId = matchId ? parseInt(matchId[0]) : null;
-                    const predecessor = tasks.find(x => x.id === predId);
-                    const predName = predecessor ? predecessor.name : "Unknown Task";
-
-                    content += `<div style="margin-bottom:4px; color:#3498db;">🔗 <b>Dependency:</b> This task is <b>${type}</b> with <i>"${predName}"</i></div>`;
-
-                    // 2. Lead/Lag Time
-                    const lagMatch = dStr.match(/[\+\-]\s*(\d+)/);
-                    if (lagMatch) {
-                        const val = parseInt(lagMatch[1]);
-                        const isLag = dStr.includes('+');
-                        if (isLag) {
-                            content += `<div style="color:#f1c40f;">⏳ <b>Lag Time:</b> ${val} day(s) waiting period.</div>`;
-                        } else {
-                            content += `<div style="color:#2ecc71;">⚡ <b>Lead Time:</b> ${val} day(s) head start (overlap).</div>`;
-                        }
-                    }
-                });
+                if (t.dStr.includes('+') || t.dStr.includes('-')) {
+                    content += `<p style="color:#f1c40f; margin-top:10px; font-size:11px;">🔬 Includes specific <b>Lead/Lag</b> adjustments.</p>`;
+                }
+                content += `</div>`;
             } else {
-                content += `<div style="margin-bottom:4px; color:#aaa;">🔗 No predecessors (Start Node)</div>`;
-            }
+                content += `<div style="margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px;">`;
+                content += `<strong style="color:var(--accent); font-size:14px;">${t.name}</strong></div>`;
 
-            // 3. Zero Slack (Critical Path)
-            // Simplified logic: Level 0 tasks with dependencies or those at the start/end are often critical
-            if (t.level === 0 || t.milestone) {
-                content += `<div style="margin-top:5px; color:#e74c3c;">⚖️ <b>Zero Slack:</b> On Critical Path. Any delay pushes the project end date.</div>`;
-            }
+                content += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:11px; margin-bottom:10px;">`;
+                content += `<span>📅 Duration: <b>${t.duration}d</b></span>`;
+                content += `<span>📈 Progress: <b>${t.progress}%</b></span>`;
+                content += `</div>`;
 
-            // 4. Cone of Uncertainty
-            if (t.phase === 'define' || t.phase === 'measure') {
-                content += `<div style="margin-top:5px; border-top:1px solid rgba(255,255,255,0.1); padding-top:5px; color:#9b59b6;">🌪️ <b>Cone of Uncertainty:</b> High (±25% variance). Accuracy increases as we reach Analyze phase.</div>`;
-            }
+                content += `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:4px; font-size:11px;">`;
 
-            content += `</div>`;
+                if (t.dep) {
+                    content += `<div style="margin-bottom:4px; color:#3498db;">🔗 Has <b>${t.dep.split(',').length}</b> predecessor(s).</div>`;
+                }
 
-            if (t.errorTitle) {
-                content += `<hr style="margin:10px 0; border:0; border-top:1px solid rgba(255,71,87,0.3);">`;
-                content += `<b style="color:#ff4757;">⚠️ ${t.errorTitle}</b><br>`;
-                content += `<span style="font-size:11px; line-height:1.4; display:block; margin-top:3px;">${t.errorMsg}</span>`;
+                if (t.level === 0 || t.milestone) {
+                    content += `<div style="margin-top:5px; color:#e74c3c;">⚖️ <b>Zero Slack:</b> On Critical Path.</div>`;
+                }
+
+                if (t.phase === 'define' || t.phase === 'measure') {
+                    content += `<div style="margin-top:5px; border-top:1px solid rgba(255,255,255,0.1); padding-top:5px; color:#9b59b6;">🌪️ <b>Cone of Uncertainty:</b> High Variance.</div>`;
+                }
+                content += `</div>`;
+
+                if (t.errorTitle) {
+                    content += `<hr style="margin:10px 0; border:0; border-top:1px solid rgba(255,71,87,0.3);">`;
+                    content += `<b style="color:#ff4757;">⚠️ ${t.errorTitle}</b><br>`;
+                    content += `<span style="font-size:11px; line-height:1.4; display:block; margin-top:3px;">${t.errorMsg}</span>`;
+                }
             }
 
             tooltip.innerHTML = content;
