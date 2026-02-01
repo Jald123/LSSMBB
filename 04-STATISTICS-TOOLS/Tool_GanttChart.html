@@ -412,6 +412,71 @@
             margin-right: 5px;
         }
 
+        /* PHASE COLORS */
+        .phase-bg-define {
+            background-color: #e74c3c !important;
+            color: white !important;
+        }
+
+        .phase-bg-measure {
+            background-color: #f1c40f !important;
+            color: black !important;
+        }
+
+        .phase-bg-analyze {
+            background-color: #3498db !important;
+            color: white !important;
+        }
+
+        .phase-bg-improve {
+            background-color: #2ecc71 !important;
+            color: white !important;
+        }
+
+        .phase-bg-control {
+            background-color: #9b59b6 !important;
+            color: white !important;
+        }
+
+        /* GANTT TOOLTIP */
+        .gantt-tooltip {
+            position: fixed;
+            background: rgba(10, 10, 30, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            z-index: 10000;
+            pointer-events: none;
+            display: none;
+            max-width: 300px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .error-flag-icon {
+            animation: pulse-red 1.5s infinite;
+            cursor: help;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                filter: drop-shadow(0 0 2px #ff4757);
+                transform: scale(1);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 8px #ff4757);
+                transform: scale(1.2);
+            }
+
+            100% {
+                filter: drop-shadow(0 0 2px #ff4757);
+                transform: scale(1);
+            }
+        }
+
         /* TIMELINE STRATEGY STYLES */
         .strategy-btn {
             background: linear-gradient(135deg, #FFD700, #FCA311);
@@ -609,6 +674,8 @@
 
 <body>
 
+    <div id="chartTooltip" class="gantt-tooltip"></div>
+
     <div class="container" style="max-width: 1800px;"> <!-- Wide layout -->
 
         <!-- HEADER -->
@@ -757,11 +824,11 @@
                         <select class="clinical-input" id="exampleSelector" onchange="loadSpecificExample(this.value)"
                             style="flex:2; font-size:12px; height: 38px;">
                             <option value="" disabled selected>Select Example Project...</option>
-                            <option value="med_discharge">🏥 Discharge Optimization (Medical)</option>
-                            <option value="med_safety">💉 Medication Safety (Medical)</option>
-                            <option value="med_er">🚑 ER Triage Speed (Medical)</option>
-                            <option value="mfg_quality">⚙️ Automotive Quality (Mfg)</option>
-                            <option value="corp_hr">💼 HR Recruitment (Service)</option>
+                            <option value="med_discharge">✅ Ideal: Discharge Flow</option>
+                            <option value="med_safety">✅ Ideal: Medication Safety</option>
+                            <option value="med_er">✅ Ideal: ER Triage</option>
+                            <option value="err_brooks">⚠️ Mistake: Resource Overload</option>
+                            <option value="err_logic">⚠️ Mistake: Dependency Gap</option>
                         </select>
                     </div>
                 </div>
@@ -1005,7 +1072,7 @@
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
                         <div>
                             <div class="clinical-label">Phase</div>
-                            <select class="clinical-input" onchange="updateTask(${index}, 'phase', this.value)" style="padding:6px;">
+                            <select class="clinical-input phase-bg-${t.phase}" onchange="updateTask(${index}, 'phase', this.value); this.className='clinical-input phase-bg-'+this.value" style="padding:6px;">
                                 <option value="define" ${t.phase === 'define' ? 'selected' : ''}>Define</option>
                                 <option value="measure" ${t.phase === 'measure' ? 'selected' : ''}>Measure</option>
                                 <option value="analyze" ${t.phase === 'analyze' ? 'selected' : ''}>Analyze</option>
@@ -1118,29 +1185,16 @@
                         { id: 9, name: "Triage Target Met", phase: 'control', level: 0, start: fmt(27), duration: 0, progress: 0, milestone: true, dep: '8FS' }
                     ];
                     break;
-                case 'mfg_quality':
+                case 'err_brooks':
                     exampleTasks = [
-                        { id: 1, name: "Define Paint Shop Waste", phase: 'define', level: 0, start: fmt(0), duration: 5, progress: 100, milestone: false, dep: '' },
-                        { id: 2, name: "Sampling 1st Pass Yield", phase: 'measure', level: 0, start: fmt(5), duration: 8, progress: 40, milestone: false, dep: '1FS' },
-                        { id: 3, name: "Machine Logs Review", phase: 'measure', level: 1, start: fmt(5), duration: 4, progress: 100, milestone: false, dep: '2SS' },
-                        { id: 4, name: "Valve Pressure Sensor Audit", phase: 'measure', level: 2, start: fmt(6), duration: 2, progress: 100, milestone: false, dep: '3FS' },
-                        { id: 5, name: "Correlation Analysis", phase: 'analyze', level: 0, start: fmt(13), duration: 7, progress: 0, milestone: false, dep: '2FS' },
-                        { id: 6, name: "HVAC Calibration Fix", phase: 'improve', level: 0, start: fmt(20), duration: 10, progress: 0, milestone: false, dep: '5FS' },
-                        { id: 7, name: "Nozzle Replacement", phase: 'improve', level: 1, start: fmt(20), duration: 3, progress: 0, milestone: false, dep: '6SS' },
-                        { id: 8, name: "SPC Tooling Setup", phase: 'control', level: 0, start: fmt(30), duration: 8, progress: 0, milestone: false, dep: '6FS' },
-                        { id: 9, name: "Production Validated", phase: 'control', level: 0, start: fmt(38), duration: 0, progress: 0, milestone: true, dep: '8FS' }
+                        { id: 1, name: "Pilot: Digital Charting", phase: 'improve', level: 0, start: fmt(0), duration: 25, progress: 10, milestone: false, dep: '', errorTitle: "Brooks's Law Violation", errorMsg: "Attempting to fix a 25-day delay by adding 10 more staff members on Day 20. This will likely push delivery by 10 more days due to training overhead." },
+                        { id: 2, name: "Data Entry Training", phase: 'improve', level: 1, start: fmt(15), duration: 2, progress: 0, milestone: false, dep: '1SS' }
                     ];
                     break;
-                case 'corp_hr':
+                case 'err_logic':
                     exampleTasks = [
-                        { id: 1, name: "Map Hiring Workflow", phase: 'define', level: 0, start: fmt(0), duration: 4, progress: 100, milestone: false, dep: '' },
-                        { id: 2, name: "Recruiter Interviews", phase: 'define', level: 1, start: fmt(1), duration: 2, progress: 100, milestone: false, dep: '1SS' },
-                        { id: 3, name: "Interview Kit Audit", phase: 'define', level: 2, start: fmt(1), duration: 1, progress: 100, milestone: false, dep: '2SS' },
-                        { id: 4, name: "Time-to-Fill Baseline", phase: 'measure', level: 0, start: fmt(4), duration: 5, progress: 80, milestone: false, dep: '1FS' },
-                        { id: 5, name: "Bottleneck: Hiring Mgmt", phase: 'analyze', level: 0, start: fmt(9), duration: 6, progress: 0, milestone: false, dep: '4FS' },
-                        { id: 6, name: "Automated Resume Screening", phase: 'improve', level: 0, start: fmt(15), duration: 9, progress: 0, milestone: false, dep: '5FS' },
-                        { id: 7, name: "Weekly Lead Time Report", phase: 'control', level: 0, start: fmt(24), duration: 6, progress: 0, milestone: false, dep: '6FS' },
-                        { id: 8, name: "Lead Time Goal Met", phase: 'control', level: 0, start: fmt(30), duration: 0, progress: 0, milestone: true, dep: '7FS' }
+                        { id: 1, name: "Physician Buy-in", phase: 'define', level: 0, start: fmt(0), duration: 10, progress: 0, milestone: false, dep: '', errorTitle: "Logical Dependency Gap", errorMsg: "Implementation starts BEFORE Buy-in is finished. This creates a high risk of rejection and rework." },
+                        { id: 2, name: "Go-Live: New Portal", phase: 'improve', level: 0, start: fmt(5), duration: 5, progress: 0, milestone: false, dep: '1SS' }
                     ];
                     break;
                 default:
@@ -1272,7 +1326,6 @@
                 } else {
                     const barH = 18;
                     const barY = y + (rowHeight - barH) / 2;
-
                     const rect = document.createElementNS(svgNS, "rect");
                     rect.setAttribute("x", startX);
                     rect.setAttribute("y", barY);
@@ -1281,6 +1334,42 @@
                     rect.setAttribute("fill", fill);
                     rect.setAttribute("filter", "drop-shadow(1px 2px 3px rgba(0,0,0,0.2))");
                     rect.setAttribute("rx", 4);
+                    rect.style.cursor = "pointer";
+
+                    // Tooltip Events
+                    rect.onmouseenter = (e) => showGanttTooltip(e, t);
+                    rect.onmousemove = (e) => moveGanttTooltip(e);
+                    rect.onmouseleave = () => hideGanttTooltip();
+
+                    taskGroup.appendChild(rect);
+
+                    // Error Flag Icon
+                    if (t.errorTitle) {
+                        const flagG = document.createElementNS(svgNS, "g");
+                        flagG.setAttribute("class", "error-flag-icon");
+
+                        const circle = document.createElementNS(svgNS, "circle");
+                        circle.setAttribute("cx", startX - 10);
+                        circle.setAttribute("cy", barY + (barH / 2));
+                        circle.setAttribute("r", 7.5);
+                        circle.setAttribute("fill", "#ff4757");
+                        flagG.appendChild(circle);
+
+                        const alertText = document.createElementNS(svgNS, "text");
+                        alertText.setAttribute("x", startX - 12.5);
+                        alertText.setAttribute("y", barY + (barH / 2) + 4);
+                        alertText.setAttribute("fill", "white");
+                        alertText.setAttribute("font-size", "10");
+                        alertText.setAttribute("font-weight", "bold");
+                        alertText.textContent = "!";
+                        flagG.appendChild(alertText);
+
+                        flagG.onmouseenter = (e) => showGanttTooltip(e, t);
+                        flagG.onmousemove = (e) => moveGanttTooltip(e);
+                        flagG.onmouseleave = () => hideGanttTooltip();
+
+                        taskGroup.appendChild(flagG);
+                    }
 
                     const texts = document.createElementNS(svgNS, "text");
                     let textX = startX + 5;
@@ -1407,7 +1496,38 @@
             wrapper.appendChild(svg);
         }
 
-        // ZOOM LOGIC
+        // --- GANTT TOOLTIP LOGIC ---
+        function showGanttTooltip(e, t) {
+            const tooltip = document.getElementById('chartTooltip');
+            let content = `<b>Task:</b> ${t.name}<br>`;
+            content += `<b>Duration:</b> ${t.duration} days<br>`;
+            content += `<b>Progress:</b> ${t.progress}%<br>`;
+
+            if (t.errorTitle) {
+                content += `<hr style="margin:8px 0; border:0; border-top:1px solid rgba(255,107,53,0.3);">`;
+                content += `<b style="color:#ff4757;">⚠️ ${t.errorTitle}</b><br>`;
+                content += `<span style="font-size:11px;">${t.errorMsg}</span>`;
+            } else {
+                content += `<hr style="margin:8px 0; border:0; border-top:1px solid rgba(255,255,255,0.1);">`;
+                content += `<i style="color:#2ecc71;">✅ Ideal Timing: </i><br>`;
+                content += `<span style="font-size:11px;">This task follows LSS logical flow and is on the mapped critical path.</span>`;
+            }
+
+            tooltip.innerHTML = content;
+            tooltip.style.display = 'block';
+            moveGanttTooltip(e);
+        }
+
+        function moveGanttTooltip(e) {
+            const tooltip = document.getElementById('chartTooltip');
+            tooltip.style.left = (e.clientX + 15) + 'px';
+            tooltip.style.top = (e.clientY + 15) + 'px';
+        }
+
+        function hideGanttTooltip() {
+            document.getElementById('chartTooltip').style.display = 'none';
+        }
+
         function openZoom() {
             const svgContainer = document.getElementById('svgWrapper');
             const zoomContent = document.getElementById('zoomContent');
