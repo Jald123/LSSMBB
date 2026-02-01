@@ -539,6 +539,57 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
         }
+
+        /* LSS TOOLTIP SYSTEM */
+        .lss-tooltip-trigger {
+            color: var(--accent);
+            text-decoration: underline dotted #ff6b35;
+            cursor: help;
+            position: relative;
+            font-weight: 800;
+        }
+
+        .lss-tooltip-box {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 350px;
+            background: rgba(10, 10, 20, 0.95);
+            border: 1px solid var(--accent);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #ddd;
+            display: none;
+            z-index: 5000;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            text-shadow: none;
+            text-align: left;
+        }
+
+        .lss-tooltip-trigger:hover .lss-tooltip-box {
+            display: block;
+            animation: fadeInUp 0.3s forwards;
+        }
+
+        .lss-tooltip-box b {
+            color: var(--accent);
+        }
+
+        .lss-tooltip-box h4 {
+            margin: 0 0 10px 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+        }
     </style>
 </head>
 
@@ -772,11 +823,20 @@
             <div class="strategy-section">
                 <div class="strategy-hook">⚖️ The Path of Life or Death</div>
                 <p class="strategy-text">
-                    In high-stakes environments like the OR, a 1-hour delay in anesthesia means an entire surgery
-                    slips.
                     This is the <b>Critical Path</b>. Great managers don't monitor every task equally—they focus 90%
                     of
-                    their energy on the tasks with <b>Zero Slack</b>.
+                    their energy on the tasks with <span class="lss-tooltip-trigger">Zero Slack
+                        <span class="lss-tooltip-box">
+                            <h4>⚖️ Zero Slack: The Medical "Critical Path"</h4>
+                            In an emergency surgery scheduled for 60 minutes from now:<br><br>
+                            <b>Sterilizing Instruments (60m):</b> Zero Slack. Any 1-minute delay means a 1-minute delay
+                            in surgery. <i>Critical Task.</i><br><br>
+                            <b>Checking Insurance (15m):</b> 45m Slack. The surgery still starts on time even if this is
+                            delayed. <i>Flexible Task.</i><br><br>
+                            <b>Key Takeaway:</b> Zero Slack tasks have no "buffer." If they slip, the patient care
+                            slips.
+                        </span>
+                    </span>.
                 </p>
                 <div class="strategy-img-wrapper">
                     <img src="../assets/timelines/LSS_CriticalPath.png" class="strategy-img"
@@ -813,8 +873,26 @@
             <div class="strategy-section">
                 <div class="strategy-hook">⏱️ Cheating the Clock</div>
                 <p class="strategy-text">
-                    Master the art of <b>Lead Time</b> (overlapping tasks to compress timelines) and respect the
-                    science of <b>Lag Time</b> (mandatory physical or biological waiting periods).
+                    Master the art of <span class="lss-tooltip-trigger">Lead Time
+                        <span class="lss-tooltip-box">
+                            <h4>⏱️ Lead Time: The "Head Start"</h4>
+                            <b>Example: Preparing an OR.</b><br>
+                            You don't wait for anesthesia (Task A) to be 100% finished before setting up instruments
+                            (Task B). You overlap them.<br><br>
+                            <b>Definition:</b> Starting a second task before the first is finished. This "compresses"
+                            the timeline.
+                        </span>
+                    </span> (overlapping tasks to compress timelines) and respect the
+                    science of <span class="lss-tooltip-trigger">Lag Time
+                        <span class="lss-tooltip-box">
+                            <h4>⏳ Lag Time: The "Waiting" Period</h4>
+                            <b>Example: Plaster Cast.</b><br>
+                            After applying the cast (Task A), you must wait 24 hours for it to harden before Task B
+                            (Walking).<br><br>
+                            <b>Definition:</b> A mandatory delay between tasks. You aren't "working," but time must
+                            pass.
+                        </span>
+                    </span> (mandatory physical or biological waiting periods).
                     Timing isn't just a number; it's a strategic resource.
                 </p>
                 <div class="strategy-img-wrapper">
@@ -826,7 +904,17 @@
             <div class="strategy-section">
                 <div class="strategy-hook">🌪️ Navigating the Fog of Initiation</div>
                 <p class="strategy-text">
-                    Early precision is a looming disaster. The <b>Cone of Uncertainty</b> teaches us to use ranges
+                    Early precision is a looming disaster. The <span class="lss-tooltip-trigger">Cone of Uncertainty
+                        <span class="lss-tooltip-box">
+                            <h4>🌪️ Cone of Uncertainty: Project Estimation</h4>
+                            <b>Example: Patient's Length of Stay.</b><br>
+                            - Admission: Range is broad (2–10 days).<br>
+                            - Diagnosis: Range narrows (3–5 days).<br>
+                            - After Surgery: Accuracy peaks (4 days).<br><br>
+                            <b>Definition:</b> Knowledge increases over time, shrinking the "width" of uncertainty from
+                            guess to fact.
+                        </span>
+                    </span> teaches us to use ranges
                     early and narrow our focus only as knowledge is gained. Respect the precision paradox.
                 </p>
                 <div class="strategy-img-wrapper">
