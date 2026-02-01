@@ -759,24 +759,27 @@
                     exampleTasks = [
                         { id: 1, name: "Scope Medication Errors", phase: 'define', level: 0, start: fmt(0), duration: 4, progress: 100, milestone: false, dep: '' },
                         { id: 2, name: "Audit Patient Records", phase: 'measure', level: 0, start: fmt(4), duration: 7, progress: 30, milestone: false, dep: '1FS' },
-                        { id: 3, name: "Cross-Check Pharmacy Logs", phase: 'measure', level: 1, start: fmt(11), duration: 3, progress: 0, milestone: false, dep: '2FS' },
-                        { id: 4, name: "FMEA on Dispensing Flow", phase: 'analyze', level: 0, start: fmt(11), duration: 5, progress: 0, milestone: false, dep: '2FS' },
-                        { id: 5, name: "Implement Barcode Scanning", phase: 'improve', level: 0, start: fmt(16), duration: 12, progress: 0, milestone: false, dep: '4FS' },
-                        { id: 6, name: "Software Integration", phase: 'improve', level: 1, start: fmt(16), duration: 5, progress: 0, milestone: false, dep: '5SS' },
-                        { id: 7, name: "Hardware Installation", phase: 'improve', level: 1, start: fmt(21), duration: 4, progress: 0, milestone: false, dep: '6FS' },
-                        { id: 8, name: "Weekly Safety Monitoring", phase: 'control', level: 0, start: fmt(32), duration: 6, progress: 0, milestone: false, dep: '5FS' },
-                        { id: 9, name: "Zero Critical Errors Locked", phase: 'control', level: 0, start: fmt(38), duration: 0, progress: 0, milestone: true, dep: '8FS' }
+                        { id: 3, name: "Cross-Check Pharmacy Logs", phase: 'measure', level: 1, start: fmt(5), duration: 3, progress: 0, milestone: false, dep: '2SS' },
+                        { id: 4, name: "Verify Digital Signatures", phase: 'measure', level: 2, start: fmt(6), duration: 2, progress: 0, milestone: false, dep: '3FS' },
+                        { id: 5, name: "FMEA on Dispensing Flow", phase: 'analyze', level: 0, start: fmt(11), duration: 5, progress: 0, milestone: false, dep: '2FS' },
+                        { id: 6, name: "Implement Barcode Scanning", phase: 'improve', level: 0, start: fmt(16), duration: 12, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 7, name: "Software Integration", phase: 'improve', level: 1, start: fmt(16), duration: 5, progress: 0, milestone: false, dep: '6SS' },
+                        { id: 8, name: "Hardware Installation", phase: 'improve', level: 1, start: fmt(21), duration: 4, progress: 0, milestone: false, dep: '7FS' },
+                        { id: 9, name: "Weekly Safety Monitoring", phase: 'control', level: 0, start: fmt(32), duration: 6, progress: 0, milestone: false, dep: '6FS' },
+                        { id: 10, name: "Zero Critical Errors Locked", phase: 'control', level: 0, start: fmt(38), duration: 0, progress: 0, milestone: true, dep: '9FS' }
                     ];
                     break;
                 case 'med_er':
                     exampleTasks = [
                         { id: 1, name: "Map Arrival to Bed Time", phase: 'define', level: 0, start: fmt(0), duration: 3, progress: 100, milestone: false, dep: '' },
                         { id: 2, name: "Stopwatch Triage Stages", phase: 'measure', level: 0, start: fmt(3), duration: 6, progress: 50, milestone: false, dep: '1FS' },
-                        { id: 3, name: "Root Cause: Staff Handoffs", phase: 'analyze', level: 0, start: fmt(9), duration: 5, progress: 0, milestone: false, dep: '2FS' },
-                        { id: 4, name: "Standardize Handoff Tools", phase: 'analyze', level: 1, start: fmt(9), duration: 3, progress: 0, milestone: false, dep: '3SS' },
-                        { id: 5, name: "Rapid Triage Protocol", phase: 'improve', level: 0, start: fmt(14), duration: 8, progress: 0, milestone: false, dep: '3FS' },
-                        { id: 6, name: "Monitor Critical KPIs", phase: 'control', level: 0, start: fmt(22), duration: 5, progress: 0, milestone: false, dep: '5FS' },
-                        { id: 7, name: "Triage Target Met", phase: 'control', level: 0, start: fmt(27), duration: 0, progress: 0, milestone: true, dep: '6FS' }
+                        { id: 3, name: "Patient Flow Audit", phase: 'measure', level: 1, start: fmt(4), duration: 3, progress: 100, milestone: false, dep: '2SS' },
+                        { id: 4, name: "Nurse Wait-Time Log", phase: 'measure', level: 2, start: fmt(5), duration: 2, progress: 100, milestone: false, dep: '3FS' },
+                        { id: 5, name: "Root Cause: Staff Handoffs", phase: 'analyze', level: 0, start: fmt(9), duration: 5, progress: 0, milestone: false, dep: '2FS' },
+                        { id: 6, name: "Standardize Handoff Tools", phase: 'analyze', level: 1, start: fmt(9), duration: 3, progress: 0, milestone: false, dep: '5SS' },
+                        { id: 7, name: "Rapid Triage Protocol", phase: 'improve', level: 0, start: fmt(14), duration: 8, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 8, name: "Monitor Critical KPIs", phase: 'control', level: 0, start: fmt(22), duration: 5, progress: 0, milestone: false, dep: '7FS' },
+                        { id: 9, name: "Triage Target Met", phase: 'control', level: 0, start: fmt(27), duration: 0, progress: 0, milestone: true, dep: '8FS' }
                     ];
                     break;
                 case 'mfg_quality':
@@ -784,22 +787,24 @@
                         { id: 1, name: "Define Paint Shop Waste", phase: 'define', level: 0, start: fmt(0), duration: 5, progress: 100, milestone: false, dep: '' },
                         { id: 2, name: "Sampling 1st Pass Yield", phase: 'measure', level: 0, start: fmt(5), duration: 8, progress: 40, milestone: false, dep: '1FS' },
                         { id: 3, name: "Machine Logs Review", phase: 'measure', level: 1, start: fmt(5), duration: 4, progress: 100, milestone: false, dep: '2SS' },
-                        { id: 4, name: "Correlation Analysis", phase: 'analyze', level: 0, start: fmt(13), duration: 7, progress: 0, milestone: false, dep: '2FS' },
-                        { id: 5, name: "HVAC Calibration Fix", phase: 'improve', level: 0, start: fmt(20), duration: 10, progress: 0, milestone: false, dep: '4FS' },
-                        { id: 6, name: "Nozzle Replacement", phase: 'improve', level: 1, start: fmt(20), duration: 3, progress: 0, milestone: false, dep: '5SS' },
-                        { id: 7, name: "SPC Tooling Setup", phase: 'control', level: 0, start: fmt(30), duration: 8, progress: 0, milestone: false, dep: '5FS' },
-                        { id: 8, name: "Production Validated", phase: 'control', level: 0, start: fmt(38), duration: 0, progress: 0, milestone: true, dep: '7FS' }
+                        { id: 4, name: "Valve Pressure Sensor Audit", phase: 'measure', level: 2, start: fmt(6), duration: 2, progress: 100, milestone: false, dep: '3FS' },
+                        { id: 5, name: "Correlation Analysis", phase: 'analyze', level: 0, start: fmt(13), duration: 7, progress: 0, milestone: false, dep: '2FS' },
+                        { id: 6, name: "HVAC Calibration Fix", phase: 'improve', level: 0, start: fmt(20), duration: 10, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 7, name: "Nozzle Replacement", phase: 'improve', level: 1, start: fmt(20), duration: 3, progress: 0, milestone: false, dep: '6SS' },
+                        { id: 8, name: "SPC Tooling Setup", phase: 'control', level: 0, start: fmt(30), duration: 8, progress: 0, milestone: false, dep: '6FS' },
+                        { id: 9, name: "Production Validated", phase: 'control', level: 0, start: fmt(38), duration: 0, progress: 0, milestone: true, dep: '8FS' }
                     ];
                     break;
                 case 'corp_hr':
                     exampleTasks = [
                         { id: 1, name: "Map Hiring Workflow", phase: 'define', level: 0, start: fmt(0), duration: 4, progress: 100, milestone: false, dep: '' },
                         { id: 2, name: "Recruiter Interviews", phase: 'define', level: 1, start: fmt(1), duration: 2, progress: 100, milestone: false, dep: '1SS' },
-                        { id: 3, name: "Time-to-Fill Baseline", phase: 'measure', level: 0, start: fmt(4), duration: 5, progress: 80, milestone: false, dep: '1FS' },
-                        { id: 4, name: "Bottleneck: Hiring Mgmt", phase: 'analyze', level: 0, start: fmt(9), duration: 6, progress: 0, milestone: false, dep: '3FS' },
-                        { id: 5, name: "Automated Resume Screening", phase: 'improve', level: 0, start: fmt(15), duration: 9, progress: 0, milestone: false, dep: '4FS' },
-                        { id: 6, name: "Weekly Lead Time Report", phase: 'control', level: 0, start: fmt(24), duration: 6, progress: 0, milestone: false, dep: '5FS' },
-                        { id: 7, name: "Lead Time Goal Met", phase: 'control', level: 0, start: fmt(30), duration: 0, progress: 0, milestone: true, dep: '6FS' }
+                        { id: 3, name: "Interview Kit Audit", phase: 'define', level: 2, start: fmt(1), duration: 1, progress: 100, milestone: false, dep: '2SS' },
+                        { id: 4, name: "Time-to-Fill Baseline", phase: 'measure', level: 0, start: fmt(4), duration: 5, progress: 80, milestone: false, dep: '1FS' },
+                        { id: 5, name: "Bottleneck: Hiring Mgmt", phase: 'analyze', level: 0, start: fmt(9), duration: 6, progress: 0, milestone: false, dep: '4FS' },
+                        { id: 6, name: "Automated Resume Screening", phase: 'improve', level: 0, start: fmt(15), duration: 9, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 7, name: "Weekly Lead Time Report", phase: 'control', level: 0, start: fmt(24), duration: 6, progress: 0, milestone: false, dep: '6FS' },
+                        { id: 8, name: "Lead Time Goal Met", phase: 'control', level: 0, start: fmt(30), duration: 0, progress: 0, milestone: true, dep: '7FS' }
                     ];
                     break;
                 default:
@@ -898,8 +903,11 @@
                     taskGroup.appendChild(rowBg);
                 }
 
-                const barH = t.level === 0 ? 20 : (t.level === 1 ? 14 : 9);
-                const barY = y + (rowHeight - barH) / 2;
+                let fill = "url(#grad-define)";
+                if (t.phase === 'measure') fill = "url(#grad-measure)";
+                if (t.phase === 'analyze') fill = "url(#grad-analyze)";
+                if (t.phase === 'improve') fill = "url(#grad-improve)";
+                if (t.phase === 'control') fill = "url(#grad-control)";
 
                 coords[t.id] = {
                     startX: startX, endX: t.milestone ? startX : endX,
