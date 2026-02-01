@@ -1,5 +1,5 @@
 const CONFIG = {
-    GEMINI_API_KEY: "AIzaSyBvPUTUuA4F0KdLoUMqAVs-IO5BgcVCnVw",
+    GEMINI_API_KEY: "AIzaSyCdS38t4oqqCC9Gs14nMM6s0fDqsX5kPAI",
     GEMINI_API_URL: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 };
 

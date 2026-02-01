@@ -642,6 +642,62 @@
             margin-bottom: 5px;
         }
 
+        /* NEW PREMIUM ANIMATIONS */
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 5px var(--accent);
+            }
+
+            50% {
+                box-shadow: 0 0 20px var(--accent);
+            }
+
+            100% {
+                box-shadow: 0 0 5px var(--accent);
+            }
+        }
+
+        .animate-up {
+            animation: slideUpFade 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .info-card-pro {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card-pro:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .info-card-pro h4 {
+            color: var(--accent);
+            margin-top: 0;
+            font-family: 'Orbitron';
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
         .calc-tooltip {
             position: relative;
             cursor: help;
@@ -1204,21 +1260,22 @@
                     style="font-family:'Orbitron'; font-size:16px; color:var(--accent); margin-bottom:25px; text-align:center;">
                     GUIDE LAB</div>
                 <button class="guide-side-btn active" onclick="switchSuperTab('intro', this)"><i
-                        class="fas fa-play"></i> Getting Started</button>
-                <button class="guide-side-btn" onclick="switchSuperTab('title', this)"><i class="fas fa-heading"></i>
+                        class="fas fa-play"></i> Project Philosophy</button>
+                <button class="guide-side-btn" onclick="switchSuperTab('title', this)"><i class="fas fa-tag"></i>
                     Project Title</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('business', this)"><i
-                        class="fas fa-briefcase"></i> Business Case</button>
+                        class="fas fa-hand-holding-usd"></i> Business Case</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('problem', this)"><i
-                        class="fas fa-exclamation-triangle"></i> Problem Stmt</button>
+                        class="fas fa-search-plus"></i> Problem Statement</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('goal', this)"><i class="fas fa-bullseye"></i>
                     SMART Goal</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('scope', this)"><i
                         class="fas fa-vector-square"></i> Scope Control</button>
-                <button class="guide-side-btn" onclick="switchSuperTab('governance', this)"><i class="fas fa-users"></i>
+                <button class="guide-side-btn" onclick="switchSuperTab('governance', this)"><i
+                        class="fas fa-users-cog"></i>
                     Governance</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('financial', this)"><i
-                        class="fas fa-chart-line"></i> COPQ & Savings</button>
+                        class="fas fa-funnel-dollar"></i> COPQ & Savings</button>
                 <button class="guide-side-btn" onclick="switchSuperTab('timeline', this)"><i
                         class="fas fa-calendar-alt"></i> Milestones</button>
                 <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.05);"></div>
@@ -1229,8 +1286,20 @@
             <div class="guide-main-content">
                 <!-- INTRO -->
                 <div id="super_intro" class="guide-detail-card active">
-                    <h1 style="color:var(--accent); font-family:'Orbitron'; font-size:28px; margin-bottom:10px;">The
-                        DMAIC Charter Philosophy</h1>
+                    <div
+                        style="width:100%; height:200px; border-radius:15px; background:url('dmaic_philosophy_banner_1769920123381.png') center/cover; margin-bottom:25px; border:1px solid rgba(255,255,255,0.1); position:relative; overflow:hidden;">
+                        <div
+                            style="position:absolute; inset:0; background:linear-gradient(to bottom, transparent, rgba(8,12,20,0.8));">
+                        </div>
+                        <div style="position:absolute; bottom:20px; left:20px;">
+                            <span
+                                style="font-family:'Orbitron'; font-size:10px; color:var(--accent); letter-spacing:2px; font-weight:800; text-transform:uppercase;">Master
+                                Architecture</span>
+                            <h2 style="margin:0; color:white; font-size:24px; font-weight:900;">The DMAIC Charter
+                                Philosophy</h2>
+                        </div>
+                    </div>
+
                     <p style="color:#94a3b8; font-size:15px; line-height:1.7;">A Project Charter is not just a document;
                         it is a <b>governance contract</b> between the project lead and executive sponsors. It
                         establishes the authority to occupy resources and the commitment to hit specified financial
@@ -2443,11 +2512,46 @@
                             const modal = document.getElementById('premiumInfoModal');
                             const grid = document.getElementById('premium-modal-grid');
 
+                            // Update Modal Styling for Premium Look
+                            const modalBox = modal.querySelector('.modal-box');
+                            modalBox.style.maxWidth = '1000px';
+                            modalBox.style.background = 'url("strategic_lab_bg_1769920141596.png") center/cover no-repeat';
+                            modalBox.style.position = 'relative';
+                            modalBox.style.border = '1px solid var(--accent)';
+                            modalBox.style.boxShadow = '0 0 50px rgba(59, 130, 246, 0.3)';
+
+                            // Overlay for Readability
+                            if (!document.getElementById('modal-glass-overlay')) {
+                                const overlay = document.createElement('div');
+                                overlay.id = 'modal-glass-overlay';
+                                overlay.style.cssText = 'position:absolute; inset:0; background:rgba(8, 12, 20, 0.85); backdrop-filter:blur(5px); z-index:1;';
+                                modalBox.insertBefore(overlay, modalBox.firstChild);
+                            }
+
+                            grid.style.position = 'relative';
+                            grid.style.zIndex = '2';
+
                             grid.innerHTML = `
-                <div class="info-card-pro"><h4>What is it?</h4><p>The Project Charter is the foundational contract between the team and leadership. It defines scope, goals, and authority.</p></div>
-                <div class="info-card-pro"><h4>Why use it?</h4><p>To prevent scope creep and ensure executive alignment. It provides the "North Star" for the entire DMAIC journey.</p></div>
-                <div class="info-card-pro"><h4>When to add?</h4><p>Initiated at the start of the <strong>Define</strong> phase, and updated if scope shifts significantly (>20%).</p></div>
-                <div class="info-card-pro"><h4>MBB Power Tip</h4><p>Never start data collection without a signed charter. It is your legal shield against competing organizational interests.</p></div>
+                <div class="info-card-pro animate-up" style="animation-delay: 0.1s;">
+                    <i class="fas fa-Signature" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <h4>What is it?</h4>
+                    <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">The Project Charter is the foundational contract between the team and leadership. It defines scope, goals, and authority.</p>
+                </div>
+                <div class="info-card-pro animate-up" style="animation-delay: 0.2s;">
+                    <i class="fas fa-Compass" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <h4>Why use it?</h4>
+                    <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">To prevent scope creep and ensure executive alignment. It provides the "North Star" for the entire DMAIC journey.</p>
+                </div>
+                <div class="info-card-pro animate-up" style="animation-delay: 0.3s;">
+                    <i class="fas fa-Calendar-check" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <h4>When to add?</h4>
+                    <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">Initiated at the start of the <strong>Define</strong> phase, and updated if scope shifts significantly (>20%).</p>
+                </div>
+                <div class="info-card-pro animate-up" style="animation-delay: 0.4s;">
+                    <i class="fas fa-Shield-alt" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <h4>MBB Power Tip</h4>
+                    <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">Never start data collection without a signed charter. It is your legal shield against competing organizational interests.</p>
+                </div>
             `;
                             modal.style.display = 'flex';
                         }
