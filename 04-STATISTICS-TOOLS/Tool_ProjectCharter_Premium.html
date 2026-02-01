@@ -9,6 +9,8 @@
     <script src="config.js"></script>
     <!-- Chart.js for Gantt/Finance visual -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #1e3a8a;
@@ -118,10 +120,12 @@
         .info-title-pro {
             text-align: center;
             font-family: 'Orbitron';
-            color: var(--accent);
-            font-size: 28px;
+            color: white;
+            font-size: 32px;
+            font-weight: 900;
             margin-bottom: 40px;
             text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
         }
 
         .info-grid-pro {
@@ -1287,7 +1291,7 @@
                 <!-- INTRO -->
                 <div id="super_intro" class="guide-detail-card active">
                     <div
-                        style="width:100%; height:200px; border-radius:15px; background:url('dmaic_philosophy_banner_1769920123381.png') center/cover; margin-bottom:25px; border:1px solid rgba(255,255,255,0.1); position:relative; overflow:hidden;">
+                        style="width:100%; height:200px; border-radius:15px; background:url('dmaic_philosophy_banner.png') center/cover; margin-bottom:25px; border:1px solid rgba(255,255,255,0.1); position:relative; overflow:hidden;">
                         <div
                             style="position:absolute; inset:0; background:linear-gradient(to bottom, transparent, rgba(8,12,20,0.8));">
                         </div>
@@ -2515,16 +2519,16 @@
                             // Update Modal Styling for Premium Look
                             const modalBox = modal.querySelector('.info-box-premium');
                             modalBox.style.maxWidth = '1000px';
-                            modalBox.style.background = 'url("strategic_lab_bg_1769920141596.png") center/cover no-repeat';
+                            modalBox.style.background = 'url("strategic_lab_bg.png") center/cover no-repeat';
                             modalBox.style.position = 'relative';
                             modalBox.style.border = '1px solid var(--accent)';
-                            modalBox.style.boxShadow = '0 0 50px rgba(59, 130, 246, 0.3)';
+                            modalBox.style.boxShadow = '0 0 50px rgba(59, 130, 246, 0.4)';
 
                             // Overlay for Readability
                             if (!document.getElementById('modal-glass-overlay')) {
                                 const overlay = document.createElement('div');
                                 overlay.id = 'modal-glass-overlay';
-                                overlay.style.cssText = 'position:absolute; inset:0; background:rgba(8, 12, 20, 0.85); backdrop-filter:blur(5px); z-index:1;';
+                                overlay.style.cssText = 'position:absolute; inset:0; background:rgba(8, 12, 20, 0.8); backdrop-filter:blur(3px); z-index:1; border-radius:30px;';
                                 modalBox.insertBefore(overlay, modalBox.firstChild);
                             }
 
@@ -2533,24 +2537,24 @@
 
                             grid.innerHTML = `
                 <div class="info-card-pro animate-up" style="animation-delay: 0.1s;">
-                    <i class="fas fa-Signature" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <i class="fas fa-file-signature" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
                     <h4>What is it?</h4>
-                    <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">The Project Charter is the foundational contract between the team and leadership. It defines scope, goals, and authority.</p>
+                    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">The Project Charter is the foundational contract between the team and leadership. It defines scope, goals, and authority.</p>
                 </div>
                 <div class="info-card-pro animate-up" style="animation-delay: 0.2s;">
-                    <i class="fas fa-Compass" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <i class="fas fa-compass" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
                     <h4>Why use it?</h4>
-                    <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">To prevent scope creep and ensure executive alignment. It provides the "North Star" for the entire DMAIC journey.</p>
+                    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">To prevent scope creep and ensure executive alignment. It provides the "North Star" for the entire DMAIC journey.</p>
                 </div>
                 <div class="info-card-pro animate-up" style="animation-delay: 0.3s;">
-                    <i class="fas fa-Calendar-check" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <i class="fas fa-calendar-check" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
                     <h4>When to add?</h4>
-                    <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">Initiated at the start of the <strong>Define</strong> phase, and updated if scope shifts significantly (>20%).</p>
+                    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">Initiated at the start of the <strong>Define</strong> phase, and updated if scope shifts significantly (>20%).</p>
                 </div>
                 <div class="info-card-pro animate-up" style="animation-delay: 0.4s;">
-                    <i class="fas fa-Shield-alt" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <i class="fas fa-shield-halved" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
                     <h4>MBB Power Tip</h4>
-                    <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">Never start data collection without a signed charter. It is your legal shield against competing organizational interests.</p>
+                    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">Never start data collection without a signed charter. It is your legal shield against competing organizational interests.</p>
                 </div>
             `;
                             modal.style.display = 'flex';
