@@ -621,6 +621,66 @@
             font-size: 14px;
         }
 
+        /* INTERACTIVE CHALLENGE STYLES */
+        .challenge-container {
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+        }
+
+        .challenge-question {
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .challenge-option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        .challenge-option:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--accent);
+            transform: translateX(10px);
+        }
+
+        .challenge-option.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+            color: var(--success) !important;
+        }
+
+        .challenge-option.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444 !important;
+        }
+
+        .challenge-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
         .reduction-slider {
             -webkit-appearance: none;
             appearance: none;
@@ -1444,6 +1504,41 @@
                                 <div class="bp-item">"Eliminate Billing Errors in AP Dept"</div>
                                 <div class="bp-item">"Improve Order Pick Accuracy (Warehouse X)"</div>
                             </div>
+                        </div>
+
+                        <div class="challenge-container">
+                            <h4
+                                style="color:var(--accent); font-family:'Orbitron'; margin-top:0; display:flex; align-items:center; gap:10px;">
+                                <i class="fas fa-hammer"></i> MASTER ARCHITECT CHALLENGE: FIX THE TITLE
+                            </h4>
+                            <p style="font-size:13px; color:#94a3b8; margin-bottom:20px;">
+                                Below is a "Poor Content" title. Your mission: Select the corrective action that
+                                transforms it into an MBB Golden Standard.
+                            </p>
+
+                            <div class="challenge-question">
+                                <span
+                                    style="display:block; font-size:11px; color:var(--accent); font-weight:800; text-transform:uppercase; margin-bottom:5px;">Target
+                                    Case:</span>
+                                <span style="font-size:18px; color:#ef4444; font-weight:900;">"Fix the Hospital"</span>
+                            </div>
+
+                            <div class="challenge-options" id="titleChallengeOptions">
+                                <div class="challenge-option"
+                                    onclick="submitChallenge(this, 'too_broad', 'VAGUE: This describes a building, not a problem. An MBB needs precision.')">
+                                    <i class="fas fa-circle-question"></i> Change to "Hospital Performance Project"
+                                </div>
+                                <div class="challenge-option"
+                                    onclick="submitChallenge(this, 'solutioneering', 'SOLUTIONEERING ALERT: This focus on the task (New Wing) instead of the gap.')">
+                                    <i class="fas fa-circle-question"></i> Change to "Build a New Emergency Wing"
+                                </div>
+                                <div class="challenge-option"
+                                    onclick="submitChallenge(this, 'correct', 'PERFECT: [Verb: Reduce] + [Object: Bed Turnover Time] + [Process: ER Ward].')">
+                                    <i class="fas fa-circle-question"></i> Change to "Reduce Bed Turnover Time in ER
+                                    Ward"
+                                </div>
+                            </div>
+                            <div id="challengeFeedback" class="challenge-feedback"></div>
                         </div>
                     </div>
 
@@ -2605,6 +2700,32 @@
                             // Initialize Calc
                             calcSavings();
                         };
+
+                        function submitChallenge(element, type, message) {
+                            const options = element.parentElement.querySelectorAll('.challenge-option');
+                            const feedback = document.getElementById('challengeFeedback');
+
+                            // Reset
+                            options.forEach(opt => opt.classList.remove('correct', 'incorrect'));
+
+                            if (type === 'correct') {
+                                element.classList.add('correct');
+                                element.querySelector('i').className = 'fas fa-check-circle';
+                                feedback.style.display = 'block';
+                                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                                feedback.style.color = 'var(--success)';
+                                feedback.style.border = '1px solid var(--success)';
+                                feedback.innerHTML = `<strong>🏆 ACCURATE!</strong> ${message}`;
+                            } else {
+                                element.classList.add('incorrect');
+                                element.querySelector('i').className = 'fas fa-times-circle';
+                                feedback.style.display = 'block';
+                                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                                feedback.style.color = '#ef4444';
+                                feedback.style.border = '1px solid #ef4444';
+                                feedback.innerHTML = `<strong>⚠️ MBB REJECTION:</strong> ${message}`;
+                            }
+                        }
 
                         function openScopeCreepModal() {
                             document.getElementById('scopeCreepModal').style.display = 'flex';
