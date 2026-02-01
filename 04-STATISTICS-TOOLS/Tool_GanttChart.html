@@ -391,38 +391,25 @@
             border-bottom: 1px solid #e9ecef;
         }
 
-        .task-badge {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 3px 8px;
+        .task-card.level-1 {
+            border-left: 4px solid #3498db !important;
+            margin-left: 25px;
+            background: #fdfdfd;
+        }
+
+        .task-card.level-2 {
+            border-left: 4px solid #9b59b6 !important;
+            margin-left: 50px;
+            background: #fafafa;
+        }
+
+        .level-badge {
+            font-size: 9px;
+            padding: 2px 6px;
             border-radius: 4px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .phase-define {
-            background: #fee;
-            color: #e74c3c;
-        }
-
-        .phase-measure {
-            background: #ffc;
-            color: #f39c12;
-        }
-
-        .phase-analyze {
-            background: #def;
-            color: #3498db;
-        }
-
-        .phase-improve {
-            background: #dfd;
-            color: #27ae60;
-        }
-
-        .phase-control {
-            background: #f3e5f5;
-            color: #9b59b6;
+            font-weight: 800;
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -551,11 +538,20 @@
             <div class="ehr-input-panel">
                 <div class="findings-header">📋 Project Tasks</div>
 
-                <div style="display:flex; gap:8px; margin-bottom:15px;">
-                    <button class="btn btn-ghost" onclick="clearTasks()" style="flex:1; font-size:12px;">Clear
-                        All</button>
-                    <button class="btn btn-ghost" onclick="loadExample()" style="flex:1; font-size:12px;">Load
-                        Demo</button>
+                <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-ghost" onclick="clearTasks()" style="flex:1; font-size:12px;">Clear
+                            All</button>
+                        <select class="clinical-input" id="exampleSelector" onchange="loadSpecificExample(this.value)"
+                            style="flex:2; font-size:12px; height: 38px;">
+                            <option value="" disabled selected>Select Example Project...</option>
+                            <option value="med_discharge">🏥 Discharge Optimization (Medical)</option>
+                            <option value="med_safety">💉 Medication Safety (Medical)</option>
+                            <option value="med_er">🚑 ER Triage Speed (Medical)</option>
+                            <option value="mfg_quality">⚙️ Automotive Quality (Mfg)</option>
+                            <option value="corp_hr">💼 HR Recruitment (Service)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div id="tasksList">
@@ -623,11 +619,12 @@
         // INIT
         loadExample();
 
-        function addTask(data = null) {
-            const id = tasks.length + 1;
+        function addTask(level = 0, insertAfter = -1, data = null) {
+            const id = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
             const t = data || {
                 id: id,
-                name: `Task ${id}`,
+                name: level === 0 ? `New Task ${id}` : (level === 1 ? `Sub-Task ${id}` : `Sub-Sub-Task ${id}`),
+                level: level,
                 phase: 'define',
                 start: new Date().toISOString().split('T')[0],
                 duration: 5,
@@ -635,7 +632,12 @@
                 milestone: false,
                 dep: ''
             };
-            tasks.push(t);
+
+            if (insertAfter === -1) {
+                tasks.push(t);
+            } else {
+                tasks.splice(insertAfter + 1, 0, t);
+            }
             renderInputs();
         }
 
@@ -645,17 +647,23 @@
 
             tasks.forEach((t, index) => {
                 const div = document.createElement('div');
-                div.className = 'task-card';
+                div.className = `task-card level-${t.level || 0}`;
+
+                const badgeColor = t.level === 1 ? '#3498db' : (t.level === 2 ? '#9b59b6' : '#6c757d');
+                const badgeText = t.level === 1 ? 'Sub' : (t.level === 2 ? 'Sub-Sub' : 'Task');
 
                 div.innerHTML = `
                     <div class="task-header">
-                        <strong style="color:#2c3e50; font-size:13px;">Task #${index + 1}</strong>
+                        <div style="display:flex; align-items:center;">
+                            <span class="level-badge" style="background:${badgeColor}; color:white;">${badgeText}</span>
+                            <strong style="color:#2c3e50; font-size:12px;">#${t.id}</strong>
+                        </div>
                         <button onclick="deleteTask(${index})" style="background:none; border:none; color:#dc3545; cursor:pointer; font-size:18px; opacity:0.7; transition:0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</button>
                     </div>
                     
                     <div style="margin-bottom:8px;">
-                        <div class="clinical-label">Task Name</div>
-                        <input type="text" class="clinical-input" value="${t.name}" onchange="updateTask(${index}, 'name', this.value)">
+                        <div class="clinical-label">Name</div>
+                        <input type="text" class="clinical-input" value="${t.name}" onchange="updateTask(${index}, 'name', this.value)" style="font-weight:${t.level === 0 ? '700' : '400'}">
                     </div>
                     
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
@@ -671,28 +679,34 @@
                         </div>
                         <div>
                             <div class="clinical-label">Dependency</div>
-                            <input type="text" class="clinical-input" placeholder="e.g. 1FS" value="${t.dep}" onchange="updateTask(${index}, 'dep', this.value)">
+                            <input type="text" class="clinical-input" placeholder="e.g. 1FS" value="${t.dep || ''}" onchange="updateTask(${index}, 'dep', this.value)">
                         </div>
                     </div>
                     
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px;">
                         <div>
-                            <div class="clinical-label">Start Date</div>
-                            <input type="date" class="clinical-input" value="${t.start}" onchange="updateTask(${index}, 'start', this.value)" style="padding:6px;">
+                            <div class="clinical-label">Start</div>
+                            <input type="date" class="clinical-input" value="${t.start}" onchange="updateTask(${index}, 'start', this.value)" style="padding:6px; font-size:11px;">
                         </div>
                         <div>
                             <div class="clinical-label">Days</div>
                             <input type="number" class="clinical-input" value="${t.duration}" onchange="updateTask(${index}, 'duration', this.value)" style="padding:6px;">
                         </div>
                         <div>
-                            <div class="clinical-label">% Done</div>
+                            <div class="clinical-label">%</div>
                             <input type="number" class="clinical-input" max="100" value="${t.progress}" onchange="updateTask(${index}, 'progress', this.value)" style="padding:6px;">
                         </div>
                     </div>
                     
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <input type="checkbox" ${t.milestone ? 'checked' : ''} onchange="updateTask(${index}, 'milestone', this.checked)" style="width:auto;">
-                        <label class="clinical-label" style="margin:0;">Milestone (Flag)</label>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; align-items:center; gap:5px;">
+                            <input type="checkbox" ${t.milestone ? 'checked' : ''} onchange="updateTask(${index}, 'milestone', this.checked)" style="width:auto;">
+                            <label class="clinical-label" style="margin:0;">Milestone</label>
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            ${t.level === 0 ? `<button class="btn btn-ghost" style="font-size:9px; padding:3px 6px; border:1px solid #3498db; color:#3498db;" onclick="addTask(1, ${index})">+ SUB</button>` : ''}
+                            ${t.level === 1 ? `<button class="btn btn-ghost" style="font-size:9px; padding:3px 6px; border:1px solid #9b59b6; color:#9b59b6;" onclick="addTask(2, ${index})">+ SUB-SUB</button>` : ''}
+                        </div>
                     </div>
                 `;
                 container.appendChild(div);
@@ -717,17 +731,82 @@
         }
 
         function loadExample() {
+            // Default load
+            loadSpecificExample('med_discharge');
+        }
+
+        function loadSpecificExample(type) {
             const today = new Date();
             const fmt = (days) => new Date(today.getTime() + (days * 86400000)).toISOString().split('T')[0];
 
-            tasks = [
-                { id: 1, name: "Project Charter Approved", phase: 'define', start: fmt(0), duration: 0, progress: 100, milestone: true, dep: '' },
-                { id: 2, name: "Data Collection Plan", phase: 'measure', start: fmt(2), duration: 5, progress: 60, milestone: false, dep: '1FS' },
-                { id: 3, name: "Measure Baseline Data", phase: 'measure', start: fmt(7), duration: 8, progress: 20, milestone: false, dep: '2FS' },
-                { id: 4, name: "Root Cause Analysis", phase: 'analyze', start: fmt(10), duration: 7, progress: 0, milestone: false, dep: '3SS' },
-                { id: 5, name: "Pilot Solution", phase: 'improve', start: fmt(20), duration: 10, progress: 0, milestone: false, dep: '4FS' },
-                { id: 6, name: "Final Sign-off", phase: 'control', start: fmt(32), duration: 0, progress: 0, milestone: true, dep: '5FS' }
-            ];
+            let exampleTasks = [];
+
+            switch (type) {
+                case 'med_discharge':
+                    exampleTasks = [
+                        { id: 1, name: "Define Discharge Bottlenecks", phase: 'define', level: 0, start: fmt(0), duration: 3, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Observe Ward 4A Flow", phase: 'define', level: 1, start: fmt(1), duration: 2, progress: 100, milestone: false, dep: '1SS' },
+                        { id: 3, name: "Audit Physician Rounds", phase: 'define', level: 2, start: fmt(2), duration: 1, progress: 100, milestone: false, dep: '2FS' },
+                        { id: 4, name: "Measure Room Turnover Time", phase: 'measure', level: 0, start: fmt(3), duration: 5, progress: 60, milestone: false, dep: '1FS' },
+                        { id: 5, name: "Analyze Staff Sync Delays", phase: 'analyze', level: 0, start: fmt(8), duration: 6, progress: 0, milestone: false, dep: '4FS' },
+                        { id: 6, name: "Pilot E-Discharge System", phase: 'improve', level: 0, start: fmt(14), duration: 10, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 7, name: "Training: Nursing Staff", phase: 'improve', level: 1, start: fmt(15), duration: 4, progress: 0, milestone: false, dep: '6SS' },
+                        { id: 8, name: "Control & Standardize Process", phase: 'control', level: 0, start: fmt(24), duration: 7, progress: 0, milestone: false, dep: '6FS' },
+                        { id: 9, name: "Goal: 20% Reduction Achieved", phase: 'control', level: 0, start: fmt(31), duration: 0, progress: 0, milestone: true, dep: '8FS' }
+                    ];
+                    break;
+                case 'med_safety':
+                    exampleTasks = [
+                        { id: 1, name: "Scope Medication Errors", phase: 'define', level: 0, start: fmt(0), duration: 4, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Audit Patient Records", phase: 'measure', level: 0, start: fmt(4), duration: 7, progress: 30, milestone: false, dep: '1FS' },
+                        { id: 3, name: "Cross-Check Pharmacy Logs", phase: 'measure', level: 1, start: fmt(11), duration: 3, progress: 0, milestone: false, dep: '2FS' },
+                        { id: 4, name: "FMEA on Dispensing Flow", phase: 'analyze', level: 0, start: fmt(11), duration: 5, progress: 0, milestone: false, dep: '2FS' },
+                        { id: 5, name: "Implement Barcode Scanning", phase: 'improve', level: 0, start: fmt(16), duration: 12, progress: 0, milestone: false, dep: '4FS' },
+                        { id: 6, name: "Software Integration", phase: 'improve', level: 1, start: fmt(16), duration: 5, progress: 0, milestone: false, dep: '5SS' },
+                        { id: 7, name: "Hardware Installation", phase: 'improve', level: 1, start: fmt(21), duration: 4, progress: 0, milestone: false, dep: '6FS' },
+                        { id: 8, name: "Weekly Safety Monitoring", phase: 'control', level: 0, start: fmt(32), duration: 6, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 9, name: "Zero Critical Errors Locked", phase: 'control', level: 0, start: fmt(38), duration: 0, progress: 0, milestone: true, dep: '8FS' }
+                    ];
+                    break;
+                case 'med_er':
+                    exampleTasks = [
+                        { id: 1, name: "Map Arrival to Bed Time", phase: 'define', level: 0, start: fmt(0), duration: 3, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Stopwatch Triage Stages", phase: 'measure', level: 0, start: fmt(3), duration: 6, progress: 50, milestone: false, dep: '1FS' },
+                        { id: 3, name: "Root Cause: Staff Handoffs", phase: 'analyze', level: 0, start: fmt(9), duration: 5, progress: 0, milestone: false, dep: '2FS' },
+                        { id: 4, name: "Standardize Handoff Tools", phase: 'analyze', level: 1, start: fmt(9), duration: 3, progress: 0, milestone: false, dep: '3SS' },
+                        { id: 5, name: "Rapid Triage Protocol", phase: 'improve', level: 0, start: fmt(14), duration: 8, progress: 0, milestone: false, dep: '3FS' },
+                        { id: 6, name: "Monitor Critical KPIs", phase: 'control', level: 0, start: fmt(22), duration: 5, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 7, name: "Triage Target Met", phase: 'control', level: 0, start: fmt(27), duration: 0, progress: 0, milestone: true, dep: '6FS' }
+                    ];
+                    break;
+                case 'mfg_quality':
+                    exampleTasks = [
+                        { id: 1, name: "Define Paint Shop Waste", phase: 'define', level: 0, start: fmt(0), duration: 5, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Sampling 1st Pass Yield", phase: 'measure', level: 0, start: fmt(5), duration: 8, progress: 40, milestone: false, dep: '1FS' },
+                        { id: 3, name: "Machine Logs Review", phase: 'measure', level: 1, start: fmt(5), duration: 4, progress: 100, milestone: false, dep: '2SS' },
+                        { id: 4, name: "Correlation Analysis", phase: 'analyze', level: 0, start: fmt(13), duration: 7, progress: 0, milestone: false, dep: '2FS' },
+                        { id: 5, name: "HVAC Calibration Fix", phase: 'improve', level: 0, start: fmt(20), duration: 10, progress: 0, milestone: false, dep: '4FS' },
+                        { id: 6, name: "Nozzle Replacement", phase: 'improve', level: 1, start: fmt(20), duration: 3, progress: 0, milestone: false, dep: '5SS' },
+                        { id: 7, name: "SPC Tooling Setup", phase: 'control', level: 0, start: fmt(30), duration: 8, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 8, name: "Production Validated", phase: 'control', level: 0, start: fmt(38), duration: 0, progress: 0, milestone: true, dep: '7FS' }
+                    ];
+                    break;
+                case 'corp_hr':
+                    exampleTasks = [
+                        { id: 1, name: "Map Hiring Workflow", phase: 'define', level: 0, start: fmt(0), duration: 4, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Recruiter Interviews", phase: 'define', level: 1, start: fmt(1), duration: 2, progress: 100, milestone: false, dep: '1SS' },
+                        { id: 3, name: "Time-to-Fill Baseline", phase: 'measure', level: 0, start: fmt(4), duration: 5, progress: 80, milestone: false, dep: '1FS' },
+                        { id: 4, name: "Bottleneck: Hiring Mgmt", phase: 'analyze', level: 0, start: fmt(9), duration: 6, progress: 0, milestone: false, dep: '3FS' },
+                        { id: 5, name: "Automated Resume Screening", phase: 'improve', level: 0, start: fmt(15), duration: 9, progress: 0, milestone: false, dep: '4FS' },
+                        { id: 6, name: "Weekly Lead Time Report", phase: 'control', level: 0, start: fmt(24), duration: 6, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 7, name: "Lead Time Goal Met", phase: 'control', level: 0, start: fmt(30), duration: 0, progress: 0, milestone: true, dep: '6FS' }
+                    ];
+                    break;
+                default:
+                    return;
+            }
+
+            tasks = exampleTasks;
             renderInputs();
             setTimeout(renderGantt, 100);
         }
@@ -819,13 +898,10 @@
                     taskGroup.appendChild(rowBg);
                 }
 
-                let fill = "url(#grad-define)";
-                if (t.phase === 'measure') fill = "url(#grad-measure)";
-                if (t.phase === 'analyze') fill = "url(#grad-analyze)";
-                if (t.phase === 'improve') fill = "url(#grad-improve)";
-                if (t.phase === 'control') fill = "url(#grad-control)";
+                const barH = t.level === 0 ? 20 : (t.level === 1 ? 14 : 9);
+                const barY = y + (rowHeight - barH) / 2;
 
-                coords[i + 1] = {
+                coords[t.id] = {
                     startX: startX, endX: t.milestone ? startX : endX,
                     y: y + (rowHeight / 2)
                 };
@@ -869,8 +945,8 @@
                     if (barWidth < 50) { textX = endX + 5; textColor = "#333"; }
 
                     texts.setAttribute("x", textX);
-                    texts.setAttribute("y", barY + 13);
-                    texts.setAttribute("font-size", "11");
+                    texts.setAttribute("y", barY + (barH / 2) + 4);
+                    texts.setAttribute("font-size", t.level === 0 ? "11" : "9");
                     texts.setAttribute("fill", textColor);
                     texts.textContent = `${t.name} (${t.progress}%)`;
 
@@ -954,8 +1030,8 @@
 
                         const predIdx = tasks.findIndex(x => x.id === predId);
                         if (predIdx > -1) {
-                            const pCoord = coords[predIdx + 1];
-                            const cCoord = coords[i + 1];
+                            const pCoord = coords[predId];
+                            const cCoord = coords[t.id];
                             let x1, y1, x2, y2;
 
                             if (type === 'FS' || type === 'FF') x1 = pCoord.endX;
