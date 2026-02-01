@@ -827,6 +827,7 @@
                             <option value="med_discharge">✅ Ideal: Discharge Flow</option>
                             <option value="med_safety">✅ Ideal: Medication Safety</option>
                             <option value="med_er">✅ Ideal: ER Triage</option>
+                            <option value="med_leadlag">⚖️ Logic: Lead vs Lag Time</option>
                             <option value="err_brooks">⚠️ Mistake: Resource Overload</option>
                             <option value="err_logic">⚠️ Mistake: Dependency Gap</option>
                         </select>
@@ -1150,6 +1151,14 @@
                         { id: 7, name: "Training: Nursing Staff", phase: 'improve', level: 1, start: fmt(15), duration: 4, progress: 0, milestone: false, dep: '6SS' },
                         { id: 8, name: "Control & Standardize Process", phase: 'control', level: 0, start: fmt(24), duration: 7, progress: 0, milestone: false, dep: '6FS' },
                         { id: 9, name: "Goal: 20% Reduction Achieved", phase: 'control', level: 0, start: fmt(31), duration: 0, progress: 0, milestone: true, dep: '8FS' }
+                    ];
+                    break;
+                case 'med_leadlag':
+                    exampleTasks = [
+                        { id: 1, name: "Sample Lab Tests", phase: 'measure', level: 0, start: fmt(0), duration: 2, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Incubation Period (Lag)", phase: 'analyze', level: 0, start: fmt(2), duration: 5, progress: 100, milestone: false, dep: '1FS+2' },
+                        { id: 3, name: "Equipment Setup (Lead)", phase: 'improve', level: 0, start: fmt(5), duration: 2, progress: 50, milestone: false, dep: '2FS-2' },
+                        { id: 4, name: "Critical Result Logged", phase: 'control', level: 0, start: fmt(7), duration: 0, progress: 0, milestone: true, dep: '3FS' }
                     ];
                     break;
                 case 'med_safety':
@@ -1493,18 +1502,66 @@
         // --- GANTT TOOLTIP LOGIC ---
         function showGanttTooltip(e, t) {
             const tooltip = document.getElementById('chartTooltip');
-            let content = `<b>Task:</b> ${t.name}<br>`;
-            content += `<b>Duration:</b> ${t.duration} days<br>`;
-            content += `<b>Progress:</b> ${t.progress}%<br>`;
+            let content = `<div style="margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px;">`;
+            content += `<strong style="color:var(--accent); font-size:14px;">${t.name}</strong></div>`;
+
+            content += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:11px; margin-bottom:10px;">`;
+            content += `<span>📅 Duration: <b>${t.duration}d</b></span>`;
+            content += `<span>📈 Progress: <b>${t.progress}%</b></span>`;
+            content += `</div>`;
+
+            // LSS METRICS SECTION
+            content += `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:4px; font-size:11px;">`;
+
+            // 1. Dependency Analysis
+            if (t.dep) {
+                const deps = t.dep.split(',').map(d => d.trim());
+                deps.forEach(dStr => {
+                    let type = "FS"; // default
+                    if (dStr.toUpperCase().includes("SS")) type = "SS";
+                    else if (dStr.toUpperCase().includes("FF")) type = "FF";
+                    else if (dStr.toUpperCase().includes("SF")) type = "SF";
+
+                    const matchId = dStr.match(/\d+/);
+                    const predId = matchId ? parseInt(matchId[0]) : null;
+                    const predecessor = tasks.find(x => x.id === predId);
+                    const predName = predecessor ? predecessor.name : "Unknown Task";
+
+                    content += `<div style="margin-bottom:4px; color:#3498db;">🔗 <b>Dependency:</b> This task is <b>${type}</b> with <i>"${predName}"</i></div>`;
+
+                    // 2. Lead/Lag Time
+                    const lagMatch = dStr.match(/[\+\-]\s*(\d+)/);
+                    if (lagMatch) {
+                        const val = parseInt(lagMatch[1]);
+                        const isLag = dStr.includes('+');
+                        if (isLag) {
+                            content += `<div style="color:#f1c40f;">⏳ <b>Lag Time:</b> ${val} day(s) waiting period.</div>`;
+                        } else {
+                            content += `<div style="color:#2ecc71;">⚡ <b>Lead Time:</b> ${val} day(s) head start (overlap).</div>`;
+                        }
+                    }
+                });
+            } else {
+                content += `<div style="margin-bottom:4px; color:#aaa;">🔗 No predecessors (Start Node)</div>`;
+            }
+
+            // 3. Zero Slack (Critical Path)
+            // Simplified logic: Level 0 tasks with dependencies or those at the start/end are often critical
+            if (t.level === 0 || t.milestone) {
+                content += `<div style="margin-top:5px; color:#e74c3c;">⚖️ <b>Zero Slack:</b> On Critical Path. Any delay pushes the project end date.</div>`;
+            }
+
+            // 4. Cone of Uncertainty
+            if (t.phase === 'define' || t.phase === 'measure') {
+                content += `<div style="margin-top:5px; border-top:1px solid rgba(255,255,255,0.1); padding-top:5px; color:#9b59b6;">🌪️ <b>Cone of Uncertainty:</b> High (±25% variance). Accuracy increases as we reach Analyze phase.</div>`;
+            }
+
+            content += `</div>`;
 
             if (t.errorTitle) {
-                content += `<hr style="margin:8px 0; border:0; border-top:1px solid rgba(255,107,53,0.3);">`;
+                content += `<hr style="margin:10px 0; border:0; border-top:1px solid rgba(255,71,87,0.3);">`;
                 content += `<b style="color:#ff4757;">⚠️ ${t.errorTitle}</b><br>`;
-                content += `<span style="font-size:11px;">${t.errorMsg}</span>`;
-            } else {
-                content += `<hr style="margin:8px 0; border:0; border-top:1px solid rgba(255,255,255,0.1);">`;
-                content += `<i style="color:#2ecc71;">✅ Ideal Timing: </i><br>`;
-                content += `<span style="font-size:11px;">This task follows LSS logical flow and is on the mapped critical path.</span>`;
+                content += `<span style="font-size:11px; line-height:1.4; display:block; margin-top:3px;">${t.errorMsg}</span>`;
             }
 
             tooltip.innerHTML = content;
