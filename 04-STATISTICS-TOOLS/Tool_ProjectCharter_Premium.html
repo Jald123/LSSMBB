@@ -158,16 +158,26 @@
 
         .close-pro {
             position: absolute;
-            top: 30px;
+            top: 25px;
             right: 30px;
             font-size: 32px;
-            color: #475569;
+            color: rgba(255, 255, 255, 0.5);
             cursor: pointer;
             transition: 0.3s;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .close-pro:hover {
             color: white;
+            background: rgba(255, 0, 0, 0.4);
+            transform: rotate(90deg);
         }
 
         /* INPUT OVERRIDES */
@@ -1234,7 +1244,7 @@
     </div>
 
     <!-- STRATEGIC INFO POPUP -->
-    <div id="premiumInfoModal" class="info-overlay">
+    <div id="premiumInfoModal" class="info-overlay" onclick="if(event.target===this) closePremiumInfo()">
         <div class="info-box-premium">
             <span class="close-pro" onclick="closePremiumInfo()">&times;</span>
             <div class="info-title-pro" id="premium-modal-title">Strategic Insight</div>
