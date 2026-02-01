@@ -411,6 +411,134 @@
             font-weight: 800;
             margin-right: 5px;
         }
+
+        /* TIMELINE BIBLE STYLES */
+        .bible-btn {
+            background: linear-gradient(135deg, #FFD700, #FCA311);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 20px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .bible-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .bible-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 20, 0.98);
+            display: none;
+            z-index: 3000;
+            overflow-y: auto;
+            backdrop-filter: blur(15px);
+            padding: 50px 20px;
+        }
+
+        .bible-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            color: white;
+        }
+
+        .bible-section {
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bible-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bible-hook {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .bible-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 30px;
+            max-width: 800px;
+        }
+
+        .bible-img-wrapper {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .bible-img {
+            width: 100%;
+            display: block;
+        }
+
+        .bible-close {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            z-index: 3001;
+            background: rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .bible-close:hover {
+            background: #e74c3c;
+            transform: rotate(90deg);
+        }
+
+        .bible-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .bible-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 48px;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -423,7 +551,9 @@
             <div>
                 <span class="phase-glow">PROJECT MANAGEMENT</span>
                 <div style="height: 15px;"></div>
-                <h1>Project Timelines & Dependencies</h1>
+                <h1>Project Timelines & Dependencies
+                    <button class="bible-btn" onclick="openBible()"><span>📖</span> TIMELINE VISUAL BIBLE</button>
+                </h1>
             </div>
             <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
                 Dashboard</button>
@@ -459,6 +589,10 @@
             </div>
         </div>
 
+
+
+
+
         <!-- GUIDE BUTTON & MODAL -->
         <button class="lss-guide-btn" onclick="showGuide()"><i>💡</i> MBB PRO TIPS</button>
 
@@ -466,35 +600,43 @@
             <div class="modal-box">
                 <span class="slide-close"
                     onclick="document.getElementById('guideModal').style.display='none'">&times;</span>
-                <h2 style="color:var(--accent); text-align:center; font-family:'Orbitron'">Master Black Belt Guide 🥋
+                <h2 style="color:var(--accent); text-align:center; font-family:'Orbitron'">Master Black Belt
+                    Guide 🥋
                 </h2>
-                <p style="text-align:center; font-size:13px; color:#aaa; margin-bottom:20px;">Critical Path Management
+                <p style="text-align:center; font-size:13px; color:#aaa; margin-bottom:20px;">Critical Path
+                    Management
                 </p>
 
                 <!-- TABS -->
                 <div class="guide-tabs">
                     <button class="guide-tab active" onclick="switchGuideTab('strategy', event)">Strategic
                         Guide</button>
-                    <button class="guide-tab" onclick="switchGuideTab('knowledge', event)">Reference Library</button>
+                    <button class="guide-tab" onclick="switchGuideTab('knowledge', event)">Reference
+                        Library</button>
                 </div>
 
                 <!-- CONTENT 1: STRATEGY -->
                 <div id="guide_strategy" class="guide-content">
                     <div class="guide-section-title">🔎 THE "CRITICAL PATH"</div>
-                    <p style="font-size:14px; line-height:1.6;">Focus 80% of your energy on the "Critical Path" tasks.
+                    <p style="font-size:14px; line-height:1.6;">Focus 80% of your energy on the "Critical Path"
+                        tasks.
                         If a
-                        non-critical task slips by a week, it doesn't matter (Slack Time). If a Critical Task slips by
+                        non-critical task slips by a week, it doesn't matter (Slack Time). If a Critical Task
+                        slips by
                         an
                         hour, you are late.</p>
 
                     <div class="guide-section-title">⚠️ COMMON TRAPS</div>
                     <ul style="font-size:13px; line-height:1.6; color:#ddd;">
-                        <li><b>Analysis Paralysis:</b> Listing every single email as a task. Keep tasks to >1 day
+                        <li><b>Analysis Paralysis:</b> Listing every single email as a task. Keep tasks to >1
+                            day
                             duration.
                         </li>
-                        <li><b>Padding:</b> Adding "buffer" to every task. Instead, add one "Project Buffer" at the end.
+                        <li><b>Padding:</b> Adding "buffer" to every task. Instead, add one "Project Buffer" at
+                            the end.
                         </li>
-                        <li><b>Ignoring Weekends:</b> This tool assumes working days. Remember that 5 days duration = 1
+                        <li><b>Ignoring Weekends:</b> This tool assumes working days. Remember that 5 days
+                            duration = 1
                             calendar week.</li>
                     </ul>
                 </div>
@@ -504,15 +646,18 @@
                     <div class="guide-section-title">🔗 VISUAL DEPENDENCY TYPES</div>
                     <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:4px;">
                         <strong style="color:#2ecc71;">1. Finish-to-Start (FS)</strong>
-                        <p style="font-size:12px; margin:5px 0;">"Task B starts after Task A finishes." (Standard)</p>
+                        <p style="font-size:12px; margin:5px 0;">"Task B starts after Task A finishes."
+                            (Standard)</p>
                     </div>
                     <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:4px;">
                         <strong style="color:#3498db;">2. Start-to-Start (SS)</strong>
-                        <p style="font-size:12px; margin:5px 0;">"Task B starts when Task A starts." (Parallel work)</p>
+                        <p style="font-size:12px; margin:5px 0;">"Task B starts when Task A starts." (Parallel
+                            work)</p>
                     </div>
                     <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:4px;">
                         <strong style="color:#f1c40f;">3. Finish-to-Finish (FF)</strong>
-                        <p style="font-size:12px; margin:5px 0;">"Task A and B must finish at the same time."</p>
+                        <p style="font-size:12px; margin:5px 0;">"Task A and B must finish at the same time."
+                        </p>
                     </div>
 
                     <div class="guide-section-title">🌍 REAL-WORLD SCENARIOS</div>
@@ -525,7 +670,8 @@
                     <div
                         style="margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; border-left:3px solid #e74c3c;">
                         <strong>🏭 Manufacturing (New Line)</strong><br>
-                        <small>FS Dependency: "Pour Concrete" must finish 7 days before "Install Robots". (Critical Path
+                        <small>FS Dependency: "Pour Concrete" must finish 7 days before "Install Robots".
+                            (Critical Path
                             risk)</small>
                     </div>
                 </div>
@@ -575,16 +721,22 @@
                     <!-- FLOATING LEGEND -->
                     <div class="floating-legend">
                         <div class="legend-header">Project Phases</div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#e74c3c"></span> Define</div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#f1c40f"></span> Measure
+                        <div class="legend-row"><span class="legend-dot" style="background:#e74c3c"></span>
+                            Define</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#f1c40f"></span>
+                            Measure
                         </div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#3498db"></span> Analyze
+                        <div class="legend-row"><span class="legend-dot" style="background:#3498db"></span>
+                            Analyze
                         </div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#2ecc71"></span> Improve
+                        <div class="legend-row"><span class="legend-dot" style="background:#2ecc71"></span>
+                            Improve
                         </div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#9b59b6"></span> Control
+                        <div class="legend-row"><span class="legend-dot" style="background:#9b59b6"></span>
+                            Control
                         </div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#34495e"></span> Critical
+                        <div class="legend-row"><span class="legend-dot" style="background:#34495e"></span>
+                            Critical
                             Path</div>
                     </div>
 
@@ -594,7 +746,8 @@
                     </div>
 
                     <div style="text-align:center; margin-top:15px;">
-                        <span style="font-size:11px; color:#6c757d; cursor:pointer;" onclick="openZoom()">🔍 Click chart
+                        <span style="font-size:11px; color:#6c757d; cursor:pointer;" onclick="openZoom()">🔍
+                            Click chart
                             to enlarge</span>
                     </div>
                 </div>
@@ -604,9 +757,79 @@
     </div>
 
     <!-- ZOOM MODAL -->
-    <div id="zoomModal" class="modal-overlay" onclick="closeZoom(event)">
-        <div class="modal-content" id="zoomContent">
-            <!-- Cloned SVG goes here -->
+    <!-- TIMELINE VISUAL BIBLE MODAL -->
+    <div id="bibleModal" class="bible-overlay" onclick="closeBible(event)">
+        <span class="bible-close" onclick="document.getElementById('bibleModal').style.display='none'">&times;</span>
+        <div class="bible-content" id="bibleInner">
+            <div class="bible-header">
+                <h1>The Timeline Master's Bible</h1>
+                <p style="color: #888; letter-spacing: 2px;">Visualizing Project Flow & Dependency Logic</p>
+            </div>
+
+            <!-- SECTION 1: CRITICAL PATH -->
+            <div class="bible-section">
+                <div class="bible-hook">⚖️ The Path of Life or Death</div>
+                <p class="bible-text">
+                    In high-stakes environments like the OR, a 1-hour delay in anesthesia means an entire surgery
+                    slips.
+                    This is the <b>Critical Path</b>. Great managers don't monitor every task equally—they focus 90%
+                    of
+                    their energy on the tasks with <b>Zero Slack</b>.
+                </p>
+                <div class="bible-img-wrapper">
+                    <img src="assets/timelines/LSS_CriticalPath.png" class="bible-img" alt="Critical Path Infographic">
+                </div>
+            </div>
+
+            <!-- SECTION 2: DEPENDENCY FLAVORS -->
+            <div class="bible-section">
+                <div class="bible-hook">🧪 The Four Flavors of Logic</div>
+                <p class="bible-text">
+                    Sequence is the law. Understanding project logic goes beyond "this before that". Master the
+                    four universal relationships to build resilient schedules that survive real-world chaos.
+                </p>
+                <div class="bible-img-wrapper">
+                    <img src="assets/timelines/LSS_Dependencies.png" class="bible-img" alt="Dependency Flavors">
+                </div>
+            </div>
+
+            <!-- SECTION 3: BROOKS'S LAW -->
+            <div class="bible-section">
+                <div class="bible-hook">🌊 Adding Water to a Drowning Project</div>
+                <p class="bible-text">
+                    <b>Brooks's Law:</b> "Adding manpower to a late project makes it later."
+                    Learn why increasing team size creates communication overhead and training burdens that actually
+                    slow down delivery when the clock is ticking.
+                </p>
+                <div class="bible-img-wrapper">
+                    <img src="assets/timelines/LSS_BrooksLaw.png" class="bible-img" alt="Brooks Law">
+                </div>
+            </div>
+
+            <!-- SECTION 4: LEAD vs LAG -->
+            <div class="bible-section">
+                <div class="bible-hook">⏱️ Cheating the Clock</div>
+                <p class="bible-text">
+                    Master the art of <b>Lead Time</b> (overlapping tasks to compress timelines) and respect the
+                    science of <b>Lag Time</b> (mandatory physical or biological waiting periods).
+                    Timing isn't just a number; it's a strategic resource.
+                </p>
+                <div class="bible-img-wrapper">
+                    <img src="assets/timelines/LSS_LeadLag.png" class="bible-img" alt="Lead and Lag Time">
+                </div>
+            </div>
+
+            <!-- SECTION 5: CONE OF UNCERTAINTY -->
+            <div class="bible-section">
+                <div class="bible-hook">🌪️ Navigating the Fog of Initiation</div>
+                <p class="bible-text">
+                    Early precision is a looming disaster. The <b>Cone of Uncertainty</b> teaches us to use ranges
+                    early and narrow our focus only as knowledge is gained. Respect the precision paradox.
+                </p>
+                <div class="bible-img-wrapper">
+                    <img src="assets/timelines/LSS_ConeUncertainty.png" class="bible-img" alt="Cone of Uncertainty">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1111,6 +1334,26 @@
 
         function closeModal(e) {
             if (e.target.id === 'guideModal') document.getElementById('guideModal').style.display = 'none';
+        }
+
+        // --- BIBLE LOGIC ---
+        function openBible() {
+            const modal = document.getElementById('bibleModal');
+            modal.style.display = 'block';
+
+            // Animation for sections
+            const sections = document.querySelectorAll('.bible-section');
+            sections.forEach((s, i) => {
+                setTimeout(() => {
+                    s.classList.add('visible');
+                }, 200 * i);
+            });
+        }
+
+        function closeBible(e) {
+            if (e.target.id === 'bibleModal') {
+                document.getElementById('bibleModal').style.display = 'none';
+            }
         }
     </script>
 </body>
