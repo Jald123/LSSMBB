@@ -643,6 +643,26 @@
             box-shadow: 0 0 10px var(--accent);
         }
 
+        /* PREMIUM SCROLLBAR */
+        .premium-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .premium-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+
+        .premium-scroll::-webkit-scrollbar-thumb {
+            background: rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            border: 2px solid #080c14;
+        }
+
+        .premium-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(239, 68, 68, 0.6);
+        }
+
         .wisdom-tag {
             background: linear-gradient(90deg, var(--accent), #8b5cf6);
             -webkit-background-clip: text;
@@ -1271,14 +1291,14 @@
     <!-- SCOPE CREEP POPUP (HEALTHCARE FOCUS) -->
     <div id="scopeCreepModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
         <div class="modal-box"
-            style="max-width: 900px; padding: 0; overflow: hidden; background: #080c14; border: 2px solid #ef4444;">
+            style="max-width: 900px; max-height: 85vh; padding: 0; overflow: hidden; background: #080c14; border: 2px solid #ef4444; display: flex; flex-direction: column;">
             <div
-                style="padding: 20px; background: #ef4444; color: white; display: flex; justify-content: space-between; align-items: center;">
+                style="padding: 20px; background: #ef4444; color: white; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
                 <h3 style="margin: 0; font-family: 'Orbitron'; letter-spacing: 1px;">CRITICAL ALERT: SCOPE CREEP</h3>
                 <span class="close-pro" style="position: static; color: white;"
                     onclick="document.getElementById('scopeCreepModal').style.display='none'">&times;</span>
             </div>
-            <div style="padding: 30px;">
+            <div class="premium-scroll" style="padding: 30px; overflow-y: auto; flex-grow: 1;">
                 <img src="scope_creep_healthcare.png"
                     style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);">
 
