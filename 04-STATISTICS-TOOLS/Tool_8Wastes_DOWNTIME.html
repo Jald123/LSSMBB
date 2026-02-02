@@ -846,7 +846,16 @@
 
         function showWaste(key) {
             document.querySelectorAll('.waste-letter').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+
+            // Only update active class if triggered by click
+            if (window.event && window.event.currentTarget) {
+                window.event.currentTarget.classList.add('active');
+            } else {
+                // Default to highlight the first letter on init
+                const letters = document.querySelectorAll('.waste-letter');
+                const index = ['d', 'o', 'w', 'n', 't', 'i', 'm', 'e'].indexOf(key);
+                if (letters[index]) letters[index].classList.add('active');
+            }
 
             const w = wastes[key];
             const html = `
