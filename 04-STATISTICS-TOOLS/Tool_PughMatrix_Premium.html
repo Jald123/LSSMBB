@@ -243,16 +243,34 @@
 
         <div style="display: grid; grid-template-columns: 1fr; gap: 30px;">
             <div class="card">
-                <h3>Decision Matrix</h3>
+                <div class="flex-between">
+                    <h3>Decision Matrix</h3>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label style="font-size: 12px; color: var(--text-secondary);">Load Scenario:</label>
+                        <select id="scenarioSelect" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;"
+                            onchange="loadScenario()">
+                            <option value="">-- Custom --</option>
+                            <optgroup label="🏥 Medical Scenarios">
+                                <option value="med_pump">Infusion Pump Selection</option>
+                                <option value="med_monitor">Patient Monitoring System</option>
+                                <option value="med_tele">Telehealth Platform</option>
+                            </optgroup>
+                            <optgroup label="🏭 General Scenarios">
+                                <option value="gen_fleet">Delivery Fleet Vehicle</option>
+                                <option value="gen_erp">ERP Software Suite</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
                 <table class="pugh-table" id="pughTable">
                     <thead>
                         <tr>
                             <th class="criteria-cell">Selection Criteria</th>
                             <th>Weight (1-5)</th>
                             <th class="baseline-cell">Baseline (Current)</th>
-                            <th contenteditable="true">Concept A</th>
-                            <th contenteditable="true">Concept B</th>
-                            <th contenteditable="true">Concept C</th>
+                            <th id="th-0" contenteditable="true">Concept A</th>
+                            <th id="th-1" contenteditable="true">Concept B</th>
+                            <th id="th-2" contenteditable="true">Concept C</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -354,6 +372,89 @@
 
     <script>
         let chartInstance = null;
+
+        const scenarioDB = {
+            'med_pump': {
+                concepts: ["Pump-X1", "CareFlow 2", "SmartDrip"],
+                criteria: [
+                    { name: "Initial Cost", weight: 3, scores: [-1, 0, 1] },
+                    { name: "Battery Life", weight: 5, scores: [1, 1, -1] },
+                    { name: "UI Intuition", weight: 5, scores: [1, 0, 1] },
+                    { name: "Accuracy", weight: 4, scores: [0, 1, 1] },
+                    { name: "Integration", weight: 2, scores: [-1, 1, 0] }
+                ]
+            },
+            'med_monitor': {
+                concepts: ["Wireless-A", "Hybrid-B", "Mobile-C"],
+                criteria: [
+                    { name: "Data Lag", weight: 5, scores: [0, 1, 1] },
+                    { name: "Ease of Sanitization", weight: 4, scores: [1, 0, -1] },
+                    { name: "Security (HL7)", weight: 5, scores: [1, 1, 0] },
+                    { name: "Portability", weight: 3, scores: [1, 1, 1] },
+                    { name: "Maintenance Cost", weight: 2, scores: [-1, 0, 0] }
+                ]
+            },
+            'med_tele': {
+                concepts: ["V-Care", "CloudHealth", "DocLink"],
+                criteria: [
+                    { name: "Patient Setup Time", weight: 4, scores: [1, 0, 1] },
+                    { name: "Video Clarity", weight: 5, scores: [1, 1, 0] },
+                    { name: "EHR Integration", weight: 5, scores: [0, 1, 1] },
+                    { name: "License Cost", weight: 3, scores: [-1, 0, 1] },
+                    { name: "Compliance/Privacy", weight: 5, scores: [1, 1, 1] }
+                ]
+            },
+            'gen_fleet': {
+                concepts: ["EV-Van", "Diesel-HD", "Hybrid-S"],
+                criteria: [
+                    { name: "Cargo Volume", weight: 5, scores: [0, 1, -1] },
+                    { name: "Fuel Economy", weight: 4, scores: [1, -1, 1] },
+                    { name: "Safety Rating", weight: 4, scores: [1, 0, 1] },
+                    { name: "Purchase Price", weight: 3, scores: [-1, 1, 0] },
+                    { name: "Repair Network", weight: 2, scores: [-1, 1, 1] }
+                ]
+            },
+            'gen_erp': {
+                concepts: ["OracleCloud", "SAP S/4HANA", "Microsoft D365"],
+                criteria: [
+                    { name: "Feature Depth", weight: 5, scores: [1, 1, 0] },
+                    { name: "Implementation Speed", weight: 3, scores: [-1, -1, 1] },
+                    { name: "Global Support", weight: 4, scores: [1, 1, 1] },
+                    { name: "TCO (5yr)", weight: 4, scores: [-1, -1, 0] },
+                    { name: "User Customization", weight: 3, scores: [0, 0, 1] }
+                ]
+            }
+        };
+
+        function loadScenario() {
+            const key = document.getElementById('scenarioSelect').value;
+            if (!key) return;
+            const s = scenarioDB[key];
+
+            // Concepts
+            document.getElementById('th-0').innerText = s.concepts[0];
+            document.getElementById('th-1').innerText = s.concepts[1];
+            document.getElementById('th-2').innerText = s.concepts[2];
+
+            // Table Rows
+            const tbody = document.querySelector('#pughTable tbody');
+            tbody.innerHTML = '';
+
+            s.criteria.forEach(c => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="criteria-cell" contenteditable="true">${c.name}</td>
+                    <td><input type="number" class="score-input weight-in" value="${c.weight}" oninput="calculatePugh()"></td>
+                    <td class="baseline-cell">0</td>
+                    <td><input type="number" class="score-input score-in" data-col="0" value="${c.scores[0]}" oninput="calculatePugh()"></td>
+                    <td><input type="number" class="score-input score-in" data-col="1" value="${c.scores[1]}" oninput="calculatePugh()"></td>
+                    <td><input type="number" class="score-input score-in" data-col="2" value="${c.scores[2]}" oninput="calculatePugh()"></td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            calculatePugh();
+        }
 
         function addRow() {
             const tbody = document.querySelector('#pughTable tbody');

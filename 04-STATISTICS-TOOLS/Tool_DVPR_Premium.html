@@ -221,7 +221,26 @@
             </div>
         </div>
 
-        <div class="card" style="padding: 10px;">
+        <div class="card">
+            <div class="flex-between">
+                <h3>Verification Checklist</h3>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label style="font-size: 12px; color: var(--text-secondary);">Load Scenario:</label>
+                    <select id="scenarioSelect" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;"
+                        onchange="loadScenario()">
+                        <option value="">-- Custom --</option>
+                        <optgroup label="🏥 Medical Scenarios">
+                            <option value="med_cds">Clinical Decision Support (IT)</option>
+                            <option value="med_catheter">New IV Catheter Trial</option>
+                            <option value="med_kiosk">Digital Triage Kiosk</option>
+                        </optgroup>
+                        <optgroup label="🏭 Industry Scenarios">
+                            <option value="gen_warehouse">Warehouse Automation</option>
+                            <option value="gen_saas">SaaS Platform Beta</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
             <table class="dvpr-table" id="dvprTable">
                 <thead>
                     <tr>
@@ -247,35 +266,6 @@
                             </select>
                         </td>
                         <td contenteditable="true">Audit logs attached in Appendix A.</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">Avg. Processing Time</td>
-                        <td contenteditable="true">
-                            < 12 mins</td>
-                        <td contenteditable="true">13.5 mins</td>
-                        <td contenteditable="true">Time Study N=50</td>
-                        <td>
-                            <select class="status-pill status-fail" onchange="updateDVPR(this)">
-                                <option value="pass">PASS</option>
-                                <option value="fail" selected>FAIL</option>
-                                <option value="pending">PENDING</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true">Failed during peak load. Optimized code required.</td>
-                    </tr>
-                    <tr>
-                        <td contenteditable="true">User Acceptance (UAT)</td>
-                        <td contenteditable="true">Score > 4.0 / 5.0</td>
-                        <td contenteditable="true">-</td>
-                        <td contenteditable="true">Survey</td>
-                        <td>
-                            <select class="status-pill status-pending" onchange="updateDVPR(this)">
-                                <option value="pass">PASS</option>
-                                <option value="fail">FAIL</option>
-                                <option value="pending" selected>PENDING</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true">Scheduled for next Tuesday.</td>
                     </tr>
                 </tbody>
             </table>
@@ -318,6 +308,73 @@
 
     <script>
         let chartInstance = null;
+
+        const scenarioDB = {
+            'med_cds': {
+                tests: [
+                    { item: "Drug-Drug Interaction Alert", spec: "100% Accuracy", res: "99.8%", meth: "Simulated Test Script", status: "pass", note: "One outlier due to rare herbal combo." },
+                    { item: "Latency (Response Time)", spec: "< 2 Seconds", res: "1.4s", meth: "Network Monitoring", status: "pass", note: "Consistent under peak load." },
+                    { item: "Doctor Satisfaction", spec: "Score > 8.0/10", res: "7.2", meth: "Qualitative Survey", status: "fail", note: "Feedback indicates 'Alert Fatigue'." }
+                ]
+            },
+            'med_catheter': {
+                tests: [
+                    { item: "Insertion Success Rate", spec: "> 95% on 1st try", res: "96.5%", meth: "Observation N=100", status: "pass", note: "Statistically significant improvement." },
+                    { item: "Flashback Speed", spec: "< 0.5 Sec", res: "Instant", meth: "Bench Testing", status: "pass", note: "Superior to former baseline." },
+                    { item: "Leaking during use", spec: "0 incidents", res: "2 incidents", meth: "Post-use Audit", status: "fail", note: "Root cause: hub locking mechanism." }
+                ]
+            },
+            'med_kiosk': {
+                tests: [
+                    { item: "ID Scan Reliability", spec: "99%", res: "92%", meth: "Stress Test", status: "fail", note: "struggles with damaged DLs." },
+                    { item: "Processing Time", spec: "< 4 mins", res: "3.2 mins", meth: "Log Analysis", status: "pass", note: "Met the target cycle time." },
+                    { item: "Accessibility Compliance", spec: "WCAG 2.1 AA", res: "Compliant", meth: "Expert Review", status: "pass", note: "Audio and high-contrast verified." }
+                ]
+            },
+            'gen_warehouse': {
+                tests: [
+                    { item: "Autonomous Docking", spec: "100% success", res: "99.2%", meth: "500 Cycles", status: "pass", note: "One failure due to floor debris." },
+                    { item: "Battery Life", spec: "> 10 Hours", res: "11.5 Hours", meth: "Full Shift stress", status: "pass", note: "Exceeds spec by 15%." },
+                    { item: "Obstacle Detection", spec: "Stop in < 0.3m", res: "0.22m", meth: "Safety Calibration", status: "pass", note: "Emergency stop verified." }
+                ]
+            },
+            'gen_saas': {
+                tests: [
+                    { item: "Signup Conversion", spec: "> 15%", res: "18.2%", meth: "A/B Testing", status: "pass", note: "New onboarding flow is effective." },
+                    { item: "Page Load (LCP)", spec: "< 2.5s", res: "2.8s", meth: "Lighthouse Audit", status: "fail", note: "Image assets need optimization." },
+                    { item: "Retention (Day 1)", spec: "> 40%", res: "42%", meth: "Cohort Analysis", status: "pass", note: "Positive feedback on dash." }
+                ]
+            }
+        };
+
+        function loadScenario() {
+            const key = document.getElementById('scenarioSelect').value;
+            if (!key) return;
+            const s = scenarioDB[key];
+
+            const tbody = document.querySelector('#dvprTable tbody');
+            tbody.innerHTML = '';
+
+            s.tests.forEach(t => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td contenteditable="true">${t.item}</td>
+                    <td contenteditable="true">${t.spec}</td>
+                    <td contenteditable="true">${t.res}</td>
+                    <td contenteditable="true">${t.meth}</td>
+                    <td>
+                        <select class="status-pill status-${t.status}" onchange="updateDVPR(this)">
+                            <option value="pass" ${t.status === 'pass' ? 'selected' : ''}>PASS</option>
+                            <option value="fail" ${t.status === 'fail' ? 'selected' : ''}>FAIL</option>
+                            <option value="pending" ${t.status === 'pending' ? 'selected' : ''}>PENDING</option>
+                        </select>
+                    </td>
+                    <td contenteditable="true">${t.note}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            refreshStats();
+        }
 
         function addDVPRRow() {
             const tbody = document.querySelector('#dvprTable tbody');

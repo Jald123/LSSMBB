@@ -210,7 +210,25 @@
             </div>
 
             <div class="card">
-                <h3>Failure Mode Register</h3>
+                <div class="flex-between">
+                    <h3>Failure Mode Register</h3>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label style="font-size: 12px; color: var(--text-secondary);">Load Scenario:</label>
+                        <select id="scenarioSelect" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;"
+                            onchange="loadScenario()">
+                            <option value="">-- Custom --</option>
+                            <optgroup label="🏥 Medical Scenarios">
+                                <option value="med_meds">Medication Administration</option>
+                                <option value="med_lab">Lab Sample Transport</option>
+                                <option value="med_surgery">Surgery Room Prep</option>
+                            </optgroup>
+                            <optgroup label="💻 business Scenarios">
+                                <option value="gen_order">Order Fulfillment</option>
+                                <option value="gen_cloud">IT Cloud Migration</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
                 <table class="risk-table" id="riskTable">
                     <thead>
                         <tr>
@@ -235,18 +253,6 @@
                                     oninput="calcRisk()"></td>
                             <td class="rpn-cell">108</td>
                             <td contenteditable="true">Bar code scanning for all patients.</td>
-                        </tr>
-                        <tr>
-                            <td class="step-cell" contenteditable="true">Lab Results</td>
-                            <td contenteditable="true">Specimen lost in transit</td>
-                            <td><input type="number" class="score-input s-in" value="7" min="1" max="10"
-                                    oninput="calcRisk()"></td>
-                            <td><input type="number" class="score-input l-in" value="2" min="1" max="10"
-                                    oninput="calcRisk()"></td>
-                            <td><input type="number" class="score-input d-in" value="5" min="1" max="10"
-                                    oninput="calcRisk()"></td>
-                            <td class="rpn-cell">70</td>
-                            <td contenteditable="true">Tube tracking system with GPS tags.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -280,6 +286,73 @@
 
         <script>
             let chartInstance = null;
+
+            const scenarioDB = {
+                'med_meds': {
+                    steps: [
+                        { name: "Order Entry", mode: "Doctor selects wrong dosage", s: 9, l: 3, d: 4, mit: "Implement computerized dose-limit alerts." },
+                        { name: "Pharmacy Dispense", mode: "Incorrect label applied", s: 8, l: 2, d: 5, mit: "Double-check by second pharmacist." },
+                        { name: "Nurse Admin", mode: "Wrong patient identification", s: 10, l: 2, d: 6, mit: "Mandatory wristband scanning." },
+                        { name: "IV Setup", mode: "Air in line", s: 7, l: 4, d: 2, mit: "Air-detector alarms on all pumps." }
+                    ]
+                },
+                'med_lab': {
+                    steps: [
+                        { name: "Collection", mode: "Hemolyzed sample due to draw technique", s: 6, l: 5, d: 3, mit: "Phlebotomist training refresh." },
+                        { name: "Labeling", mode: "Mislabeled at bedside", s: 9, l: 3, d: 4, mit: "Mobile label printing at bedside." },
+                        { name: "Transport", mode: "Tube leaked in bag", s: 5, l: 2, d: 8, mit: "Use screw-cap primary containers." },
+                        { name: "Receipt", mode: "Order missing in LIS", s: 4, l: 4, d: 2, mit: "Digital audit trail for hand-offs." }
+                    ]
+                },
+                'med_surgery': {
+                    steps: [
+                        { name: "Sterilization", mode: "Indicator tape didn't change color", s: 9, l: 1, d: 9, mit: "Visual check mandatory before opening." },
+                        { name: "Equipment Pick", mode: "Missing specialized clamp", s: 7, l: 4, d: 2, mit: "Pick-list automation with bar-coding." },
+                        { name: "Triage/Check", mode: "Site marking missing", s: 10, l: 2, d: 5, mit: "Surgeon marking required in holding area." },
+                        { name: "Anesthesia", mode: "Vital monitor disconnect", s: 8, l: 3, d: 9, mit: "Immediate loud audible disconnect alarm." }
+                    ]
+                },
+                'gen_order': {
+                    steps: [
+                        { name: "Picking", mode: "Wrong item selected from bin", s: 4, l: 6, d: 3, mit: "Pick-to-light system implementation." },
+                        { name: "Packing", mode: "Fragile item not padded", s: 5, l: 4, d: 2, mit: "Auto-box sizer based on item profile." },
+                        { name: "Labeling", mode: "Address mismatch", s: 3, l: 2, d: 5, mit: "Address validation software at checkout." },
+                        { name: "Handoff", mode: "Carrier missed pickup", s: 2, l: 3, d: 8, mit: "Electronic dashboard for driver check-in." }
+                    ]
+                },
+                'gen_cloud': {
+                    steps: [
+                        { name: "Data Mapping", mode: "Schema mismatch", s: 6, l: 5, d: 3, mit: "Pre-migration validation scripts." },
+                        { name: "Transfer", mode: "Network throttle/timeout", s: 4, l: 4, d: 6, mit: "Chunked upload with resume capability." },
+                        { name: "Security", mode: "Permission drift (open S3)", s: 9, l: 2, d: 4, mit: "Cloud security posture management (CSPM)." },
+                        { name: "Cutover", mode: "DNS propagation delay", s: 7, l: 3, d: 2, mit: "Lower TTL values 24hr prior to migration." }
+                    ]
+                }
+            };
+
+            function loadScenario() {
+                const key = document.getElementById('scenarioSelect').value;
+                if (!key) return;
+                const s = scenarioDB[key];
+
+                const tbody = document.querySelector('#riskTable tbody');
+                tbody.innerHTML = '';
+
+                s.steps.forEach(step => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="step-cell" contenteditable="true">${step.name}</td>
+                        <td contenteditable="true">${step.mode}</td>
+                        <td><input type="number" class="score-input s-in" value="${step.s}" min="1" max="10" oninput="calcRisk()"></td>
+                        <td><input type="number" class="score-input l-in" value="${step.l}" min="1" max="10" oninput="calcRisk()"></td>
+                        <td><input type="number" class="score-input d-in" value="${step.d}" min="1" max="10" oninput="calcRisk()"></td>
+                        <td class="rpn-cell">0</td>
+                        <td contenteditable="true">${step.mit}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                calcRisk();
+            }
 
             function addRiskRow() {
                 const tbody = document.querySelector('#riskTable tbody');

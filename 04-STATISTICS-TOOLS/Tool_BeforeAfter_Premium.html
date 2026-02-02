@@ -212,20 +212,42 @@
             </div>
         </div>
 
+        <div class="card">
+            <div class="flex-between">
+                <h3>Select Benchmark Scenario</h3>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label style="font-size: 12px; color: var(--text-secondary);">Load Scenario:</label>
+                    <select id="scenarioSelect" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;"
+                        onchange="loadScenario()">
+                        <option value="">-- Custom --</option>
+                        <optgroup label="🏥 Medical Scenarios">
+                            <option value="med_er">ER Wait Time (Lean Triage)</option>
+                            <option value="med_readmit">Patient Readmission (Pilot)</option>
+                            <option value="med_infection">SSI Reduction (Safety)</option>
+                        </optgroup>
+                        <optgroup label="💼 Business Scenarios">
+                            <option value="gen_bill">Billing Cycle Time</option>
+                            <option value="gen_defect">MFG Defect Reduction</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="comparison-grid">
             <!-- BEFORE -->
             <div class="data-card" style="border-top: 4px solid #e74c3c;">
                 <h3>Baseline <span class="badge-before">BEFORE</span></h3>
                 <div class="stat-input-group">
-                    <label>Primary Metric Value (Average):</label>
+                    <label id="metric-label">Primary Metric Value (Average):</label>
                     <input type="number" id="val_before" class="stat-input" value="120" oninput="runVerification()">
                 </div>
                 <div class="stat-input-group">
-                    <label>Baseline Volume (Monthly):</label>
+                    <label id="vol-label">Baseline Volume (Monthly):</label>
                     <input type="number" id="vol_before" class="stat-input" value="1000" oninput="runVerification()">
                 </div>
                 <div class="stat-input-group">
-                    <label>Cost Per Unit of Waste/Time:</label>
+                    <label id="cost-label">Cost Per Unit of Waste/Time:</label>
                     <input type="number" id="cost_unit" class="stat-input" value="50" oninput="runVerification()">
                 </div>
             </div>
@@ -248,7 +270,7 @@
             </div>
         </div>
 
-        <div class="result-summary">
+        <div class="result-summary" id="results-area">
             <div style="text-transform: uppercase; font-size: 14px; letter-spacing: 2px; color: var(--text-secondary);">
                 Improvement Delta</div>
             <div class="delta-box" id="delta-pct">-62.5%</div>
@@ -272,13 +294,54 @@
         </div>
 
         <div class="card" style="margin-top: 30px;">
-            <h3>Visual Verification (Box Plot Simulation)</h3>
+            <h3>Visual Verification (Impact Shift)</h3>
             <div style="height: 300px;"><canvas id="verifyChart"></canvas></div>
         </div>
     </div>
 
     <script>
         let chartInstance = null;
+
+        const scenarioDB = {
+            'med_er': {
+                labels: { metric: "Wait Time (Minutes)", vol: "Patients/Month", cost: "Cost of Delay/Min" },
+                data: { before: 180, after: 75, vol: 4500, cost: 2.5 }
+            },
+            'med_readmit': {
+                labels: { metric: "Readmission Rate (%)", vol: "Total Admissions", cost: "Penalty Cost per Event" },
+                data: { before: 18, after: 11, vol: 800, cost: 4500 }
+            },
+            'med_infection': {
+                labels: { metric: "SSI Incidents/10k", vol: "Operating Room Events", cost: "Avg Treatment Cost" },
+                data: { before: 45, after: 12, vol: 200, cost: 15000 }
+            },
+            'gen_bill': {
+                labels: { metric: "Days Sales Outstanding", vol: "Invoices/Month", cost: "Capital Interest/Day" },
+                data: { before: 55, after: 38, vol: 12000, cost: 0.85 }
+            },
+            'gen_defect': {
+                labels: { metric: "Defect Rate (PPM)", vol: "Units Produced (k)", cost: "Scrap Cost/Unit" },
+                data: { before: 15000, after: 2500, vol: 50, cost: 12 }
+            }
+        };
+
+        function loadScenario() {
+            const key = document.getElementById('scenarioSelect').value;
+            if (!key) return;
+            const s = scenarioDB[key];
+
+            document.getElementById('metric-label').innerText = s.labels.metric;
+            document.getElementById('vol-label').innerText = s.labels.vol;
+            document.getElementById('cost-label').innerText = s.labels.cost;
+
+            document.getElementById('val_before').value = s.data.before;
+            document.getElementById('val_after').value = s.data.after;
+            document.getElementById('vol_before').value = s.data.vol;
+            document.getElementById('vol_after').value = s.data.vol;
+            document.getElementById('cost_unit').value = s.data.cost;
+
+            runVerification();
+        }
 
         function runVerification() {
             const b = parseFloat(document.getElementById('val_before').value) || 0;
@@ -291,7 +354,10 @@
             const delta = ((a - b) / b) * 100;
             const deltaEl = document.getElementById('delta-pct');
             deltaEl.innerText = (delta > 0 ? "+" : "") + delta.toFixed(1) + "%";
-            deltaEl.style.color = delta < 0 ? "#2ecc71" : "#e74c3c";
+
+            // Determine if more is better or less is better (heuristic: cost means less is usually better)
+            const isImprovement = delta < 0;
+            deltaEl.style.color = isImprovement ? "#2ecc71" : "#e74c3c";
 
             const msg = document.getElementById('delta-msg');
             if (Math.abs(delta) > 30) msg.innerText = "Breakthrough Improvement Detected!";
@@ -302,7 +368,7 @@
             const monthlySave = Math.abs(b - a) * vol * cost;
             document.getElementById('save-mo').innerText = "$" + Math.round(monthlySave).toLocaleString();
             document.getElementById('save-yr').innerText = "$" + Math.round(monthlySave * 12).toLocaleString();
-            document.getElementById('eff-gain').innerText = (b / a).toFixed(1) + "x";
+            document.getElementById('eff-gain').innerText = (a !== 0) ? (b / a).toFixed(1) + "x" : "∞";
 
             renderVerifyChart(b, a);
         }
@@ -326,7 +392,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true } },
+                    scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } },
                     plugins: { legend: { display: false } }
                 }
             });
