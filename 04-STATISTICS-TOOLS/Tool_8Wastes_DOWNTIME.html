@@ -595,6 +595,28 @@
                 box-shadow: 0 0 15px #e74c3c;
             }
         }
+
+        /* DASHBOARD HOVER TOOLTIP */
+        .dashboard-tooltip {
+            position: fixed;
+            background: rgba(10, 10, 30, 0.98);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 13px;
+            z-index: 11000;
+            pointer-events: none;
+            display: none;
+            max-width: 280px;
+            border: 1px solid var(--accent-primary);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            line-height: 1.5;
+        }
+
+        .metric-card {
+            cursor: help;
+        }
     </style>
 </head>
 
@@ -758,19 +780,22 @@
             <!-- ENHANCED DASHBOARD RESULTS -->
             <div class="dashboard-grid">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                    <div class="metric-card">
+                    <div class="metric-card" onmouseenter="showResultTooltip(event, 'financial')"
+                        onmousemove="moveResultTooltip(event)" onmouseleave="hideResultTooltip()">
                         <h4>Annual Opportunity</h4>
                         <div class="metric-value" id="val-financial">$0</div>
                         <div style="font-size:10px; color:#94a3b8; margin-top:5px;">Based on $50/hr labor cost</div>
                     </div>
-                    <div class="metric-card access-card">
+                    <div class="metric-card access-card" onmouseenter="showResultTooltip(event, 'clinical')"
+                        onmousemove="moveResultTooltip(event)" onmouseleave="hideResultTooltip()">
                         <h4>Patient Access</h4>
                         <div class="metric-value" id="val-access">0</div>
                         <div style="font-size:10px; color:#3498db; margin-top:5px;">Extra patients per week</div>
                     </div>
                 </div>
 
-                <div class="metric-card">
+                <div class="metric-card" onmouseenter="showResultTooltip(event, 'risk')"
+                    onmousemove="moveResultTooltip(event)" onmouseleave="hideResultTooltip()">
                     <h4>Clinical Risk Gauge</h4>
                     <div class="gauge-container">
                         <svg class="gauge-svg" viewBox="0 0 200 120">
@@ -790,6 +815,8 @@
                     <div id="risk-warning" class="risk-alert">⚠️ High Clinical Risk: Burnout Likely</div>
                 </div>
             </div>
+
+            <div id="dashboardTooltip" class="dashboard-tooltip"></div>
 
             <!-- STRATEGY BANNER -->
             <div id="strategy-banner" class="strategy-banner state-forming">
@@ -926,27 +953,59 @@
         showWaste('d');
         calculateMasterImpact();
 
+        // Global state for insights
+        let currentScenarioInsights = {
+            financial: "Estimated labor cost lost to non-value added activities.",
+            clinical: "Number of additional patients that could be accommodated if waste was eliminated.",
+            risk: "Weighted measure of process instability and patient safety risk."
+        };
+
         function loadScenario(key) {
             const scenarios = {
                 ideal_surgery: {
                     measuring: "High-efficiency Operating Room Turnover",
-                    inputs: { d: 0, o: 0, w: 1, n: 0, t: 1, i: 1, m: 2, e: 1 }
+                    inputs: { d: 0, o: 0, w: 1, n: 0, t: 1, i: 1, m: 2, e: 1 },
+                    insights: {
+                        financial: "Extreme cost-efficiency. Minimal leakage ($15k) signifies a highly optimized surgical pathway.",
+                        clinical: "Optimized turnover adds ~15 slots/month. Access is limited only by physical capacity, not process waste.",
+                        risk: "Risk Index < 10. Process is in a 'Performing' state with minimal variation or safety triggers."
+                    }
                 },
                 ideal_pharmacy: {
                     measuring: "Zero-Defect Automated Inpatient Medication Dispensing",
-                    inputs: { d: 0, o: 0, w: 0, n: 1, t: 0, i: 2, m: 1, e: 0 }
+                    inputs: { d: 0, o: 0, w: 0, n: 1, t: 0, i: 2, m: 1, e: 0 },
+                    insights: {
+                        financial: "Automation has almost entirely eliminated defect-related financial waste.",
+                        clinical: "Pharmacy staff focus 99% on clinical review rather than dispensing tasks.",
+                        risk: "Stable state. Risks are limited to external supply chain factors, not internal dispensing."
+                    }
                 },
                 gap_discharge: {
                     measuring: "Post-Surgical Patient Discharge Bottlenecks",
-                    inputs: { d: 2, o: 0, w: 12, n: 1, t: 3, i: 1, m: 4, e: 5 }
+                    inputs: { d: 2, o: 0, w: 12, n: 1, t: 3, i: 1, m: 4, e: 5 },
+                    insights: {
+                        financial: "Significant secondary loss. Wasted surgeon/nurse time costs over $70k annually in this unit alone.",
+                        clinical: "Massive capacity gap. Fixing the 12hr/wk waiting time would open up 24 extra patient slots.",
+                        risk: "High risk (Index > 20). Waiting creates 'Process Blindness' and is a leading indicator of post-op errors."
+                    }
                 },
                 gap_lab: {
                     measuring: "Inefficient Pathology Lab Sample Courier Logistics",
-                    inputs: { d: 1, o: 0, w: 6, n: 1, t: 10, i: 2, m: 8, e: 2 }
+                    inputs: { d: 1, o: 0, w: 6, n: 1, t: 10, i: 2, m: 8, e: 2 },
+                    insights: {
+                        financial: "Transport and Motion waste dominate. High fuel/labor costs without clinical value generation.",
+                        clinical: "Sample-to-Result TAT is delayed by courier logic. Impacts triage time for 12 patients/wk.",
+                        risk: "Instability detected. High transport (10hr) increases specimen lost-in-transit risk."
+                    }
                 },
                 gap_nursing: {
                     measuring: "Nurse Burnout due to Administrative Documentation Overhead",
-                    inputs: { d: 4, o: 1, w: 5, n: 12, t: 2, i: 1, m: 6, e: 15 }
+                    inputs: { d: 4, o: 1, w: 5, n: 12, t: 2, i: 1, m: 6, e: 15 },
+                    insights: {
+                        financial: "Critical leakage. Over $110k/yr is lost to nurses performing data-entry instead of care.",
+                        clinical: "Severe access restriction. 15hrs of extra-processing is equivalent to 30 missed patient consults.",
+                        risk: "CRITICAL (Risk 30+). Multiple safety triggers (Defects+Waiting) indicate imminent nurse burnout."
+                    }
                 }
             };
 
@@ -954,6 +1013,7 @@
             if (!s) return;
 
             document.getElementById('measuringDetail').innerText = s.measuring;
+            currentScenarioInsights = s.insights;
 
             // Set Inputs
             document.getElementById('inp-d').value = s.inputs.d;
@@ -967,6 +1027,34 @@
 
             // Trigger Refresh
             calculateMasterImpact();
+        }
+
+        // --- DASHBOARD TOOLTIP LOGIC ---
+        function showResultTooltip(e, type) {
+            const tooltip = document.getElementById('dashboardTooltip');
+            let title = "";
+            let color = "var(--accent-primary)";
+
+            if (type === 'financial') { title = "💰 Financial Analysis"; color = "#f1c40f"; }
+            if (type === 'clinical') { title = "🏥 Clinical Capacity"; color = "#3498db"; }
+            if (type === 'risk') { title = "⚠️ Safety & Risk"; color = "#ef4444"; }
+
+            tooltip.innerHTML = `
+                <div style="color:${color}; font-weight:800; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom:8px;">${title}</div>
+                <div style="font-size:12px;">${currentScenarioInsights[type]}</div>
+            `;
+            tooltip.style.display = 'block';
+            moveResultTooltip(e);
+        }
+
+        function moveResultTooltip(e) {
+            const tooltip = document.getElementById('dashboardTooltip');
+            tooltip.style.left = (e.clientX + 15) + 'px';
+            tooltip.style.top = (e.clientY + 15) + 'px';
+        }
+
+        function hideResultTooltip() {
+            document.getElementById('dashboardTooltip').style.display = 'none';
         }
     </script>
 </body>
