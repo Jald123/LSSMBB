@@ -1042,14 +1042,28 @@
         function showResultTooltip(e, type) {
             const tooltip = document.getElementById('dashboardTooltip');
             let title = "";
+            let formula = "";
             let color = "var(--accent-primary)";
 
-            if (type === 'financial') { title = "💰 Financial Analysis"; color = "#f1c40f"; }
-            if (type === 'clinical') { title = "🏥 Clinical Capacity"; color = "#3498db"; }
-            if (type === 'risk') { title = "⚠️ Safety & Risk"; color = "#ef4444"; }
+            if (type === 'financial') {
+                title = "💰 Financial Analysis";
+                formula = "Formula: Σ(Hours) × $50/hr × 52 Weeks";
+                color = "#f1c40f";
+            }
+            if (type === 'clinical') {
+                title = "🏥 Clinical Capacity";
+                formula = "Formula: Σ(Hours) ÷ 0.5hr Appt Slot";
+                color = "#3498db";
+            }
+            if (type === 'risk') {
+                title = "⚠️ Safety & Risk";
+                formula = "Formula: (D×5) + (W×3) + (M×1.5) + (I×1)";
+                color = "#ef4444";
+            }
 
             tooltip.innerHTML = `
                 <div style="color:${color}; font-weight:800; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom:8px;">${title}</div>
+                <div style="font-family:'Courier New', monospace; font-size:11px; background:rgba(0,0,0,0.3); padding:5px; border-radius:4px; margin-bottom:10px; color:#94a3b8; border-left:3px solid ${color};">${formula}</div>
                 <div style="font-size:12px;">${currentScenarioInsights[type]}</div>
             `;
             tooltip.style.display = 'block';
