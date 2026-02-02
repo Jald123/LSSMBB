@@ -168,6 +168,51 @@
             color: white;
             margin: 10px 0;
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 24px;
+        }
+
+        .clickable-header {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .clickable-header:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 
@@ -266,8 +311,10 @@
                     <thead>
                         <tr>
                             <th class="criteria-cell">Selection Criteria</th>
-                            <th>Weight (1-5)</th>
-                            <th class="baseline-cell">Baseline (Current)</th>
+                            <th class="clickable-header" onclick="explain('weight')" title="Importance (1-5)">Weight
+                                (1-5) ?</th>
+                            <th class="baseline-cell clickable-header" onclick="explain('baseline')"
+                                title="Reference Standard">Baseline (Current) ?</th>
                             <th id="th-0" contenteditable="true">Concept A</th>
                             <th id="th-1" contenteditable="true">Concept B</th>
                             <th id="th-2" contenteditable="true">Concept C</th>
@@ -362,10 +409,27 @@
             </div>
 
             <div class="card">
-                <h3>Concept Performance visualization</h3>
+                <div class="flex-between">
+                    <h3>Concept Performance Visualization</h3>
+                    <div class="clickable-result" onclick="explain('chart')"
+                        style="font-size:11px; cursor:pointer; color:var(--accent);">What is this?</div>
+                </div>
                 <div style="height: 300px;">
                     <canvas id="pughChart"></canvas>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDUCATIONAL MODAL -->
+    <div class="modal-overlay" id="infoModal" onclick="if(event.target.id==='infoModal') this.style.display='none'">
+        <div class="modal-box">
+            <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+            <div style="text-align:center; margin-bottom:20px;">
+                <h2 style="color:var(--accent); margin:0;" id="conceptTitle">Pugh Methodology</h2>
+            </div>
+            <div id="conceptContent" style="min-height:150px; color:#ccc; line-height:1.6; font-size:14px;">
+                <!-- Content Injected via JS -->
             </div>
         </div>
     </div>
@@ -540,6 +604,30 @@
                     plugins: { legend: { display: false } }
                 }
             });
+        }
+
+        const glossary = {
+            weight: {
+                title: "Criteria Weighting ⚖️",
+                text: "Not all criteria are equal. <br><br><b>Scale (1-5):</b><br>1: Nice to have (Secondary).<br>5: Critical to Quality (CTQ).<br><br>Multiplying your score by weight ensures that the most important features drive the final decision."
+            },
+            baseline: {
+                title: "Baseline Reference 🏁",
+                text: "The 'Baseline' is usually your current process or the industry standard. <br><br><b>Logic:</b> We assign the baseline a score of 0. Alternatives are then judged relative to this anchor. This forces objectivity by asking: 'Is Concept A better or worse than what we have today?'"
+            },
+            chart: {
+                title: "Convergence Visualization 📈",
+                text: "The bar chart represents the net value of each concept. <br><br><b>MBB Strategy:</b> If scores are close, don't just pick the winner. Look for 'Hybridization'—take the best features from Concept B and merge them into Concept A to create a Super-Concept."
+            }
+        };
+
+        function explain(key) {
+            const item = glossary[key];
+            if (item) {
+                document.getElementById('conceptTitle').innerText = item.title;
+                document.getElementById('conceptContent').innerHTML = `<div style="padding:15px; background:rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.1);">${item.text}</div>`;
+                document.getElementById('infoModal').style.display = 'flex';
+            }
         }
 
         window.onload = calculatePugh;

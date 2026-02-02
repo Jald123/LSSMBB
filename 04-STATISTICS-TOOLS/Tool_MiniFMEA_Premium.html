@@ -124,16 +124,53 @@
             margin: 10px 0;
         }
 
-        .risk-high {
-            color: #e74c3c;
-        }
-
-        .risk-med {
-            color: #f1c40f;
-        }
-
         .risk-low {
             color: #2ecc71;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 24px;
+        }
+
+        .clickable-header {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .clickable-header:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -234,10 +271,14 @@
                         <tr>
                             <th class="step-cell">Process Step</th>
                             <th>Failure Mode</th>
-                            <th>Severity (S)</th>
-                            <th>Likelihood (L)</th>
-                            <th>Detection (D)</th>
-                            <th>RPN Score</th>
+                            <th class="clickable-header" onclick="explain('severity')" title="Severity (1-10)">Severity
+                                (S) ?</th>
+                            <th class="clickable-header" onclick="explain('likelihood')" title="Likelihood (1-10)">
+                                Likelihood (L) ?</th>
+                            <th class="clickable-header" onclick="explain('detection')" title="Detection (1-10)">
+                                Detection (D) ?</th>
+                            <th class="clickable-header" onclick="explain('rpn')" title="Risk Priority Number">RPN Score
+                                ?</th>
                             <th>Mitigation Activity</th>
                         </tr>
                     </thead>
@@ -277,9 +318,27 @@
             </div>
 
             <div class="card">
-                <h3>Risk Exposure Heatmap</h3>
+                <div class="flex-between">
+                    <h3>Risk Exposure Heatmap</h3>
+                    <div class="clickable-result" onclick="explain('heatmap')"
+                        style="font-size:11px; cursor:pointer; color:var(--accent);">What is this?</div>
+                </div>
                 <div style="height: 300px;">
                     <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL MODAL -->
+        <div class="modal-overlay" id="infoModal" onclick="if(event.target.id==='infoModal') this.style.display='none'">
+            <div class="modal-box">
+                <span class="close-btn"
+                    onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+                <div style="text-align:center; margin-bottom:20px;">
+                    <h2 style="color:var(--accent); margin:0;" id="conceptTitle">Logic Interpretation</h2>
+                </div>
+                <div id="conceptContent" style="min-height:150px; color:#ccc; line-height:1.6; font-size:14px;">
+                    <!-- Content Injected via JS -->
                 </div>
             </div>
         </div>
@@ -407,35 +466,36 @@
                 renderChart(steps, rpns);
             }
 
-            function renderChart(labels, data) {
-                const ctx = document.getElementById('riskChart').getContext('2d');
-                if (chartInstance) chartInstance.destroy();
+            const glossary = {
+                severity: {
+                    title: "Severity (S) 🧪",
+                    text: "Measures the impact of the failure on the customer or patient. <br><br><b>Scale:</b><br>1: No impact.<br>5: Significant delay or rework.<br>9-10: Safety Hazard, Regulatory breach, or Life-threatening event."
+                },
+                likelihood: {
+                    title: "Likelihood (L) 🎲",
+                    text: "How often do we expect this failure to occur? <br><br><b>Scale:</b><br>1: One in a million.<br>5: Occasional (Monthly).<br>10: Inevitable (Daily)."
+                },
+                detection: {
+                    title: "Detection (D) 🔍",
+                    text: "Can our current controls find the defect before it reaches the customer? <br><br><b>Note:</b> In FMEA logic, 1 is Easy to Detect, and 10 is Impossible to Detect. <i>Improving Detection is the weakest form of mitigation.</i>"
+                },
+                rpn: {
+                    title: "Risk Priority Number (RPN) 📊",
+                    text: "RPN = S x L x D. This is your prioritization engine. <br><br><b>Interpretation:</b><br>0-40: Low/Acceptable.<br>41-99: Monitor/Moderate.<br>100+: Critical. Mitigation is mandatory."
+                },
+                heatmap: {
+                    title: "Risk Heatmap Interpretation 🔥",
+                    text: "This chart visualizes where your process is 'bleeding'. <br><br><b>Action:</b> Focus on the tallest bars first. If you have multiple High S / High L items, the process is fundamentally instable and requires a redesign."
+                }
+            };
 
-                chartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'RPN Score',
-                            data: data,
-                            backgroundColor: data.map(v => v >= 100 ? 'rgba(231, 76, 60, 0.6)' : (v >= 40 ? 'rgba(241, 196, 15, 0.6)' : 'rgba(46, 204, 113, 0.6)')),
-                            borderColor: data.map(v => v >= 100 ? '#e74c3c' : (v >= 40 ? '#f1c40f' : '#2ecc71')),
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 1000,
-                                grid: { color: 'rgba(255,255,255,0.05)' },
-                                title: { display: true, text: 'RPN Score', color: '#94a3b8' }
-                            }
-                        }
-                    }
-                });
+            function explain(key) {
+                const item = glossary[key];
+                if (item) {
+                    document.getElementById('conceptTitle').innerText = item.title;
+                    document.getElementById('conceptContent').innerHTML = `<div style="padding:15px; background:rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.1);">${item.text}</div>`;
+                    document.getElementById('infoModal').style.display = 'flex';
+                }
             }
 
             window.onload = calcRisk;
