@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DVP&R / Pilot Report | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .header-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .meta-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+
+        .meta-label {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .glow-badge {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: 15px;
+        }
+
+        .dvpr-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--surface-1);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 12px;
+        }
+
+        .dvpr-table th,
+        .dvpr-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .dvpr-table th {
+            background: var(--surface-2);
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-pass {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-fail {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .status-pending {
+            background: rgba(241, 196, 15, 0.1);
+            color: #f1c40f;
+            border: 1px solid rgba(241, 196, 15, 0.3);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .stat-val {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" style="max-width: 1300px; margin: 40px auto; padding: 0 20px;">
+        <!-- HEADER -->
+        <div class="flex-between"
+            style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+            <div>
+                <h1 style="display:flex; align-items:center; margin:0; font-family: 'Orbitron', sans-serif;">
+                    DVP&R / Pilot Report
+                    <span class="glow-badge">CONTROL</span>
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Design Verification Plan & Report. <span style="color: #3498db;">Validation Summary.</span> Did it
+                    pass the test?
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-primary" onclick="window.print()">🖨️ Export Final Report</button>
+                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
+                    Hub</button>
+            </div>
+        </div>
+
+        <!-- META GRID -->
+        <div class="header-meta-grid">
+            <div class="meta-box">
+                <span class="meta-label">🔍 What Is It?</span>
+                <div class="meta-value">Design Verification Plan & Report. A formal record that tracks testing of a new
+                    process or product.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">⏱️ When To Use?</span>
+                <div class="meta-value">During IMPROVE / CONTROL phase to document that all requirements are fully
+                    validated.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">💡 Why Use It?</span>
+                <div class="meta-value">To provide objective evidence of performance and 'Pass/Fail' status for official
+                    stakeholder sign-off.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">📋 Requirements</span>
+                <div class="meta-value">Test names, target specifications, actual results, and acceptance criteria.
+                </div>
+            </div>
+            <!-- Row 2 -->
+            <div class="meta-box">
+                <span class="meta-label">📐 Verification Goal</span>
+                <div class="meta-value">Prove that the design meets the CTQs (Critical to Quality) identified in the
+                    Define phase.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">🧠 Interpretation</span>
+                <div class="meta-value">All tests must be 'PASS' or have an approved deviation before moving to full
+                    launch.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">🎯 Audit Trail</span>
+                <div class="meta-value">Provides a defensive record for quality audits and regulatory inspections (ISO,
+                    FDA, JCI).</div>
+            </div>
+            <div class="meta-box" style="background: rgba(52, 152, 219, 0.1); border-color: rgba(52, 152, 219, 0.3);">
+                <span class="meta-label" style="color:#3498db;">🚀 Phase Relevance</span>
+                <div class="meta-value" style="color:white;">
+                    <strong>Improve:</strong> Pilot Data.<br>
+                    <strong>Control:</strong> Handover Evidence.
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-box">
+                <div class="stat-label">Total Tests</div>
+                <div class="stat-val" id="total-tests">3</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Passes</div>
+                <div class="stat-val" id="pass-count" style="color:#2ecc71;">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Failures</div>
+                <div class="stat-val" id="fail-count" style="color:#e74c3c;">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Health Score</div>
+                <div class="stat-val" id="health-pct">0%</div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 10px;">
+            <table class="dvpr-table" id="dvprTable">
+                <thead>
+                    <tr>
+                        <th>Test Item / Description</th>
+                        <th>Target Spec / Goal</th>
+                        <th>Actual Result</th>
+                        <th>Test Method</th>
+                        <th>Acceptance Status</th>
+                        <th>Evidence / Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true">System Uptime (24h)</td>
+                        <td contenteditable="true">> 99.5%</td>
+                        <td contenteditable="true">99.8%</td>
+                        <td contenteditable="true">Log Analysis</td>
+                        <td>
+                            <select class="status-pill status-pass" onchange="updateDVPR(this)">
+                                <option value="pass" selected>PASS</option>
+                                <option value="fail">FAIL</option>
+                                <option value="pending">PENDING</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true">Audit logs attached in Appendix A.</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">Avg. Processing Time</td>
+                        <td contenteditable="true">
+                            < 12 mins</td>
+                        <td contenteditable="true">13.5 mins</td>
+                        <td contenteditable="true">Time Study N=50</td>
+                        <td>
+                            <select class="status-pill status-fail" onchange="updateDVPR(this)">
+                                <option value="pass">PASS</option>
+                                <option value="fail" selected>FAIL</option>
+                                <option value="pending">PENDING</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true">Failed during peak load. Optimized code required.</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">User Acceptance (UAT)</td>
+                        <td contenteditable="true">Score > 4.0 / 5.0</td>
+                        <td contenteditable="true">-</td>
+                        <td contenteditable="true">Survey</td>
+                        <td>
+                            <select class="status-pill status-pending" onchange="updateDVPR(this)">
+                                <option value="pass">PASS</option>
+                                <option value="fail">FAIL</option>
+                                <option value="pending" selected>PENDING</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true">Scheduled for next Tuesday.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 15px;">
+                <button class="btn btn-ghost" onclick="addDVPRRow()">➕ Add Test Case</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div class="card">
+                <h3>Validation Summary</h3>
+                <div style="height: 250px;"><canvas id="dvprChart"></canvas></div>
+            </div>
+            <div class="card">
+                <h3>Audit Sign-off</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                    <div>
+                        <label style="font-size: 11px; color: var(--accent);">Verification Lead Signature</label>
+                        <div style="height: 50px; border-bottom: 2px solid rgba(255,255,255,0.1); margin-top: 10px;">
+                        </div>
+                        <input type="text" placeholder="Print Name"
+                            style="width: 100%; background: transparent; border: none; font-size: 12px; color: #fff; margin-top: 5px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px; color: var(--accent);">Departmental Manager Approval</label>
+                        <div style="height: 50px; border-bottom: 2px solid rgba(255,255,255,0.1); margin-top: 10px;">
+                        </div>
+                        <input type="text" placeholder="Print Name"
+                            style="width: 100%; background: transparent; border: none; font-size: 12px; color: #fff; margin-top: 5px;">
+                    </div>
+                </div>
+                <div
+                    style="margin-top: 30px; padding: 15px; background: rgba(52, 152, 219, 0.05); border-radius: 8px; font-size: 12px; color: var(--text-secondary);">
+                    <strong>Certification:</strong> By signing above, the reviewers confirm that the pilot data
+                    accurately reflects the design performance and meets acceptable standards.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chartInstance = null;
+
+        function addDVPRRow() {
+            const tbody = document.querySelector('#dvprTable tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td contenteditable="true">New Test</td>
+                <td contenteditable="true">Target</td>
+                <td contenteditable="true">Actual</td>
+                <td contenteditable="true">Method</td>
+                <td>
+                    <select class="status-pill status-pending" onchange="updateDVPR(this)">
+                        <option value="pass">PASS</option>
+                        <option value="fail">FAIL</option>
+                        <option value="pending" selected>PENDING</option>
+                    </select>
+                </td>
+                <td contenteditable="true">Notes</td>
+            `;
+            tbody.appendChild(row);
+            refreshStats();
+        }
+
+        function updateDVPR(el) {
+            el.className = "status-pill status-" + el.value;
+            refreshStats();
+        }
+
+        function refreshStats() {
+            const rows = document.querySelectorAll('#dvprTable tbody tr');
+            let passes = 0, fails = 0, pendings = 0;
+
+            rows.forEach(row => {
+                const status = row.querySelector('select').value;
+                if (status === 'pass') passes++;
+                else if (status === 'fail') fails++;
+                else pendings++;
+            });
+
+            document.getElementById('total-tests').innerText = rows.length;
+            document.getElementById('pass-count').innerText = passes;
+            document.getElementById('fail-count').innerText = fails;
+
+            const health = (passes / rows.length) * 100;
+            document.getElementById('health-pct').innerText = Math.round(health) + "%";
+
+            renderChart(passes, fails, pendings);
+        }
+
+        function renderChart(p, f, d) {
+            const ctx = document.getElementById('dvprChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pass', 'Fail', 'Pending'],
+                    datasets: [{
+                        data: [p, f, d],
+                        backgroundColor: ['#2ecc71', '#e74c3c', '#f1c40f'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } }
+                }
+            });
+        }
+
+        window.onload = refreshStats;
+    </script>
+</body>
+
+</html>

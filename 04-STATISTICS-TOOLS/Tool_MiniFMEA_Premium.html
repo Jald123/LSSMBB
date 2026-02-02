@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Scan (Mini-FMEA) | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .header-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .meta-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+
+        .meta-label {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .glow-badge {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: 15px;
+        }
+
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--surface-1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .risk-table th,
+        .risk-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .risk-table th {
+            background: var(--surface-2);
+            color: var(--accent);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .step-cell {
+            text-align: left !important;
+            width: 250px;
+            font-weight: bold;
+        }
+
+        .score-input {
+            width: 50px;
+            padding: 8px;
+            background: var(--surface-2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .rpn-cell {
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .stat-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .risk-high {
+            color: #e74c3c;
+        }
+
+        .risk-med {
+            color: #f1c40f;
+        }
+
+        .risk-low {
+            color: #2ecc71;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" style="max-width: 1300px; margin: 40px auto; padding: 0 20px;">
+        <!-- HEADER -->
+        <div class="flex-between"
+            style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+            <div>
+                <h1 style="display:flex; align-items:center; margin:0; font-family: 'Orbitron', sans-serif;">
+                    Risk Scan (Mini-FMEA)
+                    <span class="glow-badge">MEASURE</span>
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Rapid Failure Analysis. <span style="color: #f39c12;">Proactive Risk Shield.</span> What could go
+                    wrong?
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-primary"
+                    onclick="alert('RPN = Severity x Likelihood x Detection. Focus on tasks with RPN > 80.')">💡 Scoring
+                    Guide</button>
+                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
+                    Hub</button>
+            </div>
+        </div>
+
+        <!-- META GRID -->
+        <div class="header-meta-grid">
+            <div class="meta-box">
+                <span class="meta-label">🔍 What Is It?</span>
+                <div class="meta-value">A rapid risk assessment tool focused on the most critical failure points in a
+                    process.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">⏱️ When To Use?</span>
+                <div class="meta-value">Early in a project (MEASURE/ANALYZE) to identify where things could go wrong.
+                </div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">💡 Why Use It?</span>
+                <div class="meta-value">To proactively catch system failures before they happen without a full FMEA
+                    overhead.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">📋 Requirements</span>
+                <div class="meta-value">Process steps, potential failures, severity/likelihood guesses, and mitigation.
+                </div>
+            </div>
+            <!-- Row 2 -->
+            <div class="meta-box">
+                <span class="meta-label">📐 RPN Formula</span>
+                <div class="meta-value"><strong>Sev x Lik x Det</strong> (Severity x Likelihood x Detection). Scale
+                    1-10.</div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">🧠 Interpretation</span>
+                <div class="meta-value">Critical Risks (>100 RPN) require immediate action plans or design changes.
+                </div>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">🎯 Action Threshold</span>
+                <div class="meta-value">Industry Std: High (>100), Medium (40-99), Low (<40).< /div>
+                </div>
+                <div class="meta-box"
+                    style="background: rgba(241, 196, 15, 0.1); border-color: rgba(241, 196, 15, 0.3);">
+                    <span class="meta-label" style="color:#f1c40f;">🚀 Phase Relevance</span>
+                    <div class="meta-value" style="color:white;">
+                        <strong>Measure:</strong> ID Risks.<br>
+                        <strong>Analyze:</strong> Prioritize Issues.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Failure Mode Register</h3>
+                <table class="risk-table" id="riskTable">
+                    <thead>
+                        <tr>
+                            <th class="step-cell">Process Step</th>
+                            <th>Failure Mode</th>
+                            <th>Severity (S)</th>
+                            <th>Likelihood (L)</th>
+                            <th>Detection (D)</th>
+                            <th>RPN Score</th>
+                            <th>Mitigation Activity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="step-cell" contenteditable="true">Patient Intake</td>
+                            <td contenteditable="true">Wrong MRN entered</td>
+                            <td><input type="number" class="score-input s-in" value="9" min="1" max="10"
+                                    oninput="calcRisk()"></td>
+                            <td><input type="number" class="score-input l-in" value="4" min="1" max="10"
+                                    oninput="calcRisk()"></td>
+                            <td><input type="number" class="score-input d-in" value="3" min="1" max="10"
+                                    oninput="calcRisk()"></td>
+                            <td class="rpn-cell">108</td>
+                            <td contenteditable="true">Bar code scanning for all patients.</td>
+                        </tr>
+                        <tr>
+                            <td class="step-cell" contenteditable="true">Lab Results</td>
+                            <td contenteditable="true">Specimen lost in transit</td>
+                            <td><input type="number" class="score-input s-in" value="7" min="1" max="10"
+                                    oninput="calcRisk()"></td>
+                            <td><input type="number" class="score-input l-in" value="2" min="1" max="10"
+                                    oninput="calcRisk()"></td>
+                            <td><input type="number" class="score-input d-in" value="5" min="1" max="10"
+                                    oninput="calcRisk()"></td>
+                            <td class="rpn-cell">70</td>
+                            <td contenteditable="true">Tube tracking system with GPS tags.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin-top:15px;">
+                    <button class="btn btn-ghost" onclick="addRiskRow()">➕ Add failure Mode</button>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Max RPN Found</div>
+                    <div class="stat-val" id="max-rpn" style="color: #e74c3c;">-</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">High Risks Count</div>
+                    <div class="stat-val" id="high-count">-</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">System Maturity</div>
+                    <div class="stat-val" id="risk-status" style="font-size:18px;">Analyzing...</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Risk Exposure Heatmap</h3>
+                <div style="height: 300px;">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let chartInstance = null;
+
+            function addRiskRow() {
+                const tbody = document.querySelector('#riskTable tbody');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td class="step-cell" contenteditable="true">New Step</td>
+                <td contenteditable="true">Potential Failure</td>
+                <td><input type="number" class="score-input s-in" value="1" min="1" max="10" oninput="calcRisk()"></td>
+                <td><input type="number" class="score-input l-in" value="1" min="1" max="10" oninput="calcRisk()"></td>
+                <td><input type="number" class="score-input d-in" value="1" min="1" max="10" oninput="calcRisk()"></td>
+                <td class="rpn-cell">1</td>
+                <td contenteditable="true">Proposed Mitigation</td>
+            `;
+                tbody.appendChild(row);
+                calcRisk();
+            }
+
+            function calcRisk() {
+                const rows = document.querySelectorAll('#riskTable tbody tr');
+                let maxRpn = 0;
+                let highCount = 0;
+                const rpns = [];
+                const steps = [];
+
+                rows.forEach(row => {
+                    const s = parseFloat(row.querySelector('.s-in').value) || 0;
+                    const l = parseFloat(row.querySelector('.l-in').value) || 0;
+                    const d = parseFloat(row.querySelector('.d-in').value) || 0;
+                    const rpn = s * l * d;
+
+                    const rpnCell = row.querySelector('.rpn-cell');
+                    rpnCell.innerText = rpn;
+
+                    if (rpn >= 100) { rpnCell.className = "rpn-cell risk-high"; highCount++; }
+                    else if (rpn >= 40) { rpnCell.className = "rpn-cell risk-med"; }
+                    else { rpnCell.className = "rpn-cell risk-low"; }
+
+                    if (rpn > maxRpn) maxRpn = rpn;
+
+                    rpns.push(rpn);
+                    steps.push(row.querySelector('.step-cell').innerText);
+                });
+
+                document.getElementById('max-rpn').innerText = maxRpn;
+                document.getElementById('high-count').innerText = highCount;
+
+                const status = document.getElementById('risk-status');
+                if (highCount > 0) { status.innerText = "CRITICAL"; status.style.color = "#e74c3c"; }
+                else if (maxRpn > 50) { status.innerText = "CAUTION"; status.style.color = "#f1c40f"; }
+                else { status.innerText = "ROBUST"; status.style.color = "#2ecc71"; }
+
+                renderChart(steps, rpns);
+            }
+
+            function renderChart(labels, data) {
+                const ctx = document.getElementById('riskChart').getContext('2d');
+                if (chartInstance) chartInstance.destroy();
+
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'RPN Score',
+                            data: data,
+                            backgroundColor: data.map(v => v >= 100 ? 'rgba(231, 76, 60, 0.6)' : (v >= 40 ? 'rgba(241, 196, 15, 0.6)' : 'rgba(46, 204, 113, 0.6)')),
+                            borderColor: data.map(v => v >= 100 ? '#e74c3c' : (v >= 40 ? '#f1c40f' : '#2ecc71')),
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 1000,
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                title: { display: true, text: 'RPN Score', color: '#94a3b8' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            window.onload = calcRisk;
+        </script>
+</body>
+
+</html>
