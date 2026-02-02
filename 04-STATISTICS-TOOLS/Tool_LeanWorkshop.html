@@ -283,6 +283,7 @@
                 <button class="tool-btn" onclick="renderTool('swot')" id="btn-swot">⚖️ SWOT Analysis</button>
                 <button class="tool-btn" onclick="renderTool('swimlane')" id="btn-swimlane">🏊 Swimlane Diagram</button>
                 <button class="tool-btn" onclick="renderTool('ce_matrix')" id="btn-ce_matrix">🔟 C&E Matrix</button>
+                <button class="tool-btn" onclick="renderTool('triz')" id="btn-triz">🧩 TRIZ Ideas</button>
 
                 <div class="phase-header">Improve</div>
                 <button class="tool-btn" onclick="renderTool('brainstorm')" id="btn-brainstorm">🧠
@@ -291,10 +292,10 @@
                 <button class="tool-btn" onclick="renderTool('moscow')" id="btn-moscow">🎯 MoSCoW Rules</button>
                 <button class="tool-btn" onclick="renderTool('5s')" id="btn-5s">🧹 5S Checklist</button>
 
-                <div class="phase-header">Control</div>
                 <button class="tool-btn" onclick="renderTool('controlplan')" id="btn-controlplan">📋 Control
                     Plan</button>
                 <button class="tool-btn" onclick="renderTool('riskreg')" id="btn-riskreg">⚠️ Risk Register</button>
+                <button class="tool-btn" onclick="renderTool('specs')" id="btn-specs">🔍 Design Specs</button>
                 <button class="tool-btn" onclick="renderTool('a3')" id="btn-a3">📄 A3 Problem Solving</button>
             </div>
 
@@ -1581,6 +1582,104 @@
 
                     return `<div style="overflow-x:auto; padding:10px;"><table class="sipoc-table" style="border-collapse:collapse; width:100%; box-shadow:0 0 10px rgba(0,0,0,0.1);">${head}${body}</table></div>
                     <div style="font-size:12px; color:#666; text-align:center; margin-top:5px;">Legend: 9=Strong, 3=Moderate, 1=Weak, 0=None</div>`;
+                }
+            },
+            'triz': {
+                title: "TRIZ Inventive Principles",
+                phase: "ANALYZE",
+                hook: "Resolve technical contradictions with 40 inventive principles.",
+                history: "Developed by Genrich Altshuller in the USSR after analyzing 200,000+ patents. It's the 'Theory of Inventive Problem Solving'. It assumes that someone, somewhere, has already solved your problem in another field.",
+                what: "Systematic method for innovation and contradiction resolution.",
+                why: "To move past trade-offs (e.g., 'fast but heavy') into breakthrough solutions.",
+                when: "Brainstorming phase of DMADV or when stuck on a technical barrier.",
+                standard: "40 Inventive Principles, Contradiction Matrix.",
+                interp: "Select your 'Contradiction' (Improving vs Worsening) to find recommended principles.",
+                ref: "Altshuller's Matrix.",
+                steps: [
+                    { title: "1. Define Contradiction", desc: "What are you trying to improve? What gets worse because of it?" },
+                    { title: "2. Scan Principles", desc: "Look through the 40 principles for analogies to your problem." },
+                    { title: "3. Apply Idea", desc: "Convert the abstract principle into a concrete design solution." }
+                ],
+                inputs: [
+                    { id: 'problem', label: '1. The Problem / Contradiction', type: 'text', tip: 'E.g. Speed vs Cost', placeholder: 'Stronger product vs Heavier weight', definition: "The technical conflict.", example: "Faster speed vs Higher Fuel" },
+                    { id: 'princip', label: '2. Principles to Use', type: 'textarea', tip: 'Select from list below.', placeholder: '1. Segmentation\n10. Preliminary Action...', definition: "The inventive strategies.", example: "1. Segmentation" }
+                ],
+                scenarios: {
+                    'mfg': { desc: "Lightweight Aerospace Part", data: { problem: "High Strength vs Low Weight", princip: "1. Segmentation (Hollow parts)\n35. Parameter Changes (Composite materials)\n40. Composite materials" } },
+                    'service': { desc: "Fast Customer Service", data: { problem: "Personalized Service vs Speed", princip: "10. Preliminary Action (Fill form first)\n25. Self-service\n1. Segmentation" } }
+                },
+                render: (data) => `
+                    <div style="font-family:sans-serif; padding:10px;">
+                        <h3 style="color:#2c3e50; border-bottom:2px solid #3498db; padding-bottom:10px;">TRIZ Contradiction Analysis</h3>
+                        <div style="background:#f4f6f7; padding:15px; border-radius:4px; margin-bottom:15px; border-left:4px solid #3498db;">
+                            <strong>Conflict:</strong> ${data.problem}
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                            <div class="card" style="background:white; color:#333; padding:15px; border:1px solid #ddd;">
+                                <h4 style="margin-top:0; color:#3498db;">Selected Principles</h4>
+                                <p style="font-size:13px; color:#666;">Applying these logic keys:</p>
+                                <ul style="margin:0; padding-left:20px; font-weight:bold;">
+                                    ${data.princip.split('\n').map(p => `<li>${p}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="card" style="background:#fffde7; color:#333; padding:15px; border:1px solid #f9e79f;">
+                                <h4 style="margin-top:0; color:#f1c40f;">✨ Inventive Thinking</h4>
+                                <p style="font-size:12px;">Don't just compromise. How can you have <strong>BOTH</strong>? If it must be Strong AND Light, can you use <em>Principle 17: Another Dimension</em> or <em>Principle 31: Porous Materials</em>?</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'specs': {
+                title: "Design Specifications",
+                phase: "DESIGN",
+                hook: "Lock in the technical requirements for the solution.",
+                history: "Derived from the 'Design for Six Sigma' (DFSS) methodology. It transforms the CTQ (Customer requirement) into a specific manufacturing or service tolerance that a system can reliably achieve.",
+                what: "Table of engineering specs and tolerances.",
+                why: "To define clear boundaries for 'Good' vs 'Bad' before production.",
+                when: "Design/Verify phase of DMADV.",
+                standard: "Target, LSL (Lower Spec Limit), USL (Upper Spec Limit).",
+                interp: "Ensure 'Gap' between USL and LSL is wide enough for process capability.",
+                ref: "6 Sigma = 2 * (USL-LSL) / 12 ... no, Cp = (USL-LSL)/6s.",
+                steps: [
+                    { title: "1. List Parameters", desc: "What measurable things define success?" },
+                    { title: "2. Define Target", desc: "What is the ideal value?" },
+                    { title: "3. Set Limits", desc: "Define USL and LSL based on customer impact." }
+                ],
+                inputs: [
+                    { id: 'data', label: 'Spec Table Data (Format: Param, Target, LSL, USL, Unit)', type: 'textarea', tip: 'One per line.', placeholder: 'Temperature, 100, 95, 105, C\nResponse Time, 5, 2, 7, Sec' }
+                ],
+                scenarios: {
+                    'mfg': { desc: "Precision Engine Valve", data: { data: "Stem Diameter, 8.000, 7.995, 8.005, mm\nSurface Finish, 0.4, 0.2, 0.6, Ra\nHardness, 60, 58, 62, HRC" } },
+                    'health': { desc: "Pharmacy Med Dispense", data: { data: "Wait Time, 10, 5, 15, mins\nAccuracy, 100, 100, 100, %\nPharmacist Review, 1, 0.5, 3, mins" } }
+                },
+                render: (data) => {
+                    const rows = data.data.split('\n').filter(l => l).map(line => {
+                        const p = line.split(',');
+                        return `<tr>
+                            <td style="font-weight:bold;">${p[0] || ''}</td>
+                            <td style="text-align:center;">${p[1] || ''} ${p[4] || ''}</td>
+                            <td style="text-align:center; color:#e74c3c;">${p[2] || ''}</td>
+                            <td style="text-align:center; color:#e74c3c;">${p[3] || ''}</td>
+                            <td style="text-align:right; color:#7f8c8d; font-size:10px;">${p[4] || ''}</td>
+                        </tr>`;
+                    }).join('');
+                    return `
+                    <div style="padding:10px; font-family:sans-serif;">
+                        <h3 style="color:#2c3e50; border-bottom:2px solid #27ae60; padding-bottom:5px; margin-bottom:15px;">Engineering Specifications</h3>
+                        <table class="sipoc-table" style="width:100%; border-collapse:collapse; background:white; font-size:13px;">
+                            <thead style="background:#27ae60; color:white;">
+                                <tr>
+                                    <th style="padding:10px;">Parameter</th>
+                                    <th>Target Value</th>
+                                    <th>LSL</th>
+                                    <th>USL</th>
+                                    <th style="text-align:right;">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>`;
                 }
             },
             'controlplan': {
