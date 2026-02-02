@@ -340,8 +340,136 @@
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            /* background: #0f172a; */
-            /* padding: 2px 5px; */
+        }
+
+        /* DEFINITIONS MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-container {
+            background: #1e293b;
+            width: 50%;
+            max-height: 90vh;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            position: relative;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: modalSlide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalSlide {
+            from {
+                transform: translateY(30px) scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #ec4899;
+            color: white;
+        }
+
+        .modal-section {
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 40px;
+        }
+
+        .modal-section:last-child {
+            border: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .hook-title {
+            color: #ec4899;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hook-intro {
+            font-size: 15px;
+            color: #94a3b8;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .kano-infographic {
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid rgba(236, 72, 153, 0.2);
+            transition: transform 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .kano-infographic:hover {
+            transform: scale(1.02);
+            border-color: #ec4899;
+        }
+
+        .btn-definitions {
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid #ec4899;
+            color: #ec4899;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            width: auto;
+        }
+
+        .btn-definitions:hover {
+            background: #ec4899;
+            color: white;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
         }
     </style>
 </head>
@@ -353,7 +481,36 @@
         <h1>The Kano Model Analysis</h1>
         <p>Patient satisfaction isn't linear. Distinguish between what patients expect, what they want, and what truly
             wows them.</p>
+        <button class="btn-definitions" onclick="toggleModal(true)">
+            📚 View Definitions Framework
+        </button>
+        <br>
         <a href="Tool_LeanLeadership.html" class="nav-back">← Back to Hub</a>
+    </div>
+
+    <!-- DEFINITIONS MODAL -->
+    <div id="defModal" class="modal-overlay" onclick="handleOutsideClick(event)">
+        <div class="modal-container">
+            <button class="modal-close" onclick="toggleModal(false)">&times;</button>
+
+            <div class="modal-section">
+                <div class="hook-title">🛡️ The Psychology of Delight</div>
+                <div class="hook-intro">
+                    Understand the DNA of satisfaction. Why meeting expectations is just the 'Must-Be' entry fee, and
+                    how the shift from Performance to Delighters happens over time.
+                </div>
+                <img src="images/kano_standard.png" alt="Kano Model Framework" class="kano-infographic">
+            </div>
+
+            <div class="modal-section">
+                <div class="hook-title">🏥 Clinical Excellence & The Patient Journey</div>
+                <div class="hook-intro">
+                    Apply the model to a clinic environment. Transition from basic HIPAA compliance (Must-Be) to digital
+                    real-time maps (Delighters) that set your service apart.
+                </div>
+                <img src="images/kano_healthcare.png" alt="Healthcare Kano Model" class="kano-infographic">
+            </div>
+        </div>
     </div>
 
     <div class="container">
@@ -727,6 +884,18 @@
             if (relX > containerRect.width / 2) {
                 tooltip.style.left = (relX - 300) + 'px';
             }
+        }
+
+        // --- MODAL LOGIC ---
+        function toggleModal(show) {
+            const modal = document.getElementById('defModal');
+            modal.style.display = show ? 'flex' : 'none';
+            if (show) document.body.style.overflow = 'hidden';
+            else document.body.style.overflow = 'auto';
+        }
+
+        function handleOutsideClick(e) {
+            if (e.target.id === 'defModal') toggleModal(false);
         }
 
         drawGraph();
