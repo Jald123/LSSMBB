@@ -397,6 +397,204 @@
         .ref-item strong {
             color: white;
         }
+
+        /* DASHBOARD ENHANCEMENTS */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .metric-card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-primary);
+        }
+
+        .metric-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .access-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-left: 4px solid #3498db;
+        }
+
+        .access-card::before {
+            display: none;
+        }
+
+        .access-card .metric-value {
+            color: #3498db;
+        }
+
+        /* GAUGE STYLES */
+        .gauge-container {
+            width: 200px;
+            height: 120px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .gauge-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: #334155;
+            stroke-width: 20;
+            stroke-linecap: round;
+        }
+
+        .gauge-green {
+            fill: none;
+            stroke: #2ecc71;
+            stroke-width: 20;
+            stroke-dasharray: 0 314;
+        }
+
+        .gauge-amber {
+            fill: none;
+            stroke: #f1c40f;
+            stroke-width: 20;
+            stroke-dasharray: 0 314;
+        }
+
+        .gauge-red {
+            fill: none;
+            stroke: #e74c3c;
+            stroke-width: 20;
+            stroke-dasharray: 0 314;
+        }
+
+        .gauge-needle {
+            fill: white;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: 100px 100px;
+        }
+
+        .risk-label {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* STRATEGY BANNER */
+        .strategy-banner {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .strategy-icon {
+            font-size: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .strategy-info h5 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .strategy-info p {
+            margin: 0;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        .state-forming {
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid #f1c40f;
+            box-shadow: 0 0 20px rgba(241, 196, 15, 0.2);
+        }
+
+        .state-forming h5 {
+            color: #f1c40f;
+        }
+
+        .state-performing {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid #2ecc71;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.2);
+        }
+
+        .state-performing h5 {
+            color: #2ecc71;
+        }
+
+        .risk-alert {
+            animation: warning-pulse 1s infinite alternate;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @keyframes warning-pulse {
+            0% {
+                opacity: 0.6;
+                transform: scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 0 0 15px #e74c3c;
+            }
+        }
     </style>
 </head>
 
@@ -486,44 +684,85 @@
             <div class="calculator-rows">
                 <div class="calc-input">
                     <label>Defects (Hours/Wk)</label>
-                    <input type="number" id="inp-d" value="2" oninput="calculateTotal()">
+                    <input type="number" id="inp-d" value="2" oninput="calculateMasterImpact()">
                 </div>
                 <div class="calc-input">
                     <label>Overproduction</label>
-                    <input type="number" id="inp-o" value="0" oninput="calculateTotal()">
+                    <input type="number" id="inp-o" value="0" oninput="calculateMasterImpact()">
                 </div>
                 <div class="calc-input">
                     <label>Waiting</label>
-                    <input type="number" id="inp-w" value="5" oninput="calculateTotal()">
+                    <input type="number" id="inp-w" value="5" oninput="calculateMasterImpact()">
                 </div>
                 <div class="calc-input">
                     <label>Non-Utilized Talent</label>
-                    <input type="number" id="inp-n" value="1" oninput="calculateTotal()">
+                    <input type="number" id="inp-n" value="1" oninput="calculateMasterImpact()">
                 </div>
                 <div class="calc-input">
                     <label>Transportation</label>
-                    <input type="number" id="inp-t" value="3" oninput="calculateTotal()">
+                    <input type="number" id="inp-t" value="3" oninput="calculateMasterImpact()">
                 </div>
                 <div class="calc-input">
                     <label>Inventory</label>
-                    <input type="number" id="inp-i" value="4" oninput="calculateTotal()">
+                    <input type="number" id="inp-i" value="4" oninput="calculateMasterImpact()">
                 </div>
                 <div class="calc-input">
                     <label>Motion</label>
-                    <input type="number" id="inp-m" value="6" oninput="calculateTotal()">
+                    <input type="number" id="inp-m" value="6" oninput="calculateMasterImpact()">
                 </div>
                 <div class="calc-input">
                     <label>Extra Processing</label>
-                    <input type="number" id="inp-e" value="2" oninput="calculateTotal()">
+                    <input type="number" id="inp-e" value="2" oninput="calculateMasterImpact()">
                 </div>
             </div>
 
-            <div class="total-box">
-                <div style="font-size: 12px; color:#fca5a5; text-transform:uppercase; font-weight:700;">Annual
-                    Opportunity (at $50/hr avg cost)</div>
-                <div class="total-val" id="total-opportunity">$0</div>
+            <!-- ENHANCED DASHBOARD RESULTS -->
+            <div class="dashboard-grid">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                    <div class="metric-card">
+                        <h4>Annual Opportunity</h4>
+                        <div class="metric-value" id="val-financial">$0</div>
+                        <div style="font-size:10px; color:#94a3b8; margin-top:5px;">Based on $50/hr labor cost</div>
+                    </div>
+                    <div class="metric-card access-card">
+                        <h4>Patient Access</h4>
+                        <div class="metric-value" id="val-access">0</div>
+                        <div style="font-size:10px; color:#3498db; margin-top:5px;">Extra patients per week</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <h4>Clinical Risk Gauge</h4>
+                    <div class="gauge-container">
+                        <svg class="gauge-svg" viewBox="0 0 200 120">
+                            <!-- Background Arc -->
+                            <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" />
+                            <!-- Zones represent 0-10 (Green), 11-20 (Amber), 21+ (Red) -->
+                            <!-- We use dasharray to fill bits of the arc -->
+                            <path id="gauge-risk-arc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="20"
+                                stroke="#334155" />
+                            <!-- Needle -->
+                            <polygon id="risk-needle" points="100,100 95,25 105,25" fill="white"
+                                style="transform-origin: 100px 100px; transition: transform 0.5s;"></polygon>
+                            <circle cx="100" cy="100" r="8" fill="white"></circle>
+                        </svg>
+                        <div class="risk-label" id="val-risk">0</div>
+                    </div>
+                    <div id="risk-warning" class="risk-alert">⚠️ High Clinical Risk: Burnout Likely</div>
+                </div>
+            </div>
+
+            <!-- STRATEGY BANNER -->
+            <div id="strategy-banner" class="strategy-banner state-forming">
+                <div class="strategy-icon" id="strategy-icon">🔭</div>
+                <div class="strategy-info">
+                    <h5 id="strategy-stage">FORMING / STORMING</h5>
+                    <p id="strategy-text">High safety risk detected. Provide clear roles and strict 'Rules of
+                        Engagement' to prevent errors.</p>
+                </div>
             </div>
         </div>
+    </div>
 
     </div>
 
@@ -555,15 +794,81 @@
             document.getElementById('waste-content').innerHTML = html;
         }
 
-        function calculateTotal() {
-            const ids = ['d', 'o', 'w', 'n', 't', 'i', 'm', 'e'];
-            let totalHours = 0;
-            ids.forEach(id => {
-                totalHours += parseFloat(document.getElementById('inp-' + id).value) || 0;
-            });
-            // 52 weeks * rate
-            const totalCost = totalHours * 52 * 50;
-            document.getElementById('total-opportunity').innerText = '$' + totalCost.toLocaleString();
+        // --- DASHBOARD CALCULATION LOGIC ---
+        const HOURLY_RATE = 50;
+        const APPT_LENGTH = 0.5; // 30 mins
+        const WEEKS_YEAR = 52;
+
+        function calculateMasterImpact() {
+            const inputs = {
+                defects: parseFloat(document.getElementById('inp-d').value) || 0,
+                overproduction: parseFloat(document.getElementById('inp-o').value) || 0,
+                waiting: parseFloat(document.getElementById('inp-w').value) || 0,
+                nonUtilizedTalent: parseFloat(document.getElementById('inp-n').value) || 0,
+                transportation: parseFloat(document.getElementById('inp-t').value) || 0,
+                inventory: parseFloat(document.getElementById('inp-i').value) || 0,
+                motion: parseFloat(document.getElementById('inp-m').value) || 0,
+                extraProcessing: parseFloat(document.getElementById('inp-e').value) || 0
+            };
+
+            const totalHours = Object.values(inputs).reduce((a, b) => a + b, 0);
+
+            // A. Financial Metric
+            const financial = totalHours * HOURLY_RATE * WEEKS_YEAR;
+            document.getElementById('val-financial').innerText = '$' + financial.toLocaleString();
+
+            // B. Clinical Metric
+            const access = Math.floor(totalHours / APPT_LENGTH);
+            document.getElementById('val-access').innerText = access;
+
+            // C. Risk Index
+            const riskIndex = (inputs.defects * 5) + (inputs.waiting * 3) +
+                (inputs.motion * 1.5) + (inputs.inventory * 1);
+
+            document.getElementById('val-risk').innerText = Math.round(riskIndex);
+            updateRiskGauge(riskIndex);
+
+            // D. Strategy Mapping
+            const banner = document.getElementById('strategy-banner');
+            const icon = document.getElementById('strategy-icon');
+            const stageText = document.getElementById('strategy-stage');
+            const desc = document.getElementById('strategy-text');
+            const warning = document.getElementById('risk-warning');
+
+            warning.style.display = riskIndex > 20 ? 'block' : 'none';
+
+            if (inputs.defects > 3 || riskIndex > 25) {
+                banner.className = "strategy-banner state-forming";
+                icon.innerText = "🚨";
+                stageText.innerText = "FORMING / STORMING";
+                desc.innerText = "DIRECT: High safety risk detected. Provide clear roles and strict 'Rules of Engagement' to prevent errors.";
+            } else if (inputs.nonUtilizedTalent > 4) {
+                banner.className = "strategy-banner state-forming"; // Still amber for high talent waste
+                icon.innerText = "🧠";
+                stageText.innerText = "NORMING";
+                desc.innerText = "SUPPORT: High talent waste. Facilitate decision-making and delegate tasks to prevent staff burnout.";
+            } else {
+                banner.className = "strategy-banner state-performing";
+                icon.innerText = "🌟";
+                stageText.innerText = "PERFORMING";
+                desc.innerText = "DELEGATE: Process is stable. Step back and focus on removing external barriers for the team.";
+            }
+        }
+
+        function updateRiskGauge(val) {
+            const needle = document.getElementById('risk-needle');
+            const arc = document.getElementById('gauge-risk-arc');
+
+            // Limit to 40 for visualization
+            const percent = Math.min(val / 40, 1);
+            // 0% = -90deg, 100% = 90deg (semi-circle)
+            const angle = (percent * 180) - 90;
+            needle.style.transform = `rotate(${angle}deg)`;
+
+            // Color Arc Logic
+            if (val <= 10) arc.setAttribute('stroke', '#2ecc71');
+            else if (val <= 20) arc.setAttribute('stroke', '#f1c40f');
+            else arc.setAttribute('stroke', '#e74c3c');
         }
 
         // --- MODAL LOGIC ---
@@ -580,7 +885,7 @@
 
         // Init
         showWaste('d');
-        calculateTotal();
+        calculateMasterImpact();
     </script>
 </body>
 
