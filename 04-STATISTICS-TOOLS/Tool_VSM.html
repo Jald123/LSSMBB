@@ -242,10 +242,73 @@
             color: #333;
             padding: 40px;
             border-radius: 8px;
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: hidden;
             /* Canvas clipping */
             min-height: 600px;
             position: relative;
+            scroll-behavior: smooth;
+        }
+
+        /* STRATEGIC MODAL */
+        #strategicModal .modal-content {
+            max-width: 800px;
+            background: #0f172a;
+            border: 1px solid var(--brand);
+            box-shadow: 0 0 50px rgba(249, 115, 22, 0.2);
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .strategy-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--brand);
+        }
+
+        .strategy-item h4 {
+            color: var(--brand);
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .strategy-item p {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* CASE STUDY BOX */
+        .case-study-box {
+            display: none;
+            background: rgba(249, 115, 22, 0.05);
+            border: 1px dashed var(--brand);
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-left: 20px;
+            max-width: 500px;
+        }
+
+        .case-study-box h5 {
+            color: var(--brand);
+            margin: 0 0 5px 0;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .case-study-box p {
+            font-size: 12px;
+            color: #cbd5e1;
+            margin: 0;
+            line-height: 1.4;
         }
 
         /* Header Draggables */
@@ -868,23 +931,66 @@
                 style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); padding:15px;">
                 <span class="sidebar-label">Add Process Step</span>
                 <div style="display:grid; gap:8px;">
-                    <input type="text" id="pName" class="premium-input" placeholder="Name..." style="padding:8px !important;">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                        <input type="text" id="pBatch" class="premium-input" placeholder="Batch ID" style="padding:8px !important;">
-                        <input type="number" id="pOps" class="premium-input" placeholder="Ops 👥" style="padding:8px !important;">
+                    <div class="input-group">
+                        <input type="text" id="pName" class="premium-input" placeholder="Name..."
+                            style="padding:8px !important;">
+                        <span class="input-tooltip"><b>What:</b> The name of the process task.<br><b>How:</b> Use action
+                            verbs like 'Inspect', 'Load', or 'Register'.</span>
                     </div>
+
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                        <input type="number" id="pCT" class="premium-input" placeholder="VA (s)" style="padding:8px !important;"
-                            title="Value Added Time">
-                        <input type="number" id="pNNVA" class="premium-input" placeholder="NNVA (s)" style="padding:8px !important;"
-                            title="Necessary Non-Value Time">
+                        <div class="input-group">
+                            <input type="text" id="pBatch" class="premium-input" placeholder="Batch ID"
+                                style="padding:8px !important;">
+                            <span class="input-tooltip"><b>What:</b> Grouping ID.<br><b>How:</b> Useful for tracking
+                                FIFO lanes and batch sizes.</span>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="pOps" class="premium-input" placeholder="Ops 👥"
+                                style="padding:8px !important;">
+                            <span class="input-tooltip"><b>What:</b> Headcount.<br><b>How:</b> Input the number of
+                                employees required for this single step.</span>
+                        </div>
                     </div>
-                    <input type="number" id="pWait" class="premium-input" placeholder="Wait / NVA (days)" style="padding:8px !important;">
+
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                        <input type="number" id="pCO" class="premium-input" placeholder="CO (min)" value="0" style="padding:8px !important;">
-                        <input type="number" id="pRel" class="premium-input" placeholder="Rel %" value="100" style="padding:8px !important;">
+                        <div class="input-group">
+                            <input type="number" id="pCT" class="premium-input" placeholder="VA (s)"
+                                style="padding:8px !important;">
+                            <span class="input-tooltip"><b>What:</b> Value Added Time.<br><b>How:</b> Time spent
+                                physically transforming the product/patient.</span>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="pNNVA" class="premium-input" placeholder="NNVA (s)"
+                                style="padding:8px !important;">
+                            <span class="input-tooltip"><b>What:</b> Necessary Non-Value.<br><b>How:</b> Time for safety
+                                regs or billing that doesn't add value.</span>
+                        </div>
                     </div>
-                    <button class="btn btn-brand" style="width:100%; margin-top:5px; padding:10px;" onclick="addStep()">+ Insert
+
+                    <div class="input-group">
+                        <input type="number" id="pWait" class="premium-input" placeholder="Wait / NVA (days)"
+                            style="padding:8px !important;">
+                        <span class="input-tooltip"><b>What:</b> Queue Time.<br><b>How:</b> Average time a unit spends
+                            waiting before this step begins.</span>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                        <div class="input-group">
+                            <input type="number" id="pCO" class="premium-input" placeholder="CO (min)" value="0"
+                                style="padding:8px !important;">
+                            <span class="input-tooltip"><b>What:</b> Changeover.<br><b>How:</b> Time to switch the
+                                process from one type to another.</span>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="pRel" class="premium-input" placeholder="Rel %" value="100"
+                                style="padding:8px !important;">
+                            <span class="input-tooltip"><b>What:</b> Reliability.<br><b>How:</b> % of items that pass
+                                through correctly without rework.</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-brand" style="width:100%; margin-top:5px; padding:10px;"
+                        onclick="addStep()">+ Insert
                         Step</button>
                 </div>
             </div>
@@ -896,9 +1002,15 @@
         <!-- WORKSPACE (CENTER) -->
         <div class="main-workspace">
             <header class="flex-between" style="margin-bottom:30px;">
-                <div>
-                    <span class="phase-glow" style="color:var(--brand);">ANALYZE PHASE</span>
-                    <h1>Value Stream Mapping</h1>
+                <div style="display:flex; align-items:center;">
+                    <div>
+                        <span class="phase-glow" style="color:var(--brand);">ANALYZE PHASE</span>
+                        <h1>Value Stream Mapping</h1>
+                    </div>
+                    <div id="caseStudyBox" class="case-study-box">
+                        <h5 id="caseLabel">Active Case Study</h5>
+                        <p id="caseText">Detailed project context for the selected value stream.</p>
+                    </div>
                 </div>
                 <button class="btn"
                     style="background:rgba(249,115,22,0.1); border:1px solid var(--brand); color:var(--brand);"
@@ -994,28 +1106,33 @@
                         <div class="palette-group" style="margin:0;">
                             <div class="palette-header">Connectors & Flow Lines</div>
                             <div style="display:flex; gap:25px; align-items:center;">
-                                <div class="vsm-sticker sticker-arrow" id="a1" title="Standard Flow"
-                                    style="color:#3b82f6;">
+                                <div class="vsm-sticker sticker-arrow input-group" id="a1" style="color:#3b82f6;">
                                     <div class="arrow-stem"></div>
                                     <div class="arrow-head"></div>
+                                    <span class="input-tooltip"><b>Push Arrow:</b> Material is moved to the next step
+                                        when finished, regardless of downstream demand. Causes inventory.</span>
                                 </div>
-                                <div class="vsm-sticker sticker-arrow" id="a2" title="Critical Path"
-                                    style="color:#ef4444;">
+                                <div class="vsm-sticker sticker-arrow input-group" id="a2" style="color:#ef4444;">
                                     <div class="arrow-stem"></div>
                                     <div class="arrow-head"></div>
+                                    <span class="input-tooltip"><b>Critical Path:</b> High-impact flow line where any
+                                        delay directly effects the total Lead Time. Focus Kaizen here.</span>
                                 </div>
-                                <div class="vsm-sticker sticker-arrow sticker-dotted" id="a3" title="Information Flow"
+                                <div class="vsm-sticker sticker-arrow sticker-dotted input-group" id="a3"
                                     style="color:#8b5cf6;">
                                     <div class="arrow-stem"
                                         style="background:transparent; border-top:2px dashed currentColor;"></div>
                                     <div class="arrow-head"></div>
+                                    <span class="input-tooltip"><b>Information Flow:</b> Digital or verbal communication
+                                        lines (e.g., E-orders, phone calls, or scheduling signals).</span>
                                 </div>
-                                <div class="vsm-sticker sticker-arrow" id="a4" title="Material Transfer"
-                                    style="color:#10b981;">
+                                <div class="vsm-sticker sticker-arrow input-group" id="a4" style="color:#10b981;">
                                     <div class="arrow-stem" style="height:8px;"></div>
                                     <div class="arrow-head"
                                         style="border-left:16px solid currentColor; border-top:8px solid transparent; border-bottom:8px solid transparent; top:-4px;">
                                     </div>
+                                    <span class="input-tooltip"><b>Pull / Supermarket:</b> Material is only moved when
+                                        the next step signals a 'withdraw' based on actual consumption.</span>
                                 </div>
                             </div>
                         </div>
@@ -1259,76 +1376,41 @@
         </div>
     </div>
 
-    <!-- VALUE TYPES MODAL (README Style) -->
-    <div id="valueTypesModal" class="info-overlay">
-        <div class="calc-modal"
-            style="max-width:850px; border-color:#f43f5e; background:#0f172a; border-radius:32px; padding:0; overflow:hidden;">
-            <span class="close-pro" onclick="closeValueTypesModal()"
-                style="top:20px; right:25px; z-index:10; color:white;">&times;</span>
-
-            <div style="padding:40px; text-align:center; background:linear-gradient(135deg, #1e293b, #0f172a);">
-                <h1
-                    style="font-family:'Inter'; color:white; margin:0; font-size:32px; font-weight:900; letter-spacing:-1px;">
-                    WHICH VALUE TYPE IS IT? 🤔</h1>
-                <p style="color:#94a3b8; font-size:14px; margin-top:10px;">Reference Guide: The 3 Pillars of Lean
-                    Architecture</p>
+    <!-- STRATEGY MODAL -->
+    <div id="strategicModal" class="modal-overlay" onclick="closeStrategicInfo()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="color:var(--brand); margin:0;">VSM ARCHITECTURE STRATEGY</h2>
+                <span style="cursor:pointer; font-size:24px;" onclick="closeStrategicInfo()">&times;</span>
             </div>
+            <p style="color:#cbd5e1; font-size:14px;">The Value Stream Map is the Master blueprint of Lean. It tracks
+                three parallel flows to expose hidden inefficiencies.</p>
 
-            <div style="padding:40px;">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
-
-                    <div id="v-va" class="value-box va"
-                        style="border-radius:16px; padding:25px; border-top:4px solid var(--success); background:rgba(16, 185, 129, 0.05);">
-                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:15px;">
-                            <div style="font-size:24px;">💎</div>
-                            <h3 style="margin:0; color:var(--success); font-size:18px;">VALUE ADDED (VA)</h3>
-                        </div>
-                        <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin:0;">
-                            <b>The Rule:</b> Does it transform the patient or product? Is the customer willing to pay
-                            for it? Is it done right the first time?
-                            <br><br>
-                            <span style="color:var(--success);"><b>EXAMPLES:</b> Consulting with a doctor, filling a
-                                prescription, performing surgery.</span>
-                        </p>
-                    </div>
-
-                    <div id="v-nnva" class="value-box nnva"
-                        style="border-radius:16px; padding:25px; border-top:4px solid var(--warning); background:rgba(245, 158, 11, 0.05);">
-                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:15px;">
-                            <div style="font-size:24px;">🛡️</div>
-                            <h3 style="margin:0; color:var(--warning); font-size:18px;">NECESSARY NVA (NNVA)</h3>
-                        </div>
-                        <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin:0;">
-                            <b>The Rule:</b> It doesn't add value per-se, but we CANNOT stop doing it due to
-                            regulations, safety protocols, or business law.
-                            <br><br>
-                            <span style="color:var(--warning);"><b>EXAMPLES:</b> Insurance verification, safety
-                                checklists, regulatory compliance reporting.</span>
-                        </p>
-                    </div>
-
-                    <div id="v-nva" class="value-box nva"
-                        style="border-radius:16px; padding:25px; border-top:4px solid var(--danger); background:rgba(239, 68, 68, 0.05); grid-column: span 2;">
-                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:15px;">
-                            <div style="font-size:24px;">🗑️</div>
-                            <h3 style="margin:0; color:var(--danger); font-size:18px;">NON-VALUE ADDED (WASTE)</h3>
-                        </div>
-                        <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin:0;">
-                            <b>The Rule:</b> Pure waste. If we stopped doing this, the patient experience would improve
-                            or stay the same. Often caused by inefficient system design.
-                            <br><br>
-                            <span style="color:var(--danger);"><b>EXAMPLES:</b> Waiting for a room, walking between
-                                departments, re-entering data, looking for files.</span>
-                        </p>
-                    </div>
-
+            <div class="strategy-grid">
+                <div class="strategy-item">
+                    <h4>📦 Material Flow</h4>
+                    <p>The movement of the physical item or patient. Our goal is <b>Single Piece Flow</b>—moving items
+                        one by one without stopping in queues.</p>
                 </div>
-
-                <div style="margin-top:30px; text-align:right;">
-                    <button class="btn btn-brand" onclick="closeValueTypesModal()"
-                        style="padding:10px 25px; border-radius:12px;">Got it, let's Optimize! 🚀</button>
+                <div class="strategy-item">
+                    <h4>📡 Information Flow</h4>
+                    <p>The scheduling signals (MRP, Electronic orders) that tell the process what to do. <b>Centralized
+                            control</b> minimizes 'Pushing' waste.</p>
+                </div>
+                <div class="strategy-item">
+                    <h4>⌛ The Timeline</h4>
+                    <p>The 'Sawtooth' line at the bottom. It compares <b>Processing Time (VA)</b> vs. <b>Waiting Time
+                            (NVA)</b>. VSM prioritizes reducing the Waiting Time.</p>
+                </div>
+                <div class="strategy-item">
+                    <h4>🚨 Abnormality Mgmt</h4>
+                    <p>Using <b>Flags</b> and visual signals to identify when reliability drops below 90% or inventory
+                        swells beyond capacity.</p>
                 </div>
             </div>
+
+            <button class="btn btn-brand" onclick="closeStrategicInfo()" style="width:100%; margin-top:25px;">Back to
+                Architect</button>
         </div>
     </div>
     </div>
@@ -1567,9 +1649,20 @@
 
             steps.push({ id: Date.now(), name, batch, operators, ct, nnva, wait, co, rel, arrowType: 'push' });
             render();
+
+            // Auto-scroll to newly added step
+            setTimeout(() => {
+                const canvas = document.getElementById('vsmCanvas');
+                canvas.scrollLeft = canvas.scrollWidth;
+            }, 100);
         }
 
         function loadExample(type) {
+            const caseBox = document.getElementById('caseStudyBox');
+            const caseLabel = document.getElementById('caseLabel');
+            const caseText = document.getElementById('caseText');
+            caseBox.style.display = 'block';
+
             if (type === 'hc1') {
                 steps = [
                     { name: "Registration", ct: 180, nnva: 60, wait: 0.1, co: 0, rel: 100, operators: 1, batch: "Individual", arrowType: 'push' },
@@ -1580,6 +1673,8 @@
                 ];
                 document.getElementById('projectTitle').value = "ER Workflow Optimization";
                 document.getElementById('deptName').value = "Emergency Dept";
+                caseLabel.innerText = "🏥 CASE STUDY: ER CONGESTION";
+                caseText.innerText = "Patients are spending 4+ hours in the ER. Goal: Reduce 'Labs/XRay' queue duration and improve Triage reliability to prevent patient walk-outs.";
             } else if (type === 'hc2') {
                 steps = [
                     { name: "Discharge Decision", ct: 600, nnva: 240, wait: 2, co: 0, rel: 100, operators: 1, batch: "Final", arrowType: 'push' },
@@ -1589,6 +1684,8 @@
                 ];
                 document.getElementById('projectTitle').value = "Patient Discharge Cycle";
                 document.getElementById('deptName').value = "Inpatient Care";
+                caseLabel.innerText = "🩺 CASE STUDY: DISCHARGE DELAYS";
+                caseText.innerText = "Bed turnover is too slow. Identify NVA wait time between 'Decision' and 'Transport' to free up beds for incoming ER admissions.";
             } else if (type === 'hc3') {
                 steps = [
                     { name: "Rx Intake", ct: 60, nnva: 30, wait: 0.1, co: 0, rel: 100, operators: 1, batch: "Incoming", arrowType: 'push' },
@@ -1598,6 +1695,8 @@
                 ];
                 document.getElementById('projectTitle').value = "Prescription Fulfilment Study";
                 document.getElementById('deptName').value = "Pharmacy";
+                caseLabel.innerText = "💊 CASE STUDY: PHARMACY VELOCITY";
+                caseText.innerText = "Wait times for walk-in prescriptions exceed 30 mins. Map shows 'Filling' as a bottleneck. Goal: Move toward 'Pull' signals between Verification and Filling.";
             } else if (type === 'hc4') {
                 steps = [
                     { name: "GP Referral", ct: 300, nnva: 150, wait: 7, co: 0, rel: 100, operators: 1, batch: "Primary", arrowType: 'push' },
@@ -1607,6 +1706,8 @@
                 ];
                 document.getElementById('projectTitle').value = "Cardiology Referral Pathway";
                 document.getElementById('deptName').value = "Cardiology";
+                caseLabel.innerText = "❤️ CASE STUDY: CARDIOLOGY REFERRALS";
+                caseText.innerText = "Wait times of 20+ days detected. Massive NVA 'Wait' between Review and Stress Test indicates a capacity mismatch. Target: Reduce total Lead Time by 50%.";
             } else if (type === 'hc5') {
                 steps = [
                     { name: "Online Booking", ct: 120, nnva: 60, wait: 0.05, co: 0, rel: 100, operators: 1, batch: "Digital", arrowType: 'push' },
@@ -1616,6 +1717,8 @@
                 ];
                 document.getElementById('projectTitle').value = "Telehealth Appt Journey";
                 document.getElementById('deptName').value = "Virtual Care";
+                caseLabel.innerText = "💻 CASE STUDY: VIRTUAL CARE FLOW";
+                caseText.innerText = "A high-efficiency digital stream. Identify if any NNVA tasks (like digital record synchronization) can be further automated to improve PCE to >50%.";
             } else if (type === 'mfg') {
                 steps = [
                     { name: "Stamping", ct: 30, nnva: 15, wait: 2, co: 45, rel: 85, operators: 2, batch: "320 pieces", arrowType: 'push' },
@@ -1625,6 +1728,8 @@
                 ];
                 document.getElementById('projectTitle').value = "Production Line";
                 document.getElementById('deptName').value = "Factory floor";
+                caseLabel.innerText = "🏭 CASE STUDY: BATCH PRODUCTION";
+                caseText.innerText = "Excessive WIP between Welding and Assembly. Switch Stamping to a Smaller Batch size to reduce Lead Time and improve response to Customer Demand.";
             }
             render();
         }
@@ -1663,7 +1768,16 @@
                 const invDiv = document.createElement('div');
                 invDiv.className = 'inventory-zone';
                 const arrowClass = s.arrowType === 'push' ? 'arrow-push' : 'arrow-pull';
-                invDiv.innerHTML = `<div class="inventory-triangle"></div><div style="font-size:10px;font-weight:bold;">${s.wait}d</div><div class="arrow-container" onclick="toggleArrow(${i})"><div class="${arrowClass}"></div></div>`;
+                invDiv.innerHTML = `
+                    <div class="inventory-triangle input-group">
+                        <span class="input-tooltip" style="bottom: 120%; width: 180px;">
+                            <b>Inventory / Queue:</b> Material or patients waiting for processing. Current: <b>${s.wait} days</b>. VSM monitors this to drive Lead Time reduction.
+                        </span>
+                    </div>
+                    <div style="font-size:10px;font-weight:bold;">${s.wait}d</div>
+                    <div class="arrow-container" onclick="toggleArrow(${i})">
+                        <div class="${arrowClass}"></div>
+                    </div>`;
                 flowDiv.appendChild(invDiv);
 
                 // Box
@@ -1738,7 +1852,7 @@
             document.getElementById('mCT').innerText = s.ct + " s";
             document.getElementById('mWait').innerText = s.wait + " days";
             document.getElementById('mCO').innerText = (s.nnva || 0) + " s";
-            
+
             // Re-using modal IDs but adding more info in desc
             let info = `Metric Breakdown:\n`;
             info += `• Leadtime: ${(s.ct + (s.nnva || 0) + s.wait * 1440).toFixed(0)} min\n`;
@@ -1747,7 +1861,7 @@
             info += `• NNVA: ${s.nnva || 0} s\n`;
             info += `• Operators: ${s.operators || 1}\n`;
             info += `• Reliability: ${s.rel}%`;
-            
+
             document.getElementById('mDesc').innerText = info;
             document.getElementById('mRel').innerText = s.rel + "%";
             document.getElementById('stepModal').style.display = 'flex';
