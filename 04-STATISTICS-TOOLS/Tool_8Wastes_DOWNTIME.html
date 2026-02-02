@@ -272,6 +272,131 @@
             font-weight: 800;
             color: #ef4444;
         }
+
+        /* NEW WASTE MODAL */
+        .waste-viz-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .waste-viz-btn:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.6);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-container {
+            background: #1e293b;
+            width: 85%;
+            max-width: 1000px;
+            max-height: 90vh;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            position: relative;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #ef4444;
+        }
+
+        .hook-intro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hook-intro h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #ef4444;
+        }
+
+        .hook-intro p {
+            font-size: 16px;
+            color: #94a3b8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .waste-infographic {
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid rgba(239, 68, 68, 0.2);
+            margin-bottom: 40px;
+        }
+
+        .references-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+        }
+
+        .ref-section h4 {
+            color: #ef4444;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .ref-item {
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .ref-item strong {
+            color: white;
+        }
     </style>
 </head>
 
@@ -282,7 +407,47 @@
         <h1>8 Wastes (DOWNTIME)</h1>
         <p>Value is what the patient is willing to pay for. Everything else is Waste (Muda). Use the DOWNTIME mnemonic
             to identify it.</p>
+        <button class="waste-viz-btn" onclick="toggleModal(true)">
+            🚀 Open Waste Visualizer
+        </button>
+        <br>
         <a href="Tool_LeanLeadership.html" class="nav-back">← Back to Hub</a>
+    </div>
+
+    <!-- WASTE VISUALIZER MODAL -->
+    <div id="wasteModal" class="modal-overlay" onclick="handleOutsideClick(event)">
+        <div class="modal-container">
+            <button class="modal-close" onclick="toggleModal(false)">&times;</button>
+
+            <div class="hook-intro">
+                <h2>The 8 Predators of Profit</h2>
+                <p>Waste is invisible until you look for it. Every minute of waiting or extra-processing is a direct
+                    theft from patient care and your bottom line.</p>
+            </div>
+
+            <img src="images/downtime_wastes.png" alt="DOWNTIME Healthcare Wastes" class="waste-infographic">
+
+            <div class="references-grid">
+                <div class="ref-section">
+                    <h4>🔗 Alternative Mnemonics</h4>
+                    <div class="ref-item"><strong>TIMWOOD:</strong> The original Toyota 7 wastes (T, I, M, W, O, O, D).
+                    </div>
+                    <div class="ref-item"><strong>TIMWOODS:</strong> Adds 'Skills' to address the modern knowledge
+                        workforce.</div>
+                    <div class="ref-item"><strong>COMMWIP:</strong> A manufacturing variation (Correction,
+                        Overproduction, Motion...).</div>
+                </div>
+                <div class="ref-section">
+                    <h4>🧠 Key Definitions</h4>
+                    <div class="ref-item"><strong>Idle Time:</strong> Time during which a machine or person is ready for
+                        work but not producing due to downstream delays.</div>
+                    <div class="ref-item"><strong>Muda:</strong> The Japanese term for 'waste' - any activity that
+                        consumes resources but adds no value.</div>
+                    <div class="ref-item"><strong>Value-Add:</strong> Any transformation of material or information that
+                        the customer is explicitly willing to pay for.</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="container">
@@ -399,6 +564,18 @@
             // 52 weeks * rate
             const totalCost = totalHours * 52 * 50;
             document.getElementById('total-opportunity').innerText = '$' + totalCost.toLocaleString();
+        }
+
+        // --- MODAL LOGIC ---
+        function toggleModal(show) {
+            const modal = document.getElementById('wasteModal');
+            modal.style.display = show ? 'flex' : 'none';
+            if (show) document.body.style.overflow = 'hidden';
+            else document.body.style.overflow = 'auto';
+        }
+
+        function handleOutsideClick(e) {
+            if (e.target.id === 'wasteModal') toggleModal(false);
         }
 
         // Init
