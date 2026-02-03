@@ -20,7 +20,15 @@
     // 1. DATA MODELS
     const state = {
         sticky: {
-            pages: [{ content: "", color: "#ffffff", size: "14px", font: "Inter" }],
+            pages: [{ content: "", color: "#92400e", bgColor: "#fef3c7", size: "14px", font: "Inter" }],
+            themes: [
+                { bg: "#fef3c7", text: "#92400e" }, // Yellow
+                { bg: "#dbeafe", text: "#1e40af" }, // Blue
+                { bg: "#dcfce7", text: "#166534" }, // Green
+                { bg: "#f3e8ff", text: "#6b21a8" }, // Purple
+                { bg: "#fce7f3", text: "#9d174d" }, // Pink
+                { bg: "#1e293b", text: "#f8fafc" }  // Dark
+            ],
             currentPage: 0
         },
         calculator: {
@@ -61,18 +69,20 @@
             <div class="window-header">📌 Sticky Notes <span class="close-window" onclick="toggleWindow('sticky-window')">×</span></div>
             <div class="window-content">
                 <div class="sticky-controls">
-                    <select onchange="updateStickyStyle('font', this.value)" style="width:80px; font-size:10px;">
+                    <select onchange="updateStickyStyle('font', this.value)" style="width:75px; font-size:10px;">
                         <option value="Inter">Inter</option>
                         <option value="Courier New">Courier</option>
                         <option value="Georgia">Georgia</option>
                     </select>
-                    <select onchange="updateStickyStyle('size', this.value)" style="width:60px; font-size:10px;">
+                    <select onchange="updateStickyStyle('size', this.value)" style="width:55px; font-size:10px;">
                         <option value="12px">12px</option>
                         <option value="14px" selected>14px</option>
                         <option value="18px">18px</option>
                     </select>
-                    <input type="color" value="#ffffff" onchange="updateStickyStyle('color', this.value)" style="width:30px; height:20px; padding:0; border:none;">
-                    <button class="btn-mini" onclick="addStickyPage()">+ New Page</button>
+                    <div style="display:flex; gap:4px; margin: 0 5px;" id="sticky-color-presets">
+                        <!-- Bubbles injected by JS -->
+                    </div>
+                    <button class="btn-mini" onclick="addStickyPage()">+</button>
                     <button class="btn-mini" style="background:#ef4444" onclick="deleteStickyPage()">🗑️</button>
                 </div>
                 <textarea class="sticky-textarea" id="sticky-text" placeholder="Start typing..." oninput="saveSticky()"></textarea>
@@ -208,10 +218,31 @@
     };
 
     window.addStickyPage = function () {
-        state.sticky.pages.push({ content: "", color: "#ffffff", size: "14px", font: "Inter" });
+        state.sticky.pages.push({ content: "", color: "#92400e", bgColor: "#fef3c7", size: "14px", font: "Inter" });
         state.sticky.currentPage = state.sticky.pages.length - 1;
         renderSticky();
     };
+
+    window.setStickyTheme = function (index) {
+        const page = state.sticky.pages[state.sticky.currentPage];
+        const theme = state.sticky.themes[index];
+        page.bgColor = theme.bg;
+        page.color = theme.text;
+        renderSticky();
+        saveSticky();
+    };
+
+    function initColorPresets() {
+        const container = document.getElementById('sticky-color-presets');
+        state.sticky.themes.forEach((theme, i) => {
+            const div = document.createElement('div');
+            div.className = 'color-bubble';
+            div.style.background = theme.bg;
+            div.onclick = () => setStickyTheme(i);
+            container.appendChild(div);
+        });
+    }
+    setTimeout(initColorPresets, 100);
 
     window.deleteStickyPage = function () {
         if (state.sticky.pages.length > 1) {
@@ -235,11 +266,13 @@
     function renderSticky() {
         const page = state.sticky.pages[state.sticky.currentPage];
         const area = document.getElementById('sticky-text');
+        const winContent = area.parentElement;
         area.value = page.content;
         area.style.color = page.color;
         area.style.fontSize = page.size;
         area.style.fontFamily = page.font;
-        document.getElementById('sticky-page-info').innerText = `Page ${state.sticky.currentPage + 1} of ${state.sticky.pages.length}`;
+        winContent.style.background = page.bgColor || "#fef3c7";
+        document.getElementById('sticky-page-info').innerText = `P. ${state.sticky.currentPage + 1}/${state.sticky.pages.length}`;
     }
 
     // Load initial sticky data
