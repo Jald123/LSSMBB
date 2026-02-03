@@ -1605,8 +1605,12 @@
                     { id: 'princip', label: '2. Principles to Use', type: 'textarea', tip: 'Select from list below.', placeholder: '1. Segmentation\n10. Preliminary Action...', definition: "The inventive strategies.", example: "1. Segmentation" }
                 ],
                 scenarios: {
-                    'mfg': { desc: "Lightweight Aerospace Part", data: { problem: "High Strength vs Low Weight", princip: "1. Segmentation (Hollow parts)\n35. Parameter Changes (Composite materials)\n40. Composite materials" } },
-                    'service': { desc: "Fast Customer Service", data: { problem: "Personalized Service vs Speed", princip: "10. Preliminary Action (Fill form first)\n25. Self-service\n1. Segmentation" } }
+                    'hc_er': { desc: "ER Triage: Speed vs Accuracy", data: { problem: "Fast Triage vs Thorough Assessment", princip: "1. Segmentation (Fast Track vs Trauma)\n10. Preliminary Action (Self-triage kiosks)\n15. Dynamicity (Mobile triage teams)" } },
+                    'hc_iso': { desc: "Infection Control: Access vs Safety", data: { problem: "Sterile Isolation vs Easy Staff Access", princip: "17. Another Dimension (Air curtains)\n24. Intermediary (Airlock chambers)\n35. Parameter Changes (Positive pressure rooms)" } },
+                    'hc_surg': { desc: "Surgery: Deep Access vs Minimal Harm", data: { problem: "Reach Deep Tissue vs Avoid Cutting Healthy Tissue", princip: "28. Mechanics Substitution (Ultrasound/Radiation)\n17. Another Dimension (Laparoscopy)\n2. Taking Out (Ex-vivo surgery)" } },
+                    'hc_meds': { desc: "Medication: Security vs Urgency", data: { problem: "Secure Storage vs Instant Access", princip: "10. Preliminary Action (Pre-filled Syringes/Crash Carts)\n25. Self-service (Automated Pyxis Cabinets)\n3. Local Quality (High-alert meds stored separately)" } },
+                    'gen_soft': { desc: "Software: Features vs Simplicity", data: { problem: "Power User Features vs Simple UI", princip: "7. Nested Doll (Contextual Menus)\n1. Segmentation (Basic vs Advanced Mode)\n13. The Other Way Round (Voice input instead of typing)" } },
+                    'gen_log': { desc: "Logistics: Capacity vs Speed", data: { problem: "High Volume vs Fast Delivery", princip: "15. Dynamicity (Modular Containers)\n1. Segmentation (Hub and Spoke)\n5. Merging (Platooning)" } }
                 },
                 render: (data) => `
                     <div style="font-family:sans-serif; padding:10px;">
