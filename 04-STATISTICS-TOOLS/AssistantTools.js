@@ -420,13 +420,22 @@
     canvas.onmousemove = (e) => {
         if (!isDrawing) return;
         const color = state.highlighter.baseColors[state.highlighter.colorIndex];
-        const opacity = state.highlighter.mode === 'highlighter' ? 0.4 : 1.0;
+        const isHigh = state.highlighter.mode === 'highlighter';
+        const opacity = isHigh ? 0.2 : 1.0;
 
         ctx.lineTo(e.clientX, e.clientY);
         ctx.strokeStyle = `rgba(${color.rgb}, ${opacity})`;
         ctx.lineWidth = state.highlighter.size;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
+
+        if (isHigh) {
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = `rgba(${color.rgb}, 0.5)`;
+        } else {
+            ctx.shadowBlur = 0;
+        }
+
         ctx.stroke();
     };
 
