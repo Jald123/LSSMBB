@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBB Statistical Assistant | Lean Six Sigma Pro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- jStat for Probability Distributions -->
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#020617',
+                            surface: '#0f172a',
+                            emerald: '#10b981',
+                            blue: '#3b82f6',
+                            accent: '#f59e0b',
+                            risk: '#ef4444'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Premium Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-hover:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(16, 185, 129, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-item-active {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid #10b981;
+            color: #10b981;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* Statistical Table Styles */
+        .stats-table th {
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .stats-table td {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            border-bottom: 1px solid #0f172a;
+        }
+
+        /* Tooltip Styles */
+        .lss-tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .lss-tooltip:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            background: #1e293b;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 11px;
+            width: 200px;
+            z-index: 50;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-brand-dark text-slate-200 font-sans selection:bg-brand-emerald selection:text-white">
+
+    <div id="app" class="flex h-screen overflow-hidden">
+
+        <!-- SIDE NAVIGATION -->
+        <aside class="w-72 glass border-r border-slate-800 flex flex-col z-40">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="p-2 bg-brand-emerald/20 rounded-lg">
+                        <i data-lucide="shield-check" class="text-brand-emerald w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-display font-extrabold text-xl tracking-tight text-white">MBB Assistant</h1>
+                        <p class="text-[10px] text-brand-emerald font-bold tracking-widest uppercase opacity-80">
+                            Statistical Engine v2.0</p>
+                    </div>
+                </div>
+
+                <nav class="space-y-1">
+                    <button onclick="router.navigate('dashboard')" id="nav-dashboard"
+                        class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800/50 group">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:text-brand-emerald"></i>
+                        <span class="font-medium">Overview</span>
+                    </button>
+
+                    <div class="pt-4 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4">
+                        Calculators</div>
+
+                    <button onclick="router.navigate('metrics')" id="nav-metrics"
+                        class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800/50 group">
+                        <i data-lucide="bar-chart-big" class="w-5 h-5 group-hover:text-brand-emerald"></i>
+                        <span class="font-medium">Descriptive & Metrics</span>
+                    </button>
+
+                    <button onclick="router.navigate('distributions')" id="nav-distributions"
+                        class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800/50 group text-left">
+                        <i data-lucide="variable" class="w-5 h-5 group-hover:text-brand-emerald"></i>
+                        <span class="font-medium leading-tight">Distributions & Sample Size</span>
+                    </button>
+
+                    <button onclick="router.navigate('hypothesis')" id="nav-hypothesis"
+                        class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800/50 group">
+                        <i data-lucide="flask-conical" class="w-5 h-5 group-hover:text-brand-emerald"></i>
+                        <span class="font-medium">Hypothesis Testing</span>
+                    </button>
+
+                    <button onclick="router.navigate('modeling')" id="nav-modeling"
+                        class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800/50 group">
+                        <i data-lucide="layers" class="w-5 h-5 group-hover:text-brand-emerald"></i>
+                        <span class="font-medium">Modeling & Capability</span>
+                    </button>
+
+                    <button onclick="router.navigate('spc')" id="nav-spc"
+                        class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800/50 group">
+                        <i data-lucide="trending-up" class="w-5 h-5 group-hover:text-brand-emerald"></i>
+                        <span class="font-medium">SPC & MSA</span>
+                    </button>
+
+                    <div class="pt-4 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4">Output
+                    </div>
+
+                    <button onclick="router.navigate('reports')" id="nav-reports"
+                        class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-slate-800/50 group relative">
+                        <i data-lucide="file-text" class="w-5 h-5 group-hover:text-brand-emerald"></i>
+                        <span class="font-medium">Report Builder</span>
+                        <span id="report-count"
+                            class="absolute right-4 bg-brand-emerald text-brand-dark font-bold text-[10px] px-2 py-0.5 rounded-full hidden">0</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="mt-auto p-6 border-t border-slate-800">
+                <div class="flex items-center gap-3 px-3 py-2 bg-slate-900/50 rounded-xl border border-slate-800">
+                    <div
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-emerald to-brand-blue flex items-center justify-center text-brand-dark font-bold">
+                        MBB
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold truncate">Lead Architect</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-tight">Active Session</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 flex flex-col min-w-0 relative overflow-hidden">
+            <!-- HEADER BAR -->
+            <header
+                class="h-16 border-b border-slate-800 flex items-center px-8 bg-brand-dark/50 backdrop-blur-md z-30">
+                <div class="flex items-center gap-4 flex-1">
+                    <h2 id="page-title" class="font-display font-semibold text-lg text-white">Overview</h2>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="p-2 text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="help-circle" class="w-5 h-5"></i>
+                    </button>
+                    <button class="p-2 text-slate-400 hover:text-white transition-colors relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span
+                            class="absolute top-2 right-2 w-2 h-2 bg-brand-risk rounded-full border-2 border-brand-dark"></span>
+                    </button>
+                    <div class="h-8 w-[1px] bg-slate-800 mx-2"></div>
+                    <button onclick="resetSession()"
+                        class="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-brand-risk transition-colors uppercase tracking-widest">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        Reset All
+                    </button>
+                </div>
+            </header>
+
+            <!-- CONTENT SCROLL AREA -->
+            <section id="content-area"
+                class="flex-1 overflow-y-auto p-8 relative scroll-smooth bg-gradient-to-br from-brand-dark via-brand-dark to-[#0f1025]">
+                <!-- Content will be injected here -->
+                <div id="router-outlet" class="max-w-7xl mx-auto space-y-8 pb-20">
+                    <!-- Dashboard Loader -->
+                    <div class="animate-pulse space-y-8">
+                        <div class="grid grid-cols-3 gap-6">
+                            <div class="h-32 glass rounded-2xl"></div>
+                            <div class="h-32 glass rounded-2xl"></div>
+                            <div class="h-32 glass rounded-2xl"></div>
+                        </div>
+                        <div class="h-96 glass rounded-2xl"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODALS & OVERLAYS -->
+    <div id="modal-container"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
+        <div id="modal-content" class="w-full max-w-2xl glass rounded-3xl p-8 shadow-2xl relative animate-fade-in">
+            <!-- Modal content injected here -->
+        </div>
+    </div>
+
+    <!-- DATA TOASTS -->
+    <div id="toast-container" class="fixed bottom-8 right-8 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- MAIN APPLICATION LOGIC -->
+    <script src="assets/stats_engine.js"></script>
+    <script src="assets/stats_modules.js"></script>
+    <script src="assets/stats_components.js"></script>
+
+    <script>
+        // Initialize Lucide Icons
+        window.onload = () => {
+            lucide.createIcons();
+            router.init();
+        };
+    </script>
+</body>
+
+</html>

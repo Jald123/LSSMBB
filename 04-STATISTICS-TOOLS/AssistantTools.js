@@ -63,7 +63,7 @@
         <div id="assistant-dock">
             <div class="dock-tool" title="Sticky Notes" onclick="toggleWindow('sticky-window')">📝</div>
             <div class="dock-tool" title="Calculator" onclick="toggleWindow('calc-window')">🔢</div>
-            <div class="dock-tool" title="Biostats" onclick="toggleWindow('biostats-window')">📊</div>
+            <div class="dock-tool" title="Biostats" onclick="window.open('../Tool_MBB_Stats_Assistant.html', '_blank')">📊</div>
             <div class="dock-tool" title="Highlighter" id="highlighter-toggle" onclick="toggleHighlighter()">🖍️</div>
             <div class="dock-tool" title="Sniper Zoom" id="sniper-toggle" onclick="toggleSniper()">🔍</div>
             <div class="dock-tool" title="Page Zoom Out" onclick="changePageZoom(-0.1)">➖</div>
