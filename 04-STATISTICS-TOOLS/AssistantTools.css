@@ -1,0 +1,230 @@
+/* Assistant Tools - Twilight Horizon Design System */
+
+:root {
+    --dock-bg: rgba(15, 23, 42, 0.8);
+    --dock-border: rgba(255, 255, 255, 0.1);
+    --dock-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    --tool-accent: #3b82f6;
+    --tool-bg: #1e293b;
+}
+
+#assistant-dock {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--dock-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--dock-border);
+    border-radius: 50px;
+    padding: 10px 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    box-shadow: var(--dock-shadow);
+    z-index: 10000;
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#assistant-dock:active {
+    cursor: grabbing;
+}
+
+.dock-tool {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 18px;
+    position: relative;
+}
+
+.dock-tool:hover {
+    background: var(--tool-accent);
+    transform: translateY(-5px) scale(1.1);
+}
+
+.dock-tool.active {
+    background: var(--tool-accent);
+    box-shadow: 0 0 15px var(--tool-accent);
+}
+
+/* Tool Windows */
+.assistant-window {
+    position: fixed;
+    background: var(--tool-bg);
+    border: 1px solid var(--dock-border);
+    border-radius: 12px;
+    box-shadow: var(--dock-shadow);
+    display: none;
+    flex-direction: column;
+    z-index: 10001;
+    overflow: hidden;
+    min-width: 300px;
+}
+
+.window-header {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.window-content {
+    padding: 15px;
+    flex-grow: 1;
+}
+
+.close-window {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.close-window:hover {
+    opacity: 1;
+    color: #ef4444;
+}
+
+/* STICKY NOTES */
+#sticky-note-container {
+    width: 320px;
+    height: 400px;
+}
+
+.sticky-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.sticky-textarea {
+    width: 100%;
+    height: 250px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+}
+
+.sticky-page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+/* CALCULATOR - iPhone style */
+#calc-container {
+    width: 260px;
+    background: #000;
+}
+
+.calc-display {
+    width: 100%;
+    background: #000;
+    color: white;
+    text-align: right;
+    font-size: 40px;
+    padding: 20px 10px;
+    box-sizing: border-box;
+}
+
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.calc-btn {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.calc-btn:active {
+    opacity: 0.7;
+}
+
+.calc-btn.num {
+    background: #333;
+    color: white;
+}
+
+.calc-btn.op {
+    background: #f09a36;
+    color: white;
+}
+
+.calc-btn.special {
+    background: #a5a5a5;
+    color: black;
+}
+
+.calc-btn.zero {
+    grid-column: span 2;
+    aspect-ratio: auto;
+    border-radius: 50px;
+}
+
+/* HIGHLIGHTER CANVAS */
+#highlighter-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9998;
+}
+
+#highlighter-canvas.drawing {
+    pointer-events: auto;
+    cursor: crosshair;
+}
+
+/* SNIPER ZOOM */
+#sniper-lens {
+    position: fixed;
+    width: 200px;
+    height: 200px;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 10002;
+    pointer-events: none;
+    display: none;
+    overflow: hidden;
+    background-repeat: no-repeat;
+}
+
+/* Page Zoom Controls */
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.font-preview {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
