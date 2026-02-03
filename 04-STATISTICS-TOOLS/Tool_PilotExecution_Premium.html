@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilot Execution Tracker | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* INTRO GRID */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* TABLES */
+        .premium-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .premium-table th {
+            text-align: left;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .premium-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .status-certified {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+
+        .status-training {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+
+        .status-critical {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .ai-panel {
+            background: linear-gradient(90deg, rgba(52, 152, 219, 0.1), rgba(0, 0, 0, 0));
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .friction-item {
+            background: rgba(231, 76, 60, 0.05);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            background: var(--surface-1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: white;
+            margin-top: 5px;
+            font-family: inherit;
+        }
+
+        .btn-mini {
+            padding: 5px 10px;
+            font-size: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            background: var(--surface-3);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">PHASE: DO (Step 7)</span>
+                <div style="height: 15px;"></div>
+                <h1>Pilot Execution & Training <span class="ai-badge">AI ENABLED</span></h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Bridge the implementation gap. <span style="color: var(--accent);">Certify your team.</span> Capture
+                    real-world friction.
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-primary" onclick="window.print()" style="margin-right:10px;">🖨️ Export Pilot
+                    Report</button>
+                <button class="btn btn-ghost" onclick="window.location.href='Tool_WorkflowHub.html'">← Workflow
+                    Hub</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID (4 Cards) -->
+        <div class="intro-grid">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What is it?</div>
+                <div class="intro-text">A control center for tracking staff competency and pilot-run stability before
+                    full-scale deployment.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When to use?</div>
+                <div class="intro-text">During Step 7 (DO) of FOCUS PDCA. After designing the change, but before final
+                    "Check" validation.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why use it?</div>
+                <div class="intro-text">To prevent "Process Drift" and ensure those doing the work are fully capable of
+                    the new standard.</div>
+            </div>
+            <div class="intro-card intro-card-phase">
+                <div class="intro-title">🚀 Success Logic</div>
+                <div class="intro-text">High Training Coverage + Low Friction Points = High confidence for phase-gate
+                    transition.</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px;">
+
+            <!-- MAIN COLUMN: TRAINING & RUN LOG -->
+            <div>
+                <!-- TRAINING TRACKER -->
+                <div class="card" style="margin-bottom: 30px;">
+                    <div class="flex-between">
+                        <h3>1. Personnel Training Matrix</h3>
+                        <button class="btn btn-ghost btn-mini" onclick="addTrainee()">+ Add Personnel</button>
+                    </div>
+                    <table class="premium-table" id="trainingTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Mastery</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" value="A. Smith" class="table-input"></td>
+                                <td><input type="text" value="Shift Lead" class="table-input"></td>
+                                <td>
+                                    <select>
+                                        <option>Level 1: Aware</option>
+                                        <option>Level 2: Guided</option>
+                                        <option selected>Level 3: Independent</option>
+                                        <option>Level 4: Expert</option>
+                                    </select>
+                                </td>
+                                <td><span class="status-badge status-certified">CERTIFIED</span></td>
+                                <td><button class="btn-mini"
+                                        onclick="this.parentElement.parentElement.remove()">🗑️</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PILOT RUN LOG -->
+                <div class="card">
+                    <div class="flex-between">
+                        <h3>2. Pilot Run Log</h3>
+                        <button class="btn btn-ghost btn-mini" onclick="addLogEntry()">+ Add Entry</button>
+                    </div>
+                    <table class="premium-table" id="runTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Hours</th>
+                                <th>Volume</th>
+                                <th>Quality %</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="date" value="2026-02-03"></td>
+                                <td><input type="number" value="8"></td>
+                                <td><input type="number" value="120"></td>
+                                <td><input type="number" value="98"></td>
+                                <td><button class="btn-mini"
+                                        onclick="this.parentElement.parentElement.remove()">🗑️</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SIDEBAR: STATS & AI -->
+            <div>
+                <div class="card" style="margin-bottom: 30px;">
+                    <h3>📈 Pilot Vitality</h3>
+                    <div style="height: 200px; position: relative;">
+                        <canvas id="vitalityChart"></canvas>
+                    </div>
+                    <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div
+                            style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-secondary);">CERTIFIED</div>
+                            <div style="font-size: 20px; font-weight: bold; color: #2ecc71;" id="statCertified">85%
+                            </div>
+                        </div>
+                        <div
+                            style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-secondary);">AVG QUALITY</div>
+                            <div style="font-size: 20px; font-weight: bold; color: var(--accent);" id="statQuality">
+                                97.2%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FRICTION LOG -->
+                <div class="card" style="margin-bottom: 30px;">
+                    <div class="flex-between">
+                        <h3>⚠️ Friction & Resistance</h3>
+                    </div>
+                    <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 10px;">Log barriers,
+                        pushback, or technical glitches found during the run.</p>
+                    <div id="frictionLog">
+                        <div class="friction-item">
+                            <span style="font-size: 12px;">Standard work takes 2m longer than expected.</span>
+                            <span class="status-badge status-critical">HIGH</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <input type="text" id="newFriction" placeholder="New observation...">
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 5px; padding: 8px;"
+                            onclick="addFriction()">Log Observation</button>
+                    </div>
+                </div>
+
+                <!-- AI COACH -->
+                <div class="card">
+                    <div class="flex-between">
+                        <h3>💡 AI ADKAR Coach</h3>
+                        <button class="btn btn-ghost btn-mini" onclick="askAICoach()" id="aiBtn">Get Tips</button>
+                    </div>
+                    <div class="ai-panel">
+                        <div id="aiOutput" style="font-size: 13px; color: #cbd5e1; line-height: 1.5;">
+                            Tell the coach about your "Friction" points to get Change Management strategies (Awareness,
+                            Desire, Knowledge, Ability, Reinforcement).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Init Charts
+        let vitalityChart = null;
+
+        function initCharts() {
+            const ctx = document.getElementById('vitalityChart').getContext('2d');
+            vitalityChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Certified', 'In Progress', 'Not Started'],
+                    datasets: [{
+                        data: [85, 10, 5],
+                        backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                        borderWidth: 0,
+                        cutout: '80%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function addTrainee() {
+            const tbody = document.querySelector('#trainingTable tbody');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" placeholder="Name" class="table-input"></td>
+                <td><input type="text" placeholder="Role" class="table-input"></td>
+                <td>
+                    <select>
+                        <option>Level 1: Aware</option>
+                        <option>Level 2: Guided</option>
+                        <option>Level 3: Independent</option>
+                        <option>Level 4: Expert</option>
+                    </select>
+                </td>
+                <td><span class="status-badge status-training">TRAINING</span></td>
+                <td><button class="btn-mini" onclick="this.parentElement.parentElement.remove()">🗑️</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function addLogEntry() {
+            const tbody = document.querySelector('#runTable tbody');
+            const tr = document.createElement('tr');
+            const today = new Date().toISOString().split('T')[0];
+            tr.innerHTML = `
+                <td><input type="date" value="${today}"></td>
+                <td><input type="number" placeholder="0"></td>
+                <td><input type="number" placeholder="0"></td>
+                <td><input type="number" placeholder="100"></td>
+                <td><button class="btn-mini" onclick="this.parentElement.parentElement.remove()">🗑️</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function addFriction() {
+            const input = document.getElementById('newFriction');
+            if (!input.value) return;
+            const log = document.getElementById('frictionLog');
+            const div = document.createElement('div');
+            div.className = 'friction-item';
+            div.innerHTML = `
+                <span style="font-size: 12px;">${input.value}</span>
+                <span class="status-badge status-training">MEDIUM</span>
+            `;
+            log.appendChild(div);
+            input.value = '';
+        }
+
+        async function askAICoach() {
+            const btn = document.getElementById('aiBtn');
+            const output = document.getElementById('aiOutput');
+            const frictions = Array.from(document.querySelectorAll('.friction-item span:first-child')).map(s => s.innerText).join(', ');
+
+            btn.disabled = true;
+            btn.innerText = "Analyzing...";
+
+            const prompt = `
+                Act as a Lean Six Sigma Master Black Belt. We are in the "DO" phase of FOCUS PDCA.
+                We have these friction/resistance points in our pilot: "${frictions || 'None reported yet'}".
+                Provide one targeted Change Management tip (using ADKAR principles) to help the team overcome these barriers.
+                Keep it to two concise, encouraging sentences.
+            `;
+
+            try {
+                const r = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const d = await r.json();
+                output.innerText = d.candidates[0].content.parts[0].text;
+            } catch (e) {
+                output.innerText = "Coach is taking a coffee break. Try again in a moment.";
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Get Tips";
+            }
+        }
+
+        window.onload = initCharts;
+    </script>
+</body>
+
+</html>
