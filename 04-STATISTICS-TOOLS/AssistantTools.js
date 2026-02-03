@@ -41,8 +41,16 @@
         zoom: 1.0,
         highlighter: {
             active: false,
-            color: "rgba(255, 235, 59, 0.4)",
-            size: 20
+            mode: 'highlighter', // 'pen' or 'highlighter'
+            colorIndex: 0,
+            baseColors: [
+                { hex: "#fcd34d", rgb: "252, 211, 77" }, // Yellow
+                { hex: "#4ade80", rgb: "74, 222, 128" }, // Green
+                { hex: "#60a5fa", rgb: "96, 165, 250" }, // Blue
+                { hex: "#f472b6", rgb: "244, 114, 182" }, // Pink
+                { hex: "#a78bfa", rgb: "167, 139, 250" }  // Purple
+            ],
+            size: 15
         },
         sniper: {
             active: false,
@@ -151,15 +159,23 @@
         <div id="sniper-lens"></div>
 
         <!-- Highlighter Controls Floating (when active) -->
-        <div id="highlighter-tools" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); padding:10px; border-radius:50px; z-index:10005; gap:10px; align-items:center; border:1px solid #3b82f6;">
-            <div style="color:white; font-size:12px; margin-right:10px;">Highlighter Active</div>
-            <div style="width:20px; height:20px; border-radius:50%; background:rgba(255, 235, 59, 0.4); cursor:pointer;" onclick="setHighlightColor('rgba(255, 235, 59, 0.4)')"></div>
-            <div style="width:20px; height:20px; border-radius:50%; background:rgba(76, 175, 80, 0.4); cursor:pointer;" onclick="setHighlightColor('rgba(76, 175, 80, 0.4)')"></div>
-            <div style="width:20px; height:20px; border-radius:50%; background:rgba(33, 150, 243, 0.4); cursor:pointer;" onclick="setHighlightColor('rgba(33, 150, 243, 0.4)')"></div>
-            <div style="width:20px; height:20px; border-radius:50%; background:rgba(233, 30, 99, 0.4); cursor:pointer;" onclick="setHighlightColor('rgba(233, 30, 99, 0.4)')"></div>
-            <div style="width:20px; height:20px; border-radius:50%; background:rgba(156, 39, 176, 0.4); cursor:pointer;" onclick="setHighlightColor('rgba(156, 39, 176, 0.4)')"></div>
-            <button onclick="clearHighlights()" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Eraser (All)</button>
-            <button onclick="toggleHighlighter()" style="background:#3b82f6; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Close</button>
+        <div id="highlighter-tools" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); padding:10px 20px; border-radius:50px; z-index:10005; gap:15px; align-items:center; border:1px solid #3b82f6; box-shadow: 0 0 20px rgba(59,130,246,0.3);">
+            <div style="display:flex; background:rgba(255,255,255,0.1); border-radius:20px; padding:2px;">
+                <button id="mode-pen" onclick="setHighlighterMode('pen')" style="background:none; border:none; padding:5px 10px; border-radius:15px; color:white; font-size:10px; cursor:pointer;">🖋️ Pen</button>
+                <button id="mode-highlighter" onclick="setHighlighterMode('highlighter')" style="background:#3b82f6; border:none; padding:5px 10px; border-radius:15px; color:white; font-size:10px; cursor:pointer;">🖍️ High</button>
+            </div>
+            
+            <div style="display:flex; gap:8px;" id="highlighter-color-presets">
+                <!-- Injected by JS -->
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="color:white; font-size:10px;">Size</span>
+                <input type="range" min="2" max="50" value="15" oninput="setHighlighterSize(this.value)" style="width:60px; height:4px;">
+            </div>
+
+            <button onclick="clearHighlights()" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:20px; font-size:10px; cursor:pointer;">Eraser All</button>
+            <button onclick="toggleHighlighter()" style="color:#aaa; background:none; border:none; font-size:18px; cursor:pointer; padding:0 5px;">&times;</button>
         </div>
     `;
 
@@ -232,17 +248,23 @@
         saveSticky();
     };
 
-    function initColorPresets() {
-        const container = document.getElementById('sticky-color-presets');
-        state.sticky.themes.forEach((theme, i) => {
+    function initHighlighterColors() {
+        const container = document.getElementById('highlighter-color-presets');
+        if (!container) return;
+        container.innerHTML = '';
+        state.highlighter.baseColors.forEach((c, i) => {
             const div = document.createElement('div');
-            div.className = 'color-bubble';
-            div.style.background = theme.bg;
-            div.onclick = () => setStickyTheme(i);
+            div.style.width = '18px';
+            div.style.height = '18px';
+            div.style.borderRadius = '50%';
+            div.style.background = c.hex;
+            div.style.cursor = 'pointer';
+            div.style.border = state.highlighter.colorIndex === i ? '2px solid white' : '1px solid rgba(255,255,255,0.2)';
+            div.onclick = () => setHighlighterColor(i);
             container.appendChild(div);
         });
     }
-    setTimeout(initColorPresets, 100);
+    setTimeout(() => { initColorPresets(); initHighlighterColors(); }, 100);
 
     window.deleteStickyPage = function () {
         if (state.sticky.pages.length > 1) {
@@ -366,10 +388,22 @@
         canvas.className = state.highlighter.active ? 'drawing' : '';
         document.getElementById('highlighter-tools').style.display = state.highlighter.active ? 'flex' : 'none';
         document.getElementById('highlighter-toggle').classList.toggle('active', state.highlighter.active);
+        if (state.highlighter.active) initHighlighterColors();
     };
 
-    window.setHighlightColor = function (c) {
-        state.highlighter.color = c;
+    window.setHighlighterMode = function (mode) {
+        state.highlighter.mode = mode;
+        document.getElementById('mode-pen').style.background = mode === 'pen' ? '#3b82f6' : 'none';
+        document.getElementById('mode-highlighter').style.background = mode === 'highlighter' ? '#3b82f6' : 'none';
+    };
+
+    window.setHighlighterSize = function (size) {
+        state.highlighter.size = parseInt(size);
+    };
+
+    window.setHighlighterColor = function (index) {
+        state.highlighter.colorIndex = index;
+        initHighlighterColors();
     };
 
     window.clearHighlights = function () {
@@ -385,10 +419,14 @@
 
     canvas.onmousemove = (e) => {
         if (!isDrawing) return;
+        const color = state.highlighter.baseColors[state.highlighter.colorIndex];
+        const opacity = state.highlighter.mode === 'highlighter' ? 0.4 : 1.0;
+
         ctx.lineTo(e.clientX, e.clientY);
-        ctx.strokeStyle = state.highlighter.color;
+        ctx.strokeStyle = `rgba(${color.rgb}, ${opacity})`;
         ctx.lineWidth = state.highlighter.size;
         ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.stroke();
     };
 
