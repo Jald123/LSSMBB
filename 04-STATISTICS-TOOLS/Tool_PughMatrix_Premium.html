@@ -303,6 +303,7 @@
                             <optgroup label="🏭 General Scenarios">
                                 <option value="gen_fleet">Delivery Fleet Vehicle</option>
                                 <option value="gen_erp">ERP Software Suite</option>
+                                <option value="gen_office">Office Space Layout</option>
                             </optgroup>
                         </select>
                     </div>
@@ -486,6 +487,16 @@
                     { name: "Global Support", weight: 4, scores: [1, 1, 1] },
                     { name: "TCO (5yr)", weight: 4, scores: [-1, -1, 0] },
                     { name: "User Customization", weight: 3, scores: [0, 0, 1] }
+                ]
+            },
+            'gen_office': {
+                concepts: ["Open Plan", "Cubicles", "Hybrid"],
+                criteria: [
+                    { name: "Collaboration", weight: 5, scores: [1, -1, 1] },
+                    { name: "Privacy", weight: 4, scores: [-1, 1, 0] },
+                    { name: "Noise Level", weight: 4, scores: [-1, 1, 0] },
+                    { name: "Cost per Desk", weight: 3, scores: [1, -1, 0] },
+                    { name: "Flexibility", weight: 3, scores: [1, -1, 1] }
                 ]
             }
         };
