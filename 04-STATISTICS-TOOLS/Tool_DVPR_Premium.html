@@ -4,536 +4,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DVP&R / Pilot Report | Black Belt Studio</title>
+    <title>Pilot Execution (DVPR) | Black Belt Studio</title>
     <link rel="stylesheet" href="twilight_theme.css">
     <script src="config.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .header-meta-grid {
+        .app-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: 280px 1fr;
+            height: 100vh;
+            overflow: hidden;
+            background: #050505;
         }
 
-        .meta-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            padding: 12px;
-            transition: all 0.3s;
+        .sidebar-left {
+            background: #0a0a0a;
+            border-right: 1px solid var(--glass-border);
+            padding: 30px;
         }
 
-        .meta-label {
-            display: block;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 4px;
-            letter-spacing: 0.5px;
+        .main-workspace {
+            padding: 40px;
+            overflow-y: auto;
         }
 
-        .meta-value {
-            font-size: 11px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        .glow-badge {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+        .premium-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-left: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Inter';
         }
 
-        .dvpr-table {
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .test-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            background: var(--surface-1);
-            border-radius: 8px;
-            overflow: hidden;
-            font-size: 12px;
         }
 
-        .dvpr-table th,
-        .dvpr-table td {
-            padding: 12px;
+        .test-table th {
             text-align: left;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            padding: 10px;
+            border-bottom: 1px solid #333;
         }
 
-        .dvpr-table th {
-            background: var(--surface-2);
-            color: var(--accent);
-            text-transform: uppercase;
-            font-size: 10px;
-            text-align: center;
-        }
-
-        .status-pill {
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 10px;
-            text-transform: uppercase;
-        }
-
-        .status-pass {
-            background: rgba(46, 204, 113, 0.1);
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.3);
-        }
-
-        .status-fail {
-            background: rgba(231, 76, 60, 0.1);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.3);
-        }
-
-        .status-pending {
-            background: rgba(241, 196, 15, 0.1);
-            color: #f1c40f;
-            border: 1px solid rgba(241, 196, 15, 0.3);
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            background: var(--surface-1);
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .stat-label {
-            font-size: 10px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-        }
-
-        .stat-val {
-            font-size: 24px;
-            font-weight: 700;
-            color: white;
-            margin: 5px 0;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-box {
-            background: var(--surface-2);
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 600px;
-            width: 90%;
-            border: 1px solid var(--accent);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            position: relative;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            cursor: pointer;
-            color: #aaa;
-            font-size: 24px;
-        }
-
-        .clickable-header {
-            cursor: pointer;
-            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
-        }
-
-        .clickable-header:hover {
-            color: var(--accent);
-            background: rgba(255, 255, 255, 0.1);
+        .test-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: top;
         }
     </style>
 </head>
 
 <body>
-    <div class="container" style="max-width: 1300px; margin: 40px auto; padding: 0 20px;">
-        <!-- HEADER -->
-        <div class="flex-between"
-            style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
-            <div>
-                <h1 style="display:flex; align-items:center; margin:0; font-family: 'Orbitron', sans-serif;">
-                    DVP&R / Pilot Report
-                    <span class="glow-badge">CONTROL</span>
-                </h1>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
-                    Design Verification Plan & Report. <span style="color: #3498db;">Validation Summary.</span> Did it
-                    pass the test?
-                </p>
-            </div>
-            <div style="text-align: right;">
-                <button class="btn btn-primary" onclick="window.print()">🖨️ Export Final Report</button>
-                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
-                    Hub</button>
-            </div>
+    <div class="app-container">
+        <div class="sidebar-left">
+            <h2 style="color:#3b82f6; font-family:'Orbitron';">PILOT SUITE</h2>
+            <p style="color:#94a3b8; font-size:12px;">Test, Validate, Refine.</p>
+            <button class="btn" style="background:none; border:1px solid #333; margin-top:20px;"
+                onclick="window.history.back()">Back</button>
         </div>
+        <div class="main-workspace">
+            <h1 style="font-family:'Orbitron'; color: white;">Pilot Execution Plan (DVPR)</h1>
+            <p style="color:#ccc;">Design Verification Plan & Report. Ensure the solution works in the real world before
+                full scale.</p>
 
-        <!-- META GRID -->
-        <div class="header-meta-grid">
-            <div class="meta-box">
-                <span class="meta-label">🔍 What Is It?</span>
-                <div class="meta-value">Design Verification Plan & Report. A formal record that tracks testing of a new
-                    process or product.</div>
-            </div>
-            <div class="meta-box">
-                <span class="meta-label">⏱️ When To Use?</span>
-                <div class="meta-value">During IMPROVE / CONTROL phase to document that all requirements are fully
-                    validated.</div>
-            </div>
-            <div class="meta-box">
-                <span class="meta-label">💡 Why Use It?</span>
-                <div class="meta-value">To provide objective evidence of performance and 'Pass/Fail' status for official
-                    stakeholder sign-off.</div>
-            </div>
-            <div class="meta-box">
-                <span class="meta-label">📋 Requirements</span>
-                <div class="meta-value">Test names, target specifications, actual results, and acceptance criteria.
-                </div>
-            </div>
-            <!-- Row 2 -->
-            <div class="meta-box">
-                <span class="meta-label">📐 Verification Goal</span>
-                <div class="meta-value">Prove that the design meets the CTQs (Critical to Quality) identified in the
-                    Define phase.</div>
-            </div>
-            <div class="meta-box">
-                <span class="meta-label">🧠 Interpretation</span>
-                <div class="meta-value">All tests must be 'PASS' or have an approved deviation before moving to full
-                    launch.</div>
-            </div>
-            <div class="meta-box">
-                <span class="meta-label">🎯 Audit Trail</span>
-                <div class="meta-value">Provides a defensive record for quality audits and regulatory inspections (ISO,
-                    FDA, JCI).</div>
-            </div>
-            <div class="meta-box" style="background: rgba(52, 152, 219, 0.1); border-color: rgba(52, 152, 219, 0.3);">
-                <span class="meta-label" style="color:#3498db;">🚀 Phase Relevance</span>
-                <div class="meta-value" style="color:white;">
-                    <strong>Improve:</strong> Pilot Data.<br>
-                    <strong>Control:</strong> Handover Evidence.
-                </div>
-            </div>
-        </div>
-
-        <div class="stat-grid">
-            <div class="stat-box">
-                <div class="stat-label">Total Tests</div>
-                <div class="stat-val" id="total-tests">3</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Total Passes</div>
-                <div class="stat-val" id="pass-count" style="color:#2ecc71;">0</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Total Failures</div>
-                <div class="stat-val" id="fail-count" style="color:#e74c3c;">0</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Health Score</div>
-                <div class="stat-val" id="health-pct">0%</div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="flex-between">
-                <h3>Verification Checklist</h3>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <label style="font-size: 12px; color: var(--text-secondary);">Load Scenario:</label>
-                    <select id="scenarioSelect" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;"
-                        onchange="loadScenario()">
-                        <option value="">-- Custom --</option>
-                        <optgroup label="🏥 Medical Scenarios">
-                            <option value="med_cds">Clinical Decision Support (IT)</option>
-                            <option value="med_catheter">New IV Catheter Trial</option>
-                            <option value="med_kiosk">Digital Triage Kiosk</option>
-                        </optgroup>
-                        <optgroup label="🏭 Industry Scenarios">
-                            <option value="gen_warehouse">Warehouse Automation</option>
-                            <option value="gen_saas">SaaS Platform Beta</option>
-                        </optgroup>
-                    </select>
-                </div>
-            </div>
-            <table class="dvpr-table" id="dvprTable">
+            <button class="btn" onclick="addTest()">+ Add Test Case</button>
+            <table class="test-table">
                 <thead>
                     <tr>
-                        <th>Test Item / Description</th>
-                        <th>Target Spec / Goal</th>
-                        <th>Actual Result</th>
-                        <th class="clickable-header" onclick="explain('method')" title="How was it tested?">Test Method
-                            ?</th>
-                        <th class="clickable-header" onclick="explain('status')" title="Pass/Fail Logic">Acceptance
-                            Status ?</th>
+                        <th style="width:200px;">Test Case / Scenario</th>
+                        <th style="width:200px;">Acceptance Criteria</th>
+                        <th style="width:150px;">Method</th>
+                        <th style="width:120px;">Result</th>
                         <th>Evidence / Notes</th>
+                        <th style="width:50px;"></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td contenteditable="true">System Uptime (24h)</td>
-                        <td contenteditable="true">> 99.5%</td>
-                        <td contenteditable="true">99.8%</td>
-                        <td contenteditable="true">Log Analysis</td>
-                        <td>
-                            <select class="status-pill status-pass" onchange="updateDVPR(this)">
-                                <option value="pass" selected>PASS</option>
-                                <option value="fail">FAIL</option>
-                                <option value="pending">PENDING</option>
-                            </select>
-                        </td>
-                        <td contenteditable="true">Audit logs attached in Appendix A.</td>
-                    </tr>
-                </tbody>
+                <tbody id="testBody"></tbody>
             </table>
-            <div style="margin-top: 15px;">
-                <button class="btn btn-ghost" onclick="addDVPRRow()">➕ Add Test Case</button>
-            </div>
-        </div>
-
-        <div style="margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-            <div class="card">
-                <div class="flex-between">
-                    <h3>Validation Summary</h3>
-                    <div class="clickable-result" onclick="explain('chart')"
-                        style="font-size:11px; cursor:pointer; color:var(--accent);">What is this?</div>
-                </div>
-                <div style="height: 250px;"><canvas id="dvprChart"></canvas></div>
-            </div>
-            <div class="card">
-                <h3>Audit Sign-off</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-                    <div>
-                        <label style="font-size: 11px; color: var(--accent);">Verification Lead Signature</label>
-                        <div style="height: 50px; border-bottom: 2px solid rgba(255,255,255,0.1); margin-top: 10px;">
-                        </div>
-                        <input type="text" placeholder="Print Name"
-                            style="width: 100%; background: transparent; border: none; font-size: 12px; color: #fff; margin-top: 5px;">
-                    </div>
-                    <div>
-                        <label style="font-size: 11px; color: var(--accent);">Departmental Manager Approval</label>
-                        <div style="height: 50px; border-bottom: 2px solid rgba(255,255,255,0.1); margin-top: 10px;">
-                        </div>
-                        <input type="text" placeholder="Print Name"
-                            style="width: 100%; background: transparent; border: none; font-size: 12px; color: #fff; margin-top: 5px;">
-                    </div>
-                </div>
-                <div
-                    style="margin-top: 30px; padding: 15px; background: rgba(52, 152, 219, 0.05); border-radius: 8px; font-size: 12px; color: var(--text-secondary);">
-                    <strong>Certification:</strong> By signing above, the reviewers confirm that the pilot data
-                    accurately reflects the design performance and meets acceptable standards.
-                </div>
-            </div>
         </div>
     </div>
-
-    <!-- EDUCATIONAL MODAL -->
-    <div class="modal-overlay" id="infoModal" onclick="if(event.target.id==='infoModal') this.style.display='none'">
-        <div class="modal-box">
-            <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
-            <div style="text-align:center; margin-bottom:20px;">
-                <h2 style="color:var(--accent); margin:0;" id="conceptTitle">Verification Logic</h2>
-            </div>
-            <div id="conceptContent" style="min-height:150px; color:#ccc; line-height:1.6; font-size:14px;">
-                <!-- Content Injected via JS -->
-            </div>
-        </div>
-    </div>
-
     <script>
-        let chartInstance = null;
-
-        const scenarioDB = {
-            'med_cds': {
-                tests: [
-                    { item: "Drug-Drug Interaction Alert", spec: "100% Accuracy", res: "99.8%", meth: "Simulated Test Script", status: "pass", note: "One outlier due to rare herbal combo." },
-                    { item: "Latency (Response Time)", spec: "< 2 Seconds", res: "1.4s", meth: "Network Monitoring", status: "pass", note: "Consistent under peak load." },
-                    { item: "Doctor Satisfaction", spec: "Score > 8.0/10", res: "7.2", meth: "Qualitative Survey", status: "fail", note: "Feedback indicates 'Alert Fatigue'." }
-                ]
-            },
-            'med_catheter': {
-                tests: [
-                    { item: "Insertion Success Rate", spec: "> 95% on 1st try", res: "96.5%", meth: "Observation N=100", status: "pass", note: "Statistically significant improvement." },
-                    { item: "Flashback Speed", spec: "< 0.5 Sec", res: "Instant", meth: "Bench Testing", status: "pass", note: "Superior to former baseline." },
-                    { item: "Leaking during use", spec: "0 incidents", res: "2 incidents", meth: "Post-use Audit", status: "fail", note: "Root cause: hub locking mechanism." }
-                ]
-            },
-            'med_kiosk': {
-                tests: [
-                    { item: "ID Scan Reliability", spec: "99%", res: "92%", meth: "Stress Test", status: "fail", note: "struggles with damaged DLs." },
-                    { item: "Processing Time", spec: "< 4 mins", res: "3.2 mins", meth: "Log Analysis", status: "pass", note: "Met the target cycle time." },
-                    { item: "Accessibility Compliance", spec: "WCAG 2.1 AA", res: "Compliant", meth: "Expert Review", status: "pass", note: "Audio and high-contrast verified." }
-                ]
-            },
-            'gen_warehouse': {
-                tests: [
-                    { item: "Autonomous Docking", spec: "100% success", res: "99.2%", meth: "500 Cycles", status: "pass", note: "One failure due to floor debris." },
-                    { item: "Battery Life", spec: "> 10 Hours", res: "11.5 Hours", meth: "Full Shift stress", status: "pass", note: "Exceeds spec by 15%." },
-                    { item: "Obstacle Detection", spec: "Stop in < 0.3m", res: "0.22m", meth: "Safety Calibration", status: "pass", note: "Emergency stop verified." }
-                ]
-            },
-            'gen_saas': {
-                tests: [
-                    { item: "Signup Conversion", spec: "> 15%", res: "18.2%", meth: "A/B Testing", status: "pass", note: "New onboarding flow is effective." },
-                    { item: "Page Load (LCP)", spec: "< 2.5s", res: "2.8s", meth: "Lighthouse Audit", status: "fail", note: "Image assets need optimization." },
-                    { item: "Retention (Day 1)", spec: "> 40%", res: "42%", meth: "Cohort Analysis", status: "pass", note: "Positive feedback on dash." }
-                ]
-            }
-        };
-
-        function loadScenario() {
-            const key = document.getElementById('scenarioSelect').value;
-            if (!key) return;
-            const s = scenarioDB[key];
-
-            const tbody = document.querySelector('#dvprTable tbody');
+        let tests = [];
+        function addTest() {
+            tests.push({ id: Date.now(), case: '', crit: '', method: '', res: 'pending', notes: '' });
+            render();
+        }
+        function update(id, field, val) {
+            const t = tests.find(x => x.id === id);
+            if (t) { t[field] = val; render(); }
+        }
+        function remove(id) {
+            tests = tests.filter(x => x.id !== id);
+            render();
+        }
+        function render() {
+            const tbody = document.getElementById('testBody');
             tbody.innerHTML = '';
-
-            s.tests.forEach(t => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td contenteditable="true">${t.item}</td>
-                    <td contenteditable="true">${t.spec}</td>
-                    <td contenteditable="true">${t.res}</td>
-                    <td contenteditable="true">${t.meth}</td>
+            tests.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><textarea class="premium-input" rows="2" oninput="update(${t.id}, 'case', this.value)">${t.case}</textarea></td>
+                    <td><textarea class="premium-input" rows="2" oninput="update(${t.id}, 'crit', this.value)">${t.crit}</textarea></td>
+                    <td><input class="premium-input" value="${t.method}" oninput="update(${t.id}, 'method', this.value)"></td>
                     <td>
-                        <select class="status-pill status-${t.status}" onchange="updateDVPR(this)">
-                            <option value="pass" ${t.status === 'pass' ? 'selected' : ''}>PASS</option>
-                            <option value="fail" ${t.status === 'fail' ? 'selected' : ''}>FAIL</option>
-                            <option value="pending" ${t.status === 'pending' ? 'selected' : ''}>PENDING</option>
+                        <select class="premium-input" onchange="update(${t.id}, 'res', this.value)" style="background:${t.res === 'pass' ? 'rgba(16,185,129,0.2)' : (t.res === 'fail' ? 'rgba(239,68,68,0.2)' : '')}">
+                            <option value="pending" ${t.res === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="pass" ${t.res === 'pass' ? 'selected' : ''}>Pass</option>
+                            <option value="fail" ${t.res === 'fail' ? 'selected' : ''}>Fail</option>
                         </select>
                     </td>
-                    <td contenteditable="true">${t.note}</td>
+                    <td><textarea class="premium-input" rows="2" oninput="update(${t.id}, 'notes', this.value)">${t.notes}</textarea></td>
+                    <td><button onclick="remove(${t.id})" style="color:red; background:none; border:none;">X</button></td>
                 `;
-                tbody.appendChild(row);
-            });
-            refreshStats();
-        }
-
-        function addDVPRRow() {
-            const tbody = document.querySelector('#dvprTable tbody');
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td contenteditable="true">New Test</td>
-                <td contenteditable="true">Target</td>
-                <td contenteditable="true">Actual</td>
-                <td contenteditable="true">Method</td>
-                <td>
-                    <select class="status-pill status-pending" onchange="updateDVPR(this)">
-                        <option value="pass">PASS</option>
-                        <option value="fail">FAIL</option>
-                        <option value="pending" selected>PENDING</option>
-                    </select>
-                </td>
-                <td contenteditable="true">Notes</td>
-            `;
-            tbody.appendChild(row);
-            refreshStats();
-        }
-
-        function updateDVPR(el) {
-            el.className = "status-pill status-" + el.value;
-            refreshStats();
-        }
-
-        function refreshStats() {
-            const rows = document.querySelectorAll('#dvprTable tbody tr');
-            let passes = 0, fails = 0, pendings = 0;
-
-            rows.forEach(row => {
-                const status = row.querySelector('select').value;
-                if (status === 'pass') passes++;
-                else if (status === 'fail') fails++;
-                else pendings++;
-            });
-
-            document.getElementById('total-tests').innerText = rows.length;
-            document.getElementById('pass-count').innerText = passes;
-            document.getElementById('fail-count').innerText = fails;
-
-            const health = (passes / rows.length) * 100;
-            document.getElementById('health-pct').innerText = Math.round(health) + "%";
-
-            renderChart(passes, fails, pendings);
-        }
-
-        function renderChart(p, f, d) {
-            const ctx = document.getElementById('dvprChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-
-            chartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Pass', 'Fail', 'Pending'],
-                    datasets: [{
-                        data: [p, f, d],
-                        backgroundColor: ['#2ecc71', '#e74c3c', '#f1c40f'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } }
-                }
+                tbody.appendChild(tr);
             });
         }
-
-        const glossary = {
-            method: {
-                title: "Test Method selection 🧪",
-                text: "How are you proving the spec has been met? <br><br><b>Examples:</b><br>- <i>Inspection:</i> Visual check.<br>- <i>Analysis:</i> Statistical proof (t-Test, ANOVA).<br>- <i>Test:</i> Stress test or simulated load.<br>- <i>Demonstration:</i> Functional walkthrough."
-            },
-            status: {
-                title: "Acceptance Status ⚖️",
-                text: "<b>PASS:</b> Meets all specs.<br><b>FAIL:</b> Misses spec. Requires Corrective Action or formal Waiver.<br><b>PENDING:</b> Test in progress or waiting for data."
-            },
-            chart: {
-                title: "Quality Health Score 📊",
-                text: "The doughnut chart represents the overall 'Health' of your pilot. <br><br><b>MBB Rule:</b> You cannot launch with a single 'FAIL' in a safety-critical item. Failures in non-critical items can be deferred with a risk mitigation plan."
-            }
-        };
-
-        function explain(key) {
-            const item = glossary[key];
-            if (item) {
-                document.getElementById('conceptTitle').innerText = item.title;
-                document.getElementById('conceptContent').innerHTML = `<div style="padding:15px; background:rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.1);">${item.text}</div>`;
-                document.getElementById('infoModal').style.display = 'flex';
-            }
-        }
-
-        window.onload = refreshStats;
+        addTest();
     </script>
 </body>
 
