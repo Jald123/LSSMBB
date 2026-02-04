@@ -98,7 +98,7 @@
     color: #ef4444;
 }
 
-/* STICKY NOTES UPGRADE */
+/* STICKY NOTES - PREMIUM DARK THEME */
 #sticky-window {
     display: none;
     flex-direction: column;
@@ -110,21 +110,51 @@
     cursor: pointer;
     font-size: 14px;
     color: #666;
-    padding: 2px 5px;
+    padding: 4px 8px;
     border-radius: 4px;
-    transition: background 0.2s;
+    transition: all 0.2s;
 }
 
 .tool-btn-rich:hover {
     background: #e5e5e5;
 }
 
+.tool-btn-rich.dark {
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tool-btn-rich.dark:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.sticky-rich-editor {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.sticky-rich-editor::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sticky-rich-editor::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+
 .sticky-rich-editor p {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .sticky-rich-editor ul {
     padding-left: 20px;
+    margin: 8px 0;
+}
+
+.sticky-rich-editor::selection {
+    background: rgba(59, 130, 246, 0.4);
 }
 
 /* DRAWING TOOLS UPGRADE */
