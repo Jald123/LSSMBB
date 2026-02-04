@@ -647,7 +647,7 @@
         const overlay = document.getElementById('sniper-overlay');
 
         controls.style.display = state.sniper.active ? 'flex' : 'none';
-        overlay.style.display = state.sniper.active ? 'block' : 'none';
+        // Overlay effect is now handled by lens box-shadow
         toggle.classList.toggle('active', state.sniper.active);
 
         if (state.sniper.active) {
@@ -666,9 +666,10 @@
 
         if (mode === 'lens') {
             lens.style.borderRadius = "50%";
-            lens.style.border = "2px solid white";
-            lens.style.background = "rgba(255,255,255,0.1)";
-            lens.style.backdropFilter = "contrast(1.2) brightness(1.1) saturate(1.2) blur(0px)";
+            lens.style.border = "3px solid rgba(255,255,255,0.9)";
+            lens.style.background = "transparent";
+            lens.style.backdropFilter = "none";
+            lens.style.boxShadow = "0 0 0 9999px rgba(0,0,0,0.6), 0 0 30px rgba(0,0,0,0.5) inset";
             lens.innerHTML = "";
         } else {
             lens.style.borderRadius = "4px";
