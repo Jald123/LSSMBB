@@ -1482,6 +1482,88 @@
             background: rgba(16, 185, 129, 0.2);
             padding: 5px 15px;
             border-radius: 6px;
+            pointer-events: none;
+        }
+
+        /* Sigma Lines & Labels */
+        .sigma-line {
+            stroke: var(--sigma-color);
+            stroke-width: 1;
+            stroke-dasharray: 4 4;
+            opacity: 0.3;
+            transition: all 0.5s ease;
+        }
+
+        .sigma-line.active {
+            opacity: 0.8;
+            stroke-width: 2;
+        }
+
+        .sigma-marker-label {
+            font-size: 9px;
+            fill: var(--text-secondary);
+            font-weight: 600;
+            text-anchor: middle;
+            transition: all 0.5s ease;
+        }
+
+        /* Hover Explanation Tooltip */
+        .graph-explanation {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--glass-strong);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--sigma-color);
+            padding: 12px 20px;
+            border-radius: 12px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 240px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .graph-explanation.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .graph-explanation h5 {
+            color: var(--sigma-color);
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .graph-explanation p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Zoom Functionality */
+        .curve-container {
+            cursor: zoom-in;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .curve-container.zoomed {
+            cursor: zoom-out;
+            transform: scale(1.4);
+            z-index: 50;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Graph Zones for explains */
+        .graph-zone {
+            fill: transparent;
+            cursor: pointer;
+        }
+
+        .graph-zone:hover {
+            fill: rgba(139, 92, 246, 0.05);
         }
 
         /* Cup Animation Container */
@@ -2210,7 +2292,7 @@
                         The Latte Pour Distribution
                     </div>
 
-                    <div class="curve-container" id="curve-container">
+                    <div class="curve-container" id="curve-container" onclick="toggleZoom()">
                         <!-- SVG Bell Curve -->
                         <svg class="curve-svg" id="bell-curve-svg" viewBox="0 0 400 250"
                             preserveAspectRatio="xMidYMid meet">
@@ -2220,10 +2302,18 @@
                                     <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.1" />
                                 </linearGradient>
                             </defs>
+
+                            <!-- Sigma Markers Group -->
+                            <g id="sigma-markers"></g>
+
                             <!-- Bell curve fill -->
                             <path class="bell-fill" id="bell-fill"></path>
                             <!-- Bell curve line -->
                             <path class="bell-path" id="bell-path"></path>
+
+                            <!-- Interactive Zones -->
+                            <rect class="graph-zone" x="0" y="0" width="400" height="250"
+                                onmousemove="showExplanation(event)" onmouseleave="hideExplanation()"></rect>
                         </svg>
 
                         <!-- Spec Limits -->
@@ -2240,6 +2330,12 @@
 
                         <!-- Cups Animation Container -->
                         <div class="cups-container" id="cups-container"></div>
+
+                        <!-- Explanation Tooltip -->
+                        <div id="graph-explanation" class="graph-explanation">
+                            <h5 id="explanation-title">Zone Details</h5>
+                            <p id="explanation-text">Hover over areas to see statistical details.</p>
+                        </div>
                     </div>
 
                     <!-- Bins -->
@@ -2604,6 +2700,86 @@
 
             document.getElementById('bell-path').setAttribute('d', paths.line);
             document.getElementById('bell-fill').setAttribute('d', paths.fill);
+
+            updateSigmaMarkers(sigma);
+        }
+
+        // Update Sigma Markers (lines and labels)
+        function updateSigmaMarkers(sigma) {
+            const container = document.getElementById('sigma-markers');
+            container.innerHTML = '';
+
+            const width = 400;
+            const centerX = width / 2;
+            const displaySigma = sigma / 0.15 * 40; // Same scaling as curve
+
+            // Draw 1, 2, 3 Sigma lines on both sides
+            for (let i = 1; i <= 3; i++) {
+                const xOffset = i * displaySigma;
+
+                // + Sigma
+                drawSigmaMarker(centerX + xOffset, `+${i}σ`);
+                // - Sigma
+                drawSigmaMarker(centerX - xOffset, `-${i}σ`);
+            }
+        }
+
+        function drawSigmaMarker(x, label) {
+            const container = document.getElementById('sigma-markers');
+            const height = 250;
+            const baseY = 200;
+
+            // Line
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x);
+            line.setAttribute("y1", 50);
+            line.setAttribute("x2", x);
+            line.setAttribute("y2", baseY);
+            line.setAttribute("class", "sigma-line");
+            container.appendChild(line);
+
+            // Label
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", x);
+            text.setAttribute("y", baseY + 15);
+            text.setAttribute("class", "sigma-marker-label");
+            text.textContent = label;
+            container.appendChild(text);
+        }
+
+        // Explanation Logic
+        function showExplanation(e) {
+            const rect = e.target.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percent = x / rect.width;
+
+            const tooltip = document.getElementById('graph-explanation');
+            const title = document.getElementById('explanation-title');
+            const text = document.getElementById('explanation-text');
+
+            tooltip.classList.add('active');
+
+            // Logic to determine zone
+            if (percent < 0.2 || percent > 0.8) {
+                title.textContent = "The Tail (Defects)";
+                text.textContent = "This area represents rare occurrences. If spec limits are here, you have many defects.";
+            } else if (percent > 0.45 && percent < 0.55) {
+                title.textContent = "The Bullseye (Mean)";
+                text.textContent = "The center of your process. This is the 12.0oz target where most cups fall.";
+            } else {
+                title.textContent = "The Variation Zone";
+                text.textContent = "The spread of your process. Lean Six Sigma's goal is to keep this as narrow as possible.";
+            }
+        }
+
+        function hideExplanation() {
+            document.getElementById('graph-explanation').classList.remove('active');
+        }
+
+        // Zoom Logic
+        function toggleZoom() {
+            const container = document.getElementById('curve-container');
+            container.classList.toggle('zoomed');
         }
 
         // Update variation display
