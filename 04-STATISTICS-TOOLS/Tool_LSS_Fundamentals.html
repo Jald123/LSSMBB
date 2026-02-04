@@ -1847,29 +1847,96 @@
 
         .result-bin {
             flex: 1;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 14px;
             text-align: center;
-            font-size: 12px;
-            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            min-height: 90px;
         }
 
         .result-bin.good-bin {
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid var(--lean-color);
-            color: var(--lean-color);
+            border: 1.5px solid rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.05);
         }
 
         .result-bin.defect-bin {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid #ef4444;
-            color: #ef4444;
+            border: 1.5px solid rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.05);
         }
 
         .bin-count {
-            font-size: 1.5rem;
             display: block;
-            margin-bottom: 3px;
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .result-bin.good-bin .bin-count {
+            color: #10b981;
+        }
+
+        .result-bin.defect-bin .bin-count {
+            color: #ef4444;
+        }
+
+        .bin-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            opacity: 0.8;
+        }
+
+        .result-bin.good-bin .bin-label {
+            color: #34d399;
+        }
+
+        .result-bin.defect-bin .bin-label {
+            color: #f87171;
+        }
+
+        .modal-action-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .reset-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reset-action-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .reset-action-btn i {
+            width: 12px;
+            height: 12px;
         }
     </style>
 </head>
@@ -2244,18 +2311,20 @@
                     <select id="scenario-selector" onchange="switchScenario(this.value)"
                         class="bg-slate-900/80 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg px-3 py-1.5 focus:border-brand-orange outline-none">
                         <option value="latte">☕ Latte Pour (Service)</option>
-                        <option value="medical">🏥 ER Triage (Medical)</option>
+                        <option value="medical">🏥 ER Triage (General)</option>
+                        <option value="med_dosage">💉 Medication Dosage (Critical)</option>
+                        <option value="lab_tat">🧪 Lab Result TAT (Processing)</option>
+                        <option value="surgical">🏢 Surgical Prep (Flow)</option>
                     </select>
                 </div>
                 <span class="badge">Sigma Simulator</span>
             </div>
-            <div class="flex items-center gap-3">
-                <button onclick="resetLab()"
-                    class="text-xs font-bold text-slate-500 hover:text-brand-risk flex items-center gap-2 transition-colors uppercase tracking-widest px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700">
-                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                    Reset All Data
-                </button>
+            <div class="modal-action-stack">
                 <button class="modal-close" onclick="closeModal('processlab')">×</button>
+                <button onclick="resetLab()" class="reset-action-btn">
+                    <i data-lucide="rotate-ccw"></i>
+                    Reset Data
+                </button>
             </div>
         </div>
         <div class="modal-body">
@@ -2357,11 +2426,11 @@
                     <div class="bins-container">
                         <div class="result-bin good-bin">
                             <span class="bin-count" id="good-bin-count">0</span>
-                            ✓ Good Cups
+                            <span class="bin-label">✓ Good Units</span>
                         </div>
                         <div class="result-bin defect-bin">
                             <span class="bin-count" id="defect-bin-count">0</span>
-                            ✗ Defects
+                            <span class="bin-label">✗ Defects</span>
                         </div>
                     </div>
 
@@ -2585,6 +2654,60 @@
                     1: { name: 'Standard Triage', icon: "🩺", lsl: 10.0, usl: 30.0, desc: "General Case: 10-30 min wait threshold" },
                     2: { name: 'Trauma Protocol', icon: "🚨", lsl: 15.0, usl: 25.0, desc: "Critical Need: Strict 15-25 min target" }
                 }
+            },
+            med_dosage: {
+                title: "💉 Medication Dosage Lab",
+                visualizerTitle: "Medication Dosage Distribution",
+                unit: "mg",
+                baseMean: 100.0,
+                baseVariation: 0.8, // Normal Finding (High Sigma)
+                btnIcon: "💊",
+                btnText: "Prepare 100 Doses",
+                chaos: {
+                    1: { name: "⚖️ Balance Drift", impact: "+2.0σ", sigma: 2.0, meanShift: 0, desc: "Electronic scale calibration error." },
+                    2: { name: "🌡️ Humidity Factor", impact: "+1.5σ", sigma: 1.5, meanShift: 0.5, desc: "Powder density changes with moisture." },
+                    3: { name: "✍️ Manual Calc Error", impact: "+3.0σ", sigma: 3.0, meanShift: 1.0, desc: "Typo in dosage calculation." }
+                },
+                customers: {
+                    1: { name: 'Standard Care', icon: "🧑", lsl: 95.0, usl: 105.0, desc: "+/- 5mg Safety Range" },
+                    2: { name: 'Critical Care', icon: "🚨", lsl: 98.5, usl: 101.5, desc: "Tight +/- 1.5mg Limit" }
+                }
+            },
+            lab_tat: {
+                title: "🧪 Lab Result TAT Lab",
+                visualizerTitle: "Lab Result Turnaround Time",
+                unit: "min",
+                baseMean: 60.0,
+                baseVariation: 5.0,
+                btnIcon: "🔬",
+                btnText: "Process 100 Samples",
+                chaos: {
+                    1: { name: "📦 Sample Backlog", impact: "+15.0σ", sigma: 15.0, meanShift: 10.0, desc: "High volume of incoming samples creates delays in processing." },
+                    2: { name: "🛠️ Equipment Malfunction", impact: "+7.5σ", sigma: 7.5, meanShift: 5.0, desc: "Breakdowns or maintenance increase processing time variability." },
+                    3: { name: "👩‍🔬 Staff Shortage", impact: "+4.0σ", sigma: 4.0, meanShift: 3.0, desc: "Fewer technicians lead to slower sample handling and analysis." }
+                },
+                customers: {
+                    1: { name: 'Routine Test', icon: "🗓️", lsl: 45.0, usl: 75.0, desc: "Standard: 45-75 min acceptable TAT" },
+                    2: { name: 'Urgent Test', icon: "⚡", lsl: 50.0, usl: 70.0, desc: "Time-Sensitive: Strict 50-70 min TAT" }
+                }
+            },
+            surgical: {
+                title: "🏢 Surgical Prep Lab",
+                visualizerTitle: "Surgical Room Turnover Time",
+                unit: "min",
+                baseMean: 30.0,
+                baseVariation: 1.0, // Normal Finding (Stable process)
+                btnIcon: "🛏️",
+                btnText: "Prep 100 Rooms",
+                chaos: {
+                    1: { name: "🧹 Deep Clean Delay", impact: "+5.0σ", sigma: 5.0, meanShift: 10.0, desc: "Unplanned contamination cleanup." },
+                    2: { name: "🧱 Instrument Gap", impact: "+3.0σ", sigma: 3.0, meanShift: 5.0, desc: "Sterile tray missing key kit." },
+                    3: { name: "🤝 Handover Lag", impact: "+2.0σ", sigma: 2.0, meanShift: 0, desc: "Miscommunication between nursing teams." }
+                },
+                customers: {
+                    1: { name: 'Standard Surgery', icon: "🛌", lsl: 20.0, usl: 45.0, desc: "Routine turnover window" },
+                    2: { name: 'Lean Efficiency', icon: "⏱️", lsl: 28.0, usl: 32.0, desc: "Six Sigma optimized target" }
+                }
             }
         };
 
@@ -2618,12 +2741,17 @@
                 }
             }
 
-            // Update UI Labels
+            // Reset UI Labels
             document.getElementById('lab-title').innerText = config.title;
             document.getElementById('visualizer-title').innerText = config.visualizerTitle;
             document.getElementById('target-label').innerText = `Target: ${config.baseMean.toFixed(1)}${config.unit}`;
             document.getElementById('batch-btn-icon').innerText = config.btnIcon;
             document.getElementById('batch-btn-text').innerText = config.btnText;
+
+            // Update Bin labels dynamically
+            const goodLabel = scenarioId === 'latte' ? '✓ Good Cups' : (scenarioId.startsWith('med') ? '✓ Safe Doses' : '✓ Good Units');
+            document.querySelectorAll('.bin-label')[0].innerText = goodLabel;
+            document.querySelectorAll('.bin-label')[1].innerText = '✗ Defects';
 
             // Reset UI Chaos cards
             for (let i = 1; i <= 3; i++) {
