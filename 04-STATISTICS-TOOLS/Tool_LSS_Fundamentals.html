@@ -7,6 +7,7 @@
     <title>LSS Fundamentals | Black Belt Studio</title>
     <link rel="stylesheet" href="twilight_theme.css">
     <script src="config.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         /* ============================================
            FUTURISTIC PROFESSIONAL DESIGN SYSTEM
@@ -1680,6 +1681,47 @@
             box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
         }
 
+        .sigma-zone {
+            transition: all 0.3s ease;
+            cursor: crosshair;
+        }
+
+        .sigma-zone:hover {
+            fill-opacity: 0.6 !important;
+            stroke-width: 1.5 !important;
+        }
+
+        .sigma-bracket-line {
+            fill: none;
+            stroke-width: 1;
+        }
+
+        .sigma-percentage-text {
+            font-size: 9px;
+            font-weight: 800;
+            text-anchor: middle;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        #scenario-selector {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 8px 15px;
+            outline: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: 0.3s;
+        }
+
+        #scenario-selector:hover {
+            border-color: var(--sigma-color);
+            color: white;
+        }
+
         /* Graph Zones for explains */
         .graph-zone {
             fill: transparent;
@@ -2439,8 +2481,7 @@
             <div class="modal-title">
                 <div class="flex items-center gap-4">
                     <h2 id="lab-title">☕ The Perfect Latte Lab</h2>
-                    <select id="scenario-selector" onchange="switchScenario(this.value)"
-                        class="bg-slate-900/80 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg px-3 py-1.5 focus:border-brand-orange outline-none">
+                    <select id="scenario-selector" onchange="switchScenario(this.value)">
                         <option value="latte">☕ Latte Pour (Service)</option>
                         <option value="medical">🏥 ER Triage (General)</option>
                         <option value="med_dosage">💉 Medication Dosage (Critical)</option>
