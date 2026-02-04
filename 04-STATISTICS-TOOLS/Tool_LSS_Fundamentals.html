@@ -617,6 +617,8 @@
             justify-content: center;
             padding: 60px;
             transition: all 0.3s ease;
+            overflow: hidden;
+            /* Added to clip content correctly */
         }
 
         .comparator-side.lean-side {
@@ -630,6 +632,8 @@
             right: 0;
             width: 50%;
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.15));
+            border-left: 1px solid var(--border);
+            /* Added for clarity when sliding */
         }
 
         .comparator-side .bg-pattern {
@@ -656,6 +660,130 @@
         .comparator-content {
             position: relative;
             z-index: 2;
+            min-width: 500px;
+            /* Prevent text squeezing */
+            flex-shrink: 0;
+        }
+
+        .sigma-side .comparator-content {
+            position: absolute;
+            right: 60px;
+            /* Pin the right-side content to the right */
+        }
+
+        /* Help Button styles */
+        .help-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+        }
+
+        .help-btn:hover {
+            background: var(--sigma-color);
+            border-color: var(--sigma-color);
+            color: white;
+            box-shadow: 0 0 15px var(--sigma-glow);
+        }
+
+        .instruction-overlay {
+            position: absolute;
+            top: 80px;
+            right: 40px;
+            width: 320px;
+            background: var(--glass-strong);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--sigma-color);
+            padding: 25px;
+            border-radius: 20px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeInScale 0.3s ease;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .instruction-overlay.active {
+            display: block;
+        }
+
+        .instruction-overlay h4 {
+            color: var(--sigma-color);
+            margin-bottom: 12px;
+        }
+
+        .instruction-overlay p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .instruction-overlay ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .instruction-overlay li {
+            font-size: 13px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .slider-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 50px;
+            pointer-events: none;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--sigma-color);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
         }
 
         .comparator-title {
@@ -1928,9 +2056,27 @@
                 <h2>The Dynamic Duo</h2>
                 <span class="badge">Comparator</span>
             </div>
-            <button class="modal-close" onclick="closeModal('comparator')">×</button>
+            <div style="display: flex; align-items: center;">
+                <button class="help-btn" onclick="toggleInstructions()" title="How to use">?</button>
+                <button class="modal-close" onclick="closeModal('comparator')">×</button>
+            </div>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="position: relative;">
+            <!-- Instructions Overlay -->
+            <div class="instruction-overlay" id="comparator-instructions">
+                <h4>Discovery Mode</h4>
+                <p>Lean and Six Sigma are two sides of the same coin. Use this tool to see how they differ:</p>
+                <ul>
+                    <li><strong>Drag the Handle:</strong> Grab the "LSS" circle in the middle and slide it left or
+                        right.</li>
+                    <li><strong>Reveal Philosophies:</strong> Sliding left expands the Six Sigma side; sliding right
+                        reveals more of Lean.</li>
+                    <li><strong>The Fusion:</strong> The quote in the center remains fixed to remind you that both are
+                        needed for true operational excellence.</li>
+                </ul>
+                <p style="margin-top: 15px; font-weight: 700; color: white;">Try reaching 100% on either side!</p>
+            </div>
+
             <div class="comparator-container">
                 <!-- LEAN Side -->
                 <div class="comparator-side lean-side">
@@ -1960,7 +2106,8 @@
 
                 <!-- SIGMA Side -->
                 <div class="comparator-side sigma-side">
-                    <div class="bg-pattern"></div>
+                    <div class="bg-pattern" style="background-image: url('../assets/module-intro/timeline_gauss.png');">
+                    </div>
                     <div class="comparator-content">
                         <h2 class="comparator-title">SIX SIGMA</h2>
                         <div class="comparator-role">"The Steering" — Precision & Control</div>
@@ -1992,6 +2139,12 @@
                         <div class="fusion-logo">LSS</div>
                         <p>"Speed without precision is dangerous. Precision without speed is too slow."</p>
                     </div>
+                </div>
+
+                <!-- Slider Hint -->
+                <div class="slider-hint">
+                    <div class="pulse-dot"></div>
+                    Drag the center handle to compare
                 </div>
             </div>
         </div>
@@ -2244,6 +2397,12 @@
             document.getElementById(`${type}-backdrop`).classList.remove('active');
             document.getElementById(`${type}-modal`).classList.remove('active');
             document.body.style.overflow = '';
+
+            // Hide instructions if it was open
+            if (type === 'comparator') {
+                const instr = document.getElementById('comparator-instructions');
+                if (instr) instr.classList.remove('active');
+            }
         }
 
         // Close on Escape key
@@ -2617,7 +2776,12 @@
         const comparatorContainer = document.querySelector('.comparator-container');
         const leanSide = document.querySelector('.lean-side');
         const sigmaSide = document.querySelector('.sigma-side');
+        const sliderHint = document.querySelector('.slider-hint');
         let isDragging = false;
+
+        function toggleInstructions() {
+            document.getElementById('comparator-instructions').classList.toggle('active');
+        }
 
         function updateSlider(percent) {
             // Constrain between 10% and 90%
@@ -2626,6 +2790,9 @@
             slider.style.left = `${percent}%`;
             leanSide.style.width = `${percent}%`;
             sigmaSide.style.width = `${100 - percent}%`;
+
+            // Hide hint on interaction
+            if (sliderHint) sliderHint.style.opacity = '0';
         }
 
         slider.addEventListener('mousedown', (e) => {
@@ -2635,6 +2802,7 @@
             leanSide.style.transition = 'none';
             sigmaSide.style.transition = 'none';
             slider.style.transition = 'none';
+            if (sliderHint) sliderHint.style.display = 'none';
         });
 
         window.addEventListener('mousemove', (e) => {
