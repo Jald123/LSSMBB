@@ -226,13 +226,13 @@
             </div>
         </div>
 
-        <!-- Sniper Zoom UI -->
-        <div id="sniper-controls" style="display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); padding:8px 15px; border-radius:30px; z-index:10005; gap:15px; align-items:center; border:1px solid #444; color:white;">
-            <div style="font-size:10px; font-weight:bold; text-transform:uppercase; color:#888;">Zoom Mode:</div>
+        <!-- Sniper Zoom UI (positioned below dock icon) -->
+        <div id="sniper-controls" style="display:none; position:fixed; top:70px; background:rgba(15,23,42,0.95); padding:10px 20px; border-radius:25px; z-index:10005; gap:12px; align-items:center; border:1px solid rgba(255,255,255,0.15); color:white; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+            <div style="font-size:10px; font-weight:bold; text-transform:uppercase; color:#64748b; letter-spacing:1px;">Zoom Mode:</div>
             <button onclick="setSniperMode('lens')" id="sniper-mode-lens" class="sniper-btn active">⚪ Lens</button>
             <button onclick="setSniperMode('pointer')" id="sniper-mode-pointer" class="sniper-btn">🎯 Sniper</button>
-            <div style="width:1px; height:15px; background:#444;"></div>
-            <div style="font-size:10px; pointer-events:none;">Scroll to Zoom</div>
+            <div style="width:1px; height:18px; background:rgba(255,255,255,0.15);"></div>
+            <div style="font-size:10px; color:#94a3b8;">Scroll to Zoom</div>
         </div>
     `;
 
@@ -607,10 +607,17 @@
     window.toggleSniper = function () {
         state.sniper.active = !state.sniper.active;
         lens.style.display = state.sniper.active ? 'block' : 'none';
-        document.getElementById('sniper-controls').style.display = state.sniper.active ? 'flex' : 'none';
-        document.getElementById('sniper-toggle').classList.toggle('active', state.sniper.active);
+        const controls = document.getElementById('sniper-controls');
+        const toggle = document.getElementById('sniper-toggle');
+
+        controls.style.display = state.sniper.active ? 'flex' : 'none';
+        toggle.classList.toggle('active', state.sniper.active);
 
         if (state.sniper.active) {
+            // Position controls directly below the sniper icon
+            const rect = toggle.getBoundingClientRect();
+            controls.style.left = (rect.left + rect.width / 2) + 'px';
+            controls.style.transform = 'translateX(-50%)';
             setSniperMode(state.sniper.mode);
         }
     };
