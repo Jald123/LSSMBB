@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lean & Six Sigma - Introduction Module</title>
+    <meta name="description" content="The powerful fusion of Speed and Quality. Learn Lean Six Sigma fundamentals.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-lean: #10b981;
+            --accent-lean-glow: rgba(16, 185, 129, 0.3);
+            --accent-sigma: #6366f1;
+            --accent-sigma-glow: rgba(99, 102, 241, 0.3);
+            --accent-gold: #fbbf24;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(30, 41, 59, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Gradient */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                var(--bg-primary);
+            z-index: -1;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--accent-lean), var(--accent-sigma));
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .header p strong {
+            color: var(--accent-lean);
+        }
+
+        .header p em {
+            color: var(--accent-sigma);
+            font-style: normal;
+        }
+
+        /* Context Toggle */
+        .context-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 50px;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
+
+        .context-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border: 1px solid var(--border-color);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .context-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .context-btn.active {
+            background: linear-gradient(135deg, var(--accent-lean), var(--accent-sigma));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .context-btn .icon {
+            font-size: 18px;
+        }
+
+        /* Top Cards Grid */
+        .top-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-lean), var(--accent-sigma));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(99, 102, 241, 0.2));
+            border: 1px solid var(--border-color);
+        }
+
+        .card-hook {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .card-content .highlight {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .aha-moment {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 3px solid var(--accent-gold);
+            border-radius: 0 12px 12px 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--accent-gold);
+        }
+
+        .aha-moment::before {
+            content: '💡 ';
+        }
+
+        /* Timeline */
+        .timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            opacity: 0;
+            animation: fadeInLeft 0.5s ease-out forwards;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-lean), var(--accent-sigma));
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .timeline-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .timeline-text strong {
+            color: var(--text-primary);
+        }
+
+        /* Value Card Context Example */
+        .context-example {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .context-example-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-sigma);
+            margin-bottom: 8px;
+        }
+
+        .context-example p {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Bottom Split Section */
+        .bottom-split {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .bottom-split {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .methodology-card {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .methodology-card .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: all 0.5s ease;
+            z-index: 1;
+        }
+
+        .methodology-card .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .methodology-card.lean-card .bg-overlay {
+            background: linear-gradient(to top, rgba(10, 15, 26, 0.98) 30%, rgba(16, 185, 129, 0.3) 100%);
+        }
+
+        .methodology-card.sigma-card .bg-overlay {
+            background: linear-gradient(to top, rgba(10, 15, 26, 0.98) 30%, rgba(99, 102, 241, 0.3) 100%);
+        }
+
+        .methodology-card .content {
+            position: relative;
+            z-index: 3;
+            padding: 35px;
+        }
+
+        .methodology-card .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .lean-card .badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-lean);
+            border: 1px solid var(--accent-lean);
+        }
+
+        .sigma-card .badge {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-sigma);
+            border: 1px solid var(--accent-sigma);
+        }
+
+        .methodology-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .lean-card h2 {
+            background: linear-gradient(135deg, var(--accent-lean), #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sigma-card h2 {
+            background: linear-gradient(135deg, var(--accent-sigma), #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .methodology-card .focus {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .methodology-card .motto {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            padding-left: 15px;
+            border-left: 3px solid;
+        }
+
+        .lean-card .motto {
+            border-color: var(--accent-lean);
+        }
+
+        .sigma-card .motto {
+            border-color: var(--accent-sigma);
+        }
+
+        .example-box {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s ease;
+        }
+
+        .example-box .scenario {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .lean-card .example-box .scenario {
+            color: var(--accent-lean);
+        }
+
+        .sigma-card .example-box .scenario {
+            color: var(--accent-sigma);
+        }
+
+        .example-box .desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            transition: opacity 0.3s ease;
+        }
+
+        /* LEAN Hover Animation - Speed Lines */
+        .lean-card:hover .bg-image {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
+        .lean-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(16, 185, 129, 0.1),
+                    rgba(16, 185, 129, 0.3),
+                    rgba(16, 185, 129, 0.1),
+                    transparent);
+            z-index: 2;
+            transition: left 0.6s ease;
+        }
+
+        .lean-card:hover::after {
+            left: 100%;
+        }
+
+        /* Six Sigma Hover Animation - Focus/Reticle */
+        .sigma-card:hover .bg-image {
+            transform: scale(1.15);
+            filter: contrast(1.2) saturate(1.3);
+        }
+
+        .sigma-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(99, 102, 241, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 2;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        .sigma-card:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .audio-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-lean), var(--accent-sigma));
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .audio-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .audio-text strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Content Transition */
+        .fade-content {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .fade-content.fading {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-gradient"></div>
+
+    <div class="container">
+        <!-- Back Button -->
+        <a href="../index.html" class="back-btn">
+            <span>←</span>
+            <span>Back to Home</span>
+        </a>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-badge">
+                <span>⚡</span>
+                <span>Fundamentals Module</span>
+            </div>
+            <h1>Speed Meets Precision</h1>
+            <p>
+                <strong>Lean</strong> clears the road (Speed). <em>Six Sigma</em> makes sure you don't crash (Safety).
+                Together, they transform chaos into excellence.
+            </p>
+        </header>
+
+        <!-- Context Toggle -->
+        <div class="context-toggle">
+            <button class="context-btn" data-context="general" onclick="setContext('general')">
+                <span class="icon">🏢</span>
+                <span>General</span>
+            </button>
+            <button class="context-btn active" data-context="healthcare" onclick="setContext('healthcare')">
+                <span class="icon">🏥</span>
+                <span>Healthcare</span>
+            </button>
+            <button class="context-btn" data-context="daily_life" onclick="setContext('daily_life')">
+                <span class="icon">🏠</span>
+                <span>Daily Life</span>
+            </button>
+        </div>
+
+        <!-- Top Cards -->
+        <div class="top-cards">
+            <!-- Overview Card -->
+            <div class="card" id="card-overview">
+                <div class="card-icon">🔗</div>
+                <div class="card-hook">Why do we need both?</div>
+                <h3>The Dynamic Duo</h3>
+                <div class="card-content">
+                    <p><span class="highlight">Lean is the Engine (Efficiency)</span>—it asks 'Why is this taking so
+                        long?'</p>
+                    <p style="margin-top: 10px;"><span class="highlight">Six Sigma is the Steering
+                            (Effectiveness)</span>—it asks 'Why isn't this perfect every time?'</p>
+                </div>
+                <div class="aha-moment">Lean trims the fat. Six Sigma builds the muscle.</div>
+            </div>
+
+            <!-- History Card -->
+            <div class="card" id="card-history">
+                <div class="card-icon">📜</div>
+                <div class="card-hook">It started with cars, but now it saves lives.</div>
+                <h3>Factory Floor to Bedside</h3>
+                <div class="timeline">
+                    <div class="timeline-item" style="animation-delay: 0.1s;">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-text"><strong>1913:</strong> Ford's Assembly Line (Flow)</div>
+                    </div>
+                    <div class="timeline-item" style="animation-delay: 0.2s;">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-text"><strong>1950s:</strong> Toyota Production System (Waste)</div>
+                    </div>
+                    <div class="timeline-item" style="animation-delay: 0.3s;">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-text"><strong>1980s:</strong> Motorola Six Sigma (Defects)</div>
+                    </div>
+                    <div class="timeline-item" style="animation-delay: 0.4s;">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-text"><strong>2000s:</strong> Healthcare Integration (Patient Safety)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Value Card -->
+            <div class="card" id="card-value">
+                <div class="card-icon">💎</div>
+                <div class="card-hook">Who decides what matters?</div>
+                <h3>The 'Value' Compass</h3>
+                <div class="card-content">
+                    <p><span class="highlight">Value is defined ONLY by the Customer (or Patient).</span> If they
+                        wouldn't pay for it, it's Waste.</p>
+                </div>
+                <div class="context-example">
+                    <div class="context-example-label" id="value-context-label">Healthcare Example</div>
+                    <p class="fade-content" id="value-example">A patient pays for the diagnosis, not the 3 hours in the
+                        waiting room.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Split -->
+        <div class="bottom-split">
+            <!-- LEAN Card -->
+            <div class="methodology-card lean-card">
+                <div class="bg-image" id="lean-bg"
+                    style="background-image: url('../assets/module-intro/lean_healthcare.png');"></div>
+                <div class="bg-overlay"></div>
+                <div class="content">
+                    <div class="badge">Speed · Efficiency · Flow</div>
+                    <h2>LEAN</h2>
+                    <div class="focus">Focus: Eliminate Waste</div>
+                    <div class="motto">"Remove the Friction"</div>
+                    <div class="example-box">
+                        <div class="scenario fade-content" id="lean-scenario">Door-to-Balloon</div>
+                        <div class="desc fade-content" id="lean-desc">A heart attack patient moving from ER to Cath Lab
+                            without paperwork stops.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIX SIGMA Card -->
+            <div class="methodology-card sigma-card">
+                <div class="bg-image" id="sigma-bg"
+                    style="background-image: url('../assets/module-intro/sixsigma_healthcare.png');"></div>
+                <div class="bg-overlay"></div>
+                <div class="content">
+                    <div class="badge">Quality · Consistency · Precision</div>
+                    <h2>SIX SIGMA</h2>
+                    <div class="focus">Focus: Reduce Variation</div>
+                    <div class="motto">"Trust the Process"</div>
+                    <div class="example-box">
+                        <div class="scenario fade-content" id="sigma-scenario">The Anesthesiologist</div>
+                        <div class="desc fade-content" id="sigma-desc">Exact dose for weight. Too little = pain; too
+                            much = danger. Precision is vital.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Player -->
+    <div class="audio-player" id="audio-player">
+        <button class="audio-btn" id="play-btn" onclick="toggleAudio()">
+            <span id="play-icon">▶</span>
+        </button>
+        <div class="audio-text">
+            <strong>Introduction Narration</strong>
+            <span>Click to listen</span>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // PHASE 1: CONTENT DATA (introContent)
+        // ============================================
+        const introContent = {
+            header: {
+                title: "Speed Meets Precision",
+                subtitle: "Lean clears the road (Speed). Six Sigma makes sure you don't crash (Safety). Together, they transform chaos into excellence."
+            },
+            top_cards: [
+                {
+                    id: "overview",
+                    title: "The Dynamic Duo",
+                    hook: "Why do we need both?",
+                    content: "Lean is the Engine (Efficiency)—it asks 'Why is this taking so long?'\nSix Sigma is the Steering (Effectiveness)—it asks 'Why isn't this perfect every time?'",
+                    aha_moment: "Lean trims the fat. Six Sigma builds the muscle."
+                },
+                {
+                    id: "history",
+                    title: "Factory Floor to Bedside",
+                    hook: "It started with cars, but now it saves lives.",
+                    timeline: [
+                        "1913: Ford's Assembly Line (Flow)",
+                        "1950s: Toyota Production System (Waste)",
+                        "1980s: Motorola Six Sigma (Defects)",
+                        "2000s: Healthcare Integration (Patient Safety)"
+                    ]
+                },
+                {
+                    id: "value",
+                    title: "The 'Value' Compass",
+                    hook: "Who decides what matters?",
+                    rule: "Value is defined ONLY by the Customer (or Patient). If they wouldn't pay for it, it's Waste.",
+                    context_examples: {
+                        general: "A customer pays for the pizza, not the traffic the driver sat in.",
+                        healthcare: "A patient pays for the diagnosis, not the 3 hours in the waiting room.",
+                        daily_life: "You enjoy eating dinner, not searching for the lost can opener."
+                    }
+                }
+            ],
+            bottom_split: {
+                lean: {
+                    title: "LEAN",
+                    focus: "Speed, Efficiency, Flow",
+                    motto: "Remove the Friction",
+                    examples: {
+                        general: {
+                            scenario: "The F1 Pit Stop",
+                            desc: "Changing tires in 2.0 seconds. No wasted movement. Pure flow."
+                        },
+                        healthcare: {
+                            scenario: "Door-to-Balloon",
+                            desc: "A heart attack patient moving from ER to Cath Lab without paperwork stops."
+                        },
+                        daily_life: {
+                            scenario: "Mise-en-place",
+                            desc: "A chef having all ingredients chopped and ready before cooking starts."
+                        }
+                    }
+                },
+                six_sigma: {
+                    title: "SIX SIGMA",
+                    focus: "Quality, Consistency, Precision",
+                    motto: "Trust the Process",
+                    examples: {
+                        general: {
+                            scenario: "The Barista",
+                            desc: "Your latte tastes exactly the same in NY, London, and Tokyo. Zero variation."
+                        },
+                        healthcare: {
+                            scenario: "The Anesthesiologist",
+                            desc: "Exact dose for weight. Too little = pain; too much = danger. Precision is vital."
+                        },
+                        daily_life: {
+                            scenario: "Your Alarm Clock",
+                            desc: "It wakes you at 6:00 AM every day. If it fails 1% of the time, you get fired."
+                        }
+                    }
+                }
+            }
+        };
+
+        // ============================================
+        // PHASE 3: CONTEXT SWITCHING LOGIC
+        // ============================================
+        let currentContext = 'healthcare';
+
+        const contextLabels = {
+            general: 'General Business Example',
+            healthcare: 'Healthcare Example',
+            daily_life: 'Daily Life Example'
+        };
+
+        const contextImages = {
+            lean: {
+                general: '../assets/module-intro/lean_general.png',
+                healthcare: '../assets/module-intro/lean_healthcare.png',
+                daily_life: '../assets/module-intro/lean_dailylife.png'
+            },
+            sigma: {
+                general: '../assets/module-intro/sixsigma_general.png',
+                healthcare: '../assets/module-intro/sixsigma_healthcare.png',
+                daily_life: '../assets/module-intro/sixsigma_dailylife.png'
+            }
+        };
+
+        function setContext(context) {
+            if (context === currentContext) return;
+            currentContext = context;
+
+            // Update toggle buttons
+            document.querySelectorAll('.context-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.context === context);
+            });
+
+            // Animate content change
+            const fadeElements = document.querySelectorAll('.fade-content');
+            fadeElements.forEach(el => el.classList.add('fading'));
+
+            setTimeout(() => {
+                updateContent();
+                fadeElements.forEach(el => el.classList.remove('fading'));
+            }, 300);
+        }
+
+        function updateContent() {
+            const ctx = currentContext;
+
+            // Update Value Card
+            document.getElementById('value-context-label').textContent = contextLabels[ctx];
+            document.getElementById('value-example').textContent = introContent.top_cards[2].context_examples[ctx];
+
+            // Update LEAN Card
+            const leanExample = introContent.bottom_split.lean.examples[ctx];
+            document.getElementById('lean-scenario').textContent = leanExample.scenario;
+            document.getElementById('lean-desc').textContent = leanExample.desc;
+            document.getElementById('lean-bg').style.backgroundImage = `url('${contextImages.lean[ctx]}')`;
+
+            // Update Six Sigma Card
+            const sigmaExample = introContent.bottom_split.six_sigma.examples[ctx];
+            document.getElementById('sigma-scenario').textContent = sigmaExample.scenario;
+            document.getElementById('sigma-desc').textContent = sigmaExample.desc;
+            document.getElementById('sigma-bg').style.backgroundImage = `url('${contextImages.sigma[ctx]}')`;
+        }
+
+        // ============================================
+        // AUDIO NARRATION (Using Web Speech API as fallback)
+        // ============================================
+        const narrationScript = "Welcome to the fusion of Speed and Precision. Imagine a Formula 1 car. The engine is Lean—designed for pure speed and zero drag. The steering is Six Sigma—designed for perfect control on every curve. In this app, you won't just learn the definitions. You will learn to see the world differently. Whether you are running a factory, treating a patient, or just trying to get dinner on the table. Let's begin.";
+
+        let isPlaying = false;
+        let speechSynthesis = window.speechSynthesis;
+        let utterance = null;
+
+        function toggleAudio() {
+            if (!speechSynthesis) {
+                alert('Speech synthesis not supported in this browser.');
+                return;
+            }
+
+            if (isPlaying) {
+                speechSynthesis.cancel();
+                isPlaying = false;
+                document.getElementById('play-icon').textContent = '▶';
+            } else {
+                utterance = new SpeechSynthesisUtterance(narrationScript);
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+
+                // Try to use a professional voice
+                const voices = speechSynthesis.getVoices();
+                const preferredVoice = voices.find(v => v.name.includes('Google') || v.name.includes('Microsoft'));
+                if (preferredVoice) utterance.voice = preferredVoice;
+
+                utterance.onend = () => {
+                    isPlaying = false;
+                    document.getElementById('play-icon').textContent = '▶';
+                };
+
+                speechSynthesis.speak(utterance);
+                isPlaying = true;
+                document.getElementById('play-icon').textContent = '⏸';
+            }
+        }
+
+        // Ensure voices are loaded
+        if (speechSynthesis) {
+            speechSynthesis.onvoiceschanged = () => {
+                // Voices loaded
+            };
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateContent();
+        });
+    </script>
+</body>
+
+</html>
