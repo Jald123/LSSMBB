@@ -54,6 +54,7 @@
         },
         sniper: {
             active: false,
+            mode: 'lens', // 'lens' or 'pointer'
             scale: 2
         }
     };
@@ -66,39 +67,51 @@
             <div class="dock-tool" title="Biostats" onclick="window.open('../Tool_MBB_Stats_Assistant.html', '_blank')">📊</div>
             <div class="dock-tool" title="Highlighter" id="highlighter-toggle" onclick="toggleHighlighter()">🖍️</div>
             <div class="dock-tool" title="Sniper Zoom" id="sniper-toggle" onclick="toggleSniper()">🔍</div>
-            <div class="dock-tool" title="Page Zoom Out" onclick="changePageZoom(-0.1)">➖</div>
-            <div class="dock-tool" title="Page Zoom In" onclick="changePageZoom(0.1)">➕</div>
+            <div class="dock-tool" title="Zoom Out" onclick="changePageZoom(-0.1)">➖</div>
+            <div class="dock-tool" title="Zoom Reset" onclick="changePageZoom(0)">🏠</div>
+            <div class="dock-tool" title="Zoom In" onclick="changePageZoom(0.1)">➕</div>
             <div style="width:1px; height:20px; background:rgba(255,255,255,0.2); margin:0 5px;"></div>
-            <div style="font-size:10px; color:#aaa; font-family:monospace;">AST-V1</div>
+            <div style="font-size:10px; color:#aaa; font-family:monospace;">AST-V2</div>
         </div>
 
-        <!-- Sticky Notes Window -->
-        <div id="sticky-window" class="assistant-window" style="width:320px; top:100px; left:100px;">
-            <div class="window-header">📌 Sticky Notes <span class="close-window" onclick="toggleWindow('sticky-window')">×</span></div>
-            <div class="window-content">
-                <div class="sticky-controls">
-                    <select onchange="updateStickyStyle('font', this.value)" style="width:75px; font-size:10px;">
-                        <option value="Inter">Inter</option>
-                        <option value="Courier New">Courier</option>
-                        <option value="Georgia">Georgia</option>
-                    </select>
-                    <select onchange="updateStickyStyle('size', this.value)" style="width:55px; font-size:10px;">
-                        <option value="12px">12px</option>
-                        <option value="14px" selected>14px</option>
-                        <option value="18px">18px</option>
-                    </select>
-                    <div style="display:flex; gap:4px; margin: 0 5px;" id="sticky-color-presets">
-                        <!-- Bubbles injected by JS -->
+        <!-- Sticky Notes Window (Modern MS Style) -->
+        <div id="sticky-window" class="assistant-window" style="width:340px; top:100px; left:100px; background: #fff; border: none; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            <div class="sticky-header-bar" id="sticky-color-presets" style="display:flex; height:35px;">
+                <!-- Colors injected here -->
+            </div>
+            <div class="window-header sticky-app-header" style="background:transparent; color:#333; height:45px; border-bottom:1px solid #eee;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span onclick="toggleStickyList()" style="cursor:pointer; font-size:16px;">☰</span>
+                    <span style="font-weight:600; font-size:14px;">Notes</span>
+                </div>
+                <div style="display:flex; gap:15px; align-items:center;">
+                    <span onclick="deleteStickyPage()" title="Delete" style="cursor:pointer; color:#ef4444; font-size:14px;">🗑️</span>
+                    <span class="close-window" onclick="toggleWindow('sticky-window')" style="font-size:20px;">&times;</span>
+                </div>
+            </div>
+            <div class="window-content sticky-content-area" style="padding:0; position:relative;">
+                <div id="sticky-editor" contenteditable="true" class="sticky-rich-editor" oninput="saveSticky()" style="min-height:280px; padding:15px; outline:none; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size:15px; color:#333; line-height:1.5;"></div>
+                
+                <!-- Bottom Toolbar like MS Sticky Notes -->
+                <div class="sticky-footer-toolbar" style="display:flex; padding:5px 10px; border-top:1px solid #eee; background:#f9f9f9; gap:10px; align-items:center; justify-content:space-between;">
+                    <div style="display:flex; gap:12px;">
+                        <button class="tool-btn-rich" onclick="execCmd('bold')" title="Bold"><b>B</b></button>
+                        <button class="tool-btn-rich" onclick="execCmd('italic')" title="Italic"><i>I</i></button>
+                        <button class="tool-btn-rich" onclick="execCmd('underline')" title="Underline"><u>U</u></button>
+                        <button class="tool-btn-rich" onclick="execCmd('strikeThrough')" title="Strikethrough"><s>ab</s></button>
+                        <button class="tool-btn-rich" onclick="execCmd('insertUnorderedList')" title="Bullets">≡</button>
                     </div>
-                    <button class="btn-mini" onclick="addStickyPage()">+</button>
-                    <button class="btn-mini" style="background:#ef4444" onclick="deleteStickyPage()">🗑️</button>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span onclick="addStickyPage()" title="New Note" style="cursor:pointer; font-size:18px; font-weight:bold; color:#3b82f6;">+</span>
+                        <span id="sticky-page-info" style="font-size:10px; color:#888;">1/1</span>
+                    </div>
                 </div>
-                <textarea class="sticky-textarea" id="sticky-text" placeholder="Start typing..." oninput="saveSticky()"></textarea>
-                <div class="sticky-page-nav">
-                    <button onclick="navSticky(-1)">←</button>
-                    <span id="sticky-page-info">Page 1 of 1</span>
-                    <button onclick="navSticky(1)">→</button>
-                </div>
+            </div>
+            
+            <!-- Notes List View (MS Style) -->
+            <div id="sticky-list-view" style="display:none; position:absolute; top:80px; left:0; width:100%; height:calc(100% - 80px); background:#f3f3f3; z-index:10; overflow-y:auto; padding:10px;">
+                <div style="font-size:12px; font-weight:600; color:#666; margin-bottom:10px; padding:0 5px;">PREVIOUS NOTES</div>
+                <div id="sticky-list-items"></div>
             </div>
         </div>
 
@@ -158,24 +171,50 @@
         <canvas id="highlighter-canvas"></canvas>
         <div id="sniper-lens"></div>
 
-        <!-- Highlighter Controls Floating (when active) -->
-        <div id="highlighter-tools" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); padding:10px 20px; border-radius:50px; z-index:10005; gap:15px; align-items:center; border:1px solid #3b82f6; box-shadow: 0 0 20px rgba(59,130,246,0.3);">
-            <div style="display:flex; background:rgba(255,255,255,0.1); border-radius:20px; padding:2px;">
-                <button id="mode-pen" onclick="setHighlighterMode('pen')" style="background:none; border:none; padding:5px 10px; border-radius:15px; color:white; font-size:10px; cursor:pointer;">🖋️ Pen</button>
-                <button id="mode-highlighter" onclick="setHighlighterMode('highlighter')" style="background:#3b82f6; border:none; padding:5px 10px; border-radius:15px; color:white; font-size:10px; cursor:pointer;">🖍️ High</button>
+        <!-- Advanced Drawing Toolbar (MS Word Inspired) -->
+        <div id="highlighter-tools" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#f3f3f3; padding:10px 25px; border-radius:12px; z-index:10005; gap:20px; align-items:center; border:1px solid #ccc; box-shadow: 0 10px 40px rgba(0,0,0,0.2); color:#333;">
+            <div class="tool-section-label" style="position:absolute; bottom:-18px; left:50%; transform:translateX(-50%); font-size:9px; color:#888; text-transform:uppercase; font-weight:700;">Ink Tools</div>
+            
+            <div style="display:flex; gap:12px; border-right:1px solid #ddd; padding-right:15px;">
+                <div class="draw-tool-item active" id="pen-select" onclick="setHighlighterMode('pen')" title="Pen">
+                    <div style="font-size:22px;">✒️</div>
+                </div>
+                <div class="draw-tool-item" id="highlighter-select" onclick="setHighlighterMode('highlighter')" title="Highlighter">
+                    <div style="font-size:22px;">🖍️</div>
+                </div>
+                <div class="draw-tool-item" id="pencil-select" onclick="setHighlighterMode('pencil')" title="Pencil">
+                    <div style="font-size:22px;">✏️</div>
+                </div>
+                <div class="draw-tool-item" onclick="toggleLasso()" id="lasso-toggle" title="Lasso Select">
+                    <div style="font-size:22px;">➰</div>
+                </div>
             </div>
             
-            <div style="display:flex; gap:8px;" id="highlighter-color-presets">
-                <!-- Injected by JS -->
+            <div style="display:flex; flex-direction:column; gap:5px; border-right:1px solid #ddd; padding-right:15px;">
+                <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:4px;" id="highlighter-color-presets">
+                    <!-- Colors Injected by JS -->
+                </div>
             </div>
 
-            <div style="display:flex; align-items:center; gap:8px;">
-                <span style="color:white; font-size:10px;">Size</span>
-                <input type="range" min="2" max="50" value="15" oninput="setHighlighterSize(this.value)" style="width:60px; height:4px;">
+            <div style="display:flex; flex-direction:column; gap:2px;">
+                <span style="font-size:9px; font-weight:bold; color:#666; text-transform:uppercase;">Thickness</span>
+                <input type="range" min="1" max="50" value="5" oninput="setHighlighterSize(this.value)" style="width:80px; cursor:pointer;">
             </div>
 
-            <button onclick="clearHighlights()" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:20px; font-size:10px; cursor:pointer;">Eraser All</button>
-            <button onclick="toggleHighlighter()" style="color:#aaa; background:none; border:none; font-size:18px; cursor:pointer; padding:0 5px;">&times;</button>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button onclick="clearHighlights()" style="background:#fff; color:#333; border:1px solid #ccc; padding:8px 12px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px;"><span>🧹</span> Clear</button>
+                <div class="lss-toggle-btn" id="shape-toggle" onclick="toggleShapeMode()" title="Ink to Shape">📐</div>
+                <button onclick="toggleHighlighter()" style="color:#aaa; background:none; border:none; font-size:24px; cursor:pointer;" title="Exit">&times;</button>
+            </div>
+        </div>
+
+        <!-- Sniper Zoom UI -->
+        <div id="sniper-controls" style="display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); padding:8px 15px; border-radius:30px; z-index:10005; gap:15px; align-items:center; border:1px solid #444; color:white;">
+            <div style="font-size:10px; font-weight:bold; text-transform:uppercase; color:#888;">Zoom Mode:</div>
+            <button onclick="setSniperMode('lens')" id="sniper-mode-lens" class="sniper-btn active">⚪ Lens</button>
+            <button onclick="setSniperMode('pointer')" id="sniper-mode-pointer" class="sniper-btn">🎯 Sniper</button>
+            <div style="width:1px; height:15px; background:#444;"></div>
+            <div style="font-size:10px; pointer-events:none;">Scroll to Zoom</div>
         </div>
     `;
 
@@ -228,39 +267,88 @@
 
     // START STICKY NOTES LOGIC
     window.saveSticky = function () {
-        const text = document.getElementById('sticky-text').value;
-        state.sticky.pages[state.sticky.currentPage].content = text;
+        const editor = document.getElementById('sticky-editor');
+        state.sticky.pages[state.sticky.currentPage].content = editor.innerHTML;
         localStorage.setItem('lss_assistant_sticky', JSON.stringify(state.sticky.pages));
     };
 
     window.addStickyPage = function () {
-        state.sticky.pages.push({ content: "", color: "#92400e", bgColor: "#fef3c7", size: "14px", font: "Inter" });
+        state.sticky.pages.push({ content: "New Note Content...", color: "#333", bgColor: "#fff2ab", size: "15px", font: "Segoe UI" });
         state.sticky.currentPage = state.sticky.pages.length - 1;
         renderSticky();
+        if (document.getElementById('sticky-list-view').style.display === 'block') toggleStickyList();
     };
 
     window.setStickyTheme = function (index) {
         const page = state.sticky.pages[state.sticky.currentPage];
-        const theme = state.sticky.themes[index];
+        const colors = [
+            { bg: "#fff2ab", border: "#fbdc3f" }, // Yellow
+            { bg: "#dcfce7", border: "#4ade80" }, // Green
+            { bg: "#fce7f3", border: "#f472b6" }, // Pink
+            { bg: "#f3e8ff", border: "#a78bfa" }, // Purple
+            { bg: "#dbeafe", border: "#3b82f6" }, // Blue
+            { bg: "#f3f4f6", border: "#94a3b8" }, // Gray
+            { bg: "#1e293b", border: "#0f172a" }  // Charcoal
+        ];
+        const theme = colors[index];
         page.bgColor = theme.bg;
-        page.color = theme.text;
+        page.color = index === 6 ? "#fff" : "#333";
         renderSticky();
         saveSticky();
     };
+
+    window.execCmd = function (cmd, val = null) {
+        document.execCommand(cmd, false, val);
+        saveSticky();
+    };
+
+    window.toggleStickyList = function () {
+        const list = document.getElementById('sticky-list-view');
+        const items = document.getElementById('sticky-list-items');
+        list.style.display = list.style.display === 'none' ? 'block' : 'none';
+
+        if (list.style.display === 'block') {
+            items.innerHTML = state.sticky.pages.map((p, i) => `
+                <div onclick="selectStickyPage(${i})" style="background:#fff; padding:10px; border-radius:4px; margin-bottom:8px; cursor:pointer; font-size:12px; border-left:4px solid ${p.bgColor}; box-shadow:0 1px 3px rgba(0,0,0,0.1); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    ${p.content.replace(/<[^>]*>/g, '').substring(0, 40) || '(Empty Note)'}
+                </div>
+            `).join('');
+        }
+    };
+
+    window.selectStickyPage = function (index) {
+        state.sticky.currentPage = index;
+        renderSticky();
+        toggleStickyList();
+    };
+
+    function initColorPresets() {
+        const bar = document.getElementById('sticky-color-presets');
+        if (!bar) return;
+        const colors = ["#fff2ab", "#dcfce7", "#fce7f3", "#f3e8ff", "#dbeafe", "#f3f4f6", "#1e293b"];
+        bar.innerHTML = colors.map((c, i) => `
+            <div onclick="setStickyTheme(${i})" style="flex:1; background:${c}; cursor:pointer; height:100%; border-bottom: 2px solid ${state.sticky.currentPage === i ? '#3b82f6' : 'transparent'}"></div>
+        `).join('');
+    }
 
     function initHighlighterColors() {
         const container = document.getElementById('highlighter-color-presets');
         if (!container) return;
         container.innerHTML = '';
-        state.highlighter.baseColors.forEach((c, i) => {
+        const palette = ["#000", "#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#fcd34d", "#dcfce7", "#dbeafe", "#f3e8ff", "#fff"];
+        palette.forEach((hex, i) => {
             const div = document.createElement('div');
-            div.style.width = '18px';
-            div.style.height = '18px';
-            div.style.borderRadius = '50%';
-            div.style.background = c.hex;
+            div.style.width = '14px';
+            div.style.height = '14px';
+            div.style.borderRadius = '2px';
+            div.style.background = hex;
             div.style.cursor = 'pointer';
-            div.style.border = state.highlighter.colorIndex === i ? '2px solid white' : '1px solid rgba(255,255,255,0.2)';
-            div.onclick = () => setHighlighterColor(i);
+            div.style.border = '1px solid #ccc';
+            div.onclick = () => {
+                state.highlighter.color = hex;
+                initHighlighterColors();
+            };
+            if (state.highlighter.color === hex) div.style.outline = '2px solid #3b82f6';
             container.appendChild(div);
         });
     }
@@ -287,14 +375,15 @@
 
     function renderSticky() {
         const page = state.sticky.pages[state.sticky.currentPage];
-        const area = document.getElementById('sticky-text');
-        const winContent = area.parentElement;
-        area.value = page.content;
-        area.style.color = page.color;
-        area.style.fontSize = page.size;
-        area.style.fontFamily = page.font;
-        winContent.style.background = page.bgColor || "#fef3c7";
-        document.getElementById('sticky-page-info').innerText = `P. ${state.sticky.currentPage + 1}/${state.sticky.pages.length}`;
+        const editor = document.getElementById('sticky-editor');
+        const win = document.getElementById('sticky-window');
+
+        editor.innerHTML = page.content;
+        editor.style.color = page.color;
+        win.style.background = page.bgColor || "#fff2ab";
+
+        document.getElementById('sticky-page-info').innerText = `${state.sticky.currentPage + 1}/${state.sticky.pages.length}`;
+        initColorPresets();
     }
 
     // Load initial sticky data
@@ -393,17 +482,24 @@
 
     window.setHighlighterMode = function (mode) {
         state.highlighter.mode = mode;
-        document.getElementById('mode-pen').style.background = mode === 'pen' ? '#3b82f6' : 'none';
-        document.getElementById('mode-highlighter').style.background = mode === 'highlighter' ? '#3b82f6' : 'none';
+        document.querySelectorAll('.draw-tool-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`${mode}-select`).classList.add('active');
     };
 
     window.setHighlighterSize = function (size) {
         state.highlighter.size = parseInt(size);
     };
 
-    window.setHighlighterColor = function (index) {
-        state.highlighter.colorIndex = index;
-        initHighlighterColors();
+    window.toggleLasso = function () {
+        const l = document.getElementById('lasso-toggle');
+        l.classList.toggle('active-mode');
+        showToast(l.classList.contains('active-mode') ? "Lasso Select Active" : "Lasso Select Deactivated");
+    };
+
+    window.toggleShapeMode = function () {
+        const s = document.getElementById('shape-toggle');
+        s.classList.toggle('active-mode');
+        showToast(s.classList.contains('active-mode') ? "Ink to Shape Enabled" : "Drawing mode: Freehand");
     };
 
     window.clearHighlights = function () {
@@ -419,24 +515,27 @@
 
     canvas.onmousemove = (e) => {
         if (!isDrawing) return;
-        const color = state.highlighter.baseColors[state.highlighter.colorIndex];
+        const color = state.highlighter.color || "#000";
         const isHigh = state.highlighter.mode === 'highlighter';
-        const opacity = isHigh ? 0.2 : 1.0;
+        const isPencil = state.highlighter.mode === 'pencil';
+        const opacity = isHigh ? 0.3 : (isPencil ? 0.6 : 1.0);
 
         ctx.lineTo(e.clientX, e.clientY);
-        ctx.strokeStyle = `rgba(${color.rgb}, ${opacity})`;
+        ctx.strokeStyle = color;
+        ctx.globalAlpha = opacity;
         ctx.lineWidth = state.highlighter.size;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
         if (isHigh) {
-            ctx.shadowBlur = 5;
-            ctx.shadowColor = `rgba(${color.rgb}, 0.5)`;
+            ctx.shadowBlur = 3;
+            ctx.shadowColor = color;
         } else {
             ctx.shadowBlur = 0;
         }
 
         ctx.stroke();
+        ctx.globalAlpha = 1.0; // Reset
     };
 
     canvas.onmouseup = () => isDrawing = false;
@@ -446,16 +545,37 @@
     window.toggleSniper = function () {
         state.sniper.active = !state.sniper.active;
         lens.style.display = state.sniper.active ? 'block' : 'none';
+        document.getElementById('sniper-controls').style.display = state.sniper.active ? 'flex' : 'none';
         document.getElementById('sniper-toggle').classList.toggle('active', state.sniper.active);
 
         if (state.sniper.active) {
-            // We use a CSS scale approach on the body, but applied to the lens background
-            // To make it look "real", we clone relevant text or use a backdrop-filter trick
-            // For now, a high-contrast zoom lens:
-            lens.style.background = "rgba(255,255,255,0.1)";
-            lens.style.backdropFilter = "contrast(1.2) brightness(1.1) saturate(1.2)";
+            setSniperMode(state.sniper.mode);
         }
     };
+
+    window.setSniperMode = function (mode) {
+        state.sniper.mode = mode;
+        document.querySelectorAll('.sniper-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`sniper-mode-${mode}`).classList.add('active');
+
+        if (mode === 'lens') {
+            lens.style.borderRadius = "50%";
+            lens.style.border = "2px solid white";
+            lens.style.background = "rgba(255,255,255,0.1)";
+            lens.style.backdropFilter = "contrast(1.2) brightness(1.1) saturate(1.2) blur(0px)";
+            lens.innerHTML = "";
+        } else {
+            lens.style.borderRadius = "4px";
+            lens.style.border = "1px solid red";
+            lens.style.background = "transparent";
+            lens.style.backdropFilter = "none";
+            lens.innerHTML = `
+                <div style="position:absolute; top:50%; left:0; width:100%; height:1px; background:red; opacity:0.5;"></div>
+                <div style="position:absolute; top:0; left:50%; width:1px; height:100%; background:red; opacity:0.5;"></div>
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:10px; height:10px; border:1px solid red; border-radius:50%;"></div>
+            `;
+        }
+    }
 
     document.addEventListener('mousemove', (e) => {
         if (!state.sniper.active) return;
@@ -482,12 +602,17 @@
 
     // 8. PAGE ZOOM LOGIC
     window.changePageZoom = function (delta) {
-        state.zoom += delta;
+        if (delta === 0) {
+            state.zoom = 1.0;
+        } else {
+            state.zoom += delta;
+        }
         state.zoom = Math.max(0.5, Math.min(2.0, state.zoom));
         document.body.style.transformOrigin = "top center";
         document.body.style.transform = `scale(${state.zoom})`;
         // Fix for fixed elements
         document.getElementById('assistant-dock').style.transform = `translateX(-50%) scale(${1 / state.zoom})`;
+        showToast(`Zoom: ${Math.round(state.zoom * 100)}%`);
     };
 
 })();

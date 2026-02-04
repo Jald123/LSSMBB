@@ -98,42 +98,96 @@
     color: #ef4444;
 }
 
-/* STICKY NOTES */
-#sticky-note-container {
-    width: 320px;
-    height: 400px;
+/* STICKY NOTES UPGRADE */
+#sticky-window {
+    display: none;
+    flex-direction: column;
 }
 
-.sticky-controls {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-}
-
-.sticky-textarea {
-    width: 100%;
-    height: 250px;
-    background: transparent;
+.tool-btn-rich {
+    background: none;
     border: none;
-    color: white;
-    font-family: inherit;
-    resize: none;
-    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: background 0.2s;
 }
 
-.sticky-page-nav {
+.tool-btn-rich:hover {
+    background: #e5e5e5;
+}
+
+.sticky-rich-editor p {
+    margin-bottom: 5px;
+}
+
+.sticky-rich-editor ul {
+    padding-left: 20px;
+}
+
+/* DRAWING TOOLS UPGRADE */
+.draw-tool-item {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
-    font-size: 12px;
+    justify-content: center;
+    border: 1px solid transparent;
+}
+
+.draw-tool-item:hover {
+    background: #e5e7eb;
+}
+
+.draw-tool-item.active {
+    background: #fff;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.active-mode {
+    color: #3b82f6 !important;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+}
+
+.lss-toggle-btn {
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.lss-toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* SNIPER UPGRADE */
+.sniper-btn {
+    background: #333;
+    border: 1px solid #555;
+    color: #aaa;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sniper-btn.active {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
 }
 
 /* CALCULATOR - iPhone style */
-#calc-container {
-    width: 260px;
-    background: #000;
+#calc-window {
+    display: none;
 }
 
 .calc-display {
@@ -150,6 +204,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
+    padding: 10px;
 }
 
 .calc-btn {
@@ -205,16 +260,14 @@
 /* SNIPER ZOOM */
 #sniper-lens {
     position: fixed;
-    width: 200px;
-    height: 200px;
-    border: 2px solid white;
-    border-radius: 50%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 250px;
+    height: 250px;
     z-index: 10002;
     pointer-events: none;
     display: none;
     overflow: hidden;
     background-repeat: no-repeat;
+    transform: translate(-50%, -50%);
 }
 
 /* Page Zoom Controls */
