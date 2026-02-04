@@ -75,8 +75,8 @@
             <div style="font-size:10px; color:#aaa; font-family:monospace;">AST-V2</div>
         </div>
 
-        <!-- Sticky Notes Window (Professional Enterprise Style) -->
-        <div id="sticky-window" class="assistant-window" style="position:fixed; width:380px; top:100px; right:50px; left:auto; background: linear-gradient(180deg, #1e293b, #0f172a); border-radius: 16px; box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08); z-index:10001; border:none;">
+        <!-- Sticky Notes Window (Professional Enterprise Style) - Resizable -->
+        <div id="sticky-window" class="assistant-window" style="position:fixed; width:380px; min-width:300px; min-height:300px; top:100px; right:50px; left:auto; background: linear-gradient(180deg, #1e293b, #0f172a); border-radius: 16px; box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08); z-index:10001; border:none; resize:both; overflow:hidden; display:none; flex-direction:column;">
             <!-- Color Selection Bar - More Obvious -->
             <div class="sticky-header-bar" id="sticky-color-presets" style="display:flex; height:12px; border-radius:16px 16px 0 0; overflow:hidden; cursor:pointer;">
                 <!-- Colors injected here -->
@@ -110,6 +110,12 @@
                             <div id="font-color-picker" style="display:none; position:absolute; bottom:40px; left:0; background:#0a0f1a; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px; box-shadow:0 15px 40px rgba(0,0,0,0.6); z-index:100;">
                                 <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:6px;" id="font-color-options"></div>
                             </div>
+                        </div>
+                        <div style="width:1px; height:20px; background:rgba(255,255,255,0.08); margin:0 8px;"></div>
+                        <!-- Font Size Controls -->
+                        <div style="display:flex; gap:2px; align-items:center;">
+                            <button class="tool-btn-rich dark" onclick="changeStickyFontSize(-1)" title="Decrease Font Size" style="font-size:11px;">A-</button>
+                            <button class="tool-btn-rich dark" onclick="changeStickyFontSize(1)" title="Increase Font Size" style="font-size:14px;">A+</button>
                         </div>
                     </div>
                     <div style="display:flex; gap:15px; align-items:center;">
@@ -415,6 +421,15 @@
         renderSticky();
     };
 
+    window.changeStickyFontSize = function (delta) {
+        const page = state.sticky.pages[state.sticky.currentPage];
+        let currentSize = parseInt(page.size || "15px");
+        let newSize = Math.max(10, Math.min(40, currentSize + delta));
+        page.size = newSize + "px";
+        renderSticky();
+        saveSticky();
+    };
+
     window.updateStickyStyle = function (type, val) {
         const page = state.sticky.pages[state.sticky.currentPage];
         page[type] = val;
@@ -428,6 +443,7 @@
 
         editor.innerHTML = page.content;
         editor.style.color = page.color;
+        editor.style.fontSize = page.size || '15px'; // Apply font size
         win.style.background = page.bgColor || "#fff2ab";
 
         document.getElementById('sticky-page-info').innerText = `${state.sticky.currentPage + 1}/${state.sticky.pages.length}`;
