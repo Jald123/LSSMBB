@@ -41,7 +41,7 @@
         zoom: 1.0,
         highlighter: {
             active: false,
-            mode: 'highlighter', // 'pen' or 'highlighter'
+            mode: 'highlighter', // 'pen', 'highlighter', or 'pencil'
             colorIndex: 0,
             baseColors: [
                 { hex: "#fcd34d", rgb: "252, 211, 77" }, // Yellow
@@ -50,7 +50,8 @@
                 { hex: "#f472b6", rgb: "244, 114, 182" }, // Pink
                 { hex: "#a78bfa", rgb: "167, 139, 250" }  // Purple
             ],
-            size: 15
+            size: 25,
+            transparency: 80 // Default 80% transparent
         },
         sniper: {
             active: false,
@@ -206,7 +207,16 @@
 
             <div style="display:flex; flex-direction:column; gap:2px;">
                 <span style="font-size:9px; font-weight:bold; color:#666; text-transform:uppercase;">Thickness</span>
-                <input type="range" min="1" max="50" value="5" oninput="setHighlighterSize(this.value)" style="width:80px; cursor:pointer;">
+                <input type="range" min="5" max="60" value="25" id="thickness-slider" oninput="setHighlighterSize(this.value)" style="width:80px; cursor:pointer;">
+            </div>
+
+            <!-- Transparency Control (visible only for highlighter mode) -->
+            <div id="transparency-control" style="display:none; flex-direction:column; gap:2px; border-left:1px solid #ddd; padding-left:15px;">
+                <span style="font-size:9px; font-weight:bold; color:#666; text-transform:uppercase;">Transparency</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <input type="range" min="10" max="90" value="80" id="transparency-slider" oninput="setHighlighterTransparency(this.value)" style="width:70px; cursor:pointer;">
+                    <span id="transparency-value" style="font-size:11px; font-weight:600; color:#333; min-width:35px;">80%</span>
+                </div>
             </div>
 
             <div style="display:flex; gap:10px; align-items:center;">
@@ -512,10 +522,29 @@
         state.highlighter.mode = mode;
         document.querySelectorAll('.draw-tool-item').forEach(el => el.classList.remove('active'));
         document.getElementById(`${mode}-select`).classList.add('active');
+
+        // Show/hide transparency control based on mode
+        const transparencyControl = document.getElementById('transparency-control');
+        const thicknessSlider = document.getElementById('thickness-slider');
+
+        if (mode === 'highlighter') {
+            transparencyControl.style.display = 'flex';
+            thicknessSlider.value = 25; // Default larger size for highlighter
+            state.highlighter.size = 25;
+        } else {
+            transparencyControl.style.display = 'none';
+            thicknessSlider.value = mode === 'pen' ? 3 : 5;
+            state.highlighter.size = mode === 'pen' ? 3 : 5;
+        }
     };
 
     window.setHighlighterSize = function (size) {
         state.highlighter.size = parseInt(size);
+    };
+
+    window.setHighlighterTransparency = function (value) {
+        state.highlighter.transparency = parseInt(value);
+        document.getElementById('transparency-value').textContent = value + '%';
     };
 
     window.toggleLasso = function () {
@@ -546,19 +575,24 @@
         const color = state.highlighter.color || "#fcd34d";
         const isHigh = state.highlighter.mode === 'highlighter';
         const isPencil = state.highlighter.mode === 'pencil';
-        const opacity = isHigh ? 0.2 : (isPencil ? 0.5 : 1.0); // 80% transparent for highlighter
+
+        // Use dynamic transparency from slider for highlighter, otherwise fixed values
+        const transparency = state.highlighter.transparency || 80;
+        const opacity = isHigh ? (1 - transparency / 100) : (isPencil ? 0.5 : 1.0);
 
         ctx.lineTo(e.clientX, e.clientY);
         ctx.strokeStyle = color;
         ctx.globalAlpha = opacity;
         ctx.lineWidth = state.highlighter.size;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
 
+        // Real highlighter effect: flat/square caps for that marker look
         if (isHigh) {
-            ctx.shadowBlur = 3;
-            ctx.shadowColor = color;
+            ctx.lineCap = 'butt';  // Flat ends like real highlighter
+            ctx.lineJoin = 'miter';
+            ctx.shadowBlur = 0;    // No blur for clean look
         } else {
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
             ctx.shadowBlur = 0;
         }
 
