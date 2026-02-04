@@ -98,10 +98,62 @@
     color: #ef4444;
 }
 
-/* STICKY NOTES - PREMIUM DARK THEME */
+/* STICKY NOTES - PREMIUM THEME */
 #sticky-window {
     display: none;
     flex-direction: column;
+}
+
+/* Animated Border Effect */
+.sticky-animated-border {
+    position: relative;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    animation: borderPulse 3s ease-in-out infinite;
+}
+
+.sticky-animated-border::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 14px;
+    background: linear-gradient(45deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #8b5cf6, #ef4444);
+    background-size: 400% 400%;
+    z-index: -1;
+    animation: gradientBorder 6s ease infinite;
+}
+
+@keyframes gradientBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes borderPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+    }
+
+    33% {
+        box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+    }
+
+    66% {
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+    }
 }
 
 .tool-btn-rich {
@@ -119,6 +171,17 @@
     background: #e5e5e5;
 }
 
+.tool-btn-rich.light {
+    color: #78350f;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tool-btn-rich.light:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #451a03;
+}
+
 .tool-btn-rich.dark {
     color: #94a3b8;
     background: rgba(255, 255, 255, 0.05);
@@ -132,7 +195,7 @@
 
 .sticky-rich-editor {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
 }
 
 .sticky-rich-editor::-webkit-scrollbar {
@@ -140,7 +203,7 @@
 }
 
 .sticky-rich-editor::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.15);
     border-radius: 3px;
 }
 
@@ -154,7 +217,29 @@
 }
 
 .sticky-rich-editor::selection {
-    background: rgba(59, 130, 246, 0.4);
+    background: rgba(234, 179, 8, 0.4);
+}
+
+/* Zoom Controls Styling */
+.dock-tool.zoom-out,
+.dock-tool.zoom-reset,
+.dock-tool.zoom-in {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dock-tool.zoom-out:hover {
+    transform: translateY(-5px) scale(1.15);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+}
+
+.dock-tool.zoom-reset:hover {
+    transform: translateY(-5px) scale(1.15);
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.5);
+}
+
+.dock-tool.zoom-in:hover {
+    transform: translateY(-5px) scale(1.15);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
 }
 
 /* DRAWING TOOLS UPGRADE */

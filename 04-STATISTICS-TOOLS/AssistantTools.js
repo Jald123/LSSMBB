@@ -67,58 +67,58 @@
             <div class="dock-tool" title="Biostats" onclick="window.open('../Tool_MBB_Stats_Assistant.html', '_blank')">📊</div>
             <div class="dock-tool" title="Highlighter" id="highlighter-toggle" onclick="toggleHighlighter()">🖍️</div>
             <div class="dock-tool" title="Sniper Zoom" id="sniper-toggle" onclick="toggleSniper()">🔍</div>
-            <div class="dock-tool" title="Zoom Out" onclick="changePageZoom(-0.1)">➖</div>
-            <div class="dock-tool" title="Zoom Reset" onclick="changePageZoom(0)">🏠</div>
-            <div class="dock-tool" title="Zoom In" onclick="changePageZoom(0.1)">➕</div>
+            <div class="dock-tool zoom-out" title="Zoom Out" onclick="changePageZoom(-0.1)" style="background:linear-gradient(135deg, #6366f1, #4f46e5);">➖</div>
+            <div class="dock-tool zoom-reset" title="Zoom Reset" onclick="changePageZoom(0)" style="background:linear-gradient(135deg, #f97316, #ea580c);">🏠</div>
+            <div class="dock-tool zoom-in" title="Zoom In" onclick="changePageZoom(0.1)" style="background:linear-gradient(135deg, #22c55e, #16a34a);">➕</div>
             <div style="width:1px; height:20px; background:rgba(255,255,255,0.2); margin:0 5px;"></div>
             <div style="font-size:10px; color:#aaa; font-family:monospace;">AST-V2</div>
         </div>
 
-        <!-- Sticky Notes Window (Modern Premium Style) -->
-        <div id="sticky-window" class="assistant-window" style="width:380px; top:80px; left:80px; background: linear-gradient(145deg, #1a1a2e, #16213e); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+        <!-- Sticky Notes Window (Modern Premium Style with Animated Border) -->
+        <div id="sticky-window" class="assistant-window sticky-animated-border" style="width:380px; top:80px; left:80px; background: linear-gradient(145deg, #fef9c3, #fef08a); border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,0.25);">
             <div class="sticky-header-bar" id="sticky-color-presets" style="display:flex; height:10px; border-radius:16px 16px 0 0; overflow:hidden;">
                 <!-- Colors injected here -->
             </div>
-            <div class="window-header sticky-app-header" style="background:rgba(255,255,255,0.03); color:#fff; height:50px; border-bottom:1px solid rgba(255,255,255,0.05); padding:0 15px;">
+            <div class="window-header sticky-app-header" style="background:rgba(0,0,0,0.05); color:#78350f; height:45px; border-bottom:2px solid rgba(0,0,0,0.08); padding:0 15px;">
                 <div style="display:flex; align-items:center; gap:12px;">
                     <span onclick="toggleStickyList()" style="cursor:pointer; font-size:18px; opacity:0.7;" title="Notes List">☰</span>
                     <span style="font-weight:600; font-size:14px; letter-spacing:0.5px;">NOTES</span>
                 </div>
                 <div style="display:flex; gap:12px; align-items:center;">
-                    <span onclick="deleteStickyPage()" title="Delete Note" style="cursor:pointer; color:#f87171; font-size:16px; transition:all 0.2s;">🗑️</span>
-                    <span class="close-window" onclick="toggleWindow('sticky-window')" style="font-size:22px; opacity:0.6; cursor:pointer;">&times;</span>
+                    <span onclick="deleteStickyPage()" title="Delete Note" style="cursor:pointer; color:#dc2626; font-size:16px; transition:all 0.2s;">🗑️</span>
+                    <span class="close-window" onclick="toggleWindow('sticky-window')" style="font-size:22px; opacity:0.6; cursor:pointer; color:#78350f;">&times;</span>
                 </div>
             </div>
-            <div class="window-content sticky-content-area" style="padding:0; position:relative; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.1));">
-                <div id="sticky-editor" contenteditable="true" class="sticky-rich-editor" oninput="saveSticky()" style="min-height:300px; padding:20px; outline:none; font-family:'Segoe UI', Inter, sans-serif; font-size:16px; color:#e2e8f0; line-height:1.7; background:transparent;"></div>
+            <div class="window-content sticky-content-area" style="padding:0; position:relative; background:transparent;">
+                <div id="sticky-editor" contenteditable="true" class="sticky-rich-editor" oninput="saveSticky()" style="min-height:300px; padding:20px; outline:none; font-family:'Segoe UI', Inter, sans-serif; font-size:16px; color:#1e293b; line-height:1.7; background:transparent;"></div>
                 
-                <!-- Bottom Toolbar - Modern Dark Style -->
-                <div class="sticky-footer-toolbar" style="display:flex; padding:10px 15px; border-top:1px solid rgba(255,255,255,0.05); background:rgba(0,0,0,0.2); gap:8px; align-items:center; justify-content:space-between;">
+                <!-- Bottom Toolbar - Light Style -->
+                <div class="sticky-footer-toolbar" style="display:flex; padding:10px 15px; border-top:2px solid rgba(0,0,0,0.08); background:rgba(0,0,0,0.03); gap:8px; align-items:center; justify-content:space-between;">
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <button class="tool-btn-rich dark" onclick="execCmd('bold')" title="Bold"><b>B</b></button>
-                        <button class="tool-btn-rich dark" onclick="execCmd('italic')" title="Italic"><i>I</i></button>
-                        <button class="tool-btn-rich dark" onclick="execCmd('underline')" title="Underline"><u>U</u></button>
-                        <button class="tool-btn-rich dark" onclick="execCmd('strikeThrough')" title="Strikethrough"><s>S</s></button>
-                        <button class="tool-btn-rich dark" onclick="execCmd('insertUnorderedList')" title="Bullets">☰</button>
-                        <div style="width:1px; height:18px; background:rgba(255,255,255,0.1); margin:0 5px;"></div>
+                        <button class="tool-btn-rich light" onclick="execCmd('bold')" title="Bold"><b>B</b></button>
+                        <button class="tool-btn-rich light" onclick="execCmd('italic')" title="Italic"><i>I</i></button>
+                        <button class="tool-btn-rich light" onclick="execCmd('underline')" title="Underline"><u>U</u></button>
+                        <button class="tool-btn-rich light" onclick="execCmd('strikeThrough')" title="Strikethrough"><s>S</s></button>
+                        <button class="tool-btn-rich light" onclick="execCmd('insertUnorderedList')" title="Bullets">☰</button>
+                        <div style="width:1px; height:18px; background:rgba(0,0,0,0.15); margin:0 5px;"></div>
                         <!-- Font Color Picker -->
                         <div style="position:relative;">
-                            <button class="tool-btn-rich dark" onclick="toggleFontColorPicker()" title="Font Color" id="font-color-btn" style="display:flex; align-items:center; gap:4px;">A<span id="font-color-indicator" style="width:10px; height:10px; background:#fff; border-radius:2px; border:1px solid rgba(255,255,255,0.3);"></span></button>
-                            <div id="font-color-picker" style="display:none; position:absolute; bottom:35px; left:0; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:8px; box-shadow:0 10px 30px rgba(0,0,0,0.4); z-index:100;">
+                            <button class="tool-btn-rich light" onclick="toggleFontColorPicker()" title="Font Color" id="font-color-btn" style="display:flex; align-items:center; gap:4px;">A<span id="font-color-indicator" style="width:10px; height:10px; background:#1e293b; border-radius:2px; border:1px solid rgba(0,0,0,0.2);"></span></button>
+                            <div id="font-color-picker" style="display:none; position:absolute; bottom:35px; left:0; background:#fff; border:1px solid rgba(0,0,0,0.15); border-radius:8px; padding:8px; box-shadow:0 10px 30px rgba(0,0,0,0.2); z-index:100;">
                                 <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:5px;" id="font-color-options"></div>
                             </div>
                         </div>
                     </div>
                     <div style="display:flex; gap:12px; align-items:center;">
-                        <span onclick="addStickyPage()" title="New Note" style="cursor:pointer; font-size:20px; font-weight:bold; color:#10b981; transition:all 0.2s;">+</span>
-                        <span id="sticky-page-info" style="font-size:11px; color:#64748b; font-weight:500;">1/1</span>
+                        <span onclick="addStickyPage()" title="New Note" style="cursor:pointer; font-size:20px; font-weight:bold; color:#16a34a; transition:all 0.2s;">+</span>
+                        <span id="sticky-page-info" style="font-size:11px; color:#78350f; font-weight:500;">1/1</span>
                     </div>
                 </div>
             </div>
             
-            <!-- Notes List View (Modern Style) -->
-            <div id="sticky-list-view" style="display:none; position:absolute; top:60px; left:0; width:100%; height:calc(100% - 60px); background:rgba(15,23,42,0.98); z-index:10; overflow-y:auto; padding:15px; border-radius:0 0 16px 16px;">
-                <div style="font-size:11px; font-weight:700; color:#64748b; margin-bottom:12px; padding:0 5px; text-transform:uppercase; letter-spacing:1px;">All Notes</div>
+            <!-- Notes List View (Light Style) -->
+            <div id="sticky-list-view" style="display:none; position:absolute; top:55px; left:0; width:100%; height:calc(100% - 55px); background:#fef9c3; z-index:10; overflow-y:auto; padding:15px; border-radius:0 0 12px 12px;">
+                <div style="font-size:11px; font-weight:700; color:#78350f; margin-bottom:12px; padding:0 5px; text-transform:uppercase; letter-spacing:1px;">All Notes</div>
                 <div id="sticky-list-items"></div>
             </div>
         </div>
@@ -337,7 +337,7 @@
 
         if (list.style.display === 'block') {
             items.innerHTML = state.sticky.pages.map((p, i) => `
-                <div onclick="selectStickyPage(${i})" style="background:rgba(255,255,255,0.05); padding:12px 15px; border-radius:8px; margin-bottom:10px; cursor:pointer; font-size:13px; border-left:4px solid ${p.bgColor}; color:#e2e8f0; transition:all 0.2s; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                <div onclick="selectStickyPage(${i})" style="background:rgba(255,255,255,0.7); padding:12px 15px; border-radius:8px; margin-bottom:10px; cursor:pointer; font-size:13px; border-left:4px solid ${p.bgColor}; color:#1e293b; transition:all 0.2s; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.1);" onmouseover="this.style.background='rgba(255,255,255,0.9)'" onmouseout="this.style.background='rgba(255,255,255,0.7)'">
                     ${p.content.replace(/<[^>]*>/g, '').substring(0, 45) || '(Empty Note)'}
                 </div>
             `).join('');
