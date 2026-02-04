@@ -65,7 +65,6 @@
         <div id="assistant-dock">
             <div class="dock-tool" title="Sticky Notes" onclick="toggleWindow('sticky-window')">📝</div>
             <div class="dock-tool" title="Calculator" onclick="toggleWindow('calc-window')">🔢</div>
-            <div class="dock-tool" title="Biostats" onclick="window.open('../Tool_MBB_Stats_Assistant.html', '_blank')">📊</div>
             <div class="dock-tool" title="Highlighter" id="highlighter-toggle" onclick="toggleHighlighter()">🖍️</div>
             <div class="dock-tool" title="Sniper Zoom" id="sniper-toggle" onclick="toggleSniper()">🔍</div>
             <div style="display:flex; gap:6px; padding:6px 10px; background:rgba(255,255,255,0.05); border-radius:20px; border:1px solid rgba(255,255,255,0.1);">
@@ -88,6 +87,7 @@
                     <span style="font-weight:600; font-size:13px; letter-spacing:1.5px; color:#94a3b8;">NOTES</span>
                 </div>
                 <div style="display:flex; gap:15px; align-items:center;">
+                    <span onclick="minimizeSticky()" title="Hide" style="cursor:pointer; color:#64748b; font-size:14px; transition:all 0.2s;" onmouseover="this.style.color='#fbbf24'" onmouseout="this.style.color='#64748b'">➖</span>
                     <span onclick="deleteStickyPage()" title="Delete Note" style="cursor:pointer; color:#64748b; font-size:14px; transition:all 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#64748b'">🗑️</span>
                     <span class="close-window" onclick="toggleWindow('sticky-window')" style="font-size:20px; color:#64748b; cursor:pointer; transition:color 0.2s;" onmouseover="this.style.color='#f1f5f9'" onmouseout="this.style.color='#64748b'">&times;</span>
                 </div>
@@ -243,6 +243,9 @@
             <div style="width:1px; height:18px; background:rgba(255,255,255,0.15);"></div>
             <div style="font-size:10px; color:#94a3b8;">Scroll to Zoom</div>
         </div>
+
+        <!-- Sniper Overlay (Glass effect for focus) -->
+        <div id="sniper-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); backdrop-filter:blur(3px); z-index:9998; pointer-events:none;"></div>
     `;
 
     const div = document.createElement('div');
@@ -415,6 +418,11 @@
             state.sticky.currentPage = Math.max(0, state.sticky.currentPage - 1);
             renderSticky();
         }
+    };
+
+    window.minimizeSticky = function () {
+        document.getElementById('sticky-window').style.display = 'none';
+        showToast('Sticky Notes hidden');
     };
 
     window.navSticky = function (dir) {
@@ -636,8 +644,10 @@
         lens.style.display = state.sniper.active ? 'block' : 'none';
         const controls = document.getElementById('sniper-controls');
         const toggle = document.getElementById('sniper-toggle');
+        const overlay = document.getElementById('sniper-overlay');
 
         controls.style.display = state.sniper.active ? 'flex' : 'none';
+        overlay.style.display = state.sniper.active ? 'block' : 'none';
         toggle.classList.toggle('active', state.sniper.active);
 
         if (state.sniper.active) {
