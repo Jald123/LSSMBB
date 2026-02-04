@@ -1419,6 +1419,99 @@
         .curve-svg {
             width: 100%;
             height: 100%;
+            overflow: visible;
+        }
+
+        .sigma-zone {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            stroke-width: 0;
+        }
+
+        .sigma-zone:hover {
+            fill-opacity: 0.8 !important;
+            filter: brightness(1.2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        /* Sigma Readout Box (Image 1 Style) */
+        .sigma-readout {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(10, 15, 26, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            width: 180px;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .sigma-readout.active {
+            display: block;
+        }
+
+        .readout-label {
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .readout-sigma {
+            font-size: 24px;
+            font-weight: 800;
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .readout-defects {
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .readout-val {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ef4444;
+            font-family: 'Courier New', monospace;
+        }
+
+        .sigma-zone-label {
+            font-size: 9px;
+            fill: rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+            pointer-events: none;
+            text-anchor: middle;
+        }
+
+        /* Resize Handle */
+        .modal-resize-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            height: 20px;
+            cursor: nwse-resize;
+            background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.1) 50%);
+            border-radius: 0 0 20px 0;
+        }
+
+        .processlab-modal {
+            min-width: 800px;
+            min-height: 500px;
+            resize: both;
+            overflow: hidden;
+            transition: none;
+            /* Disable transitions during manual resize */
+        }
+
+        .modal-header {
+            cursor: move;
         }
 
         .spec-limit {
@@ -2382,24 +2475,33 @@
                             preserveAspectRatio="xMidYMid meet">
                             <defs>
                                 <linearGradient id="bellGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.8" />
-                                    <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.1" />
+                                    <stop offset="0%" style="stop-color:var(--sigma-color);stop-opacity:0.8" />
+                                    <stop offset="100%" style="stop-color:var(--sigma-color);stop-opacity:0" />
                                 </linearGradient>
                             </defs>
 
-                            <!-- Sigma Markers Group -->
+                            <!-- Groups for Sigma Zones -->
+                            <g id="sigma-zones-group"></g>
+
+                            <!-- Mean Line (μ) -->
+                            <line id="mean-line" x1="200" y1="30" x2="200" y2="200" stroke="white" stroke-width="2"
+                                stroke-dasharray="4 4" style="opacity: 0.8;" />
+                            <text x="200" y="25" fill="white" font-size="10" font-weight="700" text-anchor="middle">Mean
+                                (μ)</text>
+
+                            <!-- Main Curve Line -->
+                            <path id="bell-path" d="" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
+
                             <g id="sigma-markers"></g>
-
-                            <!-- Bell curve fill -->
-                            <path class="bell-fill" id="bell-fill"></path>
-                            <!-- Bell curve line -->
-                            <path class="bell-path" id="bell-path"></path>
-
-                            <!-- Interactive Zones -->
-                            <rect class="graph-zone" x="0" y="0" width="400" height="250"
-                                onmousemove="showExplanation(event)" onmouseleave="hideExplanation()"></rect>
                         </svg>
 
+                        <!-- Floating Readout (Image 1 Style) -->
+                        <div id="sigma-readout-box" class="sigma-readout">
+                            <div class="readout-label">Target Zone</div>
+                            <div class="readout-sigma" id="readout-level">0.0σ</div>
+                            <div class="readout-defects">Est. Defects/Million:</div>
+                            <div class="readout-val" id="readout-dpmo">3.4</div>
+                        </div>
                         <!-- Spec Limits -->
                         <div class="spec-limit lsl" id="lsl-line">
                             <div class="spec-label" id="lsl-label">11.5oz (Too Empty)</div>
@@ -2906,33 +3008,125 @@
             return Math.max(0, Math.min(6, z + 1.5));
         }
 
-        // Generate bell curve path
+        // Generate bell curve path and interactive zones
         function generateBellCurve(sigma) {
             const width = 400;
             const height = 200;
             const centerX = width / 2;
             const baseY = height;
-            const points = [];
 
             // Normalize sigma for display (base = 0.15 = narrow)
-            const displaySigma = sigma / 0.15 * 40; // Scale sigma for visual
+            const displaySigma = sigma / 0.15 * 40;
 
+            // Clear existing zones
+            const zonesGroup = document.getElementById('sigma-zones-group');
+            zonesGroup.innerHTML = '';
+            document.getElementById('sigma-markers').innerHTML = ''; // Clear existing markers
+
+            // Zone Colors (Premium Spectrum)
+            const zoneColors = {
+                1: 'rgba(16, 185, 129', // 0-1σ: Green
+                2: 'rgba(16, 185, 129', // 1-2σ: Green
+                3: 'rgba(251, 191, 36', // 2-3σ: Yellow
+                4: 'rgba(251, 191, 36', // 3-4σ: Yellow
+                5: 'rgba(249, 115, 22', // 4-5σ: Orange
+                6: 'rgba(239, 68, 68'   // 5-6σ: Red
+            };
+
+            const sigmaPercentages = {
+                1: '34.13%', 2: '13.59%', 3: '2.14%', 4: '0.13%', 5: '0.003%', 6: '0.00003%'
+            };
+
+            // Draw 12 zones (-6 to +6)
+            for (let s = -6; s < 6; s++) {
+                const zVal = Math.abs(s < 0 ? s + 1 : s) + 1;
+                const color = zoneColors[zVal] || 'rgba(100, 116, 139';
+                const points = [];
+
+                const startX = s * displaySigma + centerX;
+                const endX = (s + 1) * displaySigma + centerX;
+
+                for (let xPos = startX; xPos <= endX; xPos++) {
+                    const z = (xPos - centerX) / displaySigma;
+                    const y = Math.exp(-0.5 * z * z);
+                    const scaledY = baseY - y * 150;
+                    points.push(`${xPos},${scaledY}`);
+                }
+
+                const pathD = `M ${startX},${baseY} L ` + points.join(' L ') + ` L ${endX},${baseY} Z`;
+
+                const zone = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                zone.setAttribute("d", pathD);
+                zone.setAttribute("class", "sigma-zone");
+                zone.setAttribute("fill", `${color}, 0.2)`);
+                zone.setAttribute("stroke", `${color}, 0.5)`);
+                zone.setAttribute("stroke-width", "0.5");
+
+                zone.onmouseover = (e) => showSigmaDetails(e, s, s + 1, sigmaPercentages[zVal]);
+                zone.onmouseout = hideSigmaDetails;
+
+                zonesGroup.appendChild(zone);
+
+                // Add small tick labels for 1,2,3,4,5,6
+                if (s >= 0) {
+                    drawSigmaMarker(centerX + (s + 1) * displaySigma, `+${s + 1}σ`);
+                    drawSigmaMarker(centerX - (s + 1) * displaySigma, `-${s + 1}σ`);
+                }
+            }
+
+            // Path for the smooth line
+            const linePoints = [];
             for (let i = 0; i <= width; i++) {
-                const x = (i - centerX) / displaySigma;
-                const y = Math.exp(-0.5 * x * x);
+                const z = (i - centerX) / displaySigma;
+                const y = Math.exp(-0.5 * z * z);
                 const scaledY = baseY - y * 150;
-                points.push({ x: i, y: scaledY });
+                linePoints.push(`${i},${scaledY}`);
             }
+            const pathD = `M ` + linePoints.join(' L ');
 
-            let pathD = `M ${points[0].x} ${points[0].y}`;
-            for (let i = 1; i < points.length; i++) {
-                pathD += ` L ${points[i].x} ${points[i].y}`;
-            }
+            // Update Mean line position
+            const meanLine = document.getElementById('mean-line');
+            const meanText = meanLine.nextElementSibling;
+            const currentMean = getCurrentMean();
+            const meanX = centerX + (currentMean - labState.processMean) / sigma * displaySigma; // Shift based on process mean
+            // For now keep mean at center visual
 
-            // For fill, close the path
-            let fillD = pathD + ` L ${width} ${baseY} L 0 ${baseY} Z`;
+            return { line: pathD };
+        }
 
-            return { line: pathD, fill: fillD };
+        function drawSigmaMarker(x, label) {
+            const container = document.getElementById('sigma-markers');
+            const baseY = 200;
+
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", x);
+            text.setAttribute("y", baseY + 12);
+            text.setAttribute("class", "sigma-marker-label");
+            text.textContent = label;
+            text.style.fontSize = "7px";
+            text.style.opacity = "0.5";
+            text.style.fill = "white";
+            text.style.textAnchor = "middle";
+            container.appendChild(text);
+        }
+
+        function showSigmaDetails(e, start, end, percentage) {
+            const readout = document.getElementById('sigma-readout-box');
+            const levelEl = document.getElementById('readout-level');
+            const dpmoEl = document.getElementById('readout-dpmo');
+
+            readout.classList.add('active');
+            const range = `${start}σ to ${end}σ`;
+            levelEl.textContent = range;
+
+            const absMax = Math.max(Math.abs(start), Math.abs(end));
+            levelEl.style.color = absMax <= 2 ? '#10b981' : (absMax <= 4 ? '#fbbf24' : '#ef4444');
+
+            dpmoEl.textContent = `${percentage} of Population`;
+        }
+
+        function hideSigmaDetails() {
+            document.getElementById('sigma-readout-box').classList.remove('active');
         }
 
         // Update bell curve display
@@ -2941,82 +3135,77 @@
             const paths = generateBellCurve(sigma);
 
             document.getElementById('bell-path').setAttribute('d', paths.line);
-            document.getElementById('bell-fill').setAttribute('d', paths.fill);
-
-            updateSigmaMarkers(sigma);
+            // updateSigmaMarkers(sigma); // Removed as zones handle this
         }
 
-        // Update Sigma Markers (lines and labels)
-        function updateSigmaMarkers(sigma) {
-            const container = document.getElementById('sigma-markers');
-            container.innerHTML = '';
+        // Update Sigma Markers (lines and labels) - This function is now deprecated/removed
+        // function updateSigmaMarkers(sigma) {
+        //     const container = document.getElementById('sigma-markers');
+        //     container.innerHTML = '';
 
-            const width = 400;
-            const centerX = width / 2;
-            const displaySigma = sigma / 0.15 * 40; // Same scaling as curve
+        //     const width = 400;
+        //     const centerX = width / 2;
+        //     const displaySigma = sigma / 0.15 * 40; 
 
-            // Draw 1, 2, 3 Sigma lines on both sides
-            for (let i = 1; i <= 3; i++) {
-                const xOffset = i * displaySigma;
+        //     // Draw 1, 2, 3, 4, 5, 6 Sigma lines
+        //     for (let i = 1; i <= 6; i++) {
+        //         const xOffset = i * displaySigma;
+        //         drawSigmaMarker(centerX + xOffset, `+${i}σ`);
+        //         drawSigmaMarker(centerX - xOffset, `-${i}σ`);
+        //     }
+        // }
 
-                // + Sigma
-                drawSigmaMarker(centerX + xOffset, `+${i}σ`);
-                // - Sigma
-                drawSigmaMarker(centerX - xOffset, `-${i}σ`);
-            }
-        }
+        // function drawSigmaMarker(x, label) {
+        //     const container = document.getElementById('sigma-markers');
+        //     const height = 250;
+        //     const baseY = 200;
 
-        function drawSigmaMarker(x, label) {
-            const container = document.getElementById('sigma-markers');
-            const height = 250;
-            const baseY = 200;
+        //     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        //     line.setAttribute("x1", x);
+        //     line.setAttribute("y1", 30);
+        //     line.setAttribute("x2", x);
+        //     line.setAttribute("y2", baseY);
+        //     line.setAttribute("class", "sigma-line");
+        //     line.style.opacity = "0.1";
+        //     container.appendChild(line);
 
-            // Line
-            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            line.setAttribute("x1", x);
-            line.setAttribute("y1", 50);
-            line.setAttribute("x2", x);
-            line.setAttribute("y2", baseY);
-            line.setAttribute("class", "sigma-line");
-            container.appendChild(line);
+        //     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        //     text.setAttribute("x", x);
+        //     text.setAttribute("y", baseY + 12);
+        //     text.setAttribute("class", "sigma-marker-label");
+        //     text.textContent = label;
+        //     text.style.fontSize = "7px";
+        //     container.appendChild(text);
+        // }
 
-            // Label
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", x);
-            text.setAttribute("y", baseY + 15);
-            text.setAttribute("class", "sigma-marker-label");
-            text.textContent = label;
-            container.appendChild(text);
-        }
+        // Explanation Logic - This function is now deprecated/removed
+        // function showExplanation(e) {
+        //     const rect = e.target.getBoundingClientRect();
+        //     const x = e.clientX - rect.left;
+        //     const percent = x / rect.width;
 
-        // Explanation Logic
-        function showExplanation(e) {
-            const rect = e.target.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const percent = x / rect.width;
+        //     const tooltip = document.getElementById('graph-explanation');
+        //     const title = document.getElementById('explanation-title');
+        //     const text = document.getElementById('explanation-text');
 
-            const tooltip = document.getElementById('graph-explanation');
-            const title = document.getElementById('explanation-title');
-            const text = document.getElementById('explanation-text');
+        //     tooltip.classList.add('active');
 
-            tooltip.classList.add('active');
+        //     // Logic to determine zone
+        //     if (percent < 0.2 || percent > 0.8) {
+        //         title.textContent = "The Tail (Defects)";
+        //         text.textContent = "This area represents rare occurrences. If spec limits are here, you have many defects.";
+        //     } else if (percent > 0.45 && percent < 0.55) {
+        //         title.textContent = "The Bullseye (Mean)";
+        //         text.textContent = "The center of your process. This is the 12.0oz target where most cups fall.";
+        //     } else {
+        //         title.textContent = "The Variation Zone";
+        //         text.textContent = "The spread of your process. Lean Six Sigma's goal is to keep this as narrow as possible.";
+        //     }
+        // }
 
-            // Logic to determine zone
-            if (percent < 0.2 || percent > 0.8) {
-                title.textContent = "The Tail (Defects)";
-                text.textContent = "This area represents rare occurrences. If spec limits are here, you have many defects.";
-            } else if (percent > 0.45 && percent < 0.55) {
-                title.textContent = "The Bullseye (Mean)";
-                text.textContent = "The center of your process. This is the 12.0oz target where most cups fall.";
-            } else {
-                title.textContent = "The Variation Zone";
-                text.textContent = "The spread of your process. Lean Six Sigma's goal is to keep this as narrow as possible.";
-            }
-        }
-
-        function hideExplanation() {
-            document.getElementById('graph-explanation').classList.remove('active');
-        }
+        // function hideExplanation() {
+        //     document.getElementById('graph-explanation').classList.remove('active');
+        // }
 
         // Zoom Logic
         function toggleZoom() {
@@ -3278,9 +3467,41 @@
             updateSigmaDisplay();
         }
 
+        // Draggable Logic for Process Lab
+        function initModalDragging() {
+            const modal = document.getElementById('processlab-modal');
+            const header = modal.querySelector('.modal-header');
+
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            header.onmousedown = (e) => {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = () => {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                };
+                document.onmousemove = (e) => {
+                    e = e || window.event;
+                    e.preventDefault();
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    modal.style.top = (modal.offsetTop - pos2) + "px";
+                    modal.style.left = (modal.offsetLeft - pos1) + "px";
+                    modal.style.right = 'auto'; // Break centering
+                    modal.style.bottom = 'auto';
+                    modal.style.transform = 'none';
+                };
+            };
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             updateContent();
+            initModalDragging();
 
             // Initialize with default scenario
             const defaultScenario = 'latte';
