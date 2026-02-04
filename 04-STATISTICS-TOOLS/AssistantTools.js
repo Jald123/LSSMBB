@@ -77,7 +77,8 @@
 
         <!-- Sticky Notes Window (Professional Enterprise Style) -->
         <div id="sticky-window" class="assistant-window" style="position:fixed; width:380px; top:100px; right:50px; left:auto; background: linear-gradient(180deg, #1e293b, #0f172a); border-radius: 16px; box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08); z-index:10001; border:none;">
-            <div class="sticky-header-bar" id="sticky-color-presets" style="display:flex; height:4px; border-radius:16px 16px 0 0; overflow:hidden;">
+            <!-- Color Selection Bar - More Obvious -->
+            <div class="sticky-header-bar" id="sticky-color-presets" style="display:flex; height:12px; border-radius:16px 16px 0 0; overflow:hidden; cursor:pointer;">
                 <!-- Colors injected here -->
             </div>
             <div class="window-header sticky-app-header" style="background:transparent; color:#f1f5f9; height:50px; border-bottom:1px solid rgba(255,255,255,0.08); padding:0 18px;">
@@ -91,34 +92,35 @@
                 </div>
             </div>
             <div class="window-content sticky-content-area" style="padding:0; position:relative; background:transparent;">
-                <div id="sticky-editor" contenteditable="true" class="sticky-rich-editor" oninput="saveSticky()" style="min-height:280px; padding:20px 22px; outline:none; font-family:'Inter', 'Segoe UI', -apple-system, sans-serif; font-size:15px; color:#e2e8f0; line-height:1.8; background:transparent;"></div>
+                <!-- Content with bright white text for clarity -->
+                <div id="sticky-editor" contenteditable="true" class="sticky-rich-editor" oninput="saveSticky()" style="min-height:280px; padding:20px 22px; outline:none; font-family:'Inter', 'Segoe UI', -apple-system, sans-serif; font-size:15px; color:#ffffff; line-height:1.8; background:transparent;"></div>
                 
-                <!-- Bottom Toolbar - Professional Dark Style -->
-                <div class="sticky-footer-toolbar" style="display:flex; padding:12px 18px; border-top:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.2); gap:6px; align-items:center; justify-content:space-between;">
+                <!-- Bottom Toolbar - Darker Background -->
+                <div class="sticky-footer-toolbar" style="display:flex; padding:12px 18px; border-top:1px solid rgba(255,255,255,0.06); background:#0a0f1a; gap:6px; align-items:center; justify-content:space-between;">
                     <div style="display:flex; gap:4px; align-items:center;">
                         <button class="tool-btn-rich dark" onclick="execCmd('bold')" title="Bold"><b>B</b></button>
                         <button class="tool-btn-rich dark" onclick="execCmd('italic')" title="Italic"><i>I</i></button>
                         <button class="tool-btn-rich dark" onclick="execCmd('underline')" title="Underline"><u>U</u></button>
                         <button class="tool-btn-rich dark" onclick="execCmd('strikeThrough')" title="Strikethrough"><s>S</s></button>
                         <button class="tool-btn-rich dark" onclick="execCmd('insertUnorderedList')" title="Bullets">•</button>
-                        <div style="width:1px; height:20px; background:rgba(255,255,255,0.1); margin:0 8px;"></div>
+                        <div style="width:1px; height:20px; background:rgba(255,255,255,0.08); margin:0 8px;"></div>
                         <!-- Font Color Picker -->
                         <div style="position:relative;">
                             <button class="tool-btn-rich dark" onclick="toggleFontColorPicker()" title="Font Color" id="font-color-btn" style="display:flex; align-items:center; gap:4px;">A<span id="font-color-indicator" style="width:12px; height:3px; background:#3b82f6; border-radius:1px; margin-top:2px;"></span></button>
-                            <div id="font-color-picker" style="display:none; position:absolute; bottom:40px; left:0; background:#1e293b; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px; box-shadow:0 15px 40px rgba(0,0,0,0.5); z-index:100;">
+                            <div id="font-color-picker" style="display:none; position:absolute; bottom:40px; left:0; background:#0a0f1a; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px; box-shadow:0 15px 40px rgba(0,0,0,0.6); z-index:100;">
                                 <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:6px;" id="font-color-options"></div>
                             </div>
                         </div>
                     </div>
                     <div style="display:flex; gap:15px; align-items:center;">
                         <span onclick="addStickyPage()" title="New Note" style="cursor:pointer; font-size:22px; font-weight:300; color:#3b82f6; transition:all 0.2s; line-height:1;" onmouseover="this.style.color='#60a5fa'" onmouseout="this.style.color='#3b82f6'">+</span>
-                        <span id="sticky-page-info" style="font-size:11px; color:#475569; font-weight:500; background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:12px;">1/1</span>
+                        <span id="sticky-page-info" style="font-size:11px; color:#64748b; font-weight:500; background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:12px;">1/1</span>
                     </div>
                 </div>
             </div>
             
             <!-- Notes List View (Professional Dark Style) -->
-            <div id="sticky-list-view" style="display:none; position:absolute; top:54px; left:0; width:100%; height:calc(100% - 54px); background:linear-gradient(180deg, #1e293b, #0f172a); z-index:10; overflow-y:auto; padding:18px; border-radius:0 0 16px 16px;">
+            <div id="sticky-list-view" style="display:none; position:absolute; top:62px; left:0; width:100%; height:calc(100% - 62px); background:#0a0f1a; z-index:10; overflow-y:auto; padding:18px; border-radius:0 0 16px 16px;">
                 <div style="font-size:10px; font-weight:600; color:#64748b; margin-bottom:15px; padding:0 5px; text-transform:uppercase; letter-spacing:2px;">All Notes</div>
                 <div id="sticky-list-items"></div>
             </div>
