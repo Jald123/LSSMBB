@@ -795,12 +795,14 @@
         .lean-side .comparator-title {
             background: linear-gradient(135deg, var(--lean-color), #34d399);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .sigma-side .comparator-title {
             background: linear-gradient(135deg, var(--sigma-color), #a78bfa);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -1095,12 +1097,14 @@
         .lean-card h2 {
             background: linear-gradient(135deg, var(--lean-color), #34d399);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .sigma-card h2 {
             background: linear-gradient(135deg, var(--sigma-color), #a78bfa);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -1412,7 +1416,9 @@
             background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, transparent 100%);
             border-radius: 16px;
             border: 1px solid var(--border);
-            min-height: 300px;
+            border: 1px solid var(--border);
+            min-height: 450px;
+            overflow: hidden;
             overflow: hidden;
         }
 
@@ -1482,11 +1488,36 @@
         }
 
         .sigma-zone-label {
-            font-size: 9px;
-            fill: rgba(255, 255, 255, 0.4);
+            font-size: 8px;
+            fill: rgba(255, 255, 255, 0.6);
             font-weight: 600;
             pointer-events: none;
             text-anchor: middle;
+        }
+
+        .sigma-bracket-line {
+            stroke: rgba(255, 255, 255, 0.4);
+            stroke-width: 1;
+            fill: none;
+        }
+
+        .sigma-percentage-text {
+            font-size: 10px;
+            fill: white;
+            font-weight: 800;
+            text-anchor: middle;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .base-line {
+            stroke: #3b82f6;
+            stroke-width: 2;
+        }
+
+        .infinity-label {
+            font-size: 14px;
+            fill: #3b82f6;
+            font-weight: bold;
         }
 
         /* Resize Handle */
@@ -2471,7 +2502,7 @@
 
                     <div class="curve-container" id="curve-container" onclick="toggleZoom()">
                         <!-- SVG Bell Curve -->
-                        <svg class="curve-svg" id="bell-curve-svg" viewBox="0 0 400 250"
+                        <svg class="curve-svg" id="bell-curve-svg" viewBox="0 0 400 450"
                             preserveAspectRatio="xMidYMid meet">
                             <defs>
                                 <linearGradient id="bellGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -2480,19 +2511,25 @@
                                 </linearGradient>
                             </defs>
 
+                            <!-- Base line with Infinity markers -->
+                            <line class="base-line" x1="20" y1="200" x2="380" y2="200" />
+                            <text class="infinity-label" x="5" y="195">- ∞</text>
+                            <text class="infinity-label" x="382" y="195">+ ∞</text>
+
                             <!-- Groups for Sigma Zones -->
                             <g id="sigma-zones-group"></g>
 
                             <!-- Mean Line (μ) -->
-                            <line id="mean-line" x1="200" y1="30" x2="200" y2="200" stroke="white" stroke-width="2"
-                                stroke-dasharray="4 4" style="opacity: 0.8;" />
-                            <text x="200" y="25" fill="white" font-size="10" font-weight="700" text-anchor="middle">Mean
-                                (μ)</text>
+                            <line id="mean-line" x1="200" y1="30" x2="200" y2="380" stroke="#3b82f6" stroke-width="2"
+                                style="opacity: 0.8;" />
+                            <text x="200" y="215" fill="white" font-size="14" font-weight="700"
+                                text-anchor="middle">μ</text>
 
                             <!-- Main Curve Line -->
                             <path id="bell-path" d="" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
 
                             <g id="sigma-markers"></g>
+                            <g id="sigma-brackets"></g>
                         </svg>
 
                         <!-- Floating Readout (Image 1 Style) -->
@@ -3073,6 +3110,59 @@
                     drawSigmaMarker(centerX - (s + 1) * displaySigma, `-${s + 1}σ`);
                 }
             }
+
+            // Draw Brackets (Image Design)
+            const bracketsGroup = document.getElementById('sigma-brackets');
+            bracketsGroup.innerHTML = '';
+            const bracketConfigs = [
+                { s: 1, p: '68.26%', y: 240, color: '#94a3b8' },
+                { s: 2, p: '95.46%', y: 270, color: '#64748b' },
+                { s: 3, p: '99.73%', y: 300, color: '#94a3b8' },
+                { s: 4, p: '99.9937%', y: 330, color: '#64748b' },
+                { s: 5, p: '99.99943%', y: 360, color: '#94a3b8' },
+                { s: 6, p: '99.999998%', y: 390, color: '#64748b' }
+            ];
+
+            bracketConfigs.forEach(conf => {
+                const xStart = centerX - conf.s * displaySigma;
+                const xEnd = centerX + conf.s * displaySigma;
+
+                // Horizontal Line with Arrows
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                const arrowSize = 4;
+                const d = `M ${xStart + arrowSize},${conf.y} L ${xEnd - arrowSize},${conf.y} 
+                           M ${xStart + arrowSize},${conf.y - arrowSize} L ${xStart},${conf.y} L ${xStart + arrowSize},${conf.y + arrowSize}
+                           M ${xEnd - arrowSize},${conf.y - arrowSize} L ${xEnd},${conf.y} L ${xEnd - arrowSize},${conf.y + arrowSize}`;
+                line.setAttribute("d", d);
+                line.setAttribute("class", "sigma-bracket-line");
+                line.setAttribute("stroke", conf.color);
+                bracketsGroup.appendChild(line);
+
+                // Percentage Text
+                const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txt.setAttribute("x", centerX);
+                txt.setAttribute("y", conf.y - 8);
+                txt.setAttribute("class", "sigma-percentage-text");
+                txt.textContent = conf.p;
+                bracketsGroup.appendChild(txt);
+
+                // Vertical dash lines connecting bracket to axis
+                const dashL = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                dashL.setAttribute("x1", xStart); dashL.setAttribute("y1", baseY);
+                dashL.setAttribute("x2", xStart); dashL.setAttribute("y2", conf.y + 10);
+                dashL.setAttribute("stroke", conf.color);
+                dashL.setAttribute("stroke-dasharray", "4 4");
+                dashL.setAttribute("opacity", "0.3");
+                bracketsGroup.appendChild(dashL);
+
+                const dashR = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                dashR.setAttribute("x1", xEnd); dashR.setAttribute("y1", baseY);
+                dashR.setAttribute("x2", xEnd); dashR.setAttribute("y2", conf.y + 10);
+                dashR.setAttribute("stroke", conf.color);
+                dashR.setAttribute("stroke-dasharray", "4 4");
+                dashR.setAttribute("opacity", "0.3");
+                bracketsGroup.appendChild(dashR);
+            });
 
             // Path for the smooth line
             const linePoints = [];

@@ -672,14 +672,20 @@
                             Guide</a>
                     </div>
                 </div>
-                <div
-                    style="background:var(--surface-2); padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; gap:15px;">
-                    <div style="font-size:24px;">🔭</div>
-                    <div>
-                        <div style="font-weight:bold; color:var(--accent);">Project Scoping</div>
-                        <div style="font-size:11px; color:#aaa;">Select the right project.</div>
-                        <a href="Tool_ProjectTriage.html" class="btn btn-sm btn-ghost" style="margin-top:5px;">Launch
-                            Tool</a>
+                <div class="bootcamp-trigger-card" onclick="openBootcamp()"
+                    style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(0, 0, 0, 0.4)); padding:15px; border-radius:12px; border:1px solid #06b6d4; display:flex; align-items:center; gap:15px; cursor:pointer; transition: 0.3s; position: relative; overflow: hidden;">
+                    <div style="font-size:28px; filter: drop-shadow(0 0 10px #06b6d4);">🛡️</div>
+                    <div style="z-index: 1;">
+                        <div
+                            style="font-weight:800; color:#06b6d4; font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 1px;">
+                            MISSION PREP</div>
+                        <div style="font-size:11px; color:#94a3b8; font-weight: 600;">The Essential 6 Pillars</div>
+                        <div
+                            style="margin-top:5px; font-size:10px; color:#fff; background:rgba(6, 182, 212, 0.3); display:inline-block; padding:2px 8px; border-radius:4px; border: 1px solid #06b6d4;">
+                            ENTER ARMORY</div>
+                    </div>
+                    <div
+                        style="position:absolute; top:-20px; right:-20px; width:60px; height:60px; background:#06b6d4; filter:blur(40px); opacity:0.3;">
                     </div>
                 </div>
             </div>
@@ -2830,27 +2836,673 @@
             text-align: left;
         }
 
-        /* --- TAB SPECIFIC THEMES (Backgrounds Only) --- */
-        /* DMADV (Design - Blue/Purple) */
-        .tab-dmadv.active {
-            background: linear-gradient(135deg, #0984e3, #6c5ce7) !important;
-            border-color: #a29bfe !important;
+        /* --- BOOTCAMP ARMORY MODAL --- */
+        .bootcamp-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* KAIZEN (Event - Orange/Red) */
-        .tab-kaizen.active {
-            background: linear-gradient(135deg, #e67e22, #c0392b) !important;
-            border-color: #e74c3c !important;
+        .armory-modal {
+            width: 85%;
+            height: 85%;
+            background: #050a14;
+            border: 2px solid #06b6d4;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 0 50px rgba(6, 182, 212, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            resize: both;
+            /* Sizable */
+            min-width: 800px;
+            min-height: 500px;
         }
 
-        /* FOCUS (Quality - Teal) */
-        .tab-focus.active {
-            background: linear-gradient(135deg, #00b894, #006266) !important;
-            border-color: #55efc4 !important;
+        .armory-header {
+            padding: 20px 30px;
+            background: rgba(6, 182, 212, 0.1);
+            border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            /* Dragable handle */
+        }
+
+        .armory-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #06b6d4;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .armory-body {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: radial-gradient(circle at center, #0a1428 0%, #050a14 100%);
+        }
+
+        /* Lobby Stations Grid */
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            perspective: 1000px;
+        }
+
+        .station-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .station-card:hover {
+            background: rgba(6, 182, 212, 0.05);
+            border-color: #06b6d4;
+            transform: translateZ(20px) rotateX(5deg) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .station-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.5));
+        }
+
+        .station-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .station-tag {
+            font-size: 0.8rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Modal Close Button */
+        .armory-close {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .armory-close:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Game UI */
+        .game-panel {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .game-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .game-content {
+            flex-grow: 1;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .btn-game {
+            padding: 10px 25px;
+            background: #06b6d4;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+
+        .btn-game:hover {
+            background: #22d3ee;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+
+        /* Zapping Game Elements */
+        .floating-word {
+            position: absolute;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+
+        .floating-word.vital {
+            border: 2px solid #10b981;
+            color: #10b981;
+        }
+
+        .floating-word.waste {
+            border: 2px solid #ef4444;
+            color: #ef4444;
+        }
+
+        /* Bucket Game Elements */
+        .sipoc-buckets {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 50px;
+        }
+
+        .bucket {
+            flex: 1;
+            height: 150px;
+            border: 2px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            background: rgba(6, 182, 212, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .bucket-label {
+            position: absolute;
+            top: -25px;
+            font-weight: bold;
+            color: #06b6d4;
+            font-size: 10px;
+        }
+
+        .drag-item {
+            padding: 10px 20px;
+            background: #fff;
+            color: #000;
+            border-radius: 6px;
+            margin: 5px;
+            cursor: move;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-15px) rotate(2deg); }
         }
     </style>
 
+    <!-- BOOTCAMP ARMORY MODAL -->
+    <div id="armory-overlay" class="bootcamp-overlay">
+        <div id="armory-modal" class="armory-modal">
+            <div class="armory-header" id="armory-handle">
+                <div class="armory-title">
+                    <span style="font-size: 1.2rem;">🛡️</span>
+                    <span>THE ANALYST'S ARMORY</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="armory-close" onclick="closeBootcamp()">×</button>
+                </div>
+            </div>
+            <div class="armory-body" id="armory-content">
+                <!-- LOBBY HUB -->
+                <div id="armory-lobby">
+                    <div style="text-align: center; margin-bottom: 50px;">
+                        <h2 style="font-family: 'Orbitron', sans-serif; color: #fff; margin-bottom: 10px;">MISSION PREP:
+                            THE ESSENTIAL 6</h2>
+                        <p style="color: #64748b; font-size: 0.9rem;">Select a station to calibrate your core skills.
+                            Master these, or fail the project.</p>
+                    </div>
+                    <div class="stations-grid">
+                        <div class="station-card" onclick="startStation('charter')">
+                            <div class="station-icon">📋</div>
+                            <div class="station-name">THE CONTRACT</div>
+                            <div class="station-tag">Project Charter</div>
+                        </div>
+                        <div class="station-card" onclick="startStation('sipoc')">
+                            <div class="station-icon">📡</div>
+                            <div class="station-name">THE MAP</div>
+                            <div class="station-tag">SIPOC Diagram</div>
+                        </div>
+                        <div class="station-card" onclick="startStation('msa')">
+                            <div class="station-icon">🎯</div>
+                            <div class="station-name">THE TRUST</div>
+                            <div class="station-tag">MSA / Gage R&R</div>
+                        </div>
+                        <div class="station-card" onclick="startStation('stats')">
+                            <div class="station-icon">💓</div>
+                            <div class="station-name">THE PULSE</div>
+                            <div class="station-tag">Descriptive Stats</div>
+                        </div>
+                        <div class="station-card" onclick="startStation('pareto')">
+                            <div class="station-icon">🔭</div>
+                            <div class="station-name">THE FOCUS</div>
+                            <div class="station-tag">Pareto Analysis</div>
+                        </div>
+                        <div class="station-card" onclick="startStation('fishbone')">
+                            <div class="station-icon">🦴</div>
+                            <div class="station-name">THE ANATOMY</div>
+                            <div class="station-tag">Fishbone Diagram</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATION GAME PANELS (Dynamic) -->
+                <div id="station-panel" class="game-panel">
+                    <div class="game-header">
+                        <button class="btn btn-sm btn-ghost" onclick="showLobby()" style="margin-bottom: 15px;">← BACK
+                            TO HUB</button>
+                        <div class="flex-between">
+                            <div>
+                                <h2 id="game-title"
+                                    style="font-family: 'Orbitron', sans-serif; color: #06b6d4; margin: 0;">STATION A
+                                </h2>
+                                <p id="game-lesson"
+                                    style="color: #94a3b8; font-size: 0.85rem; max-width: 600px; margin-top: 5px;"></p>
+                            </div>
+                            <div id="game-stat" style="text-align: right; color: #10b981; font-family: 'Orbitron';">
+                                SCORE: 0</div>
+                        </div>
+                    </div>
+                    <div class="game-content" id="game-surface">
+                        <!-- Content injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // BOOTCAMP DATA
+        const bootcampData = {
+            pre_lab: {
+                title: "Mission Prep: The Essential 6",
+                stations: {
+                    charter: {
+                        id: "charter",
+                        title: "The Contract (Project Charter)",
+                        lesson: "The Charter is your authority. It defines the 'Scope' and the 'Team'. Without it, you are just a person with an opinion.",
+                        mechanic: "scope_creep"
+                    },
+                    sipoc: {
+                        id: "sipoc",
+                        title: "The Map (SIPOC)",
+                        lesson: "Before you dive deep, map the flow from Supplier to Customer. Identify the boundaries so you don't boil the ocean.",
+                        mechanic: "sipoc_drag"
+                    },
+                    msa: {
+                        id: "msa",
+                        title: "The Trust (MSA Premium)",
+                        lesson: "Garbage In, Garbage Out. You must prove your Measurement System is reliable before you trust the data.",
+                        mechanic: "sniper_cal"
+                    },
+                    stats: {
+                        id: "stats",
+                        title: "The Pulse (Descriptive Stats)",
+                        lesson: "Know the difference between Mean (Average) and Median (Middle). In skewed data, the Average lies.",
+                        mechanic: "pulse_check"
+                    },
+                    pareto: {
+                        id: "pareto",
+                        title: "The Focus (Pareto Analysis)",
+                        lesson: "Don't fix everything. Fix the 'Vital Few' that cause 80% of the pain. Ignore the 'Trivial Many'.",
+                        mechanic: "triage_shot"
+                    },
+                    fishbone: {
+                        id: "fishbone",
+                        title: "The Anatomy (Fishbone)",
+                        lesson: "Don't jump to solutions. Dissect the problem into categories: Man, Machine, Material, Method.",
+                        mechanic: "detective_board"
+                    }
+                }
+            }
+        };
+
+        let armoryState = { score: 0, currentStation: null };
+
+        // MODAL LOGIC
+        function openBootcamp() {
+            document.getElementById('armory-overlay').style.display = 'flex';
+            showLobby();
+        }
+
+        function closeBootcamp() {
+            document.getElementById('armory-overlay').style.display = 'none';
+        }
+
+        function showLobby() {
+            document.getElementById('armory-lobby').style.display = 'block';
+            document.getElementById('station-panel').style.display = 'none';
+        }
+
+        function startStation(id) {
+            const station = bootcampData.pre_lab.stations[id];
+            armoryState.currentStation = id;
+            document.getElementById('armory-lobby').style.display = 'none';
+            document.getElementById('station-panel').style.display = 'flex';
+            document.getElementById('game-title').innerText = station.title;
+            document.getElementById('game-lesson').innerText = station.lesson;
+            document.getElementById('game-stat').innerText = "SCORE: 0";
+            armoryState.score = 0;
+            initGame(station.mechanic);
+        }
+
+        // DRAGGABLE LOGIC
+        const modal = document.getElementById('armory-modal');
+        const handle = document.getElementById('armory-handle');
+        let isDragging = false, startX, startY;
+
+        handle.onmousedown = (e) => {
+            isDragging = true;
+            startX = e.clientX - modal.offsetLeft;
+            startY = e.clientY - modal.offsetTop;
+            document.onmousemove = (e) => {
+                if (!isDragging) return;
+                modal.style.left = (e.clientX - startX) + 'px';
+                modal.style.top = (e.clientY - startY) + 'px';
+                modal.style.transform = 'none';
+            };
+            document.onmouseup = () => isDragging = false;
+        };
+
+        // GAME INITIALIZER
+        function initGame(type) {
+            const surface = document.getElementById('game-surface');
+            surface.innerHTML = '';
+
+            // 1. PROJECT CHARTER: SCOPE CREEP ZAPPER
+            if (type === 'scope_creep') {
+                surface.innerHTML = `
+                    <div style="text-align:center; padding-top:10px;">
+                        <div style="font-size:12px; color:#06b6d4; margin-bottom:15px; font-weight:bold; letter-spacing:1px;">TACTICAL DIRECTIVE: SELECT FACTS. ZAP SUBJECTIVE BIAS.</div>
+                        <div id="game-grid" style="position:relative; height:350px; width:100%; background:rgba(6,182,212,0.02); border-radius:12px; border:1px solid rgba(6,182,212,0.1);"></div>
+                    </div>`;
+                const container = document.getElementById('game-grid');
+                const words = [
+                    { t: "Wait time > 45m", v: true }, { t: "Q3 2025 Start", v: true }, { t: "ER Lab Area", v: true },
+                    { t: "Nurses are lazy", v: false }, { t: "Need new app", v: false }, { t: "I think...", v: false },
+                    { t: "Budget: $5k", v: true }, { t: "Defects: 12%", v: true }, { t: "Fire the boss", v: false }
+                ];
+                words.forEach((w, i) => {
+                    const el = document.createElement('div');
+                    el.className = 'floating-word ' + (w.v ? 'vital' : 'waste');
+                    el.innerText = w.t;
+                    el.style.top = (Math.random() * 70 + 15) + '%';
+                    el.style.left = (Math.random() * 70 + 15) + '%';
+                    el.style.animation = `float ${3 + Math.random() * 4}s infinite alternate ease-in-out`;
+                    el.onclick = () => {
+                        if (w.v) {
+                            armoryState.score += 20;
+                            el.style.background = 'rgba(16, 185, 129, 0.4)';
+                            el.style.boxShadow = '0 0 15px #10b981';
+                            el.style.pointerEvents = 'none';
+                        } else {
+                            armoryState.score -= 10;
+                            el.style.background = 'rgba(239, 68, 68, 0.4)';
+                            el.innerText = "BIAS ZAPPED!";
+                        }
+                        document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
+                        if (armoryState.score >= 100) {
+                            showToast("Charter Calibrated & Authorized", "success");
+                            setTimeout(showLobby, 1500);
+                        }
+                    };
+                    container.appendChild(el);
+                });
+            }
+
+            // 2. SIPOC: THE 30,000FT VIEW
+            if (type === 'sipoc_drag') {
+                surface.innerHTML = `
+                    <div style="text-align:center; margin-bottom:20px; font-size:11px; color:#94a3b8; letter-spacing:1px;">SORT PROCESS LOGISTICS INTO RADAR BINS</div>
+                    <div id="drag-bin" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:40px; min-height:50px;"></div>
+                    <div class="sipoc-buckets">
+                        <div class="bucket" id="bucket-S" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'S')"><div class="bucket-label">SUPPLIER</div></div>
+                        <div class="bucket" id="bucket-I" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'I')"><div class="bucket-label">INPUT</div></div>
+                        <div class="bucket" id="bucket-P" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'P')"><div class="bucket-label">PROCESS</div></div>
+                        <div class="bucket" id="bucket-O" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'O')"><div class="bucket-label">OUTPUT</div></div>
+                        <div class="bucket" id="bucket-C" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'C')"><div class="bucket-label">CUSTOMER</div></div>
+                    </div>
+                `;
+                const mapping = {
+                    "Vendor A": "S", "Raw Material": "I", "Milling": "P", "Finished Part": "O", "End User": "C",
+                    "IT Support": "S", "User Request": "I", "Coding": "P", "App Update": "O", "Subscriber": "C"
+                };
+                Object.keys(mapping).forEach(key => {
+                    const el = document.createElement('div');
+                    el.className = 'drag-item';
+                    el.innerText = key;
+                    el.draggable = true;
+                    el.ondragstart = (e) => e.dataTransfer.setData("text", key);
+                    document.getElementById('drag-bin').appendChild(el);
+                });
+
+                window.dropSipoc = (e, bucket) => {
+                    const data = e.dataTransfer.getData("text");
+                    const target = e.target.closest('.bucket');
+                    if (mapping[data] === bucket) {
+                        armoryState.score += 10;
+                        target.style.borderColor = "#10b981";
+                        target.innerHTML += `<div style="font-size:10px; color:#10b981; margin-top:5px;">✅ ${data}</div>`;
+                        const items = document.querySelectorAll('.drag-item');
+                        items.forEach(it => { if (it.innerText === data) it.remove(); });
+                    } else {
+                        armoryState.score -= 5;
+                        showToast("Strategic Error: Logistics Mismatch", "error");
+                    }
+                    document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
+                    if (armoryState.score >= 100) {
+                        showToast("Tactical Map Complete", "success");
+                        setTimeout(showLobby, 1500);
+                    }
+                };
+            }
+
+            // 3. MSA: SNIPER CALIBRATION
+            if (type === 'sniper_cal') {
+                surface.innerHTML = `
+                    <div style="text-align:center;">
+                        <div style="font-size:12px; color:#06b6d4; margin-bottom:20px; font-weight:bold;">DIRECTIVE: STABILIZE MEASUREMENT VARIATION</div>
+                        <div id="sniper-scope" style="width:240px; height:240px; border:3px solid rgba(255,255,255,0.2); border-radius:100%; margin:0 auto; position:relative; background:radial-gradient(circle, rgba(6,182,212,0.1) 0%, rgba(0,0,0,0.8) 100%); overflow:hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
+                            <div style="position:absolute; width:100%; height:1px; background:rgba(239, 68, 68, 0.4); top:50%;"></div>
+                            <div style="position:absolute; height:100%; width:1px; background:rgba(239, 68, 68, 0.4); left:50%;"></div>
+                            <div id="target-dot" style="position:absolute; width:12px; height:12px; background:#10b981; border-radius:100%; box-shadow:0 0 15px #10b981; transition: 0.1s;"></div>
+                        </div>
+                        <div style="margin-top:40px; padding:0 50px;">
+                            <div style="display:flex; justify-content:space-between; font-size:10px; color:#94a3b8; margin-bottom:10px;">
+                                <span>UNSTABLE (LOW GR&R)</span>
+                                <span>STABLE (CALIBRATED)</span>
+                            </div>
+                            <input type="range" id="cal-slider" style="width:100%; accent-color:#06b6d4;" min="0" max="100" value="0">
+                        </div>
+                        <button class="btn-game" style="margin-top:30px; width:200px;" onclick="checkMSA()">LOCK SENSORS</button>
+                    </div>
+                `;
+                const dot = document.getElementById('target-dot');
+                let wobble = 30;
+                const interval = setInterval(() => {
+                    const offsetT = (Math.random() - 0.5) * wobble;
+                    const offsetL = (Math.random() - 0.5) * wobble;
+                    dot.style.top = (50 + offsetT) + '%';
+                    dot.style.left = (50 + offsetL) + '%';
+                }, 80);
+
+                document.getElementById('cal-slider').oninput = (e) => {
+                    wobble = 30 - (e.target.value / 3.5);
+                    const scope = document.getElementById('sniper-scope');
+                    scope.style.borderColor = `rgba(6, 182, 212, ${e.target.value / 100})`;
+                };
+
+                window.checkMSA = () => {
+                    const val = document.getElementById('cal-slider').value;
+                    if (val > 88) {
+                        armoryState.score = 100;
+                        clearInterval(interval);
+                        dot.style.top = '50%'; dot.style.left = '50%';
+                        showToast("Measurement Trust: ELITE", "success");
+                        setTimeout(showLobby, 1500);
+                    } else {
+                        showToast("Noise Floor Too High!", "error");
+                    }
+                    document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
+                };
+            }
+
+            // 4. STATS: VITAL SIGNS MONITOR
+            if (type === 'pulse_check') {
+                surface.innerHTML = `
+                    <div style="text-align:center; padding-top:20px;">
+                        <h3 style="color:#fff; font-family:'Orbitron'; margin-bottom:10px;">SKEWED DATA DETECTED</h3>
+                        <p style="font-size:13px; color:#94a3b8; margin-bottom:30px;">A process has extreme high outliers. Which metric reveals the 'True Pulse'?</p>
+                        <div style="display:flex; justify-content:center; gap:30px;">
+                            <div class="station-card" onclick="answerStats('mean')" style="width:180px; border-color:rgba(239, 68, 68, 0.3);">
+                                <div style="font-size:32px; margin-bottom:15px;">📊</div>
+                                <div style="font-weight:bold; letter-spacing:1px;">MEAN</div>
+                                <div style="font-size:10px; color:#ef4444; margin-top:10px;">VOLATILE / SENSITIVE</div>
+                            </div>
+                            <div class="station-card" onclick="answerStats('median')" style="width:180px; border-color:rgba(16, 185, 129, 0.3);">
+                                <div style="font-size:32px; margin-bottom:15px;">💓</div>
+                                <div style="font-weight:bold; letter-spacing:1px;">MEDIAN</div>
+                                <div style="font-size:10px; color:#10b981; margin-top:10px;">ROBUST / STABLE</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                window.answerStats = (ans) => {
+                    if (ans === 'median') {
+                        armoryState.score = 100;
+                        showToast("Insight: Median found the core!", "success");
+                        setTimeout(showLobby, 1500);
+                    } else {
+                        armoryState.score = 0;
+                        showToast("Error: Mean is biased by outliers!", "error");
+                    }
+                    document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
+                };
+            }
+
+            // 5. PARETO: THE TRIAGE
+            if (type === 'triage_shot') {
+                surface.innerHTML = `
+                    <div style="text-align:center;">
+                        <h3 style="color:#fff; font-family:'Orbitron'; margin-bottom:10px;">THE VITAL FEW</h3>
+                        <p style="font-size:11px; color:#94a3b8; margin-bottom:20px;">80% of pain comes from 20% of causes. ELIMINATE THE VITAL FEW.</p>
+                        <div id="defect-pile" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; max-width:500px; margin:0 auto;"></div>
+                    </div>
+                `;
+                const defects = [
+                    { t: "Major Crash", c: 65, v: true }, { t: "Minor Typo", c: 2, v: false },
+                    { t: "Login Fail", c: 15, v: true }, { t: "Color Tint", c: 3, v: false },
+                    { t: "Data Leak", c: 80, v: true }, { t: "Slow Scroll", c: 5, v: false }
+                ];
+                defects.forEach(d => {
+                    const el = document.createElement('div');
+                    el.className = 'station-card';
+                    el.innerHTML = `<div style="font-size:10px; color:#94a3b8;">${d.t}</div><div style="font-size:18px; color:${d.v ? '#ef4444' : '#64748b'}; font-weight:bold;">${d.c}% IMPACT</div>`;
+                    el.onclick = () => {
+                        if (d.v) {
+                            armoryState.score += 34;
+                            el.style.borderColor = "#10b981";
+                            el.style.background = "rgba(16, 185, 129, 0.1)";
+                            el.style.opacity = "0.6";
+                            el.style.pointerEvents = "none";
+                        } else {
+                            showToast("Avoid the Trivial Many!", "warning");
+                        }
+                        if (armoryState.score >= 100) {
+                            showToast("80/20 Leverage Secured", "success");
+                            setTimeout(showLobby, 1500);
+                        }
+                        document.getElementById('game-stat').innerText = "SCORE: " + Math.min(100, armoryState.score);
+                    };
+                    document.getElementById('defect-pile').appendChild(el);
+                });
+            }
+
+            // 6. FISHBONE: DETECTIVE'S BOARD
+            if (type === 'detective_board') {
+                surface.innerHTML = `
+                    <div style="text-align:center;">
+                        <h3 style="color:#fff; font-family:'Orbitron'; margin-bottom:10px;">ANATOMY OF FAILURE</h3>
+                        <p style="font-size:11px; color:#94a3b8; margin-bottom:20px;">CATEGORIZE THE ROOT CAUSE CLUES</p>
+                        <div id="clue-box" style="padding:20px; background:rgba(6,182,212,0.1); border:1px solid #06b6d4; border-radius:12px; font-size:1.4rem; color:#fff; font-family:'Orbitron'; margin-bottom:30px; min-height:80px; display:flex; align-items:center; justify-content:center;">CLUE LOADING...</div>
+                        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:15px; max-width:400px; margin:0 auto;">
+                            <button class="btn-game" onclick="checkClue('MAN')">MAN</button>
+                            <button class="btn-game" onclick="checkClue('MACHINE')">MACHINE</button>
+                            <button class="btn-game" onclick="checkClue('METHOD')">METHOD</button>
+                            <button class="btn-game" onclick="checkClue('MATERIAL')">MATERIAL</button>
+                        </div>
+                    </div>
+                `;
+                const clues = [
+                    { t: "INSUFFICIENT TRAINING", c: "MAN" }, { t: "CORRODED SENSORS", c: "MACHINE" },
+                    { t: "OBSOLETE PROCEDURE", c: "METHOD" }, { t: "CONTAMINATED FUEL", c: "MATERIAL" },
+                    { t: "STAFF FATIGUE", c: "MAN" }, { t: "HYDRAULIC LEAK", c: "MACHINE" }
+                ];
+                let currentIdx = 0;
+                const setClue = () => {
+                    if (currentIdx < clues.length) {
+                        document.getElementById('clue-box').innerText = clues[currentIdx].t;
+                    } else {
+                        showToast("Problem Anatomy Deciphered", "success");
+                        setTimeout(showLobby, 1500);
+                    }
+                };
+                setClue();
+
+                window.checkClue = (cat) => {
+                    if (cat === clues[currentIdx].c) {
+                        armoryState.score += 17;
+                        currentIdx++;
+                        setClue();
+                    } else {
+                        showToast("Logic Mismatch: Try Again", "error");
+                    }
+                    document.getElementById('game-stat').innerText = "SCORE: " + Math.min(100, armoryState.score);
+                };
+            }
+        }
+
         const wisdomData = {
             // DMAIC
             'define': { quote: "If I were given one hour to save the planet, I would spend 59 minutes defining the problem.", author: "Albert Einstein", context: "<b>Why Define?</b> Solving the wrong problem is the most common failure mode. Stop. Define the pain before you prescribe the pill." },
@@ -2873,7 +3525,6 @@
             'kaizen_sustain': { quote: "Without standards, there can be no Kaizen.", author: "Taiichi Ohno", context: "<b>Sustain:</b> If you don't standardized the new way, old habits will return. Audit and celebrate." },
 
             // FOCUS PDCA (Quality)
-            // FOCUS PDCA (Quality) - 9 Steps
             'focus_find': { quote: "Focus on the vital few, not the trivial many.", author: "Joseph Juran", context: "<b>Find (F):</b> Identify a specific process/problem worth improving. Write a tight problem statement and confirm it's a process issue (not just training)." },
             'focus_organize': { quote: "None of us is as smart as all of us.", author: "Ken Blanchard", context: "<b>Organize (O):</b> Organize the right improvement team. Identify sponsor, SMEs, and data owner. Set cadence and scope boundaries." },
             'focus_clarify': { quote: "If you can't describe what you are doing as a process, you don't know what you're doing.", author: "W. Edwards Deming", context: "<b>Clarify (C):</b> Clarify how the process actually works today. Map the workflow, handoffs, and define operational definitions." },
@@ -2893,14 +3544,18 @@
                 <div class="wisdom-author">— ${data.author}</div>
                 <div class="wisdom-context">${data.context}</div>
             `;
-            document.getElementById('wisdomContent').innerHTML = html;
-            document.getElementById('wisdomModal').style.display = 'flex';
+            const container = document.getElementById('wisdomContent') || document.getElementById('game-surface');
+            container.innerHTML = html;
+            const modal = document.getElementById('wisdomModal');
+            if (modal) modal.style.display = 'flex';
         }
 
         function closeWisdom() {
-            document.getElementById('wisdomModal').style.display = 'none';
+            const modal = document.getElementById('wisdomModal');
+            if (modal) modal.style.display = 'none';
         }
     </script>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>
