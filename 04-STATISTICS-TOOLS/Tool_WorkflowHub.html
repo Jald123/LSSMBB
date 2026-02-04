@@ -3106,32 +3106,37 @@
             font-size: 0.75rem;
             color: #94a3b8;
             line-height: 1.4;
-            margin-bottom: 15px;
-            height: 40px;
+            margin: 10px 0 15px;
+            min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0 10px;
         }
 
         .btn-solve {
             background: transparent;
-            border: 1px solid #22d3ee;
+            border: 2px solid #22d3ee;
             color: #22d3ee;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.7rem;
-            padding: 8px 15px;
-            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 10px 25px;
+            border-radius: 30px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             width: 100%;
-            z-index: 5;
+            z-index: 10;
             position: relative;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
         }
 
         .station-card:hover .btn-solve {
             background: #22d3ee;
             color: #000;
-            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.6);
         }
 
         @keyframes lockIn {
@@ -3325,7 +3330,8 @@
                             <div class="station-tag">Project Charter</div>
                             <div class="station-instructions">Define project scope, objectives, and team boundaries.
                             </div>
-                            <button class="btn-solve">SOLVE MISSION</button>
+                            <button class="btn-solve" onclick="event.stopPropagation(); startStation('charter')">SOLVE
+                                MISSION</button>
                         </div>
                         <div class="station-card" onclick="startStation('sipoc')">
                             <div class="station-img">
@@ -3334,7 +3340,8 @@
                             <div class="station-name">THE MAP</div>
                             <div class="station-tag">SIPOC Diagram</div>
                             <div class="station-instructions">Map high-level process flow: Suppliers to Customers.</div>
-                            <button class="btn-solve">SOLVE MISSION</button>
+                            <button class="btn-solve" onclick="event.stopPropagation(); startStation('sipoc')">SOLVE
+                                MISSION</button>
                         </div>
                         <div class="station-card" onclick="startStation('msa')">
                             <div class="station-img">
@@ -3344,7 +3351,8 @@
                             <div class="station-tag">MSA / Gage R&R</div>
                             <div class="station-instructions">Validate measurement precision and gauge reliability.
                             </div>
-                            <button class="btn-solve">SOLVE MISSION</button>
+                            <button class="btn-solve" onclick="event.stopPropagation(); startStation('msa')">SOLVE
+                                MISSION</button>
                         </div>
                         <div class="station-card" onclick="startStation('stats')">
                             <div class="station-img">
@@ -3353,7 +3361,8 @@
                             <div class="station-name">THE PULSE</div>
                             <div class="station-tag">Descriptive Stats</div>
                             <div class="station-instructions">Analyze central tendency and variation of data.</div>
-                            <button class="btn-solve">SOLVE MISSION</button>
+                            <button class="btn-solve" onclick="event.stopPropagation(); startStation('stats')">SOLVE
+                                MISSION</button>
                         </div>
                         <div class="station-card" onclick="startStation('pareto')">
                             <div class="station-img">
@@ -3361,8 +3370,9 @@
                             </div>
                             <div class="station-name">THE FOCUS</div>
                             <div class="station-tag">Pareto Analysis</div>
-                            <div class="station-instructions">Indentify the vital few issues causing 80% of pain.</div>
-                            <button class="btn-solve">SOLVE MISSION</button>
+                            <div class="station-instructions">Identify the vital few issues causing 80% of pain.</div>
+                            <button class="btn-solve" onclick="event.stopPropagation(); startStation('pareto')">SOLVE
+                                MISSION</button>
                         </div>
                         <div class="station-card" onclick="startStation('fishbone')">
                             <div class="station-img">
@@ -3372,7 +3382,8 @@
                             <div class="station-tag">Fishbone Diagram</div>
                             <div class="station-instructions">Trace potential root causes across the 6M categories.
                             </div>
-                            <button class="btn-solve">SOLVE MISSION</button>
+                            <button class="btn-solve" onclick="event.stopPropagation(); startStation('fishbone')">SOLVE
+                                MISSION</button>
                         </div>
                     </div>
                 </div>
@@ -3470,7 +3481,72 @@
             }
         };
 
-        let armoryState = { score: 0, currentStation: null };
+        let armoryState = { score: 0, currentStation: null, round: 1 };
+
+        const MISSION_ROUNDS = 5;
+
+        function showToast(msg, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+                padding: 12px 25px; border-radius: 30px; z-index: 10000;
+                font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: bold;
+                backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #fff;
+                animation: toastIn 0.3s ease forwards;
+            `;
+            if (type === 'success') {
+                toast.style.background = 'rgba(16, 185, 129, 0.8)';
+                toast.style.borderColor = '#10b981';
+            } else if (type === 'error') {
+                toast.style.background = 'rgba(239, 68, 68, 0.8)';
+                toast.style.borderColor = '#ef4444';
+            } else {
+                toast.style.background = 'rgba(6, 182, 212, 0.8)';
+                toast.style.borderColor = '#06b6d4';
+            }
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Add toast animations to style
+        const toastStyle = document.createElement('style');
+        toastStyle.textContent = `
+            @keyframes toastIn { from { bottom: -50px; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+            @keyframes toastOut { from { bottom: 30px; opacity: 1; } to { bottom: -50px; opacity: 0; } }
+        `;
+        document.head.appendChild(toastStyle);
+
+        const MED_SCENARIOS = {
+            charter: [
+                { scenario: "ER Wait Times", fact: "Wait time > 45m", bias: "Lazy nurses" },
+                { scenario: "Surgical Prep", fact: "Oxygen Sat 88%", bias: "Needs more staff" },
+                { scenario: "Patient Discharge", fact: "Room 402 Clear", bias: "Doc is too slow" }
+            ],
+            sipoc: [
+                {
+                    scenario: "Pharmacy Dispensing",
+                    mapping: { "Pharma Co": "S", "Prescription": "I", "Fulfillment": "P", "Medication": "O", "Outpatient": "C" }
+                },
+                {
+                    scenario: "ER Triage Workflow",
+                    mapping: { "EMS / Ambulance": "S", "Stretcher Pt": "I", "Triage Check": "P", "Vitals Chart": "O", "ER Nurse": "C" }
+                },
+                {
+                    scenario: "Diagnostic Lab",
+                    mapping: { "Ward Nurse": "S", "Blood Sample": "I", "Hemolysis Test": "P", "Lab Report": "O", "Physician": "C" }
+                }
+            ],
+            msa: [
+                { scenario: "Insulin Syringe Calibration", unit: "Units", target: "10 Units" },
+                { scenario: "Infusion Pump Flow", unit: "ml/hr", target: "50 ml/hr" },
+                { scenario: "Digital BP Gauge", unit: "mmHg", target: "120 mmHg" }
+            ]
+        };
 
         // MODAL LOGIC
         function openBootcamp() {
@@ -3488,18 +3564,17 @@
         }
 
         function startStation(id) {
-            const overlay = document.getElementById('armory-content');
-            overlay.classList.add('lock-in-flash');
+            armoryState.currentStation = id;
+            armoryState.round = 1;
+            armoryState.score = 0;
+            document.getElementById('armory-lobby').style.display = 'none';
+            document.getElementById('station-panel').style.display = 'block';
+
+            const station = bootcampData.pre_lab.stations.find(s => s.id === id);
             setTimeout(() => {
-                overlay.classList.remove('lock-in-flash');
-                const station = bootcampData.pre_lab.stations.find(s => s.id === id);
-                armoryState.currentStation = id;
-                document.getElementById('armory-lobby').style.display = 'none';
-                document.getElementById('station-panel').style.display = 'flex';
-                document.getElementById('game-title').innerText = station.title;
+                document.getElementById('game-title').innerText = station.title.toUpperCase();
                 document.getElementById('game-lesson').innerText = station.lesson;
                 document.getElementById('game-stat').innerText = "SCORE: 0";
-                armoryState.score = 0;
                 initGame(station.mechanic);
             }, 300);
         }
@@ -3527,70 +3602,97 @@
             const surface = document.getElementById('game-surface');
             surface.innerHTML = '';
 
-            // 1. PROJECT CHARTER: SCOPE CREEP DEFENDER
+            // 1. PROJECT CHARTER: SCOPE CREEP DEFENDER (5 ROUNDS)
             if (type === 'scope_creep') {
+                const isMedical = armoryState.round > 2;
+                const scenarioIdx = armoryState.round - 3;
+                const scenario = isMedical ? MED_SCENARIOS.charter[scenarioIdx] :
+                    (armoryState.round === 1 ? { scenario: "Coffee Shop", fact: "Temp 185°F", bias: "Rude barista" } : { scenario: "IT Support", fact: "Ping 42ms", bias: "User is annoying" });
+
                 surface.innerHTML = `
                     <div style="text-align:center; padding-top:10px; position:relative;">
-                        <div style="font-size:12px; color:#06b6d4; margin-bottom:15px; font-weight:bold; letter-spacing:1px;">MISSION ORDER: CAPTURE FACTS. ZAP BIAS.</div>
-                        <div id="game-grid" style="position:relative; height:350px; width:100%; background:rgba(6,182,212,0.02); border-radius:12px; border:1px solid rgba(6,182,212,0.1); overflow:hidden;"></div>
+                        <div style="font-size:14px; color:#22d3ee; margin-bottom:5px; font-weight:bold; font-family:'Orbitron';">ROUND ${armoryState.round} OF 5</div>
+                        <div style="font-size:11px; color:#94a3b8; margin-bottom:15px; letter-spacing:1px; font-family:'Orbitron';">SCENARIO: ${scenario.scenario.toUpperCase()}</div>
+                        <div style="font-size:10px; color:#06b6d4; margin-bottom:15px; font-weight:bold; letter-spacing:1px;">CAPTURE 3 FACTS. ZAP THE BIAS.</div>
+                        <div id="game-grid" style="position:relative; height:320px; width:100%; background:rgba(6,182,212,0.02); border-radius:12px; border:1px solid rgba(6,182,212,0.1); overflow:hidden;"></div>
                         <div id="auth-stamp" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) scale(5); opacity:0; pointer-events:none; z-index:100; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
                             <div style="border:10px solid #10b981; color:#10b981; padding:20px 40px; font-family:'Orbitron'; font-weight:900; border-radius:20px; font-size:3rem; transform:rotate(-15deg); background:rgba(0,0,0,0.8);">AUTHORIZED</div>
                         </div>
                     </div>`;
+
                 const container = document.getElementById('game-grid');
                 const words = [
-                    { t: "Wait time > 45m", v: true }, { t: "Q3 2025", v: true }, { t: "ER Lab", v: true },
-                    { t: "Lazy nurses", v: false }, { t: "Need new software", v: false }, { t: "I think...", v: false },
-                    { t: "Extent of Impact", v: true }, { t: "Subjective Blame", v: false }, { t: "Solution Jump", v: false }
+                    { t: scenario.fact, v: true }, { t: "Objective Data", v: true }, { t: "Measured Value", v: true },
+                    { t: scenario.bias, v: false }, { t: "Assumption", v: false }, { t: "Solution Jump", v: false },
+                    { t: "I heard...", v: false }, { t: "Fixed Scope", v: true }, { t: "Root Cause?", v: false }
                 ];
+
+                let factsCaught = 0;
                 words.forEach((w, i) => {
                     const el = document.createElement('div');
                     el.className = 'floating-word ' + (w.v ? 'vital' : 'waste');
                     el.innerText = w.t;
                     el.style.top = (Math.random() * 70 + 15) + '%';
                     el.style.left = (Math.random() * 70 + 15) + '%';
-                    el.style.animation = `float ${3 + Math.random() * 4}s infinite alternate ease-in-out`;
+                    el.style.animation = `float ${3 + Math.random() * 3}s infinite alternate ease-in-out`;
                     el.onclick = () => {
                         if (w.v) {
-                            armoryState.score += 34;
+                            armoryState.score += 10;
+                            factsCaught++;
                             el.style.background = 'rgba(16, 185, 129, 0.4)';
                             el.style.boxShadow = '0 0 15px #10b981';
                             el.style.pointerEvents = 'none';
                         } else {
-                            armoryState.score -= 10;
+                            armoryState.score -= 20;
                             el.style.background = 'rgba(239, 68, 68, 0.4)';
                             el.innerText = "BIAS ZAPPED!";
                         }
-                        document.getElementById('game-stat').innerText = "SCORE: " + Math.min(100, armoryState.score);
-                        if (armoryState.score >= 100) {
-                            const stamp = document.getElementById('auth-stamp');
-                            stamp.style.opacity = "1";
-                            stamp.style.transform = "translate(-50%, -50%) scale(1) rotate(-15deg)";
-                            showToast("Charter Authorized!", "success");
-                            setTimeout(showLobby, 2000);
+                        document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
+
+                        if (factsCaught >= 3) {
+                            if (armoryState.round < MISSION_ROUNDS) {
+                                armoryState.round++;
+                                setTimeout(() => initGame('scope_creep'), 1000);
+                            } else {
+                                const stamp = document.getElementById('auth-stamp');
+                                stamp.style.opacity = "1";
+                                stamp.style.transform = "translate(-50%, -50%) scale(1) rotate(-15deg)";
+                                showToast("Mission Complete: Master Charter!", "success");
+                                setTimeout(showLobby, 2000);
+                            }
                         }
                     };
                     container.appendChild(el);
                 });
             }
 
-            // 2. SIPOC: THE 30,000FT VIEW
+            // 2. SIPOC: THE 30,000FT VIEW (5 ROUNDS)
             if (type === 'sipoc_drag') {
+                const isMedical = armoryState.round > 2;
+                const scenarioIdx = armoryState.round - 3;
+                const scenario = isMedical ? MED_SCENARIOS.sipoc[scenarioIdx] :
+                    (armoryState.round === 1 ?
+                        { scenario: "Pizza Delivery", mapping: { "Grocery": "S", "Dough": "I", "Baking": "P", "Boxed Pizza": "O", "Hungry Person": "C" } } :
+                        { scenario: "Bank Loan Workflow", mapping: { "Federal Res": "S", "Applicant Info": "I", "Appraisal": "P", "Approved Loan": "O", "Home Buyer": "C" } }
+                    );
+
                 surface.innerHTML = `
-                    <div style="text-align:center; margin-bottom:20px; font-size:11px; color:#94a3b8; letter-spacing:1px;">SCENARIO: PIZZA DELIVERY PROCESS</div>
-                    <div id="drag-bin" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:40px; min-height:50px;"></div>
-                    <div class="sipoc-buckets" style="gap:5px;">
-                        <div class="bucket" id="bucket-S" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'S')"><div class="bucket-label">SUPPLIER</div></div>
-                        <div class="bucket" id="bucket-I" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'I')"><div class="bucket-label">INPUT</div></div>
-                        <div class="bucket" id="bucket-P" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'P')"><div class="bucket-label">PROCESS</div></div>
-                        <div class="bucket" id="bucket-O" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'O')"><div class="bucket-label">OUTPUT</div></div>
-                        <div class="bucket" id="bucket-C" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'C')"><div class="bucket-label">CUSTOMER</div></div>
+                    <div style="text-align:center; padding-top:10px;">
+                        <div style="font-size:14px; color:#22d3ee; margin-bottom:5px; font-weight:bold; font-family:'Orbitron';">ROUND ${armoryState.round} OF 5</div>
+                        <div style="font-size:11px; color:#94a3b8; margin-bottom:15px; letter-spacing:1px; font-family:'Orbitron';">SCENARIO: ${scenario.scenario.toUpperCase()}</div>
+                        <div id="drag-bin" style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:30px; min-height:40px;"></div>
+                        <div class="sipoc-buckets" style="gap:5px;">
+                            <div class="bucket" id="bucket-S" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'S')"><div class="bucket-label">S</div></div>
+                            <div class="bucket" id="bucket-I" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'I')"><div class="bucket-label">I</div></div>
+                            <div class="bucket" id="bucket-P" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'P')"><div class="bucket-label">P</div></div>
+                            <div class="bucket" id="bucket-O" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'O')"><div class="bucket-label">O</div></div>
+                            <div class="bucket" id="bucket-C" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'C')"><div class="bucket-label">C</div></div>
+                        </div>
                     </div>
                 `;
-                const mapping = {
-                    "Grocery Store": "S", "Flour": "I", "Baking": "P", "Hot Pizza": "O", "Hungry Customer": "C",
-                    "Vendor A": "S", "Dough": "I", "Preparation": "P", "Delivery Box": "O", "End User": "C"
-                };
+
+                const mapping = scenario.mapping;
+                let correctlyPlaced = 0;
                 Object.keys(mapping).forEach(key => {
                     const el = document.createElement('div');
                     el.className = 'drag-item';
@@ -3604,43 +3706,56 @@
                     const data = e.dataTransfer.getData("text");
                     const target = e.target.closest('.bucket');
                     if (mapping[data] === bucket) {
-                        armoryState.score += 10;
+                        armoryState.score += 20;
+                        correctlyPlaced++;
                         target.style.borderColor = "#06b6d4";
                         target.style.boxShadow = "0 0 10px rgba(6, 182, 212, 0.4)";
-                        target.innerHTML += `<div style="font-size:9px; color:#06b6d4; margin-top:2px;">${data}</div>`;
+                        target.innerHTML += `<div style="font-size:8px; color:#06b6d4; margin-top:2px;">${data}</div>`;
                         const items = document.querySelectorAll('.drag-item');
                         items.forEach(it => { if (it.innerText === data) it.remove(); });
+
+                        if (correctlyPlaced >= 5) {
+                            if (armoryState.round < MISSION_ROUNDS) {
+                                armoryState.round++;
+                                setTimeout(() => initGame('sipoc_drag'), 1000);
+                            } else {
+                                surface.style.filter = "drop-shadow(0 0 20px cyan)";
+                                showToast("Mission Complete: Map Verified!", "success");
+                                setTimeout(showLobby, 1500);
+                            }
+                        }
                     } else {
-                        armoryState.score -= 5;
+                        armoryState.score -= 10;
                         showToast("Bucket Mismatch!", "error");
                     }
                     document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
-                    if (armoryState.score >= 100) {
-                        surface.style.filter = "drop-shadow(0 0 20px cyan)";
-                        showToast("Process Flow Connected!", "success");
-                        setTimeout(showLobby, 1500);
-                    }
                 };
             }
 
-            // 3. MSA: SNIPER CALIBRATION
+            // 3. MSA: SNIPER CALIBRATION (5 ROUNDS)
             if (type === 'sniper_cal') {
+                const isMedical = armoryState.round > 2;
+                const scenarioIdx = armoryState.round - 3;
+                const scenario = isMedical ? MED_SCENARIOS.msa[scenarioIdx] :
+                    (armoryState.round === 1 ? { scenario: "Coffee Bean Weight", unit: "Grams", target: "18.0g" } : { scenario: "Steel Bolt Diameter", unit: "mm", target: "10.0mm" });
+
                 surface.innerHTML = `
                     <div style="text-align:center;">
-                        <div style="font-size:12px; color:#06b6d4; margin-bottom:20px; font-weight:bold;">ROUND 1: HIGH VARIATION DETECTED</div>
-                        <div id="sniper-scope" style="width:240px; height:240px; border:3px solid rgba(255,255,255,0.2); border-radius:100%; margin:0 auto; position:relative; background:radial-gradient(circle, rgba(6,182,212,0.1) 0%, rgba(0,0,0,0.8) 100%); overflow:hidden;">
+                        <div style="font-size:14px; color:#22d3ee; margin-bottom:5px; font-weight:bold; font-family:'Orbitron';">ROUND ${armoryState.round} OF 5</div>
+                        <div style="font-size:11px; color:#94a3b8; margin-bottom:15px; letter-spacing:1px; font-family:'Orbitron';">SCENARIO: ${scenario.scenario.toUpperCase()}</div>
+                        <div id="sniper-scope" style="width:200px; height:200px; border:3px solid rgba(255,255,255,0.2); border-radius:100%; margin:0 auto; position:relative; background:radial-gradient(circle, rgba(6,182,212,0.1) 0%, rgba(0,0,0,0.8) 100%); overflow:hidden;">
                             <div id="scope-hair-v" style="position:absolute; width:100%; height:1px; background:rgba(239, 68, 68, 0.4); top:50%;"></div>
                             <div id="scope-hair-h" style="position:absolute; height:100%; width:1px; background:rgba(239, 68, 68, 0.4); left:50%;"></div>
                             <div id="target-dot" style="position:absolute; width:12px; height:12px; background:#10b981; border-radius:100%; box-shadow:0 0 15px #10b981;"></div>
                         </div>
-                        <div style="margin-top:40px; padding:0 50px;">
+                        <div style="margin-top:30px; padding:0 50px;">
                             <div style="display:flex; justify-content:space-between; font-size:10px; color:#94a3b8; margin-bottom:10px;">
-                                <span>UNSTANDARDIZED</span>
-                                <span>STANDARDIZED (GOOD MSA)</span>
+                                <span>VARIATION</span>
+                                <span>STABLE (TARGET: ${scenario.target})</span>
                             </div>
                             <input type="range" id="cal-slider" style="width:100%; accent-color:#06b6d4;" min="0" max="100" value="0">
                         </div>
-                        <div id="msa-lesson" style="margin-top:20px; font-size:10px; color:#64748b; font-style:italic;">Inspector A: 5mm | Inspector B: 7mm</div>
+                        <div id="msa-lesson" style="margin-top:20px; font-size:10px; color:#64748b; font-style:italic;">Unstandardized Measurement...</div>
                     </div>
                 `;
                 const scope = document.getElementById('sniper-scope');
@@ -3651,7 +3766,7 @@
                     const offsetL = (Math.random() - 0.5) * wobble;
                     dot.style.top = (50 + offsetT) + '%';
                     dot.style.left = (50 + offsetL) + '%';
-                    if (wobble > 20) {
+                    if (wobble > 10) {
                         scope.style.transform = `translate(${(Math.random() - 0.5) * wobble}px, ${(Math.random() - 0.5) * wobble}px)`;
                     } else {
                         scope.style.transform = `none`;
@@ -3661,21 +3776,23 @@
                 document.getElementById('cal-slider').oninput = (e) => {
                     const val = e.target.value;
                     wobble = 40 - (val / 2.5);
-                    if (val > 80) {
-                        document.getElementById('msa-lesson').innerText = "All Inspectors: 5.1mm (STABLE)";
+                    if (val > 90) {
+                        document.getElementById('msa-lesson').innerText = "Gage R&R: REPEATABLE & REPRODUCIBLE!";
                         document.getElementById('msa-lesson').style.color = "#10b981";
-                    } else {
-                        document.getElementById('msa-lesson').innerText = "Inspector A: 5mm | Inspector B: 7mm";
-                        document.getElementById('msa-lesson').style.color = "#64748b";
-                    }
-                    if (val == 100) {
+
                         clearInterval(interval);
                         dot.style.top = '50%'; dot.style.left = '50%';
-                        armoryState.score = 100;
-                        document.getElementById('game-stat').innerText = "SCORE: 100";
-                        showToast("Measurement Trust: STABLE", "success");
-                        setTimeout(showLobby, 1500);
+                        armoryState.score += 20;
+
+                        if (armoryState.round < MISSION_ROUNDS) {
+                            armoryState.round++;
+                            setTimeout(() => initGame('sniper_cal'), 1000);
+                        } else {
+                            showToast("Mission Complete: Trust Verified!", "success");
+                            setTimeout(showLobby, 1500);
+                        }
                     }
+                    document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
                 };
             }
 
