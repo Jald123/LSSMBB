@@ -3005,6 +3005,186 @@
             box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
         }
 
+        /* Analyst Armory: Holographic Stations */
+        .stations-grid {
+            perspective: 1200px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            padding: 20px;
+        }
+
+        .station-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            transform-style: preserve-3d;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .station-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .station-card:hover::before {
+            left: 100%;
+        }
+
+        .station-card:hover {
+            transform: translateY(-10px) rotateX(8deg) rotateY(-5deg) scale(1.05);
+            border-color: #22d3ee;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(34, 211, 238, 0.2);
+        }
+
+        .station-card .station-img {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            border: 2px solid rgba(34, 211, 238, 0.3);
+            background: #000;
+            overflow: hidden;
+            transition: 0.5s;
+            position: relative;
+            z-index: 2;
+        }
+
+        .station-card:hover .station-img {
+            border-color: #22d3ee;
+            transform: translateZ(30px) scale(1.1);
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.5);
+        }
+
+        .station-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            filter: saturate(1.5) contrast(1.2);
+        }
+
+        .station-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .station-card:hover .station-name {
+            color: #fff;
+            text-shadow: 0 0 10px #22d3ee;
+        }
+
+        .station-tag {
+            font-size: 0.7rem;
+            color: #475569;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        @keyframes lockIn {
+            0% {
+                border-color: #1e293b;
+                background: rgba(0, 0, 0, 1);
+            }
+
+            50% {
+                border-color: #22d3ee;
+                background: rgba(34, 211, 238, 0.2);
+            }
+
+            100% {
+                border-color: rgba(34, 211, 238, 0.3);
+                background: transparent;
+            }
+        }
+
+        .lock-in-flash {
+            animation: lockIn 0.4s ease-out forwards;
+        }
+
+        /* EKG Monitor */
+        .ekg-monitor {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .ekg-line {
+            stroke: #0f0;
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawEKG 2s linear infinite;
+        }
+
+        @keyframes drawEKG {
+            0% {
+                stroke-dashoffset: 1000;
+            }
+
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Authorized Stamp */
+        .authorized-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: rgba(34, 211, 238, 0.7);
+            border: 4px solid rgba(34, 211, 238, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            opacity: 0;
+            animation: stampIn 0.5s ease-out forwards;
+            text-shadow: 0 0 15px rgba(34, 211, 238, 0.9);
+            letter-spacing: 3px;
+            z-index: 10;
+        }
+
+        @keyframes stampIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) rotate(-30deg) scale(0.5);
+            }
+
+            70% {
+                opacity: 1;
+                transform: translate(-50%, -50%) rotate(-18deg) scale(1.1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) rotate(-20deg) scale(1);
+            }
+        }
+
         /* Zapping Game Elements */
         .floating-word {
             position: absolute;
@@ -3066,9 +3246,15 @@
             font-size: 12px;
             font-weight: bold;
         }
+
         @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-15px) rotate(2deg); }
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-15px) rotate(2deg);
+            }
         }
     </style>
 
@@ -3095,32 +3281,44 @@
                     </div>
                     <div class="stations-grid">
                         <div class="station-card" onclick="startStation('charter')">
-                            <div class="station-icon">📋</div>
+                            <div class="station-img">
+                                <img src="station_charter_icon.png" alt="Charter">
+                            </div>
                             <div class="station-name">THE CONTRACT</div>
                             <div class="station-tag">Project Charter</div>
                         </div>
                         <div class="station-card" onclick="startStation('sipoc')">
-                            <div class="station-icon">📡</div>
+                            <div class="station-img">
+                                <img src="station_sipoc_icon.png" alt="SIPOC">
+                            </div>
                             <div class="station-name">THE MAP</div>
                             <div class="station-tag">SIPOC Diagram</div>
                         </div>
                         <div class="station-card" onclick="startStation('msa')">
-                            <div class="station-icon">🎯</div>
+                            <div class="station-img">
+                                <img src="station_msa_icon.png" alt="MSA">
+                            </div>
                             <div class="station-name">THE TRUST</div>
                             <div class="station-tag">MSA / Gage R&R</div>
                         </div>
                         <div class="station-card" onclick="startStation('stats')">
-                            <div class="station-icon">💓</div>
+                            <div class="station-img">
+                                <img src="station_stats_icon.png" alt="Stats">
+                            </div>
                             <div class="station-name">THE PULSE</div>
                             <div class="station-tag">Descriptive Stats</div>
                         </div>
                         <div class="station-card" onclick="startStation('pareto')">
-                            <div class="station-icon">🔭</div>
+                            <div class="station-img">
+                                <img src="station_pareto_icon.png" alt="Pareto">
+                            </div>
                             <div class="station-name">THE FOCUS</div>
                             <div class="station-tag">Pareto Analysis</div>
                         </div>
                         <div class="station-card" onclick="startStation('fishbone')">
-                            <div class="station-icon">🦴</div>
+                            <div class="station-img">
+                                <img src="station_fishbone_icon.png" alt="Fishbone">
+                            </div>
                             <div class="station-name">THE ANATOMY</div>
                             <div class="station-tag">Fishbone Diagram</div>
                         </div>
@@ -3153,48 +3351,60 @@
     </div>
 
     <script>
-        // BOOTCAMP DATA
+        // BOOTCAMP DATA (EXACT JSON STRUCTURE)
         const bootcampData = {
-            pre_lab: {
-                title: "Mission Prep: The Essential 6",
-                stations: {
-                    charter: {
-                        id: "charter",
-                        title: "The Contract (Project Charter)",
-                        lesson: "The Charter is your authority. It defines the 'Scope' and the 'Team'. Without it, you are just a person with an opinion.",
-                        mechanic: "scope_creep"
+            "pre_lab": {
+                "title": "Mission Prep: The Essential 6",
+                "stations": [
+                    {
+                        "id": "charter",
+                        "title": "The Contract (Project Charter)",
+                        "source_ref": "Define_Priority_1",
+                        "lesson": "The Charter is your authority. It defines the 'Scope' and the 'Team'. Without it, you are just a person with an opinion.",
+                        "key_skill": "Problem Scoping",
+                        "mechanic": "scope_creep"
                     },
-                    sipoc: {
-                        id: "sipoc",
-                        title: "The Map (SIPOC)",
-                        lesson: "Before you dive deep, map the flow from Supplier to Customer. Identify the boundaries so you don't boil the ocean.",
-                        mechanic: "sipoc_drag"
+                    {
+                        "id": "sipoc",
+                        "title": "The Map (SIPOC)",
+                        "source_ref": "Define_Visual_1",
+                        "lesson": "Before you dive deep, map the flow from Supplier to Customer. Identify the boundaries so you don't boil the ocean.",
+                        "key_skill": "Process Mapping",
+                        "mechanic": "sipoc_drag"
                     },
-                    msa: {
-                        id: "msa",
-                        title: "The Trust (MSA Premium)",
-                        lesson: "Garbage In, Garbage Out. You must prove your Measurement System is reliable before you trust the data.",
-                        mechanic: "sniper_cal"
+                    {
+                        "id": "msa",
+                        "title": "The Trust (MSA Premium)",
+                        "source_ref": "Measure_Priority_1",
+                        "lesson": "Garbage In, Garbage Out. You must prove your Measurement System is reliable (Gage R&R) before you trust the data.",
+                        "key_skill": "Measurement Reliability",
+                        "mechanic": "sniper_cal"
                     },
-                    stats: {
-                        id: "stats",
-                        title: "The Pulse (Descriptive Stats)",
-                        lesson: "Know the difference between Mean (Average) and Median (Middle). In skewed data, the Average lies.",
-                        mechanic: "pulse_check"
+                    {
+                        "id": "stats",
+                        "title": "The Pulse (Descriptive Stats)",
+                        "source_ref": "Measure_Priority_2",
+                        "lesson": "Know the difference between Mean (Average) and Median (Middle). In skewed data, the Average lies.",
+                        "key_skill": "Basic Statistics",
+                        "mechanic": "pulse_check"
                     },
-                    pareto: {
-                        id: "pareto",
-                        title: "The Focus (Pareto Analysis)",
-                        lesson: "Don't fix everything. Fix the 'Vital Few' that cause 80% of the pain. Ignore the 'Trivial Many'.",
-                        mechanic: "triage_shot"
+                    {
+                        "id": "pareto",
+                        "title": "The Focus (Pareto Analysis)",
+                        "source_ref": "Analyze_Priority_3",
+                        "lesson": "Don't fix everything. Fix the 'Vital Few' that cause 80% of the pain. Ignore the 'Trivial Many'.",
+                        "key_skill": "Prioritization",
+                        "mechanic": "triage_shot"
                     },
-                    fishbone: {
-                        id: "fishbone",
-                        title: "The Anatomy (Fishbone)",
-                        lesson: "Don't jump to solutions. Dissect the problem into categories: Man, Machine, Material, Method.",
-                        mechanic: "detective_board"
+                    {
+                        "id": "fishbone",
+                        "title": "The Anatomy (Fishbone)",
+                        "source_ref": "Analyze_Priority_1",
+                        "lesson": "Don't jump to solutions. Dissect the problem into categories: Man, Machine, Material, Method, Environment.",
+                        "key_skill": "Root Cause Analysis",
+                        "mechanic": "detective_board"
                     }
-                }
+                ]
             }
         };
 
@@ -3216,15 +3426,20 @@
         }
 
         function startStation(id) {
-            const station = bootcampData.pre_lab.stations[id];
-            armoryState.currentStation = id;
-            document.getElementById('armory-lobby').style.display = 'none';
-            document.getElementById('station-panel').style.display = 'flex';
-            document.getElementById('game-title').innerText = station.title;
-            document.getElementById('game-lesson').innerText = station.lesson;
-            document.getElementById('game-stat').innerText = "SCORE: 0";
-            armoryState.score = 0;
-            initGame(station.mechanic);
+            const overlay = document.getElementById('armory-content');
+            overlay.classList.add('lock-in-flash');
+            setTimeout(() => {
+                overlay.classList.remove('lock-in-flash');
+                const station = bootcampData.pre_lab.stations.find(s => s.id === id);
+                armoryState.currentStation = id;
+                document.getElementById('armory-lobby').style.display = 'none';
+                document.getElementById('station-panel').style.display = 'flex';
+                document.getElementById('game-title').innerText = station.title;
+                document.getElementById('game-lesson').innerText = station.lesson;
+                document.getElementById('game-stat').innerText = "SCORE: 0";
+                armoryState.score = 0;
+                initGame(station.mechanic);
+            }, 300);
         }
 
         // DRAGGABLE LOGIC
@@ -3250,18 +3465,21 @@
             const surface = document.getElementById('game-surface');
             surface.innerHTML = '';
 
-            // 1. PROJECT CHARTER: SCOPE CREEP ZAPPER
+            // 1. PROJECT CHARTER: SCOPE CREEP DEFENDER
             if (type === 'scope_creep') {
                 surface.innerHTML = `
-                    <div style="text-align:center; padding-top:10px;">
-                        <div style="font-size:12px; color:#06b6d4; margin-bottom:15px; font-weight:bold; letter-spacing:1px;">TACTICAL DIRECTIVE: SELECT FACTS. ZAP SUBJECTIVE BIAS.</div>
-                        <div id="game-grid" style="position:relative; height:350px; width:100%; background:rgba(6,182,212,0.02); border-radius:12px; border:1px solid rgba(6,182,212,0.1);"></div>
+                    <div style="text-align:center; padding-top:10px; position:relative;">
+                        <div style="font-size:12px; color:#06b6d4; margin-bottom:15px; font-weight:bold; letter-spacing:1px;">MISSION ORDER: CAPTURE FACTS. ZAP BIAS.</div>
+                        <div id="game-grid" style="position:relative; height:350px; width:100%; background:rgba(6,182,212,0.02); border-radius:12px; border:1px solid rgba(6,182,212,0.1); overflow:hidden;"></div>
+                        <div id="auth-stamp" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) scale(5); opacity:0; pointer-events:none; z-index:100; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                            <div style="border:10px solid #10b981; color:#10b981; padding:20px 40px; font-family:'Orbitron'; font-weight:900; border-radius:20px; font-size:3rem; transform:rotate(-15deg); background:rgba(0,0,0,0.8);">AUTHORIZED</div>
+                        </div>
                     </div>`;
                 const container = document.getElementById('game-grid');
                 const words = [
-                    { t: "Wait time > 45m", v: true }, { t: "Q3 2025 Start", v: true }, { t: "ER Lab Area", v: true },
-                    { t: "Nurses are lazy", v: false }, { t: "Need new app", v: false }, { t: "I think...", v: false },
-                    { t: "Budget: $5k", v: true }, { t: "Defects: 12%", v: true }, { t: "Fire the boss", v: false }
+                    { t: "Wait time > 45m", v: true }, { t: "Q3 2025", v: true }, { t: "ER Lab", v: true },
+                    { t: "Lazy nurses", v: false }, { t: "Need new software", v: false }, { t: "I think...", v: false },
+                    { t: "Extent of Impact", v: true }, { t: "Subjective Blame", v: false }, { t: "Solution Jump", v: false }
                 ];
                 words.forEach((w, i) => {
                     const el = document.createElement('div');
@@ -3272,7 +3490,7 @@
                     el.style.animation = `float ${3 + Math.random() * 4}s infinite alternate ease-in-out`;
                     el.onclick = () => {
                         if (w.v) {
-                            armoryState.score += 20;
+                            armoryState.score += 34;
                             el.style.background = 'rgba(16, 185, 129, 0.4)';
                             el.style.boxShadow = '0 0 15px #10b981';
                             el.style.pointerEvents = 'none';
@@ -3281,10 +3499,13 @@
                             el.style.background = 'rgba(239, 68, 68, 0.4)';
                             el.innerText = "BIAS ZAPPED!";
                         }
-                        document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
+                        document.getElementById('game-stat').innerText = "SCORE: " + Math.min(100, armoryState.score);
                         if (armoryState.score >= 100) {
-                            showToast("Charter Calibrated & Authorized", "success");
-                            setTimeout(showLobby, 1500);
+                            const stamp = document.getElementById('auth-stamp');
+                            stamp.style.opacity = "1";
+                            stamp.style.transform = "translate(-50%, -50%) scale(1) rotate(-15deg)";
+                            showToast("Charter Authorized!", "success");
+                            setTimeout(showLobby, 2000);
                         }
                     };
                     container.appendChild(el);
@@ -3294,9 +3515,9 @@
             // 2. SIPOC: THE 30,000FT VIEW
             if (type === 'sipoc_drag') {
                 surface.innerHTML = `
-                    <div style="text-align:center; margin-bottom:20px; font-size:11px; color:#94a3b8; letter-spacing:1px;">SORT PROCESS LOGISTICS INTO RADAR BINS</div>
+                    <div style="text-align:center; margin-bottom:20px; font-size:11px; color:#94a3b8; letter-spacing:1px;">SCENARIO: PIZZA DELIVERY PROCESS</div>
                     <div id="drag-bin" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:40px; min-height:50px;"></div>
-                    <div class="sipoc-buckets">
+                    <div class="sipoc-buckets" style="gap:5px;">
                         <div class="bucket" id="bucket-S" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'S')"><div class="bucket-label">SUPPLIER</div></div>
                         <div class="bucket" id="bucket-I" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'I')"><div class="bucket-label">INPUT</div></div>
                         <div class="bucket" id="bucket-P" ondragover="event.preventDefault()" ondrop="dropSipoc(event, 'P')"><div class="bucket-label">PROCESS</div></div>
@@ -3305,8 +3526,8 @@
                     </div>
                 `;
                 const mapping = {
-                    "Vendor A": "S", "Raw Material": "I", "Milling": "P", "Finished Part": "O", "End User": "C",
-                    "IT Support": "S", "User Request": "I", "Coding": "P", "App Update": "O", "Subscriber": "C"
+                    "Grocery Store": "S", "Flour": "I", "Baking": "P", "Hot Pizza": "O", "Hungry Customer": "C",
+                    "Vendor A": "S", "Dough": "I", "Preparation": "P", "Delivery Box": "O", "End User": "C"
                 };
                 Object.keys(mapping).forEach(key => {
                     const el = document.createElement('div');
@@ -3322,17 +3543,19 @@
                     const target = e.target.closest('.bucket');
                     if (mapping[data] === bucket) {
                         armoryState.score += 10;
-                        target.style.borderColor = "#10b981";
-                        target.innerHTML += `<div style="font-size:10px; color:#10b981; margin-top:5px;">✅ ${data}</div>`;
+                        target.style.borderColor = "#06b6d4";
+                        target.style.boxShadow = "0 0 10px rgba(6, 182, 212, 0.4)";
+                        target.innerHTML += `<div style="font-size:9px; color:#06b6d4; margin-top:2px;">${data}</div>`;
                         const items = document.querySelectorAll('.drag-item');
                         items.forEach(it => { if (it.innerText === data) it.remove(); });
                     } else {
                         armoryState.score -= 5;
-                        showToast("Strategic Error: Logistics Mismatch", "error");
+                        showToast("Bucket Mismatch!", "error");
                     }
                     document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
                     if (armoryState.score >= 100) {
-                        showToast("Tactical Map Complete", "success");
+                        surface.style.filter = "drop-shadow(0 0 20px cyan)";
+                        showToast("Process Flow Connected!", "success");
                         setTimeout(showLobby, 1500);
                     }
                 };
@@ -3342,82 +3565,89 @@
             if (type === 'sniper_cal') {
                 surface.innerHTML = `
                     <div style="text-align:center;">
-                        <div style="font-size:12px; color:#06b6d4; margin-bottom:20px; font-weight:bold;">DIRECTIVE: STABILIZE MEASUREMENT VARIATION</div>
-                        <div id="sniper-scope" style="width:240px; height:240px; border:3px solid rgba(255,255,255,0.2); border-radius:100%; margin:0 auto; position:relative; background:radial-gradient(circle, rgba(6,182,212,0.1) 0%, rgba(0,0,0,0.8) 100%); overflow:hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
-                            <div style="position:absolute; width:100%; height:1px; background:rgba(239, 68, 68, 0.4); top:50%;"></div>
-                            <div style="position:absolute; height:100%; width:1px; background:rgba(239, 68, 68, 0.4); left:50%;"></div>
-                            <div id="target-dot" style="position:absolute; width:12px; height:12px; background:#10b981; border-radius:100%; box-shadow:0 0 15px #10b981; transition: 0.1s;"></div>
+                        <div style="font-size:12px; color:#06b6d4; margin-bottom:20px; font-weight:bold;">ROUND 1: HIGH VARIATION DETECTED</div>
+                        <div id="sniper-scope" style="width:240px; height:240px; border:3px solid rgba(255,255,255,0.2); border-radius:100%; margin:0 auto; position:relative; background:radial-gradient(circle, rgba(6,182,212,0.1) 0%, rgba(0,0,0,0.8) 100%); overflow:hidden;">
+                            <div id="scope-hair-v" style="position:absolute; width:100%; height:1px; background:rgba(239, 68, 68, 0.4); top:50%;"></div>
+                            <div id="scope-hair-h" style="position:absolute; height:100%; width:1px; background:rgba(239, 68, 68, 0.4); left:50%;"></div>
+                            <div id="target-dot" style="position:absolute; width:12px; height:12px; background:#10b981; border-radius:100%; box-shadow:0 0 15px #10b981;"></div>
                         </div>
                         <div style="margin-top:40px; padding:0 50px;">
                             <div style="display:flex; justify-content:space-between; font-size:10px; color:#94a3b8; margin-bottom:10px;">
-                                <span>UNSTABLE (LOW GR&R)</span>
-                                <span>STABLE (CALIBRATED)</span>
+                                <span>UNSTANDARDIZED</span>
+                                <span>STANDARDIZED (GOOD MSA)</span>
                             </div>
                             <input type="range" id="cal-slider" style="width:100%; accent-color:#06b6d4;" min="0" max="100" value="0">
                         </div>
-                        <button class="btn-game" style="margin-top:30px; width:200px;" onclick="checkMSA()">LOCK SENSORS</button>
+                        <div id="msa-lesson" style="margin-top:20px; font-size:10px; color:#64748b; font-style:italic;">Inspector A: 5mm | Inspector B: 7mm</div>
                     </div>
                 `;
+                const scope = document.getElementById('sniper-scope');
                 const dot = document.getElementById('target-dot');
-                let wobble = 30;
+                let wobble = 40;
                 const interval = setInterval(() => {
                     const offsetT = (Math.random() - 0.5) * wobble;
                     const offsetL = (Math.random() - 0.5) * wobble;
                     dot.style.top = (50 + offsetT) + '%';
                     dot.style.left = (50 + offsetL) + '%';
-                }, 80);
+                    if (wobble > 20) {
+                        scope.style.transform = `translate(${(Math.random() - 0.5) * wobble}px, ${(Math.random() - 0.5) * wobble}px)`;
+                    } else {
+                        scope.style.transform = `none`;
+                    }
+                }, 50);
 
                 document.getElementById('cal-slider').oninput = (e) => {
-                    wobble = 30 - (e.target.value / 3.5);
-                    const scope = document.getElementById('sniper-scope');
-                    scope.style.borderColor = `rgba(6, 182, 212, ${e.target.value / 100})`;
-                };
-
-                window.checkMSA = () => {
-                    const val = document.getElementById('cal-slider').value;
-                    if (val > 88) {
-                        armoryState.score = 100;
+                    const val = e.target.value;
+                    wobble = 40 - (val / 2.5);
+                    if (val > 80) {
+                        document.getElementById('msa-lesson').innerText = "All Inspectors: 5.1mm (STABLE)";
+                        document.getElementById('msa-lesson').style.color = "#10b981";
+                    } else {
+                        document.getElementById('msa-lesson').innerText = "Inspector A: 5mm | Inspector B: 7mm";
+                        document.getElementById('msa-lesson').style.color = "#64748b";
+                    }
+                    if (val == 100) {
                         clearInterval(interval);
                         dot.style.top = '50%'; dot.style.left = '50%';
-                        showToast("Measurement Trust: ELITE", "success");
+                        armoryState.score = 100;
+                        document.getElementById('game-stat').innerText = "SCORE: 100";
+                        showToast("Measurement Trust: STABLE", "success");
                         setTimeout(showLobby, 1500);
-                    } else {
-                        showToast("Noise Floor Too High!", "error");
                     }
-                    document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
                 };
             }
 
             // 4. STATS: VITAL SIGNS MONITOR
             if (type === 'pulse_check') {
                 surface.innerHTML = `
-                    <div style="text-align:center; padding-top:20px;">
-                        <h3 style="color:#fff; font-family:'Orbitron'; margin-bottom:10px;">SKEWED DATA DETECTED</h3>
-                        <p style="font-size:13px; color:#94a3b8; margin-bottom:30px;">A process has extreme high outliers. Which metric reveals the 'True Pulse'?</p>
-                        <div style="display:flex; justify-content:center; gap:30px;">
-                            <div class="station-card" onclick="answerStats('mean')" style="width:180px; border-color:rgba(239, 68, 68, 0.3);">
-                                <div style="font-size:32px; margin-bottom:15px;">📊</div>
-                                <div style="font-weight:bold; letter-spacing:1px;">MEAN</div>
-                                <div style="font-size:10px; color:#ef4444; margin-top:10px;">VOLATILE / SENSITIVE</div>
-                            </div>
-                            <div class="station-card" onclick="answerStats('median')" style="width:180px; border-color:rgba(16, 185, 129, 0.3);">
-                                <div style="font-size:32px; margin-bottom:15px;">💓</div>
-                                <div style="font-weight:bold; letter-spacing:1px;">MEDIAN</div>
-                                <div style="font-size:10px; color:#10b981; margin-top:10px;">ROBUST / STABLE</div>
-                            </div>
+                    <div style="text-align:center; padding-top:10px;">
+                        <h3 style="color:#fff; font-family:'Orbitron'; margin-bottom:20px;">VITAL SIGNS MONITOR</h3>
+                        <div id="ekg-monitor" style="width:100%; height:150px; background:#000; border:2px solid #333; border-radius:10px; position:relative; overflow:hidden;">
+                            <svg width="100%" height="100%" viewBox="0 0 500 150" style="position:absolute;">
+                                <path id="ekg-line" d="M0,75 L100,75 L110,40 L120,110 L130,75 L200,75 L210,10 L220,140 L230,75 L300,75 L310,40 L320,110 L330,75 L500,75" fill="none" stroke="#ef4444" stroke-width="3">
+                                    <animate attributeName="stroke-dasharray" from="0,500" to="500,0" dur="2s" repeatCount="indefinite" />
+                                </path>
+                            </svg>
+                            <div style="position:absolute; right:10px; top:10px; color:#ef4444; font-family:'Courier New'; font-weight:bold;">SKEWED DATA DETECTED</div>
+                        </div>
+                        <p style="margin-top:20px; color:#94a3b8; font-size:13px;">A heart rate spike occurred. Which metric represents reality?</p>
+                        <div style="display:flex; justify-content:center; gap:20px; margin-top:30px;">
+                            <button class="btn-game" onclick="answerStats('mean')" style="width:150px; background:rgba(239, 68, 68, 0.2);">MEAN (AVERAGE)</button>
+                            <button class="btn-game" onclick="answerStats('median')" style="width:150px; background:rgba(16, 185, 129, 0.2);">MEDIAN (MIDDLE)</button>
                         </div>
                     </div>
                 `;
                 window.answerStats = (ans) => {
+                    const ekg = document.getElementById('ekg-line');
                     if (ans === 'median') {
+                        ekg.setAttribute('stroke', '#10b981');
                         armoryState.score = 100;
-                        showToast("Insight: Median found the core!", "success");
+                        document.getElementById('game-stat').innerText = "SCORE: 100";
+                        showToast("Correct! Median is robust to skew.", "success");
                         setTimeout(showLobby, 1500);
                     } else {
-                        armoryState.score = 0;
-                        showToast("Error: Mean is biased by outliers!", "error");
+                        showToast("Mean is pulled by the outlier!", "error");
                     }
-                    document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
                 };
             }
 
@@ -3425,37 +3655,38 @@
             if (type === 'triage_shot') {
                 surface.innerHTML = `
                     <div style="text-align:center;">
-                        <h3 style="color:#fff; font-family:'Orbitron'; margin-bottom:10px;">THE VITAL FEW</h3>
-                        <p style="font-size:11px; color:#94a3b8; margin-bottom:20px;">80% of pain comes from 20% of causes. ELIMINATE THE VITAL FEW.</p>
-                        <div id="defect-pile" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; max-width:500px; margin:0 auto;"></div>
+                        <div style="font-size:12px; color:#06b6d4; margin-bottom:20px; font-weight:bold;">BUDGET: $1,000 | FIX THE VITAL FEW</div>
+                        <div id="pareto-chart" style="display:flex; align-items:flex-end; gap:10px; height:200px; justify-content:center; padding-bottom:20px; border-bottom:1px solid #333; margin-bottom:30px; position:relative;">
+                            <div class="bar vital" style="height:180px; width:40px; background:#f59e0b; border:2px solid #fbbf24; cursor:crosshair; transition:0.3s; position:relative;">
+                                <div style="position:absolute; bottom:-25px; left:0; font-size:9px; width:100%;">MAJOR CRASH</div>
+                            </div>
+                            <div class="bar" style="height:40px; width:30px; background:#334155; border:2px solid #475569;"></div>
+                            <div class="bar" style="height:35px; width:30px; background:#334155; border:2px solid #475569;"></div>
+                            <div class="bar vital" style="height:160px; width:40px; background:#f59e0b; border:2px solid #fbbf24; cursor:crosshair; transition:0.3s; position:relative;">
+                                <div style="position:absolute; bottom:-25px; left:0; font-size:9px; width:100%;">DATA LEAK</div>
+                            </div>
+                            <div class="bar" style="height:20px; width:30px; background:#334155; border:2px solid #475569;"></div>
+                        </div>
+                        <button class="btn-game" id="shot-btn" style="display:none; width:200px;">FIRE SOLUTION SHOT</button>
+                        <p id="pareto-hint" style="color:#64748b; font-size:11px;">Select the bars that cause 80% of the pain.</p>
                     </div>
                 `;
-                const defects = [
-                    { t: "Major Crash", c: 65, v: true }, { t: "Minor Typo", c: 2, v: false },
-                    { t: "Login Fail", c: 15, v: true }, { t: "Color Tint", c: 3, v: false },
-                    { t: "Data Leak", c: 80, v: true }, { t: "Slow Scroll", c: 5, v: false }
-                ];
-                defects.forEach(d => {
-                    const el = document.createElement('div');
-                    el.className = 'station-card';
-                    el.innerHTML = `<div style="font-size:10px; color:#94a3b8;">${d.t}</div><div style="font-size:18px; color:${d.v ? '#ef4444' : '#64748b'}; font-weight:bold;">${d.c}% IMPACT</div>`;
-                    el.onclick = () => {
-                        if (d.v) {
-                            armoryState.score += 34;
-                            el.style.borderColor = "#10b981";
-                            el.style.background = "rgba(16, 185, 129, 0.1)";
-                            el.style.opacity = "0.6";
-                            el.style.pointerEvents = "none";
-                        } else {
-                            showToast("Avoid the Trivial Many!", "warning");
-                        }
+                const vitals = document.querySelectorAll('.bar.vital');
+                vitals.forEach(v => {
+                    v.onclick = () => {
+                        v.style.boxShadow = "0 0 20px #fbbf24";
+                        v.style.filter = "brightness(1.5)";
+                        armoryState.score += 50;
                         if (armoryState.score >= 100) {
-                            showToast("80/20 Leverage Secured", "success");
-                            setTimeout(showLobby, 1500);
+                            document.getElementById('shot-btn').style.display = "inline-block";
+                            document.getElementById('shot-btn').onclick = () => {
+                                surface.style.background = "rgba(245, 158, 11, 0.1)";
+                                showToast("80/20 Leverage Secured!", "success");
+                                setTimeout(showLobby, 1500);
+                            };
                         }
-                        document.getElementById('game-stat').innerText = "SCORE: " + Math.min(100, armoryState.score);
+                        document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
                     };
-                    document.getElementById('defect-pile').appendChild(el);
                 });
             }
 
@@ -3463,42 +3694,37 @@
             if (type === 'detective_board') {
                 surface.innerHTML = `
                     <div style="text-align:center;">
-                        <h3 style="color:#fff; font-family:'Orbitron'; margin-bottom:10px;">ANATOMY OF FAILURE</h3>
-                        <p style="font-size:11px; color:#94a3b8; margin-bottom:20px;">CATEGORIZE THE ROOT CAUSE CLUES</p>
-                        <div id="clue-box" style="padding:20px; background:rgba(6,182,212,0.1); border:1px solid #06b6d4; border-radius:12px; font-size:1.4rem; color:#fff; font-family:'Orbitron'; margin-bottom:30px; min-height:80px; display:flex; align-items:center; justify-content:center;">CLUE LOADING...</div>
-                        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:15px; max-width:400px; margin:0 auto;">
-                            <button class="btn-game" onclick="checkClue('MAN')">MAN</button>
-                            <button class="btn-game" onclick="checkClue('MACHINE')">MACHINE</button>
-                            <button class="btn-game" onclick="checkClue('METHOD')">METHOD</button>
-                            <button class="btn-game" onclick="checkClue('MATERIAL')">MATERIAL</button>
+                        <h4 style="color:#fff; font-family:'Orbitron';">SCENARIO: COFFEE TASTES BURNT</h4>
+                        <div id="clue-container" style="padding:20px; background:rgba(236, 72, 153, 0.1); border:1px solid #ec4899; margin:20px auto; width:300px; min-height:60px; border-radius:10px; display:flex; align-items:center; justify-content:center;">CLUE: Barista didn't sleep</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:400px; margin:0 auto;">
+                            <button class="btn-game" onclick="dragClue('MAN')">MAN</button>
+                            <button class="btn-game" onclick="dragClue('MACHINE')">MACHINE</button>
+                            <button class="btn-game" onclick="dragClue('MATERIAL')">MATERIAL</button>
+                            <button class="btn-game" onclick="dragClue('METHOD')">METHOD</button>
                         </div>
                     </div>
                 `;
                 const clues = [
-                    { t: "INSUFFICIENT TRAINING", c: "MAN" }, { t: "CORRODED SENSORS", c: "MACHINE" },
-                    { t: "OBSOLETE PROCEDURE", c: "METHOD" }, { t: "CONTAMINATED FUEL", c: "MATERIAL" },
-                    { t: "STAFF FATIGUE", c: "MAN" }, { t: "HYDRAULIC LEAK", c: "MACHINE" }
+                    { t: "Barista didn't sleep", c: "MAN" },
+                    { t: "Oven temp broken", c: "MACHINE" },
+                    { t: "Beans are cheap", c: "MATERIAL" },
+                    { t: "Brew time too long", c: "METHOD" }
                 ];
-                let currentIdx = 0;
-                const setClue = () => {
-                    if (currentIdx < clues.length) {
-                        document.getElementById('clue-box').innerText = clues[currentIdx].t;
+                let curClue = 0;
+                window.dragClue = (cat) => {
+                    if (cat === clues[curClue].c) {
+                        armoryState.score += 25;
+                        curClue++;
+                        if (curClue < clues.length) {
+                            document.getElementById('clue-container').innerText = "CLUE: " + clues[curClue].t;
+                        } else {
+                            showToast("Root Cause Isolated!", "success");
+                            setTimeout(showLobby, 1500);
+                        }
                     } else {
-                        showToast("Problem Anatomy Deciphered", "success");
-                        setTimeout(showLobby, 1500);
+                        showToast("Logic Mismatch!", "error");
                     }
-                };
-                setClue();
-
-                window.checkClue = (cat) => {
-                    if (cat === clues[currentIdx].c) {
-                        armoryState.score += 17;
-                        currentIdx++;
-                        setClue();
-                    } else {
-                        showToast("Logic Mismatch: Try Again", "error");
-                    }
-                    document.getElementById('game-stat').innerText = "SCORE: " + Math.min(100, armoryState.score);
+                    document.getElementById('game-stat').innerText = "SCORE: " + armoryState.score;
                 };
             }
         }
