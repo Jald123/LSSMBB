@@ -68,10 +68,11 @@
             <div class="dock-tool" title="Biostats" onclick="window.open('../Tool_MBB_Stats_Assistant.html', '_blank')">📊</div>
             <div class="dock-tool" title="Highlighter" id="highlighter-toggle" onclick="toggleHighlighter()">🖍️</div>
             <div class="dock-tool" title="Sniper Zoom" id="sniper-toggle" onclick="toggleSniper()">🔍</div>
-            <div class="dock-tool zoom-out" title="Zoom Out" onclick="changePageZoom(-0.1)" style="background:linear-gradient(135deg, #6366f1, #4f46e5);">➖</div>
-            <div class="dock-tool zoom-reset" title="Zoom Reset" onclick="changePageZoom(0)" style="background:linear-gradient(135deg, #f97316, #ea580c);">🏠</div>
-            <div class="dock-tool zoom-in" title="Zoom In" onclick="changePageZoom(0.1)" style="background:linear-gradient(135deg, #22c55e, #16a34a);">➕</div>
-            <div style="width:1px; height:20px; background:rgba(255,255,255,0.2); margin:0 5px;"></div>
+            <div style="display:flex; gap:6px; padding:6px 10px; background:rgba(255,255,255,0.05); border-radius:20px; border:1px solid rgba(255,255,255,0.1);">
+                <div class="dock-tool zoom-control" title="Zoom Out" onclick="changePageZoom(-0.1)" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #6366f1, #4f46e5);">➖</div>
+                <div class="dock-tool zoom-control" title="Zoom Reset" onclick="changePageZoom(0)" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #f97316, #ea580c);">🏠</div>
+                <div class="dock-tool zoom-control" title="Zoom In" onclick="changePageZoom(0.1)" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #22c55e, #16a34a);">➕</div>
+            </div>
             <div style="font-size:10px; color:#aaa; font-family:monospace;">AST-V2</div>
         </div>
 
