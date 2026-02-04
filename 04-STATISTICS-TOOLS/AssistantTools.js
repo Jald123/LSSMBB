@@ -75,8 +75,8 @@
             <div style="font-size:10px; color:#aaa; font-family:monospace;">AST-V2</div>
         </div>
 
-        <!-- Sticky Notes Window (Modern Premium Style with Animated Border) -->
-        <div id="sticky-window" class="assistant-window sticky-animated-border" style="width:380px; top:80px; left:80px; background: linear-gradient(145deg, #fef9c3, #fef08a); border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,0.25);">
+        <!-- Sticky Notes Window (Floating, Movable, Top Position) -->
+        <div id="sticky-window" class="assistant-window sticky-animated-border" style="position:fixed; width:380px; top:100px; right:50px; left:auto; background: linear-gradient(145deg, #fef9c3, #fef08a); border-radius: 12px; box-shadow: 0 15px 50px rgba(0,0,0,0.25); z-index:10001;">
             <div class="sticky-header-bar" id="sticky-color-presets" style="display:flex; height:10px; border-radius:16px 16px 0 0; overflow:hidden;">
                 <!-- Colors injected here -->
             </div>
@@ -258,6 +258,14 @@
             e.preventDefault();
             pos3 = e.clientX;
             pos4 = e.clientY;
+
+            // Convert right positioning to left on first drag
+            if (element.style.right && element.style.right !== 'auto') {
+                const rect = element.getBoundingClientRect();
+                element.style.left = rect.left + 'px';
+                element.style.right = 'auto';
+            }
+
             document.onmouseup = closeDragElement;
             document.onmousemove = elementDrag;
         }
