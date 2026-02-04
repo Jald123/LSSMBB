@@ -2239,10 +2239,24 @@
     <div class="modal-container processlab-modal" id="processlab-modal">
         <div class="modal-header">
             <div class="modal-title">
-                <h2>☕ The Perfect Latte Lab</h2>
+                <div class="flex items-center gap-4">
+                    <h2 id="lab-title">☕ The Perfect Latte Lab</h2>
+                    <select id="scenario-selector" onchange="switchScenario(this.value)"
+                        class="bg-slate-900/80 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg px-3 py-1.5 focus:border-brand-orange outline-none">
+                        <option value="latte">☕ Latte Pour (Service)</option>
+                        <option value="medical">🏥 ER Triage (Medical)</option>
+                    </select>
+                </div>
                 <span class="badge">Sigma Simulator</span>
             </div>
-            <button class="modal-close" onclick="closeModal('processlab')">×</button>
+            <div class="flex items-center gap-3">
+                <button onclick="resetLab()"
+                    class="text-xs font-bold text-slate-500 hover:text-brand-risk flex items-center gap-2 transition-colors uppercase tracking-widest px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    Reset All Data
+                </button>
+                <button class="modal-close" onclick="closeModal('processlab')">×</button>
+            </div>
         </div>
         <div class="modal-body">
             <div class="lab-panels">
@@ -2255,28 +2269,29 @@
 
                     <div class="chaos-toggle" id="chaos1" onclick="toggleChaos(1)">
                         <div class="chaos-header">
-                            <div class="chaos-name">👤 Untrained Barista</div>
-                            <div class="chaos-impact">+0.4σ</div>
+                            <div class="chaos-name" id="chaos1-name">👤 Untrained Barista</div>
+                            <div class="chaos-impact" id="chaos1-impact">+0.4σ</div>
                         </div>
-                        <div class="chaos-desc">Inconsistent pouring technique adds major variation to fill levels.
-                        </div>
+                        <div class="chaos-desc" id="chaos1-desc">Inconsistent pouring technique adds major variation to
+                            fill levels.</div>
                     </div>
 
                     <div class="chaos-toggle" id="chaos2" onclick="toggleChaos(2)">
                         <div class="chaos-header">
-                            <div class="chaos-name">⚙️ Old Espresso Machine</div>
-                            <div class="chaos-impact">+0.25σ</div>
+                            <div class="chaos-name" id="chaos2-name">⚙️ Old Espresso Machine</div>
+                            <div class="chaos-impact" id="chaos2-impact">+0.25σ</div>
                         </div>
-                        <div class="chaos-desc">Machine pressure fluctuates, causing inconsistent fill and slight mean
-                            shift.</div>
+                        <div class="chaos-desc" id="chaos2-desc">Machine pressure fluctuates, causing inconsistent fill
+                            and slight mean shift.</div>
                     </div>
 
                     <div class="chaos-toggle" id="chaos3" onclick="toggleChaos(3)">
                         <div class="chaos-header">
-                            <div class="chaos-name">🥛 Cheap Milk Supplier</div>
-                            <div class="chaos-impact">+0.15σ</div>
+                            <div class="chaos-name" id="chaos3-name">🥛 Cheap Milk Supplier</div>
+                            <div class="chaos-impact" id="chaos3-impact">+0.15σ</div>
                         </div>
-                        <div class="chaos-desc">Milk froth density varies batch-to-batch, affecting final volume.</div>
+                        <div class="chaos-desc" id="chaos3-desc">Milk froth density varies batch-to-batch, affecting
+                            final volume.</div>
                     </div>
 
                     <div class="variation-display">
@@ -2289,7 +2304,7 @@
                 <div class="lab-panel visualizer-panel">
                     <div class="panel-title">
                         <div class="icon">📊</div>
-                        The Latte Pour Distribution
+                        <span id="visualizer-title">The Latte Pour Distribution</span>
                     </div>
 
                     <div class="curve-container" id="curve-container" onclick="toggleZoom()">
@@ -2326,7 +2341,7 @@
 
                         <!-- Target Line -->
                         <div class="target-line"></div>
-                        <div class="target-label">Target: 12.0oz</div>
+                        <div class="target-label" id="target-label">Target: 12.0oz</div>
 
                         <!-- Cups Animation Container -->
                         <div class="cups-container" id="cups-container"></div>
@@ -2351,8 +2366,8 @@
                     </div>
 
                     <button class="run-batch-btn" id="run-batch-btn" onclick="runBatch()">
-                        <span class="cup-icon">☕</span>
-                        Pour 100 Cups
+                        <span id="batch-btn-icon" class="cup-icon">☕</span>
+                        <span id="batch-btn-text">Pour 100 Cups</span>
                     </button>
                 </div>
 
@@ -2366,18 +2381,18 @@
                     <div class="customer-selector">
                         <div class="customer-option active" id="customer1" onclick="selectCustomer(1)">
                             <div class="customer-header">
-                                <span class="customer-icon">🚗</span>
-                                <span class="customer-name">The Commuter</span>
+                                <span class="customer-icon" id="cust1-icon">🚗</span>
+                                <span class="customer-name" id="cust1-name">The Commuter</span>
                             </div>
-                            <div class="customer-tolerance">Easygoing: 11.0oz - 13.0oz tolerance</div>
+                            <div class="customer-tolerance" id="cust1-desc">Easygoing: 11.0oz - 13.0oz tolerance</div>
                         </div>
 
                         <div class="customer-option" id="customer2" onclick="selectCustomer(2)">
                             <div class="customer-header">
-                                <span class="customer-icon">🧐</span>
-                                <span class="customer-name">The Connoisseur</span>
+                                <span class="customer-icon" id="cust2-icon">🧐</span>
+                                <span class="customer-name" id="cust2-name">The Connoisseur</span>
                             </div>
-                            <div class="customer-tolerance">Picky: 11.8oz - 12.2oz tolerance</div>
+                            <div class="customer-tolerance" id="cust2-desc">Picky: 11.8oz - 12.2oz tolerance</div>
                         </div>
                     </div>
 
@@ -2534,22 +2549,121 @@
         // ============================================
         // PROCESS LAB - SIGMA SIMULATOR
         // ============================================
+        const labScenarios = {
+            latte: {
+                title: "☕ The Perfect Latte Lab",
+                visualizerTitle: "The Latte Pour Distribution",
+                unit: "oz",
+                baseMean: 12.0,
+                baseVariation: 0.15,
+                btnIcon: "☕",
+                btnText: "Pour 100 Cups",
+                chaos: {
+                    1: { name: "👤 Untrained Barista", impact: "+0.4σ", sigma: 0.40, meanShift: 0, desc: "Inconsistent pouring technique adds major variation to fill levels." },
+                    2: { name: "⚙️ Old Espresso Machine", impact: "+0.25σ", sigma: 0.25, meanShift: 0.05, desc: "Machine pressure fluctuates, causing inconsistent fill and slight mean shift." },
+                    3: { name: "🥛 Cheap Milk Supplier", impact: "+0.15σ", sigma: 0.15, meanShift: 0, desc: "Milk froth density varies batch-to-batch, affecting final volume." }
+                },
+                customers: {
+                    1: { name: 'The Commuter', icon: "🚗", lsl: 11.0, usl: 13.0, desc: "Easygoing: 11.0oz - 13.0oz tolerance" },
+                    2: { name: 'The Connoisseur', icon: "🧐", lsl: 11.8, usl: 12.2, desc: "Picky: 11.8oz - 12.2oz tolerance" }
+                }
+            },
+            medical: {
+                title: "🏥 Emergency Triage Lab",
+                visualizerTitle: "ER Triage Wait Time Process",
+                unit: "min",
+                baseMean: 20.0,
+                baseVariation: 1.5,
+                btnIcon: "🏥",
+                btnText: "Process 100 Patients",
+                chaos: {
+                    1: { name: "📋 Surge in Arrivals", impact: "+2.0σ", sigma: 2.0, meanShift: 5.0, desc: "Sudden influx of patients overwhelms triage staff and increases wait." },
+                    2: { name: "💾 EHR System Downtime", impact: "+0.8σ", sigma: 0.8, meanShift: 2.5, desc: "Digital charting lag forces manual entry, causing delays and variation." },
+                    3: { name: "😴 Staff Fatigue (End of Shift)", impact: "+1.2σ", sigma: 1.2, meanShift: 0, desc: "Long hours lead to inconsistent triage decisions and slower processing." }
+                },
+                customers: {
+                    1: { name: 'Standard Triage', icon: "🩺", lsl: 10.0, usl: 30.0, desc: "General Case: 10-30 min wait threshold" },
+                    2: { name: 'Trauma Protocol', icon: "🚨", lsl: 15.0, usl: 25.0, desc: "Critical Need: Strict 15-25 min target" }
+                }
+            }
+        };
+
         const labState = {
+            currentScenario: 'latte',
             processMean: 12.0,
             baseVariation: 0.15,
-            chaosFactors: {
-                1: { active: false, sigma: 0.40, meanShift: 0 },      // Untrained Barista
-                2: { active: false, sigma: 0.25, meanShift: 0.05 },   // Old Machine
-                3: { active: false, sigma: 0.15, meanShift: 0 }       // Cheap Milk
-            },
-            customers: {
-                1: { name: 'Commuter', lsl: 11.0, usl: 13.0 },
-                2: { name: 'Connoisseur', lsl: 11.8, usl: 12.2 }
-            },
+            chaosFactors: {},
+            customers: {},
             currentCustomer: 1,
             batchResults: { good: 0, defects: 0 },
             isRunning: false
         };
+
+        function switchScenario(scenarioId) {
+            labState.currentScenario = scenarioId;
+            const config = labScenarios[scenarioId];
+
+            // Update State
+            labState.processMean = config.baseMean;
+            labState.baseVariation = config.baseVariation;
+            labState.customers = config.customers;
+            labState.chaosFactors = {};
+
+            // Re-map chaos factors based on new scenario
+            for (let id in config.chaos) {
+                labState.chaosFactors[id] = {
+                    active: false,
+                    sigma: config.chaos[id].sigma,
+                    meanShift: config.chaos[id].meanShift
+                }
+            }
+
+            // Update UI Labels
+            document.getElementById('lab-title').innerText = config.title;
+            document.getElementById('visualizer-title').innerText = config.visualizerTitle;
+            document.getElementById('target-label').innerText = `Target: ${config.baseMean.toFixed(1)}${config.unit}`;
+            document.getElementById('batch-btn-icon').innerText = config.btnIcon;
+            document.getElementById('batch-btn-text').innerText = config.btnText;
+
+            // Reset UI Chaos cards
+            for (let i = 1; i <= 3; i++) {
+                const card = document.getElementById(`chaos${i}`);
+                card.classList.remove('active');
+                document.getElementById(`chaos${i}-name`).innerText = config.chaos[i].name;
+                document.getElementById(`chaos${i}-impact`).innerText = config.chaos[i].impact;
+                document.getElementById(`chaos${i}-desc`).innerText = config.chaos[i].desc;
+            }
+
+            // Reset UI Customer selection
+            document.getElementById('cust1-icon').innerText = config.customers[1].icon;
+            document.getElementById('cust1-name').innerText = config.customers[1].name;
+            document.getElementById('cust1-desc').innerText = config.customers[1].desc;
+            document.getElementById('cust2-icon').innerText = config.customers[2].icon;
+            document.getElementById('cust2-name').innerText = config.customers[2].name;
+            document.getElementById('cust2-desc').innerText = config.customers[2].desc;
+
+            // Reset Batch counters
+            resetResults();
+
+            // Re-init displays
+            initProcessLab();
+        }
+
+        function resetResults() {
+            labState.batchResults = { good: 0, defects: 0 };
+            document.getElementById('good-bin-count').textContent = '0';
+            document.getElementById('defect-bin-count').textContent = '0';
+            document.getElementById('good-count').textContent = '-';
+            document.getElementById('defect-count').textContent = '-';
+            document.getElementById('cups-container').innerHTML = '';
+        }
+
+        function resetLab() {
+            if (confirm('Reset all simulation results and chaos factors?')) {
+                switchScenario(labState.currentScenario);
+                showToast('Simulation Reset', 'info');
+            }
+        }
 
         // Calculate current sigma and mean
         function getCurrentSigma() {
@@ -2804,8 +2918,8 @@
             const lslLabel = document.getElementById('lsl-label');
             const uslLabel = document.getElementById('usl-label');
 
-            lslLabel.textContent = `${customer.lsl}oz (Too Empty)`;
-            uslLabel.textContent = `${customer.usl}oz (Too Full)`;
+            lslLabel.textContent = `${customer.lsl}${labScenarios[labState.currentScenario].unit} (Low Limit)`;
+            uslLabel.textContent = `${customer.usl}${labScenarios[labState.currentScenario].unit} (High Limit)`;
 
             // Update positions based on customer tolerance
             const lslLine = document.getElementById('lsl-line');
@@ -2914,9 +3028,10 @@
                     const normalizedPos = (value - mean) / (sigma * 4) + 0.5;
                     const xPos = Math.max(5, Math.min(95, normalizedPos * 100));
 
+                    const config = labScenarios[labState.currentScenario];
                     const cup = document.createElement('div');
                     cup.className = `falling-cup ${isGood ? 'good' : 'defect'}`;
-                    cup.textContent = '☕';
+                    cup.textContent = config.btnIcon;
                     cup.style.left = `${xPos}%`;
                     cup.style.animationDelay = `${i * 20}ms`;
 
@@ -3038,7 +3153,21 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             updateContent();
+
+            // Initialize with default scenario
+            const defaultScenario = 'latte';
+            const config = labScenarios[defaultScenario];
+            labState.customers = config.customers;
+            for (let id in config.chaos) {
+                labState.chaosFactors[id] = {
+                    active: false,
+                    sigma: config.chaos[id].sigma,
+                    meanShift: config.chaos[id].meanShift
+                }
+            }
+
             initProcessLab();
+            lucide.createIcons();
         });
     </script>
 
