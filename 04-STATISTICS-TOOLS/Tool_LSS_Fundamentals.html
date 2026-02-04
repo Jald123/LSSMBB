@@ -2610,6 +2610,79 @@
             }, 100 * 25 + 1500);
         }
 
+        // ============================================
+        // COMPARATOR SLIDER LOGIC
+        // ============================================
+        const slider = document.querySelector('.comparator-slider');
+        const comparatorContainer = document.querySelector('.comparator-container');
+        const leanSide = document.querySelector('.lean-side');
+        const sigmaSide = document.querySelector('.sigma-side');
+        let isDragging = false;
+
+        function updateSlider(percent) {
+            // Constrain between 10% and 90%
+            percent = Math.max(10, Math.min(90, percent));
+
+            slider.style.left = `${percent}%`;
+            leanSide.style.width = `${percent}%`;
+            sigmaSide.style.width = `${100 - percent}%`;
+        }
+
+        slider.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            document.body.style.cursor = 'ew-resize';
+            // Disable transitions during dragging for immediate response
+            leanSide.style.transition = 'none';
+            sigmaSide.style.transition = 'none';
+            slider.style.transition = 'none';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const rect = comparatorContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percent = (x / rect.width) * 100;
+
+            updateSlider(percent);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            document.body.style.cursor = '';
+            // Re-enable transitions? Maybe not needed as 0.3s might feel laggy during drag anyway.
+            // But let's restore them in case of context switching etc.
+            leanSide.style.transition = 'all 0.3s ease';
+            sigmaSide.style.transition = 'all 0.3s ease';
+            slider.style.transition = 'all 0.3s ease';
+        });
+
+        // Touch support
+        slider.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            leanSide.style.transition = 'none';
+            sigmaSide.style.transition = 'none';
+            slider.style.transition = 'none';
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+
+            const rect = comparatorContainer.getBoundingClientRect();
+            const x = e.touches[0].clientX - rect.left;
+            const percent = (x / rect.width) * 100;
+
+            updateSlider(percent);
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            isDragging = false;
+            leanSide.style.transition = 'all 0.3s ease';
+            sigmaSide.style.transition = 'all 0.3s ease';
+            slider.style.transition = 'all 0.3s ease';
+        });
+
         // Initialize Process Lab
         function initProcessLab() {
             updateVariationDisplay();
