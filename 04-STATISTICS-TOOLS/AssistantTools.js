@@ -51,7 +51,7 @@
                 { hex: "#a78bfa", rgb: "167, 139, 250" }  // Purple
             ],
             size: 25,
-            transparency: 80 // Default 80% transparent
+            transparency: 90 // Default 90% transparent for clear text visibility
         },
         sniper: {
             active: false,
@@ -214,8 +214,8 @@
             <div id="transparency-control" style="display:none; flex-direction:column; gap:2px; border-left:1px solid #ddd; padding-left:15px;">
                 <span style="font-size:9px; font-weight:bold; color:#666; text-transform:uppercase;">Transparency</span>
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <input type="range" min="10" max="90" value="80" id="transparency-slider" oninput="setHighlighterTransparency(this.value)" style="width:70px; cursor:pointer;">
-                    <span id="transparency-value" style="font-size:11px; font-weight:600; color:#333; min-width:35px;">80%</span>
+                    <input type="range" min="50" max="95" value="90" id="transparency-slider" oninput="setHighlighterTransparency(this.value)" style="width:70px; cursor:pointer;">
+                    <span id="transparency-value" style="font-size:11px; font-weight:600; color:#333; min-width:35px;">90%</span>
                 </div>
             </div>
 
