@@ -3047,27 +3047,27 @@
 
         // Generate bell curve path and interactive zones
         function generateBellCurve(sigma) {
+            // Constants for chart framing
             const width = 400;
             const height = 200;
             const centerX = width / 2;
-            const baseY = height;
-
-            // Normalize sigma for display (base = 0.15 = narrow)
-            const displaySigma = sigma / 0.15 * 40;
+            const baseY = 200;
+            const displaySigma = 28; // Fixed scale to ensure 6-sigma fits in view (6*28=168, within 180 range)
+            const scalingFactor = 150; // Curve height scale
 
             // Clear existing zones
             const zonesGroup = document.getElementById('sigma-zones-group');
             zonesGroup.innerHTML = '';
             document.getElementById('sigma-markers').innerHTML = ''; // Clear existing markers
 
-            // Zone Colors (Premium Spectrum)
+            // Zone Colors (Multi-color Spectrum for each level)
             const zoneColors = {
-                1: 'rgba(16, 185, 129', // 0-1σ: Green
-                2: 'rgba(16, 185, 129', // 1-2σ: Green
-                3: 'rgba(251, 191, 36', // 2-3σ: Yellow
-                4: 'rgba(251, 191, 36', // 3-4σ: Yellow
-                5: 'rgba(249, 115, 22', // 4-5σ: Orange
-                6: 'rgba(239, 68, 68'   // 5-6σ: Red
+                1: 'rgba(16, 185, 129', // 0-1σ: Emerald
+                2: 'rgba(34, 197, 94',  // 1-2σ: Green
+                3: 'rgba(234, 179, 8',  // 2-3σ: Yellow
+                4: 'rgba(249, 115, 22', // 3-4σ: Orange
+                5: 'rgba(239, 68, 68',  // 4-5σ: Red
+                6: 'rgba(153, 27, 27'   // 5-6σ: Dark Red / Crimson
             };
 
             const sigmaPercentages = {
@@ -3104,10 +3104,12 @@
 
                 zonesGroup.appendChild(zone);
 
-                // Add small tick labels for 1,2,3,4,5,6
+                // Add labels for 1 to 6
                 if (s >= 0) {
-                    drawSigmaMarker(centerX + (s + 1) * displaySigma, `+${s + 1}σ`);
-                    drawSigmaMarker(centerX - (s + 1) * displaySigma, `-${s + 1}σ`);
+                    const z = s + 1;
+                    const c = zoneColors[z] + ', 1)';
+                    drawSigmaMarker(centerX + z * displaySigma, `+${z}σ`, c);
+                    drawSigmaMarker(centerX - z * displaySigma, `-${z}σ`, c);
                 }
             }
 
@@ -3115,12 +3117,12 @@
             const bracketsGroup = document.getElementById('sigma-brackets');
             bracketsGroup.innerHTML = '';
             const bracketConfigs = [
-                { s: 1, p: '68.26%', y: 240, color: '#94a3b8' },
-                { s: 2, p: '95.46%', y: 270, color: '#64748b' },
-                { s: 3, p: '99.73%', y: 300, color: '#94a3b8' },
-                { s: 4, p: '99.9937%', y: 330, color: '#64748b' },
-                { s: 5, p: '99.99943%', y: 360, color: '#94a3b8' },
-                { s: 6, p: '99.999998%', y: 390, color: '#64748b' }
+                { s: 1, p: '68.26%', y: 240, color: zoneColors[1] + ', 0.8)' },
+                { s: 2, p: '95.46%', y: 270, color: zoneColors[2] + ', 0.8)' },
+                { s: 3, p: '99.73%', y: 300, color: zoneColors[3] + ', 0.8)' },
+                { s: 4, p: '99.9937%', y: 330, color: zoneColors[4] + ', 0.8)' },
+                { s: 5, p: '99.99943%', y: 360, color: zoneColors[5] + ', 0.8)' },
+                { s: 6, p: '99.999998%', y: 390, color: zoneColors[6] + ', 0.8)' }
             ];
 
             bracketConfigs.forEach(conf => {
@@ -3143,6 +3145,7 @@
                 txt.setAttribute("x", centerX);
                 txt.setAttribute("y", conf.y - 8);
                 txt.setAttribute("class", "sigma-percentage-text");
+                txt.setAttribute("fill", conf.color);
                 txt.textContent = conf.p;
                 bracketsGroup.appendChild(txt);
 
@@ -3152,7 +3155,7 @@
                 dashL.setAttribute("x2", xStart); dashL.setAttribute("y2", conf.y + 10);
                 dashL.setAttribute("stroke", conf.color);
                 dashL.setAttribute("stroke-dasharray", "4 4");
-                dashL.setAttribute("opacity", "0.3");
+                dashL.setAttribute("opacity", "0.2");
                 bracketsGroup.appendChild(dashL);
 
                 const dashR = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -3160,17 +3163,21 @@
                 dashR.setAttribute("x2", xEnd); dashR.setAttribute("y2", conf.y + 10);
                 dashR.setAttribute("stroke", conf.color);
                 dashR.setAttribute("stroke-dasharray", "4 4");
-                dashR.setAttribute("opacity", "0.3");
+                dashR.setAttribute("opacity", "0.2");
                 bracketsGroup.appendChild(dashR);
             });
 
-            // Path for the smooth line
+            // Path for the actual process distribution (dynamic based on current simulation sigma)
+            // We scale it so it's centered but width shows variation
+            const currentVarScaling = (sigma / labState.baseVariation) * displaySigma;
             const linePoints = [];
-            for (let i = 0; i <= width; i++) {
-                const z = (i - centerX) / displaySigma;
+            for (let xPos = 0; xPos <= width; xPos += 1) {
+                const z = (xPos - centerX) / currentVarScaling;
                 const y = Math.exp(-0.5 * z * z);
-                const scaledY = baseY - y * 150;
-                linePoints.push(`${i},${scaledY}`);
+                const scaledY = baseY - y * scalingFactor;
+                // Clip when outside visible bounds to keep tails clean on axis
+                if (scaledY > baseY - 0.1) linePoints.push(`${xPos},${baseY}`);
+                else linePoints.push(`${xPos},${scaledY}`);
             }
             const pathD = `M ` + linePoints.join(' L ');
 
@@ -3184,7 +3191,7 @@
             return { line: pathD };
         }
 
-        function drawSigmaMarker(x, label) {
+        function drawSigmaMarker(x, label, color) {
             const container = document.getElementById('sigma-markers');
             const baseY = 200;
 
@@ -3193,9 +3200,9 @@
             text.setAttribute("y", baseY + 12);
             text.setAttribute("class", "sigma-marker-label");
             text.textContent = label;
-            text.style.fontSize = "7px";
-            text.style.opacity = "0.5";
-            text.style.fill = "white";
+            text.style.fontSize = "8px";
+            text.style.fill = color || "white";
+            text.style.fontWeight = "bold";
             text.style.textAnchor = "middle";
             container.appendChild(text);
         }
@@ -3321,26 +3328,25 @@
 
         // Update spec limit positions
         function updateSpecLimits() {
+            const config = labScenarios[labState.currentScenario];
             const customer = labState.customers[labState.currentCustomer];
             const lslLabel = document.getElementById('lsl-label');
             const uslLabel = document.getElementById('usl-label');
 
-            lslLabel.textContent = `${customer.lsl}${labScenarios[labState.currentScenario].unit} (Low Limit)`;
-            uslLabel.textContent = `${customer.usl}${labScenarios[labState.currentScenario].unit} (High Limit)`;
+            lslLabel.textContent = `${customer.lsl}${config.unit} (LSL)`;
+            uslLabel.textContent = `${customer.usl}${config.unit} (USL)`;
 
-            // Update positions based on customer tolerance
             const lslLine = document.getElementById('lsl-line');
             const uslLine = document.getElementById('usl-line');
 
-            if (labState.currentCustomer === 1) {
-                // Commuter - wide tolerance
-                lslLine.style.left = '10%';
-                uslLine.style.right = '10%';
-            } else {
-                // Connoisseur - tight tolerance
-                lslLine.style.left = '35%';
-                uslLine.style.right = '35%';
-            }
+            // Calculate percentage positions relative to the mean/range
+            // We use a visual width of +/- 10 units for caffeine, or relative to base variation
+            const range = config.baseVariation * 15; // Show roughly +/- 7.5 sigmas
+            const lslPct = 50 - ((config.baseMean - customer.lsl) / range) * 50;
+            const uslPct = 50 + ((customer.usl - config.baseMean) / range) * 50;
+
+            lslLine.style.left = `${Math.max(5, Math.min(45, lslPct))}%`;
+            uslLine.style.right = `${100 - Math.max(55, Math.min(95, uslPct))}%`;
         }
 
         // Update sigma level display
