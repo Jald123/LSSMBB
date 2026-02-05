@@ -1417,9 +1417,7 @@
             background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, transparent 100%);
             border-radius: 16px;
             border: 1px solid var(--border);
-            border: 1px solid var(--border);
-            min-height: 450px;
-            overflow: hidden;
+            min-height: 350px;
             overflow: hidden;
         }
 
@@ -2520,8 +2518,8 @@
                     </div>
 
                     <div class="curve-container" id="curve-container" onclick="toggleZoom()">
-                        <!-- SVG Bell Curve -->
-                        <svg class="curve-svg" id="bell-curve-svg" viewBox="0 0 400 450"
+                        <!-- SVG Bell Curve - High Fid Look (Matches Image 1) -->
+                        <svg class="curve-svg" id="bell-curve-svg" viewBox="0 0 400 320"
                             preserveAspectRatio="xMidYMid meet">
                             <defs>
                                 <linearGradient id="bellGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -2530,25 +2528,18 @@
                                 </linearGradient>
                             </defs>
 
-                            <!-- Base line with Infinity markers -->
-                            <line class="base-line" x1="20" y1="200" x2="380" y2="200" />
-                            <text class="infinity-label" x="5" y="195">- ∞</text>
-                            <text class="infinity-label" x="382" y="195">+ ∞</text>
-
                             <!-- Groups for Sigma Zones -->
                             <g id="sigma-zones-group"></g>
 
-                            <!-- Mean Line (μ) -->
-                            <line id="mean-line" x1="200" y1="30" x2="200" y2="380" stroke="#3b82f6" stroke-width="2"
-                                style="opacity: 0.8;" />
-                            <text x="200" y="215" fill="white" font-size="14" font-weight="700"
-                                text-anchor="middle">μ</text>
+                            <!-- Baseline and Axis (μ) -->
+                            <line id="mean-line" x1="200" y1="20" x2="200" y2="280" stroke="#000" stroke-width="1.5" />
 
-                            <!-- Main Curve Line -->
-                            <path id="bell-path" d="" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
-
+                            <!-- Sigma Labels Container -->
                             <g id="sigma-markers"></g>
                             <g id="sigma-brackets"></g>
+
+                            <!-- Main Curve Line -->
+                            <path id="bell-path" d="" fill="none" stroke="#2563eb" stroke-width="3" />
                         </svg>
 
                         <!-- Floating Readout (Image 1 Style) -->
@@ -3238,13 +3229,13 @@
 
         // Generate bell curve path and interactive zones
         function generateBellCurve(sigma) {
-            // Constants for chart framing
+            // Constants for chart framing (Image 1 proportions)
             const width = 400;
-            const height = 450;
+            const height = 320;
             const centerX = 200;
-            const baseY = 160;
-            const displaySigma = 28; // Fixed scale for 6-sigma view
-            const scalingFactor = 120; // Curve height scale
+            const baseY = 180;
+            const displaySigma = 30; // Fixed scale for 6-sigma view
+            const scalingFactor = 140; // Curve height scale
 
             // Clear exiting zones
             const zonesGroup = document.getElementById('sigma-zones-group');
@@ -3252,19 +3243,26 @@
             document.getElementById('sigma-markers').innerHTML = '';
             document.getElementById('sigma-brackets').innerHTML = '';
 
-            // Shaded Gray Background as per Image
+            // 1. Shaded Gray Background Rect (Matches Image 1)
             const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
             bgRect.setAttribute("x", "10");
             bgRect.setAttribute("y", "20");
             bgRect.setAttribute("width", "380");
-            bgRect.setAttribute("height", "140");
-            bgRect.setAttribute("fill", "#f3f4f6");
-            bgRect.setAttribute("rx", "4");
+            bgRect.setAttribute("height", "160");
+            bgRect.setAttribute("fill", "#eceef2");
+            bgRect.setAttribute("rx", "6");
             zonesGroup.appendChild(bgRect);
 
-            // Zone Colors (Reference Image - distinct blues/whites)
+            // 2. Base Line (X Axis)
+            const axisX = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            axisX.setAttribute("x1", "10"); axisX.setAttribute("y1", baseY);
+            axisX.setAttribute("x2", "390"); axisX.setAttribute("y2", baseY);
+            axisX.setAttribute("stroke", "#000"); axisX.setAttribute("stroke-width", "1.5");
+            zonesGroup.appendChild(axisX);
+
+            // 3. Sigma Zone Colors - High Definition
             const zoneColors = {
-                1: '#3b82f6', // 0-1σ
+                1: '#3b82f6', // 0-1σ (Deep Blue)
                 2: '#60a5fa', // 1-2σ
                 3: '#93c5fd', // 2-3σ
                 4: '#bfdbfe', // 3-4σ
@@ -3276,37 +3274,30 @@
                 1: '34.13%', 2: '13.59%', 3: '2.14%', 4: '0.13%', 5: '0.003%', 6: '0.00003%'
             };
 
-            // SL Lines (Static visually as per Image)
+            // 4. Draw SL Lines (Static as per requested diagram look)
             const drawSL = (xPos) => {
                 const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", xPos); line.setAttribute("y1", 30);
+                line.setAttribute("x1", xPos); line.setAttribute("y1", 20);
                 line.setAttribute("x2", xPos); line.setAttribute("y2", 180);
                 line.setAttribute("stroke", "#84cc16");
-                line.setAttribute("stroke-width", "2");
+                line.setAttribute("stroke-width", "2.5");
                 zonesGroup.appendChild(line);
 
                 const lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                lbl.setAttribute("x", xPos); lbl.setAttribute("y", 25);
+                lbl.setAttribute("x", xPos); lbl.setAttribute("y", 15);
                 lbl.setAttribute("text-anchor", "middle");
-                lbl.setAttribute("fill", "#475569");
-                lbl.setAttribute("font-size", "10");
+                lbl.setAttribute("fill", "#000");
+                lbl.setAttribute("font-family", "Inter, sans-serif");
+                lbl.setAttribute("font-size", "11");
                 lbl.setAttribute("font-weight", "800");
                 lbl.textContent = "SL";
                 zonesGroup.appendChild(lbl);
             };
 
-            drawSL(centerX - 6 * displaySigma);
-            drawSL(centerX + 6 * displaySigma);
+            drawSL(centerX - 5.8 * displaySigma); // Roughly -6σ
+            drawSL(centerX + 5.8 * displaySigma); // Roughly +6σ
 
-            // Mean Axis Vertical (Center)
-            const axisY = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            axisY.setAttribute("x1", centerX); axisY.setAttribute("y1", 30);
-            axisY.setAttribute("x2", centerX); axisY.setAttribute("y2", 180);
-            axisY.setAttribute("stroke", "#000");
-            axisY.setAttribute("stroke-width", "1");
-            zonesGroup.appendChild(axisY);
-
-            // Draw 12 zones (-6 to +6)
+            // 5. Draw Sigma Zones (-6 to +6)
             for (let s = -6; s < 6; s++) {
                 const zVal = Math.abs(s < 0 ? s + 1 : s) + 1;
                 const color = zoneColors[zVal] || '#ffffff';
@@ -3326,73 +3317,55 @@
                 zone.setAttribute("d", pathD);
                 zone.setAttribute("class", "sigma-zone");
                 zone.setAttribute("fill", color);
-                zone.setAttribute("fill-opacity", "0.9");
                 zone.setAttribute("stroke", "#1d4ed8");
                 zone.setAttribute("stroke-width", "0.5");
+                zone.setAttribute("fill-opacity", "0.8");
 
                 zone.onmouseover = (e) => showSigmaDetails(e, s, s + 1, sigmaPercentages[zVal]);
                 zone.onmouseout = hideSigmaDetails;
                 zonesGroup.appendChild(zone);
 
-                // AXIS LABELS - X Axis (μ ± σ)
-                const xText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                xText.setAttribute("x", startX);
-                xText.setAttribute("y", 210);
-                xText.setAttribute("text-anchor", "middle");
-                xText.setAttribute("transform", `rotate(-90, ${startX}, 210)`);
-                xText.setAttribute("class", "sigma-marker-label");
-                xText.setAttribute("fill", "#000");
-                xText.setAttribute("style", "font-weight: 500; font-size: 9px;");
-
-                let xLabel = s === 0 ? "μ" : (s < 0 ? `μ - ${Math.abs(s)}σ` : `μ + ${s}σ`);
-                xText.textContent = xLabel;
-                document.getElementById('sigma-markers').appendChild(xText);
-
-                // AXIS LABELS - Z Axis (Integers)
-                const zText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                zText.setAttribute("x", startX);
-                zText.setAttribute("y", 260);
-                zText.setAttribute("text-anchor", "middle");
-                zText.setAttribute("class", "sigma-marker-label");
-                zText.setAttribute("fill", "#000");
-                zText.setAttribute("style", "font-weight: 600; font-size: 11px;");
-                zText.textContent = s;
-                document.getElementById('sigma-markers').appendChild(zText);
-
-                // Tick marks
+                // Axis Tick
                 const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                tick.setAttribute("x1", startX); tick.setAttribute("y1", 160);
-                tick.setAttribute("x2", startX); tick.setAttribute("y2", 170);
-                tick.setAttribute("stroke", "#000");
+                tick.setAttribute("x1", startX); tick.setAttribute("y1", baseY);
+                tick.setAttribute("x2", startX); tick.setAttribute("y2", baseY + 8);
+                tick.setAttribute("stroke", "#000"); tick.setAttribute("stroke-width", "1.5");
                 document.getElementById('sigma-markers').appendChild(tick);
+
+                // Labels: μ ± nσ (Horizontal as per Image 1)
+                const labelGroup = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                labelGroup.setAttribute("x", startX);
+                labelGroup.setAttribute("y", baseY + 25);
+                labelGroup.setAttribute("text-anchor", "middle");
+                labelGroup.setAttribute("fill", "#000");
+                labelGroup.setAttribute("style", "font-weight: 700; font-size: 10px; font-family: Inter, sans-serif;");
+
+                let mathLabel = s === 0 ? "μ" : (s < 0 ? `μ - ${Math.abs(s)}σ` : `μ + ${s}σ`);
+                labelGroup.textContent = mathLabel;
+                document.getElementById('sigma-markers').appendChild(labelGroup);
             }
 
-            // Add final +6 labels
-            const lastX = centerX + 6 * displaySigma;
-            const lx = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            lx.setAttribute("x", lastX); lx.setAttribute("y", 210); lx.setAttribute("text-anchor", "middle");
-            lx.setAttribute("transform", `rotate(-90, ${lastX}, 210)`);
-            lx.setAttribute("class", "sigma-marker-label"); lx.setAttribute("fill", "#000"); lx.setAttribute("style", "font-weight:500; font-size:9px;");
-            lx.textContent = "μ + 6σ";
-            document.getElementById('sigma-markers').appendChild(lx);
+            // Final labels for +6σ
+            const finalX = centerX + 6 * displaySigma;
+            const finalTick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            finalTick.setAttribute("x1", finalX); finalTick.setAttribute("y1", baseY);
+            finalTick.setAttribute("x2", finalX); finalTick.setAttribute("y2", baseY + 8);
+            finalTick.setAttribute("stroke", "#000"); finalTick.setAttribute("stroke-width", "1.5");
+            document.getElementById('sigma-markers').appendChild(finalTick);
 
-            const lz = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            lz.setAttribute("x", lastX); lz.setAttribute("y", 260); lz.setAttribute("text-anchor", "middle");
-            lz.setAttribute("class", "sigma-marker-label"); lz.setAttribute("fill", "#000"); lz.setAttribute("style", "font-weight:600; font-size:11px;");
-            lz.textContent = "6";
-            document.getElementById('sigma-markers').appendChild(lz);
+            const finalLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            finalLabel.setAttribute("x", finalX); finalLabel.setAttribute("y", baseY + 25);
+            finalLabel.setAttribute("text-anchor", "middle"); finalLabel.setAttribute("fill", "#000");
+            finalLabel.setAttribute("style", "font-weight: 700; font-size: 10px; font-family: Inter, sans-serif;");
+            finalLabel.textContent = "μ + 6σ";
+            document.getElementById('sigma-markers').appendChild(finalLabel);
 
-            const lt = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            lt.setAttribute("x1", lastX); lt.setAttribute("y1", 160); lt.setAttribute("x2", lastX); lt.setAttribute("y2", 170); lt.setAttribute("stroke", "#000");
-            document.getElementById('sigma-markers').appendChild(lt);
-
-            // Blue Bell Curve Line
+            // Blue Bell Curve Line Overlay (High Saturation)
             const linePoints = [];
-            for (let xPos = 0; xPos <= width; xPos += 1) {
+            for (let xPos = 5; xPos <= 395; xPos += 1) {
                 const z = (xPos - centerX) / displaySigma;
                 const y = Math.exp(-0.5 * z * z);
-                // Extend the tail logic: Ensure at least a thin line is visible at 6 sigma
-                const scaledY = baseY - Math.max(y * scalingFactor, 1.2);
+                const scaledY = baseY - y * scalingFactor;
                 linePoints.push(`${xPos},${scaledY}`);
             }
             return { line: `M ` + linePoints.join(' L ') };
@@ -3481,34 +3454,36 @@
         //     container.appendChild(text);
         // }
 
-        // Explanation Logic - This function is now deprecated/removed
-        // function showExplanation(e) {
-        //     const rect = e.target.getBoundingClientRect();
-        //     const x = e.clientX - rect.left;
-        //     const percent = x / rect.width;
+        // Local showToast for immediate feedback
+        function showToast(msg, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+                padding: 12px 25px; border-radius: 30px; z-index: 100000;
+                font-family: 'Inter', sans-serif; font-size: 13px; font-weight: bold;
+                backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
+                box-shadow: 0 10px 40px rgba(0,0,0,0.5); color: #fff;
+                animation: toastIn 0.3s ease-out forwards;
+            `;
+            if (type === 'success') toast.style.background = 'rgba(16, 185, 129, 0.8)';
+            else if (type === 'error') toast.style.background = 'rgba(239, 68, 68, 0.8)';
+            else toast.style.background = 'rgba(139, 92, 246, 0.8)';
 
-        //     const tooltip = document.getElementById('graph-explanation');
-        //     const title = document.getElementById('explanation-title');
-        //     const text = document.getElementById('explanation-text');
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.3s ease-in forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
-        //     tooltip.classList.add('active');
-
-        //     // Logic to determine zone
-        //     if (percent < 0.2 || percent > 0.8) {
-        //         title.textContent = "The Tail (Defects)";
-        //         text.textContent = "This area represents rare occurrences. If spec limits are here, you have many defects.";
-        //     } else if (percent > 0.45 && percent < 0.55) {
-        //         title.textContent = "The Bullseye (Mean)";
-        //         text.textContent = "The center of your process. This is the 12.0oz target where most cups fall.";
-        //     } else {
-        //         title.textContent = "The Variation Zone";
-        //         text.textContent = "The spread of your process. Lean Six Sigma's goal is to keep this as narrow as possible.";
-        //     }
-        // }
-
-        // function hideExplanation() {
-        //     document.getElementById('graph-explanation').classList.remove('active');
-        // }
+        // Add toast animations to head
+        const toastStyle = document.createElement('style');
+        toastStyle.innerHTML = `
+            @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+            @keyframes toastOut { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -20px); } }
+        `;
+        document.head.appendChild(toastStyle);
 
         // Zoom Logic
         function toggleZoom() {
@@ -3758,6 +3733,9 @@
 
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             header.onmousedown = (e) => {
+                // Fix: Ignore clicks on interactive elements inside the header
+                if (e.target.tagName === 'SELECT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+
                 e = e || window.event;
                 e.preventDefault();
                 pos3 = e.clientX;
