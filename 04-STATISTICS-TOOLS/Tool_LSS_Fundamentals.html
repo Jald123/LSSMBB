@@ -1397,92 +1397,215 @@
             color: #ef4444;
         }
 
-        /* Panel B: Visualizer & DPMO Panel */
-        .visualizer-layout {
-            display: flex;
+        /* ============================================
+           NEW GAMIFIED PROCESS LAB
+           ============================================ */
+        .process-lab-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 300px;
             gap: 20px;
-            flex: 1;
-            min-height: 350px;
+            height: 100%;
+            background: #0a0f1a;
+            color: #e2e8f0;
+            padding: 20px;
+            overflow: hidden;
         }
 
-        .visualizer-panel {
-            flex: 1;
+        .lab-sidebar {
+            background: rgba(15, 23, 42, 0.6);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
             display: flex;
             flex-direction: column;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .lab-stage {
             position: relative;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at center, rgba(30, 41, 59, 0.5) 0%, transparent 100%);
         }
 
-        .visualizer-panel .panel-title {
-            color: var(--sigma-color);
-        }
-
-        .visualizer-panel .panel-title .icon {
-            background: rgba(139, 92, 246, 0.2);
-        }
-
-        .curve-container {
-            flex: 1;
-            position: relative;
-            background: #fff;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            overflow: visible;
+        .lab-scorecard {
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
             padding: 20px;
-        }
-
-        .curve-svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-
-        /* DPMO Aside Panel */
-        .dpmo-aside {
-            width: 220px;
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
 
-        .dpmo-card {
-            background: var(--glass-strong);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        /* Center Stage Elements */
+        .curve-stage-container {
+            flex: 1;
             position: relative;
+            min-height: 400px;
+        }
+
+        .magnify-lens {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 3px solid #6366f1;
+            background: #000;
             overflow: hidden;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .dpmo-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--sigma-color);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .dpmo-thumb {
+        .magnify-lens::after {
+            content: 'TAIL ZOOM (1000x)';
+            position: absolute;
+            bottom: 10px;
             width: 100%;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 8px;
+            font-weight: 800;
+            color: #6366f1;
+            letter-spacing: 1px;
         }
 
-        .dpmo-card h4 {
+        .simulation-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 40;
+        }
+
+        .sim-item {
+            position: absolute;
+            font-size: 20px;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .sim-item.hit {
+            color: #10b981;
+            filter: drop-shadow(0 0 5px #10b981);
+        }
+
+        .sim-item.miss {
+            color: #ef4444;
+            filter: drop-shadow(0 0 5px #ef4444);
+        }
+
+        /* Sidebar Controls */
+        .scenario-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+
+        .scenario-pill.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: #6366f1;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .chaos-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .chaos-toggle:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .chaos-toggle.active {
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 3px solid #ef4444;
+        }
+
+        /* Scorecard Displays */
+        .metric-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
             font-size: 11px;
+            color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--sigma-color);
             margin-bottom: 5px;
         }
 
-        .dpmo-card p {
-            font-size: 10px;
-            color: var(--text-secondary);
+        .metric-value {
+            font-size: 22px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Pop-up for DPMO Table */
+        .sigma-display-glow {
+            font-size: 48px;
+            text-align: center;
+            margin: 10px 0;
+            text-shadow: 0 0 20px currentColor;
+        }
+
+        /* Limit Markers */
+        .limit-handle {
+            cursor: ew-resize;
+            pointer-events: auto;
+        }
+
+        .limit-label {
+            font-size: 10px;
+            font-weight: 800;
+            fill: #fff;
+        }
+
+        /* Action Buttons */
+        .run-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .run-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.5);
+        }
+
+        .run-btn:active {
+            transform: scale(0.95);
+        }
+
+        .run-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* DPMO Pop-up Modal */
         .dpmo-popup-modal {
             position: fixed;
             top: 50%;
@@ -1529,74 +1652,6 @@
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
-        }
-
-        /* SVG Components */
-        .sigma-bracket {
-            stroke: #000;
-            stroke-width: 1;
-            fill: none;
-        }
-
-        .percent-label {
-            font-size: 9px;
-            font-weight: 700;
-            fill: #000;
-            text-anchor: middle;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .process-curve-path {
-            stroke: #2563eb;
-            stroke-width: 2.5;
-            fill: rgba(37, 99, 235, 0.05);
-            transition: d 0.5s ease;
-        }
-
-        .target-center-line {
-            stroke: #000;
-            stroke-width: 1;
-            stroke-dasharray: 2 2;
-        }
-
-        .sigma-percentage-text {
-            font-size: 10px;
-            fill: white;
-            font-weight: 800;
-            text-anchor: middle;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .base-line {
-            stroke: #3b82f6;
-            stroke-width: 2;
-        }
-
-        .infinity-label {
-            font-size: 14px;
-            fill: #3b82f6;
-            font-weight: bold;
-        }
-
-        /* Resize Handle */
-        .modal-resize-handle {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 20px;
-            height: 20px;
-            cursor: nwse-resize;
-            background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.1) 50%);
-            border-radius: 0 0 20px 0;
-        }
-
-        .processlab-modal {
-            min-width: 800px;
-            min-height: 500px;
-            resize: both;
-            overflow: hidden;
-            transition: none;
-            /* Disable transitions during manual resize */
         }
 
         .modal-header {
@@ -2491,205 +2546,115 @@
     </div>
 
     <!-- ============================================
-         MODAL C: PROCESS LAB - COFFEE SHOP SIMULATOR
+         MODAL C: PROCESS LAB - GAMIFIED SCENARIO ENGINE
          ============================================ -->
     <div class="modal-backdrop" id="processlab-backdrop" onclick="closeModal('processlab')"></div>
-    <div class="modal-container processlab-modal" id="processlab-modal">
-        <div class="modal-header">
-            <div class="modal-title">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <h2 id="lab-title" style="margin:0;">☕ The Perfect Latte Lab</h2>
-                    <select id="scenario-selector" onchange="switchScenario(this.value)">
-                        <option value="latte">☕ Latte Pour (Service)</option>
-                        <option value="medical">🏥 ER Triage (General)</option>
-                        <option value="med_dosage">💉 Medication Dosage (Critical)</option>
-                        <option value="lab_tat">🧪 Lab Result TAT (Processing)</option>
-                        <option value="surgical">🏢 Surgical Prep (Flow)</option>
-                        <option value="radiology">☢️ Radiology TAT (Medical)</option>
-                        <option value="discharge">🚪 Patient Discharge (Medical)</option>
-                        <option value="phlebotomy">🩸 Blood Collection (Medical)</option>
-                        <option value="it_support">💻 IT Service Desk (Service)</option>
-                        <option value="auto_assembly">⚙️ Auto Assembly (Industrial)</option>
-                        <option value="pharmacy_dispense">💊 Pharmacy Filling (Medical)</option>
-                        <option value="patient_wait">⏱️ Patient Wait (Medical)</option>
-                        <option value="blood_pressure">❤️ Blood Pressure (Medical)</option>
-                        <option value="software_bug">🐛 Bug Rate (Software)</option>
-                        <option value="food_prep">🍔 Food Prep (Service)</option>
-                    </select>
-                </div>
-                <span class="badge">Sigma Simulator</span>
-            </div>
-            <div class="modal-action-stack">
-                <button class="modal-close" onclick="closeModal('processlab')">×</button>
-                <button onclick="resetLab()" class="reset-action-btn">
-                    <i data-lucide="rotate-ccw"></i>
-                    Reset Data
-                </button>
-            </div>
-        </div>
-        <div class="modal-body">
-            <div class="lab-panels">
-                <!-- Panel A: Chaos Controls -->
-                <div class="lab-panel chaos-panel">
-                    <div class="panel-title">
-                        <div class="icon">⚠️</div>
-                        Sources of Variation
-                    </div>
-
-                    <div class="chaos-toggle" id="chaos1" onclick="toggleChaos(1)">
-                        <div class="chaos-header">
-                            <div class="chaos-name" id="chaos1-name">👤 Untrained Barista</div>
-                            <div class="chaos-impact" id="chaos1-impact">+0.4σ</div>
-                        </div>
-                        <div class="chaos-desc" id="chaos1-desc">Inconsistent pouring technique adds major variation to
-                            fill levels.</div>
-                    </div>
-
-                    <div class="chaos-toggle" id="chaos2" onclick="toggleChaos(2)">
-                        <div class="chaos-header">
-                            <div class="chaos-name" id="chaos2-name">⚙️ Old Espresso Machine</div>
-                            <div class="chaos-impact" id="chaos2-impact">+0.25σ</div>
-                        </div>
-                        <div class="chaos-desc" id="chaos2-desc">Machine pressure fluctuates, causing inconsistent fill
-                            and slight mean shift.</div>
-                    </div>
-
-                    <div class="chaos-toggle" id="chaos3" onclick="toggleChaos(3)">
-                        <div class="chaos-header">
-                            <div class="chaos-name" id="chaos3-name">🥛 Cheap Milk Supplier</div>
-                            <div class="chaos-impact" id="chaos3-impact">+0.15σ</div>
-                        </div>
-                        <div class="chaos-desc" id="chaos3-desc">Milk froth density varies batch-to-batch, affecting
-                            final volume.</div>
-                    </div>
-
-                    <div class="variation-display">
-                        <div class="variation-label">Estimated Variation (σ)</div>
-                        <div class="variation-value low" id="sigma-display">0.15</div>
-                    </div>
+    <div class="modal" id="processlab-modal"
+        style="width: 1200px; max-width: 95vw; height: 800px; background: #0a0f1a;">
+        <div class="process-lab-container">
+            <!-- PANEL A: SCENARIOS & CHAOS -->
+            <div class="lab-sidebar">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <div style="background:#6366f1; width:3px; height:20px;"></div>
+                    <h3 style="font-size: 14px; text-transform:uppercase; letter-spacing:1px; margin:0;">Scenario Lab
+                    </h3>
                 </div>
 
-                <!-- Panel B: Visualizer & Metrics -->
-                <div class="lab-panel visualizer-panel">
-                    <div class="panel-title">
-                        <div class="icon">📊</div>
-                        <span id="visualizer-title">Process Capability Visualizer</span>
+                <div id="scenario-list" style="display:flex; flex-direction:column; gap:10px;">
+                    <!-- Scenarios injected via JS -->
+                </div>
+
+                <div style="margin-top:auto; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+                    <div class="metric-label" style="margin-bottom:10px;">Chaos Inputs (Sources of Variation)</div>
+                    <div id="chaos-controls" style="display:flex; flex-direction:column; gap:8px;">
+                        <!-- Toggles injected via JS -->
                     </div>
+                </div>
+            </div>
 
-                    <div class="visualizer-layout">
-                        <div class="curve-container" id="curve-container">
-                            <!-- SVG Bell Curve - Image 2 Style -->
-                            <svg class="curve-svg" id="bell-curve-svg" viewBox="0 0 500 350"
-                                preserveAspectRatio="xMidYMid meet">
-                                <defs>
-                                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6"
-                                        markerHeight="6" orient="auto-start-reverse">
-                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#000" />
-                                    </marker>
-                                </defs>
+            <!-- PANEL B: BELL CURVE STAGE -->
+            <div class="lab-stage">
+                <div class="magnify-lens" id="mag-lens">
+                    <svg id="mag-svg" viewBox="0 0 100 100" style="width:100%; height:100%;">
+                        <path id="mag-curve" fill="rgba(239, 68, 68, 0.3)" stroke="#ef4444" stroke-width="2" d="" />
+                        <line x1="80" y1="0" x2="80" y2="100" stroke="#fff" stroke-width="1" stroke-dasharray="2 2" />
+                    </svg>
+                </div>
 
-                                <!-- Theoretical Sigma Zones (Image 2 Shading) -->
-                                <g id="sigma-zones-group"></g>
+                <div class="curve-stage-container">
+                    <svg id="lab-svg" viewBox="0 0 800 500" style="width:100%; height:100%; overflow:visible;">
+                        <!-- Sigma Zone Colors -->
+                        <g id="zone-paths"></g>
+                        <!-- Main Curve Line -->
+                        <path id="lab-curve-main" fill="none" stroke="#6366f1" stroke-width="4" d="" />
+                        <!-- Target/Mean Line -->
+                        <line id="lab-mean-line" x1="400" y1="50" x2="400" y2="450" stroke="rgba(255,255,255,0.2)"
+                            stroke-dasharray="4 4" />
+                        <!-- Limit Handles (Draggable) -->
+                        <g id="limits-group">
+                            <line id="lsl-line" class="limit-handle" x1="200" y1="50" x2="200" y2="450" stroke="#ef4444"
+                                stroke-width="3" />
+                            <text id="lsl-label" class="limit-label" x="200" y="40" text-anchor="middle">REJECT
+                                (LOW)</text>
 
-                                <!-- Brackets and Percentages (Image 2 Brackets) -->
-                                <g id="sigma-brackets"></g>
+                            <line id="usl-line" class="limit-handle" x1="600" y1="50" x2="600" y2="450" stroke="#ef4444"
+                                stroke-width="3" />
+                            <text id="usl-label" class="limit-label" x="600" y="40" text-anchor="middle">REJECT
+                                (HIGH)</text>
+                        </g>
+                    </svg>
+                    <!-- Floating simulation items -->
+                    <div class="simulation-layer" id="sim-layer"></div>
+                </div>
 
-                                <!-- X-Axis Labels -->
-                                <g id="sigma-markers"></g>
-
-                                <!-- Process Performance Line (DYNAMIC) -->
-                                <path id="process-curve-path" d="" class="process-curve-path" />
-
-                                <!-- Target/Mean Marker -->
-                                <line id="mean-line" x1="250" y1="20" x2="250" y2="280" class="target-center-line" />
-                            </svg>
-
-                            <!-- Floating Readout -->
-                            <div class="sigma-readout" id="sigma-readout-box" style="z-index:10;">
-                                <div class="readout-label">ZONE COVERAGE</div>
-                                <div class="readout-sigma" id="readout-level">0σ</div>
-                                <div class="readout-defects" id="readout-dpmo">99% of Population</div>
-                            </div>
-                        </div>
-
-                        <!-- Right Aside: DPMO Reference -->
-                        <div class="dpmo-aside">
-                            <div class="dpmo-card" onclick="openDpmoTable()">
-                                <img src="../assets/module-intro/dpmo_reference.png" class="dpmo-thumb"
-                                    alt="DPMO Table">
-                                <h4>DPMO Reference</h4>
-                                <p>Defects Per Million Opportunities</p>
-                                <div
-                                    style="margin-top:10px; font-size:9px; color:var(--sigma-color); font-weight:bold;">
-                                    Click to Expand Table</div>
-                            </div>
-
-                            <!-- Process Snapshot (Image 1 Thumb) -->
-                            <div class="dpmo-card" style="cursor:default;">
-                                <img src="../assets/module-intro/process_lab_thumb.png" class="dpmo-thumb"
-                                    style="height:60px; object-fit:cover;" alt="Process View">
-                                <h4>Process Health</h4>
-                                <p id="lab-health-desc">Monitoring target stability and variation spread.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button class="run-batch-btn" id="run-batch-btn" onclick="runBatch()">
-                        <span id="batch-btn-icon" class="cup-icon">☕</span>
-                        <span id="batch-btn-text">Pour 100 Cups</span>
+                <div
+                    style="padding: 20px; display:flex; justify-content:center; gap:20px; background: rgba(0,0,0,0.3);">
+                    <button class="run-btn" id="run-batch-btn" onclick="startBatchSimulation()">
+                        RUN BATCH (n=1,000)
+                    </button>
+                    <button class="reset-action-btn" onclick="resetSimData()" style="padding:15px; border-radius:12px;">
+                        RESET LOGS
                     </button>
                 </div>
+            </div>
 
-                <!-- Panel C: Scorecard -->
-                <div class="lab-panel scorecard-panel">
-                    <div class="panel-title">
-                        <div class="icon">👥</div>
-                        Voice of the Customer
+            <!-- PANEL C: SIX SIGMA SCORECARD -->
+            <div class="lab-scorecard">
+                <div class="metric-box">
+                    <div class="metric-label">Operational Quality</div>
+                    <div class="sigma-display-glow" id="sigma-display">0.0σ</div>
+                    <div style="text-align:center; font-size:12px; color:#94a3b8;" id="sigma-status">CHAOS</div>
+                </div>
+
+                <div class="metric-box">
+                    <div class="metric-label">Yield Accuracy</div>
+                    <div class="metric-value" id="yield-display">0.00%</div>
+                </div>
+
+                <div class="metric-box">
+                    <div class="metric-label">Defects (DPMO)</div>
+                    <div class="metric-value" style="color:#ef4444;" id="dpmo-display">0</div>
+                </div>
+
+                <div class="metric-box">
+                    <div class="metric-label">Cost of Poor Quality (COPQ)</div>
+                    <div class="metric-value" style="color:#facc15;" id="cost-display">$0.00</div>
+                    <div style="font-size:10px; color:#94a3b8; margin-top:5px;">Weighted loss per defect event.</div>
+                </div>
+
+                <div
+                    style="margin-top:auto; padding:15px; background:rgba(99, 102, 241, 0.1); border-radius:12px; border:1px solid rgba(99, 102, 241, 0.2);">
+                    <div style="font-weight:800; font-size:12px; margin-bottom:5px; color:#818cf8;">THE MAGNIFYING LENS
                     </div>
-
-                    <div class="customer-selector">
-                        <div class="customer-option active" id="customer1" onclick="selectCustomer(1)">
-                            <div class="customer-header">
-                                <span class="customer-icon" id="cust1-icon">🚗</span>
-                                <span class="customer-name" id="cust1-name">The Commuter</span>
-                            </div>
-                            <div class="customer-tolerance" id="cust1-desc">Easygoing: 11.0oz - 13.0oz tolerance</div>
-                        </div>
-
-                        <div class="customer-option" id="customer2" onclick="selectCustomer(2)">
-                            <div class="customer-header">
-                                <span class="customer-icon" id="cust2-icon">🧐</span>
-                                <span class="customer-name" id="cust2-name">The Connoisseur</span>
-                            </div>
-                            <div class="customer-tolerance" id="cust2-desc">Picky: 11.8oz - 12.2oz tolerance</div>
-                        </div>
-                    </div>
-
-                    <div class="results-section">
-                        <div class="result-card">
-                            <div class="result-label">Current Sigma Level</div>
-                            <div class="result-value sigma-score sigma-high" id="sigma-level">4.5σ</div>
-                        </div>
-
-                        <div class="result-card">
-                            <div class="result-label">DPMO (Defects Per Million)</div>
-                            <div class="result-value" id="dpmo-display">3,400</div>
-                        </div>
-
-                        <div class="batch-results">
-                            <div class="batch-stat good">
-                                <div class="value" id="good-count">-</div>
-                                <div class="label">Good</div>
-                            </div>
-                            <div class="batch-stat defect">
-                                <div class="value" id="defect-count">-</div>
-                                <div class="label">Defects</div>
-                            </div>
-                        </div>
-                    </div>
+                    <p style="font-size:11px; margin:0; line-height:1.4; color:#94a3b8;">
+                        At 6 Sigma, defects are invisible at normal scale. The 1000x lens tracks the intersection of the
+                        process curve and the USL.
+                    </p>
                 </div>
             </div>
         </div>
+        <button class="modal-close" onclick="closeModal('processlab')"
+            style="position:absolute; top:20px; right:20px; z-index:100;">×</button>
     </div>
 
     <script>
@@ -3091,609 +3056,353 @@
             }
         };
 
-        const labState = {
-            currentScenario: 'latte',
-            processMean: 12.0,
-            baseVariation: 0.15,
-            chaosFactors: {},
-            customers: {},
-            currentCustomer: 1,
-            batchResults: { good: 0, defects: 0 },
-            isRunning: false
+        // ============================================
+        // GAMIFIED PROCESS LAB ENGINE
+        // ============================================
+        const gamifiedScenarios = {
+            coffee: {
+                id: 'coffee',
+                title: "Coffee Shop Intro",
+                icon: "☕",
+                unit: "oz",
+                mean: 12.0,
+                lsl: 11.5,
+                usl: 12.5,
+                baseStd: 0.15,
+                costPerDefect: 5.0,
+                itemIcon: "☕",
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#6366f1"],
+                chaos: [
+                    { id: 'hand', name: "Shaky Hand", impact: 0.2, desc: "Manual pouring inconsistency." },
+                    { id: 'machine', name: "Old Machine", impact: 0.1, desc: "Pressure fluctuations." },
+                    { id: 'beans', name: "Bad Beans", impact: 0.05, desc: "Variable grind density." }
+                ]
+            },
+            medication: {
+                id: 'medication',
+                title: "Medication Dosing",
+                icon: "💊",
+                unit: "mg",
+                mean: 50.0,
+                lsl: 49.5,
+                usl: 50.5,
+                baseStd: 0.08,
+                costPerDefect: 25000.0,
+                itemIcon: "💊",
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#6366f1"],
+                chaos: [
+                    { id: 'fatigue', name: "Fatigued Nurse", impact: 0.15, desc: "Human error due to 12hr shifts." },
+                    { id: 'scale', name: "Uncalibrated Scale", impact: 0.2, desc: "Mechanical drift in measurements." },
+                    { id: 'packaging', name: "Similar Packaging", impact: 0.5, desc: "High likelihood of lookup errors." }
+                ]
+            },
+            er_wait: {
+                id: 'er_wait',
+                title: "ER Triage Wait",
+                icon: "🏥",
+                unit: "min",
+                mean: 30,
+                lsl: 5,
+                usl: 60,
+                baseStd: 5,
+                costPerDefect: 500.0,
+                itemIcon: "🏥",
+                oneSided: true,
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#6366f1"],
+                chaos: [
+                    { id: 'flu', name: "Flu Season Surge", impact: 15, desc: "Unpredictable patient volume." },
+                    { id: 'staffing', name: "Understaffing", impact: 10, desc: "Bottleneck in processing." },
+                    { id: 'system', name: "System Crash", impact: 5, desc: "Administrative delays." }
+                ]
+            },
+            sterile: {
+                id: 'sterile',
+                title: "Surgical Kit Sterility",
+                icon: "✂️",
+                unit: "%",
+                mean: 100.0,
+                lsl: 99.99,
+                usl: 100.01,
+                baseStd: 0.002,
+                costPerDefect: 100000.0,
+                itemIcon: "✂️",
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#c084fc"],
+                chaos: [
+                    { id: 'autoclave', name: "Broken Autoclave", impact: 0.05, desc: "Major sterilization failure." },
+                    { id: 'flash', name: "Flash Sterilization", impact: 0.02, desc: "Shortcut-related risk." },
+                    { id: 'newtech', name: "Inexperienced Tech", impact: 0.01, desc: "Human handling risk." }
+                ]
+            },
+            pizza: {
+                id: 'pizza',
+                title: "Pizza Delivery",
+                icon: "🍕",
+                unit: "min",
+                mean: 25,
+                lsl: 10,
+                usl: 40,
+                baseStd: 4,
+                costPerDefect: 25.0,
+                itemIcon: "🍕",
+                oneSided: true,
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#3b82f6"],
+                chaos: [
+                    { id: 'traffic', name: "Traffic Jam", impact: 10, desc: "Major urban bottleneck." },
+                    { id: 'driver', name: "Lost Driver", impact: 15, desc: "Lack of GPS/Local knowledge." },
+                    { id: 'storm', name: "Rain Storm", impact: 5, desc: "Hazardous slowing of delivery." }
+                ]
+            }
         };
 
-        function switchScenario(scenarioId) {
-            labState.currentScenario = scenarioId;
-            const config = labScenarios[scenarioId];
+        let labState = {
+            currentScenario: 'coffee',
+            activeChaos: new Set(),
+            lsl: 11.5,
+            usl: 12.5,
+            isSimulating: false,
+            logs: { good: 0, bad: 0 }
+        };
 
-            // Update State
-            labState.processMean = config.baseMean;
-            labState.baseVariation = config.baseVariation;
-            labState.customers = config.customers;
-            labState.chaosFactors = {};
-
-            // Re-map chaos factors based on new scenario
-            for (let id in config.chaos) {
-                labState.chaosFactors[id] = {
-                    active: false,
-                    sigma: config.chaos[id].sigma,
-                    meanShift: config.chaos[id].meanShift
-                }
-            }
-
-            // Reset UI Labels
-            document.getElementById('lab-title').innerText = config.title;
-            document.getElementById('visualizer-title').innerText = config.visualizerTitle;
-            document.getElementById('target-label').innerText = `Target: ${config.baseMean.toFixed(1)}${config.unit}`;
-            document.getElementById('batch-btn-icon').innerText = config.btnIcon;
-            document.getElementById('batch-btn-text').innerText = config.btnText;
-
-            // Update Bin labels dynamically
-            const goodLabel = scenarioId === 'latte' ? '✓ Good Cups' : (scenarioId.startsWith('med') || scenarioId === 'pharmacy_dispense' || scenarioId === 'blood_pressure' ? '✓ Safe Units' : '✓ Good Units');
-            document.querySelectorAll('.bin-label')[0].innerText = goodLabel;
-            document.querySelectorAll('.bin-label')[1].innerText = '✗ Defects';
-
-            // Reset UI Chaos cards
-            for (let i = 1; i <= 3; i++) {
-                const card = document.getElementById(`chaos${i}`);
-                card.classList.remove('active');
-                document.getElementById(`chaos${i}-name`).innerText = config.chaos[i].name;
-                document.getElementById(`chaos${i}-impact`).innerText = config.chaos[i].impact;
-                document.getElementById(`chaos${i}-desc`).innerText = config.chaos[i].desc;
-            }
-
-            // Reset UI Customer selection
-            document.getElementById('cust1-icon').innerText = config.customers[1].icon;
-            document.getElementById('cust1-name').innerText = config.customers[1].name;
-            document.getElementById('cust1-desc').innerText = config.customers[1].desc;
-            document.getElementById('cust2-icon').innerText = config.customers[2].icon;
-            document.getElementById('cust2-name').innerText = config.customers[2].name;
-            document.getElementById('cust2-desc').innerText = config.customers[2].desc;
-
-            // Reset Batch counters
-            resetResults();
-
-            // Re-init displays
-            initProcessLab();
+        // Standard Normal CDF
+        function cdf(x) {
+            const t = 1 / (1 + 0.2316419 * Math.abs(x));
+            const d = 0.3989423 * Math.exp(-x * x / 2);
+            const prob = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+            return x >= 0 ? 1 - prob : prob;
         }
 
-        function resetResults() {
-            labState.batchResults = { good: 0, defects: 0 };
-            document.getElementById('good-bin-count').textContent = '0';
-            document.getElementById('defect-bin-count').textContent = '0';
-            document.getElementById('good-count').textContent = '-';
-            document.getElementById('defect-count').textContent = '-';
-            document.getElementById('cups-container').innerHTML = '';
-        }
-
-        function resetLab() {
-            if (confirm('Reset all simulation results and chaos factors?')) {
-                switchScenario(labState.currentScenario);
-                showToast('Simulation Reset', 'info');
-            }
-        }
-
-        // Calculate current sigma and mean
-        function getCurrentSigma() {
-            let sigma = labState.baseVariation;
-            for (const id in labState.chaosFactors) {
-                if (labState.chaosFactors[id].active) {
-                    sigma += labState.chaosFactors[id].sigma;
-                }
-            }
-            return sigma;
-        }
-
-        function getCurrentMean() {
-            let mean = labState.processMean;
-            for (const id in labState.chaosFactors) {
-                if (labState.chaosFactors[id].active) {
-                    mean += labState.chaosFactors[id].meanShift;
-                }
-            }
-            return mean;
-        }
-
-        // Standard Normal CDF (approximation using Abramowitz and Stegun)
-        function normalCDF(x) {
-            const a1 = 0.254829592;
-            const a2 = -0.284496736;
-            const a3 = 1.421413741;
-            const a4 = -1.453152027;
-            const a5 = 1.061405429;
-            const p = 0.3275911;
-
-            const sign = x < 0 ? -1 : 1;
-            x = Math.abs(x) / Math.sqrt(2);
-
-            const t = 1.0 / (1.0 + p * x);
-            const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
-
-            return 0.5 * (1.0 + sign * y);
-        }
-
-        // Calculate DPMO
-        function calculateDPMO(mean, sigma, lsl, usl) {
-            const zLsl = (lsl - mean) / sigma;
-            const zUsl = (usl - mean) / sigma;
-
-            const pDefectLow = normalCDF(zLsl);
-            const pDefectHigh = 1 - normalCDF(zUsl);
-            const pDefect = pDefectLow + pDefectHigh;
-
-            return Math.round(pDefect * 1000000);
-        }
-
-        // Calculate Sigma Level from DPMO
-        function calculateSigmaLevel(dpmo) {
-            // Simplified: Z = inverse normal of (1 - DPMO/1000000)
-            // Using approximation
-            const p = 1 - dpmo / 1000000;
-            if (p <= 0) return 0;
-            if (p >= 1) return 6;
-
-            // Rational approximation for inverse normal CDF
-            const a = [
-                -3.969683028665376e+01,
-                2.209460984245205e+02,
-                -2.759285104469687e+02,
-                1.383577518672690e+02,
-                -3.066479806614716e+01,
-                2.506628277459239e+00
-            ];
-            const b = [
-                -5.447609879822406e+01,
-                1.615858368580409e+02,
-                -1.556989798598866e+02,
-                6.680131188771972e+01,
-                -1.328068155288572e+01
-            ];
-            const c = [
-                -7.784894002430293e-03,
-                -3.223964580411365e-01,
-                -2.400758277161838e+00,
-                -2.549732539343734e+00,
-                4.374664141464968e+00,
-                2.938163982698783e+00
-            ];
-            const d = [
-                7.784695709041462e-03,
-                3.224671290700398e-01,
-                2.445134137142996e+00,
-                3.754408661907416e+00
-            ];
-
+        // Inverse Normal PDF
+        function inverseNormal(p) {
+            const a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
+            const b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02, 6.680131188771972e+01, -1.328068155288572e+01];
+            const c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00, -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
+            const d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00, 3.754408661907416e+00];
             const pLow = 0.02425;
-            const pHigh = 1 - pLow;
-            let q, r, z;
-
             if (p < pLow) {
-                q = Math.sqrt(-2 * Math.log(p));
-                z = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
-                    ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
-            } else if (p <= pHigh) {
-                q = p - 0.5;
-                r = q * q;
-                z = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q /
-                    (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
-            } else {
-                q = Math.sqrt(-2 * Math.log(1 - p));
-                z = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
-                    ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+                let q = Math.sqrt(-2 * Math.log(p));
+                return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
             }
-
-            // Add 1.5 sigma shift convention for process sigma
-            return Math.max(0, Math.min(6, z + 1.5));
+            if (p < (1 - pLow)) {
+                let q = p - 0.5, r = q * q;
+                return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+            }
+            let q = Math.sqrt(-2 * Math.log(1 - p));
+            return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
         }
 
-        // DPMO Modal Logic
-        function openDpmoTable() {
-            document.getElementById('dpmo-backdrop').classList.add('active');
-            document.getElementById('dpmo-popup').classList.add('active');
+        function initProcessLab() {
+            renderScenarios();
+            switchScenario('coffee');
+            setupDrag();
         }
 
-        function closeDpmoTable() {
-            document.getElementById('dpmo-backdrop').classList.remove('active');
-            document.getElementById('dpmo-popup').classList.remove('active');
+        function renderScenarios() {
+            const list = document.getElementById('scenario-list');
+            list.innerHTML = '';
+            for (let id in gamifiedScenarios) {
+                const s = gamifiedScenarios[id];
+                const div = document.createElement('div');
+                div.className = `scenario-pill ${labState.currentScenario === id ? 'active' : ''}`;
+                div.innerHTML = `<span style="font-size:18px;">${s.icon}</span> <span>${s.title}</span>`;
+                div.onclick = () => switchScenario(id);
+                list.appendChild(div);
+            }
         }
 
-        // Generate bell curve path and interactive zones (Image 2 Style)
-        function generateBellCurve() {
-            // Configuration for chart (matches 500x350 viewBox)
-            const width = 500;
-            const height = 350;
-            const centerX = 250;
-            const baseY = 250;
-            const stdUnits = 30; // 1 sigma = 30px
-            const curveAmp = 180; // Peak height
+        function switchScenario(id) {
+            labState.currentScenario = id;
+            labState.activeChaos.clear();
+            const config = gamifiedScenarios[id];
+            labState.lsl = config.lsl;
+            labState.usl = config.usl;
+            
+            renderScenarios();
+            renderChaos();
+            updateLabVisuals();
+        }
 
-            const zonesGroup = document.getElementById('sigma-zones-group');
-            const bracketsGroup = document.getElementById('sigma-brackets');
-            const markersGroup = document.getElementById('sigma-markers');
-
-            zonesGroup.innerHTML = '';
-            bracketsGroup.innerHTML = '';
-            markersGroup.innerHTML = '';
-
-            // 1. Image 2 Shaded Gray Area Background
-            const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            bg.setAttribute("x", "30"); bg.setAttribute("y", "20");
-            bg.setAttribute("width", "440"); bg.setAttribute("height", "230");
-            bg.setAttribute("fill", "#f3f4f6"); bg.setAttribute("rx", "10");
-            zonesGroup.appendChild(bg);
-
-            // 2. Shaded Curve (Theoretical Gray) - Matches Image 2 background shading
-            let polyPoints = [`${centerX - 200},${baseY}`, `${centerX - 180},${baseY}`];
-            for (let x = centerX - 180; x <= centerX + 180; x += 2) {
-                const z = (x - centerX) / stdUnits;
-                const y = baseY - Math.exp(-0.5 * z * z) * curveAmp;
-                polyPoints.push(`${x},${y}`);
-            }
-            polyPoints.push(`${centerX + 180},${baseY}`, `${centerX + 200},${baseY}`);
-
-            const shadedCurve = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-            shadedCurve.setAttribute("points", polyPoints.join(" "));
-            shadedCurve.setAttribute("fill", "#dfe3e8");
-            shadedCurve.setAttribute("stroke", "#9ca3af");
-            shadedCurve.setAttribute("stroke-width", "1");
-            zonesGroup.appendChild(shadedCurve);
-
-            // 3. Horizontal Sigma Labels (-6 to +6 as per Image 2)
-            for (let s = -6; s <= 6; s++) {
-                const x = centerX + s * stdUnits;
-
-                // Axis Tick Line
-                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", x); line.setAttribute("y1", baseY);
-                line.setAttribute("x2", x); line.setAttribute("y2", baseY + 10);
-                line.setAttribute("stroke", "#000"); line.setAttribute("stroke-width", "1.5");
-                markersGroup.appendChild(line);
-
-                // Label (e.g., -6σ, -5σ... 0 ... +6σ)
-                const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                txt.setAttribute("x", x); txt.setAttribute("y", baseY + 25);
-                txt.setAttribute("text-anchor", "middle");
-                txt.setAttribute("class", "percent-label");
-                txt.textContent = s === 0 ? "0" : (s < 0 ? `${s}σ` : `+${s}σ`);
-                markersGroup.appendChild(txt);
-            }
-
-            // 4. Image 2 Brackets with Percentages
-            const bracketConfigs = [
-                { s: 1, p: "68.26%", h: 40 },
-                { s: 2, p: "95.44%", h: 80 },
-                { s: 3, p: "99.73%", h: 120 },
-                { s: 4, p: "99.9937%", h: 170, bottom: true },
-                { s: 5, p: "99.999943%", h: 210, bottom: true },
-                { s: 6, p: "99.9999998%", h: 250, bottom: true }
-            ];
-
-            bracketConfigs.forEach(conf => {
-                const xStart = centerX - conf.s * stdUnits;
-                const xEnd = centerX + conf.s * stdUnits;
-                const y = conf.bottom ? (baseY + conf.h - 130) : (baseY - conf.h);
-
-                // Bracket path (Flat line with arrow markers)
-                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                path.setAttribute("d", `M ${xStart + 4},${y} L ${xEnd - 4},${y}`);
-                path.setAttribute("stroke", "#000");
-                path.setAttribute("stroke-width", "1");
-                path.setAttribute("marker-start", "url(#arrow)");
-                path.setAttribute("marker-end", "url(#arrow)");
-                bracketsGroup.appendChild(path);
-
-                // Percentage Label
-                const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                txt.setAttribute("x", centerX);
-                txt.setAttribute("y", y - 5);
-                txt.setAttribute("class", "percent-label");
-                txt.textContent = conf.p;
-                bracketsGroup.appendChild(txt);
-
-                // Vertical dash lines at the limits
-                const v1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                v1.setAttribute("x1", xStart); v1.setAttribute("y1", baseY);
-                v1.setAttribute("x2", xStart); v1.setAttribute("y2", y);
-                v1.setAttribute("stroke", "#000"); v1.setAttribute("stroke-width", "0.5");
-                v1.setAttribute("stroke-dasharray", "3 3");
-                bracketsGroup.appendChild(v1);
-
-                const v2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                v2.setAttribute("x1", xEnd); v2.setAttribute("y1", baseY);
-                v2.setAttribute("x2", xEnd); v2.setAttribute("y2", y);
-                v2.setAttribute("stroke", "#000"); v2.setAttribute("stroke-width", "0.5");
-                v2.setAttribute("stroke-dasharray", "3 3");
-                bracketsGroup.appendChild(v2);
+        function renderChaos() {
+            const container = document.getElementById('chaos-controls');
+            container.innerHTML = '';
+            const config = gamifiedScenarios[labState.currentScenario];
+            config.chaos.forEach(c => {
+                const div = document.createElement('div');
+                div.className = `chaos-toggle ${labState.activeChaos.has(c.id) ? 'active' : ''}`;
+                div.innerHTML = `
+                    <div style="flex:1">
+                        <div style="font-size:11px; font-weight:800;">${c.name}</div>
+                        <div style="font-size:9px; opacity:0.6;">${c.desc}</div>
+                    </div>
+                    <div style="font-size:10px; font-weight:800; color:#ef4444;">+${c.impact}σ</div>
+                `;
+                div.onclick = () => toggleChaos(c.id);
+                container.appendChild(div);
             });
-
-            // 5. Dynamic Process Performance Curve (The actual observed spread)
-            const currentMean = labState.processMean || labScenarios[labState.currentScenario].baseMean;
-            const targetMean = labScenarios[labState.currentScenario].baseMean;
-            const diff = (currentMean - targetMean) * 40; // Shift multiplier
-
-            // Calculate "Actual" sigma for visual spread based on chaos factors
-            let totalSigma = labState.baseVariation || labScenarios[labState.currentScenario].baseVariation;
-            for (let id in labState.chaosFactors) {
-                if (labState.chaosFactors[id].active) {
-                    totalSigma += labState.chaosFactors[id].sigma;
-                }
-            }
-
-            // Scaled sigma for the visualizer
-            const visualSigmaScale = (totalSigma / labScenarios[labState.currentScenario].baseVariation) * stdUnits;
-
-            let processPoints = [];
-            for (let x = centerX - 240; x <= centerX + 240; x += 2) {
-                const z = (x - (centerX + diff)) / visualSigmaScale;
-                const y = baseY - Math.exp(-0.5 * z * z) * (curveAmp * 1.15); // Slightly taller than background
-                if (y <= baseY + 10) processPoints.push(`${x},${y}`);
-            }
-
-            const procPath = document.getElementById('process-curve-path');
-            if (procPath) {
-                procPath.setAttribute('d', `M ` + processPoints.join(" L "));
-            }
         }
 
-        function drawSigmaMarker(x, label, color) {
-            const container = document.getElementById('sigma-markers');
-
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", x);
-            text.setAttribute("y", baseY + 12);
-            text.setAttribute("class", "sigma-marker-label");
-            text.textContent = label;
-            text.style.fontSize = "8px";
-            text.style.fill = color || "white";
-            text.style.fontWeight = "bold";
-            text.style.textAnchor = "middle";
-            container.appendChild(text);
-        }
-
-        function showSigmaDetails(e, start, end, percentage) {
-            const readout = document.getElementById('sigma-readout-box');
-            const levelEl = document.getElementById('readout-level');
-            const dpmoEl = document.getElementById('readout-dpmo');
-
-            readout.classList.add('active');
-            const range = `${start}σ to ${end}σ`;
-            levelEl.textContent = range;
-
-            const absMax = Math.max(Math.abs(start), Math.abs(end));
-            levelEl.style.color = absMax <= 2 ? '#10b981' : (absMax <= 4 ? '#fbbf24' : '#ef4444');
-
-            dpmoEl.textContent = `${percentage} of Population`;
-        }
-
-        function hideSigmaDetails() {
-            document.getElementById('sigma-readout-box').classList.remove('active');
-        }
-
-        // Update bell curve display
-        function updateBellCurve() {
-            generateBellCurve();
-        }
-
-        // Update Sigma Markers (lines and labels) - This function is now deprecated/removed
-        // function updateSigmaMarkers(sigma) {
-        //     const container = document.getElementById('sigma-markers');
-        //     container.innerHTML = '';
-
-        //     const width = 400;
-        //     const centerX = width / 2;
-        //     const displaySigma = sigma / 0.15 * 40; 
-
-        //     // Draw 1, 2, 3, 4, 5, 6 Sigma lines
-        //     for (let i = 1; i <= 6; i++) {
-        //         const xOffset = i * displaySigma;
-        //         drawSigmaMarker(centerX + xOffset, `+${i}σ`);
-        //         drawSigmaMarker(centerX - xOffset, `-${i}σ`);
-        //     }
-        // }
-
-        // function drawSigmaMarker(x, label) {
-        //     const container = document.getElementById('sigma-markers');
-        //     const height = 250;
-        //     const baseY = 200;
-
-        //     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        //     line.setAttribute("x1", x);
-        //     line.setAttribute("y1", 30);
-        //     line.setAttribute("x2", x);
-        //     line.setAttribute("y2", baseY);
-        //     line.setAttribute("class", "sigma-line");
-        //     line.style.opacity = "0.1";
-        //     container.appendChild(line);
-
-        //     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        //     text.setAttribute("x", x);
-        //     text.setAttribute("y", baseY + 12);
-        //     text.setAttribute("class", "sigma-marker-label");
-        //     text.textContent = label;
-        //     text.style.fontSize = "7px";
-        //     container.appendChild(text);
-        // }
-
-        // Local showToast for immediate feedback
-        function showToast(msg, type = 'info') {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-                padding: 12px 25px; border-radius: 30px; z-index: 100000;
-                font-family: 'Inter', sans-serif; font-size: 13px; font-weight: bold;
-                backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
-                box-shadow: 0 10px 40px rgba(0,0,0,0.5); color: #fff;
-                animation: toastIn 0.3s ease-out forwards;
-            `;
-            if (type === 'success') toast.style.background = 'rgba(16, 185, 129, 0.8)';
-            else if (type === 'error') toast.style.background = 'rgba(239, 68, 68, 0.8)';
-            else toast.style.background = 'rgba(139, 92, 246, 0.8)';
-
-            toast.innerText = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.animation = 'toastOut 0.3s ease-in forwards';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // Add toast animations to head
-        const toastStyle = document.createElement('style');
-        toastStyle.innerHTML = `
-            @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
-            @keyframes toastOut { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -20px); } }
-        `;
-        document.head.appendChild(toastStyle);
-
-        // Zoom Logic
-        function toggleZoom() {
-            const container = document.getElementById('curve-container');
-            container.classList.toggle('zoomed');
-        }
-
-        // Update variation display
-        function updateVariationDisplay() {
-            const sigma = getCurrentSigma();
-            const display = document.getElementById('sigma-display');
-            display.textContent = sigma.toFixed(2);
-
-            display.classList.remove('low', 'medium', 'high');
-            if (sigma <= 0.25) {
-                display.classList.add('low');
-            } else if (sigma <= 0.55) {
-                display.classList.add('medium');
-            } else {
-                display.classList.add('high');
-            }
-        }
-
-        // Update spec limit positions
-        function updateSpecLimits() {
-            // Red lines removed per user request for high-fidelity focus on distribution zones
-        }
-
-        // Update sigma level display
-        function updateSigmaDisplay() {
-            const sigma = getCurrentSigma();
-            const mean = getCurrentMean();
-            const customer = labState.customers[labState.currentCustomer];
-
-            const dpmo = calculateDPMO(mean, sigma, customer.lsl, customer.usl);
-            const sigmaLevel = calculateSigmaLevel(dpmo);
-
-            const sigmaEl = document.getElementById('sigma-level');
-            sigmaEl.textContent = sigmaLevel.toFixed(1) + 'σ';
-
-            sigmaEl.classList.remove('sigma-low', 'sigma-medium', 'sigma-high');
-            if (sigmaLevel < 3) {
-                sigmaEl.classList.add('sigma-low');
-            } else if (sigmaLevel < 5) {
-                sigmaEl.classList.add('sigma-medium');
-            } else {
-                sigmaEl.classList.add('sigma-high');
-            }
-
-            document.getElementById('dpmo-display').textContent = dpmo.toLocaleString();
-        }
-
-        // Toggle chaos factor
         function toggleChaos(id) {
-            labState.chaosFactors[id].active = !labState.chaosFactors[id].active;
-            document.getElementById(`chaos${id}`).classList.toggle('active');
-
-            updateVariationDisplay();
-            updateBellCurve();
-            updateSigmaDisplay();
+            if (labState.activeChaos.has(id)) labState.activeChaos.delete(id);
+            else labState.activeChaos.add(id);
+            renderChaos();
+            updateLabVisuals();
         }
 
-        // Select customer
-        function selectCustomer(id) {
-            if (id === labState.currentCustomer) return;
+        function updateLabVisuals() {
+            const config = gamifiedScenarios[labState.currentScenario];
+            let currentStd = config.baseStd;
+            labState.activeChaos.forEach(cid => { currentStd += config.chaos.find(x => x.id === cid).impact; });
 
-            labState.currentCustomer = id;
-            document.querySelectorAll('.customer-option').forEach(opt => {
-                opt.classList.remove('active');
-            });
-            document.getElementById(`customer${id}`).classList.add('active');
+            const zU = (labState.usl - config.mean) / currentStd;
+            const zL = (config.mean - labState.lsl) / currentStd;
+            const pFailU = 1 - cdf(zU);
+            const pFailL = cdf(-zL);
+            const totalFail = pFailU + pFailL;
+            const dpmo = totalFail * 1000000;
+            const yieldVal = (1 - totalFail) * 100;
+            const sigmaLevel = inverseNormal(1 - totalFail) + 1.5;
 
-            updateSpecLimits();
-            updateSigmaDisplay();
+            document.getElementById('yield-display').innerText = yieldVal.toFixed(yieldVal > 99.9 ? 5 : 2) + '%';
+            document.getElementById('dpmo-display').innerText = Math.round(dpmo).toLocaleString();
+            document.getElementById('sigma-display').innerText = sigmaLevel.toFixed(1) + 'σ';
+            
+            const display = document.getElementById('sigma-display');
+            document.getElementById('sigma-status').innerText = sigmaLevel < 3 ? "CHAOS" : (sigmaLevel < 5 ? "AVERAGE" : (sigmaLevel < 6 ? "ELITE" : "WORLD CLASS"));
+            display.style.color = sigmaLevel < 3 ? '#ef4444' : (sigmaLevel < 5 ? '#f59e0b' : (sigmaLevel < 6 ? '#10b981' : '#6366f1'));
+
+            const copq = Math.round(dpmo / 1000 * config.costPerDefect);
+            document.getElementById('cost-display').innerText = '$' + copq.toLocaleString();
+
+            renderMainCurve(config.mean, currentStd, labState.lsl, labState.usl);
+            renderMagnifyingLens(config.mean, currentStd, labState.usl);
         }
 
-        // Generate random value from normal distribution (Box-Muller)
-        function randomNormal(mean, sigma) {
-            const u1 = Math.random();
-            const u2 = Math.random();
-            const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-            return mean + z * sigma;
-        }
+        function renderMainCurve(mean, std, lsl, usl) {
+            const svg = document.getElementById('lab-svg');
+            const zoneGroup = document.getElementById('zone-paths');
+            const mainPath = document.getElementById('lab-curve-main');
+            zoneGroup.innerHTML = '';
 
-        // Run batch simulation
-        function runBatch() {
-            if (labState.isRunning) return;
-            labState.isRunning = true;
+            const centerX = 400;
+            const centerY = 450;
+            const scaleX = 40; 
+            
+            const drawZone = (zStart, zEnd, color) => {
+                let pts = [];
+                for (let z = zStart; z <= zEnd; z += 0.1) {
+                    const x = centerX + z * scaleX;
+                    const y = centerY - (Math.exp(-0.5 * z * z) * 350);
+                    pts.push(`${x},${y}`);
+                }
+                const pathD = `M ${centerX + (zStart * scaleX)},${centerY} L ` + pts.join(' L ') + ` L ${centerX + (zEnd * scaleX)},${centerY} Z`;
+                const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                p.setAttribute("d", pathD);
+                p.setAttribute("fill", color);
+                p.setAttribute("fill-opacity", "0.2");
+                zoneGroup.appendChild(p);
+            };
 
-            const btn = document.getElementById('run-batch-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="cup-icon">☕</span> Pouring...';
+            drawZone(-6, -3, "#ef4444");
+            drawZone(-3, -2, "#f59e0b");
+            drawZone(-2, 2, "#10b981");
+            drawZone(2, 3, "#f59e0b");
+            drawZone(3, 6, "#ef4444");
 
-            const cupsContainer = document.getElementById('cups-container');
-            cupsContainer.innerHTML = '';
-
-            labState.batchResults = { good: 0, defects: 0 };
-
-            const sigma = getCurrentSigma();
-            const mean = getCurrentMean();
-            const customer = labState.customers[labState.currentCustomer];
-
-            const containerWidth = cupsContainer.offsetWidth;
-
-            // Animate 100 cups
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => {
-                    const value = randomNormal(mean, sigma);
-                    const isGood = value >= customer.lsl && value <= customer.usl;
-
-                    if (isGood) {
-                        labState.batchResults.good++;
-                    } else {
-                        labState.batchResults.defects++;
-                    }
-
-                    // Calculate horizontal position based on value
-                    const normalizedPos = (value - mean) / (sigma * 4) + 0.5;
-                    const xPos = Math.max(5, Math.min(95, normalizedPos * 100));
-
-                    const config = labScenarios[labState.currentScenario];
-                    const cup = document.createElement('div');
-                    cup.className = `falling-cup ${isGood ? 'good' : 'defect'}`;
-                    cup.textContent = config.btnIcon;
-                    cup.style.left = `${xPos}%`;
-                    cup.style.animationDelay = `${i * 20}ms`;
-
-                    if (!isGood) {
-                        cup.addEventListener('animationend', () => {
-                            cup.classList.add('defect-splash');
-                        });
-                    }
-
-                    cupsContainer.appendChild(cup);
-
-                    // Update bin counts
-                    document.getElementById('good-bin-count').textContent = labState.batchResults.good;
-                    document.getElementById('defect-bin-count').textContent = labState.batchResults.defects;
-                    document.getElementById('good-count').textContent = labState.batchResults.good;
-                    document.getElementById('defect-count').textContent = labState.batchResults.defects;
-
-                }, i * 25);
+            let linePts = [];
+            for (let z = -6; z <= 6; z += 0.1) {
+                const x = centerX + z * scaleX;
+                const y = centerY - (Math.exp(-0.5 * z * z) * 350);
+                linePts.push(`${x},${y}`);
             }
+            mainPath.setAttribute("d", "M " + linePts.join(" L "));
 
-            // Finish after all cups
+            const lslX = centerX + ((lsl - mean) / std) * scaleX;
+            const uslX = centerX + ((usl - mean) / std) * scaleX;
+            document.getElementById('lsl-line').setAttribute('x1', lslX);
+            document.getElementById('lsl-line').setAttribute('x2', lslX);
+            document.getElementById('lsl-label').setAttribute('x', lslX);
+            document.getElementById('usl-line').setAttribute('x1', uslX);
+            document.getElementById('usl-line').setAttribute('x2', uslX);
+            document.getElementById('usl-label').setAttribute('x', uslX);
+        }
+
+        function renderMagnifyingLens(mean, std, usl) {
+            const zU = (usl - mean) / std;
+            const magCurve = document.getElementById('mag-curve');
+            let pts = [];
+            for (let i = 0; i <= 100; i++) {
+                const localX = i;
+                const relativeZ = zU + (i - 80) * 0.001; 
+                const y = 100 - (Math.exp(-0.5 * relativeZ * relativeZ) * 100000); 
+                pts.push(`${localX},${Math.min(100, Math.max(0, y))}`);
+            }
+            magCurve.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
+        }
+
+        function setupDrag() {
+            const svg = document.getElementById('lab-svg');
+            let activeLimit = null;
+            document.querySelectorAll('.limit-handle').forEach(el => {
+                el.addEventListener('mousedown', (e) => { activeLimit = el.id; });
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!activeLimit) return;
+                const rect = svg.getBoundingClientRect();
+                const x = (e.clientX - rect.left) * (800 / rect.width);
+                const config = gamifiedScenarios[labState.currentScenario];
+                let std = config.baseStd;
+                labState.activeChaos.forEach(cid => { std += config.chaos.find(x => x.id === cid).impact; });
+                const z = (x - 400) / 40;
+                const val = config.mean + z * std;
+                if (activeLimit === 'lsl-line') labState.lsl = Math.min(val, config.mean - 0.01);
+                else labState.usl = Math.max(val, config.mean + 0.01);
+                updateLabVisuals();
+            });
+            window.addEventListener('mouseup', () => { activeLimit = null; });
+        }
+
+        function startBatchSimulation() {
+            if (labState.isSimulating) return;
+            labState.isSimulating = true;
+            document.getElementById('run-batch-btn').disabled = true;
+            const layer = document.getElementById('sim-layer');
+            const config = gamifiedScenarios[labState.currentScenario];
+            let batchCount = 0;
+            const interval = setInterval(() => {
+                createSimulationItem(layer, config);
+                batchCount++;
+                if (batchCount >= 100) {
+                    clearInterval(interval);
+                    labState.isSimulating = false;
+                    document.getElementById('run-batch-btn').disabled = false;
+                }
+            }, 50);
+        }
+
+        function createSimulationItem(parent, config) {
+            const item = document.createElement('div');
+            item.className = 'sim-item';
+            item.innerText = config.itemIcon;
+            let std = config.baseStd;
+            labState.activeChaos.forEach(cid => { std += config.chaos.find(x => x.id === cid).impact; });
+            const u1 = Math.random(), u2 = Math.random();
+            const randZ = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+            const val = config.mean + randZ * std;
+            item.style.left = `${400 + (randZ * 40)}px`;
+            item.style.top = `-20px`;
+            parent.appendChild(item);
+            const isSuccess = val >= labState.lsl && val <= labState.usl;
             setTimeout(() => {
-                labState.isRunning = false;
-                btn.disabled = false;
-                btn.innerHTML = '<span class="cup-icon">☕</span> Pour 100 Cups';
-            }, 100 * 25 + 1500);
+                item.style.transform = `translateY(${470 + Math.random() * 20}px)`;
+                setTimeout(() => {
+                    item.classList.add(isSuccess ? 'hit' : 'miss');
+                    setTimeout(() => item.remove(), 1000);
+                }, 800);
+            }, 10);
+        }
+
+        function resetSimData() {
+            document.getElementById('sim-layer').innerHTML = '';
+            showToast("Laboratory logs cleared.", "info");
         }
 
         // ============================================
@@ -3778,65 +3487,9 @@
             slider.style.transition = 'all 0.3s ease';
         });
 
-        // Initialize Process Lab
-        function initProcessLab() {
-            updateVariationDisplay();
-            updateBellCurve();
-            updateSpecLimits();
-            updateSigmaDisplay();
-        }
-
-        // Draggable Logic for Process Lab
-        function initModalDragging() {
-            const modal = document.getElementById('processlab-modal');
-            const header = modal.querySelector('.modal-header');
-
-            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            header.onmousedown = (e) => {
-                // Fix: Ignore clicks on interactive elements inside the header
-                if (e.target.tagName === 'SELECT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
-
-                e = e || window.event;
-                e.preventDefault();
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                document.onmouseup = () => {
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                };
-                document.onmousemove = (e) => {
-                    e = e || window.event;
-                    e.preventDefault();
-                    pos1 = pos3 - e.clientX;
-                    pos2 = pos4 - e.clientY;
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    modal.style.top = (modal.offsetTop - pos2) + "px";
-                    modal.style.left = (modal.offsetLeft - pos1) + "px";
-                    modal.style.right = 'auto'; // Break centering
-                    modal.style.bottom = 'auto';
-                    modal.style.transform = 'none';
-                };
-            };
-        }
-
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             updateContent();
-            initModalDragging();
-
-            // Initialize with default scenario
-            const defaultScenario = 'latte';
-            const config = labScenarios[defaultScenario];
-            labState.customers = config.customers;
-            for (let id in config.chaos) {
-                labState.chaosFactors[id] = {
-                    active: false,
-                    sigma: config.chaos[id].sigma,
-                    meanShift: config.chaos[id].meanShift
-                }
-            }
-
             initProcessLab();
             lucide.createIcons();
         });
