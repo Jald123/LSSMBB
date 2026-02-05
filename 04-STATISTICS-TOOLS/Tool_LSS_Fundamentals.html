@@ -2673,10 +2673,17 @@
                 <div class="sigma-explorer" id="sigma-explorer">
                     <div class="explorer-lens" id="explorer-lens">
                         <svg id="explorer-svg" viewBox="0 0 100 100" style="width:100%; height:100%;">
+                            <!-- Sigma reference line (vertical) -->
+                            <line id="explorer-sigma-line" x1="50" y1="0" x2="50" y2="100" stroke="#fff"
+                                stroke-width="2" stroke-opacity="0.6" />
+                            <!-- The curve fill -->
                             <path id="explorer-curve" fill="rgba(99, 102, 241, 0.3)" stroke="#6366f1" stroke-width="2"
                                 d="" />
-                            <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"
-                                stroke-dasharray="2 2" />
+                            <!-- Distance arrow/indicator -->
+                            <line id="explorer-distance" x1="50" y1="0" x2="50" y2="0" stroke="#10b981" stroke-width="2"
+                                stroke-dasharray="3 2" />
+                            <text id="explorer-distance-label" x="55" y="50" fill="#10b981" font-size="8"
+                                font-weight="bold"></text>
                         </svg>
                     </div>
                     <div class="explorer-data" id="explorer-data">
@@ -2693,6 +2700,8 @@
                     <svg id="lab-svg" viewBox="0 0 800 500" style="width:100%; height:100%; overflow:visible;">
                         <!-- Sigma Zone Colors -->
                         <g id="zone-paths"></g>
+                        <!-- Sigma Level Lines -->
+                        <g id="sigma-lines"></g>
                         <!-- Main Curve Line -->
                         <path id="lab-curve-main" fill="none" stroke="#6366f1" stroke-width="4" d="" />
                         <!-- Target/Mean Line -->
@@ -2710,6 +2719,8 @@
                             <text id="usl-label" class="limit-label" x="600" y="40" text-anchor="middle">REJECT
                                 (HIGH)</text>
                         </g>
+                        <!-- Sigma Labels at Bottom -->
+                        <g id="sigma-labels"></g>
                     </svg>
                     <!-- Floating simulation items -->
                     <div class="simulation-layer" id="sim-layer"></div>
@@ -3117,13 +3128,19 @@
         function renderMainCurve(mean, std, lsl, usl) {
             const svg = document.getElementById('lab-svg');
             const zoneGroup = document.getElementById('zone-paths');
+            const sigmaLinesGroup = document.getElementById('sigma-lines');
+            const sigmaLabelsGroup = document.getElementById('sigma-labels');
             const mainPath = document.getElementById('lab-curve-main');
+
             zoneGroup.innerHTML = '';
+            sigmaLinesGroup.innerHTML = '';
+            sigmaLabelsGroup.innerHTML = '';
 
             const centerX = 400;
             const centerY = 450;
             const scaleX = 40;
 
+            // Draw sigma zone fills
             const drawZone = (zStart, zEnd, color) => {
                 let pts = [];
                 for (let z = zStart; z <= zEnd; z += 0.1) {
@@ -3145,6 +3162,47 @@
             drawZone(2, 3, "#f59e0b");
             drawZone(3, 6, "#ef4444");
 
+            // Draw sigma level lines and labels (-6σ to +6σ)
+            for (let sigma = -6; sigma <= 6; sigma++) {
+                const x = centerX + sigma * scaleX;
+
+                // Determine line color based on sigma level
+                let lineColor = '#10b981'; // Green for center
+                let lineOpacity = 0.3;
+                if (Math.abs(sigma) >= 3) {
+                    lineColor = '#ef4444'; // Red for tails
+                    lineOpacity = 0.4;
+                } else if (Math.abs(sigma) >= 2) {
+                    lineColor = '#f59e0b'; // Yellow for 2-3σ
+                    lineOpacity = 0.35;
+                }
+
+                // Create vertical line
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x);
+                line.setAttribute("y1", 70);
+                line.setAttribute("x2", x);
+                line.setAttribute("y2", centerY);
+                line.setAttribute("stroke", lineColor);
+                line.setAttribute("stroke-width", sigma === 0 ? "2" : "1");
+                line.setAttribute("stroke-opacity", lineOpacity);
+                line.setAttribute("stroke-dasharray", sigma === 0 ? "none" : "4 4");
+                sigmaLinesGroup.appendChild(line);
+
+                // Create label at bottom
+                const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                label.setAttribute("x", x);
+                label.setAttribute("y", centerY + 25);
+                label.setAttribute("text-anchor", "middle");
+                label.setAttribute("fill", lineColor);
+                label.setAttribute("font-size", "11");
+                label.setAttribute("font-weight", sigma === 0 ? "bold" : "normal");
+                label.setAttribute("font-family", "system-ui, sans-serif");
+                label.textContent = sigma === 0 ? "μ" : (sigma > 0 ? `+${sigma}σ` : `${sigma}σ`);
+                sigmaLabelsGroup.appendChild(label);
+            }
+
+            // Draw main curve
             let linePts = [];
             for (let z = -6; z <= 6; z += 0.1) {
                 const x = centerX + z * scaleX;
@@ -3153,6 +3211,7 @@
             }
             mainPath.setAttribute("d", "M " + linePts.join(" L "));
 
+            // Position LSL/USL lines based on scenario
             const lslX = centerX + ((lsl - mean) / std) * scaleX;
             const uslX = centerX + ((usl - mean) / std) * scaleX;
             document.getElementById('lsl-line').setAttribute('x1', lslX);
@@ -3284,28 +3343,67 @@
 
         function renderExplorerCurve(sigmaLevel) {
             const curve = document.getElementById('explorer-curve');
+            const sigmaLine = document.getElementById('explorer-sigma-line');
+            const distanceLine = document.getElementById('explorer-distance');
+            const distanceLabel = document.getElementById('explorer-distance-label');
             if (!curve) return;
 
+            // Calculate curve at this sigma level
             const zoomCenter = sigmaLevel;
-            const zoomWidth = 1.0;
+            const zoomWidth = 1.5; // Wider view for better context
             let pts = [];
+            let curveYAtSigma = 100;
 
             for (let i = 0; i <= 100; i++) {
                 const localX = i;
                 const z = (zoomCenter - zoomWidth) + (i / 100) * (2 * zoomWidth);
                 const pdfValue = Math.exp(-0.5 * z * z);
-                // Scale to fit in the 100x100 viewbox
-                const y = 100 - (pdfValue * 250);
-                pts.push(`${localX},${Math.max(5, Math.min(95, y))}`);
+                // Scale based on sigma level - adaptive scaling
+                const maxScale = sigmaLevel <= 2 ? 120 : (sigmaLevel <= 4 ? 300 : 800);
+                const y = 100 - (pdfValue * maxScale);
+                pts.push(`${localX},${Math.max(5, Math.min(98, y))}`);
+
+                // Track curve Y at the sigma line position (center = 50)
+                if (i === 50) {
+                    curveYAtSigma = Math.max(5, Math.min(98, y));
+                }
             }
 
             curve.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
 
-            // Update curve color based on sigma
+            // Position sigma line at center
+            if (sigmaLine) {
+                sigmaLine.setAttribute("x1", 50);
+                sigmaLine.setAttribute("x2", 50);
+            }
+
+            // Draw distance indicator from curve to baseline
+            if (distanceLine && distanceLabel) {
+                distanceLine.setAttribute("x1", 50);
+                distanceLine.setAttribute("y1", curveYAtSigma);
+                distanceLine.setAttribute("x2", 50);
+                distanceLine.setAttribute("y2", 100);
+
+                // Calculate the visual distance percentage
+                const distancePercent = Math.round((100 - curveYAtSigma));
+                distanceLabel.setAttribute("y", curveYAtSigma + (100 - curveYAtSigma) / 2 + 3);
+                distanceLabel.textContent = distancePercent > 5 ? `${distancePercent}%` : '';
+            }
+
+            // Update colors based on sigma
             const data = sigmaReferenceData[sigmaLevel];
             if (data) {
-                curve.setAttribute("fill", data.color + '33'); // 20% opacity
+                curve.setAttribute("fill", data.color + '40'); // 25% opacity
                 curve.setAttribute("stroke", data.color);
+                if (sigmaLine) {
+                    sigmaLine.setAttribute("stroke", data.color);
+                }
+                if (distanceLine) {
+                    distanceLine.setAttribute("stroke", "#ffffff");
+                }
+                if (distanceLabel) {
+                    distanceLabel.setAttribute("fill", "#ffffff");
+                }
             }
         }
 
