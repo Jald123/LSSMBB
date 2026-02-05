@@ -1397,10 +1397,19 @@
             color: #ef4444;
         }
 
-        /* Panel B: Visualizer */
+        /* Panel B: Visualizer & DPMO Panel */
+        .visualizer-layout {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            min-height: 350px;
+        }
+
         .visualizer-panel {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .visualizer-panel .panel-title {
@@ -1414,11 +1423,11 @@
         .curve-container {
             flex: 1;
             position: relative;
-            background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, transparent 100%);
+            background: #fff;
             border-radius: 16px;
-            border: 1px solid var(--border);
-            min-height: 350px;
-            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            overflow: visible;
+            padding: 20px;
         }
 
         .curve-svg {
@@ -1427,77 +1436,127 @@
             overflow: visible;
         }
 
-        .sigma-zone {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            stroke-width: 0;
+        /* DPMO Aside Panel */
+        .dpmo-aside {
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .sigma-zone:hover {
-            fill-opacity: 0.8 !important;
-            filter: brightness(1.2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-        }
-
-        /* Sigma Readout Box (Image 1 Style) */
-        .sigma-readout {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(10, 15, 26, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+        .dpmo-card {
+            background: var(--glass-strong);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             padding: 15px;
-            width: 180px;
-            pointer-events: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            z-index: 100;
-            display: none;
-            backdrop-filter: blur(10px);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .sigma-readout.active {
-            display: block;
+        .dpmo-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--sigma-color);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .readout-label {
-            font-size: 10px;
-            color: #64748b;
+        .dpmo-thumb {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dpmo-card h4 {
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: var(--sigma-color);
             margin-bottom: 5px;
         }
 
-        .readout-sigma {
-            font-size: 24px;
-            font-weight: 800;
-            color: #10b981;
-            margin-bottom: 10px;
-        }
-
-        .readout-defects {
+        .dpmo-card p {
             font-size: 10px;
-            color: #64748b;
+            color: var(--text-secondary);
         }
 
-        .readout-val {
-            font-size: 16px;
-            font-weight: 700;
-            color: #ef4444;
-            font-family: 'Courier New', monospace;
-        }
-
-        .sigma-zone-label {
-            font-size: 8px;
-            fill: rgba(255, 255, 255, 0.6);
-            font-weight: 600;
+        /* Pop-up for DPMO Table */
+        .dpmo-popup-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: auto;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: white;
+            padding: 5px;
+            border-radius: 12px;
+            z-index: 100002;
+            opacity: 0;
             pointer-events: none;
-            text-anchor: middle;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
         }
 
-        .sigma-bracket-line {
-            stroke: rgba(255, 255, 255, 0.4);
+        .dpmo-popup-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .dpmo-full-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .dpmo-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 30px;
+            height: 30px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        /* SVG Components */
+        .sigma-bracket {
+            stroke: #000;
             stroke-width: 1;
             fill: none;
+        }
+
+        .percent-label {
+            font-size: 9px;
+            font-weight: 700;
+            fill: #000;
+            text-anchor: middle;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .process-curve-path {
+            stroke: #2563eb;
+            stroke-width: 2.5;
+            fill: rgba(37, 99, 235, 0.05);
+            transition: d 0.5s ease;
+        }
+
+        .target-center-line {
+            stroke: #000;
+            stroke-width: 1;
+            stroke-dasharray: 2 2;
         }
 
         .sigma-percentage-text {
@@ -2510,68 +2569,68 @@
                     </div>
                 </div>
 
-                <!-- Panel B: Visualizer -->
+                <!-- Panel B: Visualizer & Metrics -->
                 <div class="lab-panel visualizer-panel">
                     <div class="panel-title">
                         <div class="icon">📊</div>
-                        <span id="visualizer-title">The Latte Pour Distribution</span>
+                        <span id="visualizer-title">Process Capability Visualizer</span>
                     </div>
 
-                    <div class="curve-container" id="curve-container" onclick="toggleZoom()">
-                        <!-- SVG Bell Curve - High Fid Look (Matches Image 1) -->
-                        <svg class="curve-svg" id="bell-curve-svg" viewBox="0 0 400 320"
-                            preserveAspectRatio="xMidYMid meet">
-                            <defs>
-                                <linearGradient id="bellGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:var(--sigma-color);stop-opacity:0.8" />
-                                    <stop offset="100%" style="stop-color:var(--sigma-color);stop-opacity:0" />
-                                </linearGradient>
-                            </defs>
+                    <div class="visualizer-layout">
+                        <div class="curve-container" id="curve-container">
+                            <!-- SVG Bell Curve - Image 2 Style -->
+                            <svg class="curve-svg" id="bell-curve-svg" viewBox="0 0 500 350"
+                                preserveAspectRatio="xMidYMid meet">
+                                <defs>
+                                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6"
+                                        markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#000" />
+                                    </marker>
+                                </defs>
 
-                            <!-- Groups for Sigma Zones -->
-                            <g id="sigma-zones-group"></g>
+                                <!-- Theoretical Sigma Zones (Image 2 Shading) -->
+                                <g id="sigma-zones-group"></g>
 
-                            <!-- Baseline and Axis (μ) -->
-                            <line id="mean-line" x1="200" y1="20" x2="200" y2="280" stroke="#000" stroke-width="1.5" />
+                                <!-- Brackets and Percentages (Image 2 Brackets) -->
+                                <g id="sigma-brackets"></g>
 
-                            <!-- Sigma Labels Container -->
-                            <g id="sigma-markers"></g>
-                            <g id="sigma-brackets"></g>
+                                <!-- X-Axis Labels -->
+                                <g id="sigma-markers"></g>
 
-                            <!-- Main Curve Line -->
-                            <path id="bell-path" d="" fill="none" stroke="#2563eb" stroke-width="3" />
-                        </svg>
+                                <!-- Process Performance Line (DYNAMIC) -->
+                                <path id="process-curve-path" d="" class="process-curve-path" />
 
-                        <!-- Floating Readout (Image 1 Style) -->
-                        <div id="sigma-readout-box" class="sigma-readout">
-                            <div class="readout-label">Target Zone</div>
-                            <div class="readout-sigma" id="readout-level">0.0σ</div>
-                            <div class="readout-defects">Est. Defects/Million:</div>
-                            <div class="readout-val" id="readout-dpmo">3.4</div>
+                                <!-- Target/Mean Marker -->
+                                <line id="mean-line" x1="250" y1="20" x2="250" y2="280" class="target-center-line" />
+                            </svg>
+
+                            <!-- Floating Readout -->
+                            <div class="sigma-readout" id="sigma-readout-box" style="z-index:10;">
+                                <div class="readout-label">ZONE COVERAGE</div>
+                                <div class="readout-sigma" id="readout-level">0σ</div>
+                                <div class="readout-defects" id="readout-dpmo">99% of Population</div>
+                            </div>
                         </div>
-                        <!-- Target Line -->
-                        <div class="target-line"></div>
-                        <div class="target-label" id="target-label">Target: 12.0oz</div>
 
-                        <!-- Cups Animation Container -->
-                        <div class="cups-container" id="cups-container"></div>
+                        <!-- Right Aside: DPMO Reference -->
+                        <div class="dpmo-aside">
+                            <div class="dpmo-card" onclick="openDpmoTable()">
+                                <img src="../assets/module-intro/dpmo_reference.png" class="dpmo-thumb"
+                                    alt="DPMO Table">
+                                <h4>DPMO Reference</h4>
+                                <p>Defects Per Million Opportunities</p>
+                                <div
+                                    style="margin-top:10px; font-size:9px; color:var(--sigma-color); font-weight:bold;">
+                                    Click to Expand Table</div>
+                            </div>
 
-                        <!-- Explanation Tooltip -->
-                        <div id="graph-explanation" class="graph-explanation">
-                            <h5 id="explanation-title">Zone Details</h5>
-                            <p id="explanation-text">Hover over areas to see statistical details.</p>
-                        </div>
-                    </div>
-
-                    <!-- Bins -->
-                    <div class="bins-container">
-                        <div class="result-bin good-bin">
-                            <span class="bin-count" id="good-bin-count">0</span>
-                            <span class="bin-label">✓ Good Units</span>
-                        </div>
-                        <div class="result-bin defect-bin">
-                            <span class="bin-count" id="defect-bin-count">0</span>
-                            <span class="bin-label">✗ Defects</span>
+                            <!-- Process Snapshot (Image 1 Thumb) -->
+                            <div class="dpmo-card" style="cursor:default;">
+                                <img src="../assets/module-intro/process_lab_thumb.png" class="dpmo-thumb"
+                                    style="height:60px; object-fit:cover;" alt="Process View">
+                                <h4>Process Health</h4>
+                                <p id="lab-health-desc">Monitoring target stability and variation spread.</p>
+                            </div>
                         </div>
                     </div>
 
@@ -3227,148 +3286,153 @@
             return Math.max(0, Math.min(6, z + 1.5));
         }
 
-        // Generate bell curve path and interactive zones
-        function generateBellCurve(sigma) {
-            // Constants for chart framing (Image 1 proportions)
-            const width = 400;
-            const height = 320;
-            const centerX = 200;
-            const baseY = 180;
-            const displaySigma = 30; // Fixed scale for 6-sigma view
-            const scalingFactor = 140; // Curve height scale
+        // DPMO Modal Logic
+        function openDpmoTable() {
+            document.getElementById('dpmo-backdrop').classList.add('active');
+            document.getElementById('dpmo-popup').classList.add('active');
+        }
 
-            // Clear exiting zones
+        function closeDpmoTable() {
+            document.getElementById('dpmo-backdrop').classList.remove('active');
+            document.getElementById('dpmo-popup').classList.remove('active');
+        }
+
+        // Generate bell curve path and interactive zones (Image 2 Style)
+        function generateBellCurve() {
+            // Configuration for chart (matches 500x350 viewBox)
+            const width = 500;
+            const height = 350;
+            const centerX = 250;
+            const baseY = 250;
+            const stdUnits = 30; // 1 sigma = 30px
+            const curveAmp = 180; // Peak height
+
             const zonesGroup = document.getElementById('sigma-zones-group');
+            const bracketsGroup = document.getElementById('sigma-brackets');
+            const markersGroup = document.getElementById('sigma-markers');
+
             zonesGroup.innerHTML = '';
-            document.getElementById('sigma-markers').innerHTML = '';
-            document.getElementById('sigma-brackets').innerHTML = '';
+            bracketsGroup.innerHTML = '';
+            markersGroup.innerHTML = '';
 
-            // 1. Shaded Gray Background Rect (Matches Image 1)
-            const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            bgRect.setAttribute("x", "10");
-            bgRect.setAttribute("y", "20");
-            bgRect.setAttribute("width", "380");
-            bgRect.setAttribute("height", "160");
-            bgRect.setAttribute("fill", "#eceef2");
-            bgRect.setAttribute("rx", "6");
-            zonesGroup.appendChild(bgRect);
+            // 1. Image 2 Shaded Gray Area Background
+            const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            bg.setAttribute("x", "30"); bg.setAttribute("y", "20");
+            bg.setAttribute("width", "440"); bg.setAttribute("height", "230");
+            bg.setAttribute("fill", "#f3f4f6"); bg.setAttribute("rx", "10");
+            zonesGroup.appendChild(bg);
 
-            // 2. Base Line (X Axis)
-            const axisX = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            axisX.setAttribute("x1", "10"); axisX.setAttribute("y1", baseY);
-            axisX.setAttribute("x2", "390"); axisX.setAttribute("y2", baseY);
-            axisX.setAttribute("stroke", "#000"); axisX.setAttribute("stroke-width", "1.5");
-            zonesGroup.appendChild(axisX);
+            // 2. Shaded Curve (Theoretical Gray) - Matches Image 2 background shading
+            let polyPoints = [`${centerX - 200},${baseY}`, `${centerX - 180},${baseY}`];
+            for (let x = centerX - 180; x <= centerX + 180; x += 2) {
+                const z = (x - centerX) / stdUnits;
+                const y = baseY - Math.exp(-0.5 * z * z) * curveAmp;
+                polyPoints.push(`${x},${y}`);
+            }
+            polyPoints.push(`${centerX + 180},${baseY}`, `${centerX + 200},${baseY}`);
 
-            // 3. Sigma Zone Colors - High Definition
-            const zoneColors = {
-                1: '#3b82f6', // 0-1σ (Deep Blue)
-                2: '#60a5fa', // 1-2σ
-                3: '#93c5fd', // 2-3σ
-                4: '#bfdbfe', // 3-4σ
-                5: '#dbeafe', // 4-5σ
-                6: '#eff6ff'  // 5-6σ
-            };
+            const shadedCurve = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+            shadedCurve.setAttribute("points", polyPoints.join(" "));
+            shadedCurve.setAttribute("fill", "#dfe3e8");
+            shadedCurve.setAttribute("stroke", "#9ca3af");
+            shadedCurve.setAttribute("stroke-width", "1");
+            zonesGroup.appendChild(shadedCurve);
 
-            const sigmaPercentages = {
-                1: '34.13%', 2: '13.59%', 3: '2.14%', 4: '0.13%', 5: '0.003%', 6: '0.00003%'
-            };
+            // 3. Horizontal Sigma Labels (-6 to +6 as per Image 2)
+            for (let s = -6; s <= 6; s++) {
+                const x = centerX + s * stdUnits;
 
-            // 4. Draw SL Lines (Static as per requested diagram look)
-            const drawSL = (xPos) => {
+                // Axis Tick Line
                 const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", xPos); line.setAttribute("y1", 20);
-                line.setAttribute("x2", xPos); line.setAttribute("y2", 180);
-                line.setAttribute("stroke", "#84cc16");
-                line.setAttribute("stroke-width", "2.5");
-                zonesGroup.appendChild(line);
+                line.setAttribute("x1", x); line.setAttribute("y1", baseY);
+                line.setAttribute("x2", x); line.setAttribute("y2", baseY + 10);
+                line.setAttribute("stroke", "#000"); line.setAttribute("stroke-width", "1.5");
+                markersGroup.appendChild(line);
 
-                const lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                lbl.setAttribute("x", xPos); lbl.setAttribute("y", 15);
-                lbl.setAttribute("text-anchor", "middle");
-                lbl.setAttribute("fill", "#000");
-                lbl.setAttribute("font-family", "Inter, sans-serif");
-                lbl.setAttribute("font-size", "11");
-                lbl.setAttribute("font-weight", "800");
-                lbl.textContent = "SL";
-                zonesGroup.appendChild(lbl);
-            };
+                // Label (e.g., -6σ, -5σ... 0 ... +6σ)
+                const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txt.setAttribute("x", x); txt.setAttribute("y", baseY + 25);
+                txt.setAttribute("text-anchor", "middle");
+                txt.setAttribute("class", "percent-label");
+                txt.textContent = s === 0 ? "0" : (s < 0 ? `${s}σ` : `+${s}σ`);
+                markersGroup.appendChild(txt);
+            }
 
-            drawSL(centerX - 5.8 * displaySigma); // Roughly -6σ
-            drawSL(centerX + 5.8 * displaySigma); // Roughly +6σ
+            // 4. Image 2 Brackets with Percentages
+            const bracketConfigs = [
+                { s: 1, p: "68.26%", h: 40 },
+                { s: 2, p: "95.44%", h: 80 },
+                { s: 3, p: "99.73%", h: 120 },
+                { s: 4, p: "99.9937%", h: 170, bottom: true },
+                { s: 5, p: "99.999943%", h: 210, bottom: true },
+                { s: 6, p: "99.9999998%", h: 250, bottom: true }
+            ];
 
-            // 5. Draw Sigma Zones (-6 to +6)
-            for (let s = -6; s < 6; s++) {
-                const zVal = Math.abs(s < 0 ? s + 1 : s) + 1;
-                const color = zoneColors[zVal] || '#ffffff';
-                const points = [];
-                const startX = s * displaySigma + centerX;
-                const endX = (s + 1) * displaySigma + centerX;
+            bracketConfigs.forEach(conf => {
+                const xStart = centerX - conf.s * stdUnits;
+                const xEnd = centerX + conf.s * stdUnits;
+                const y = conf.bottom ? (baseY + conf.h - 130) : (baseY - conf.h);
 
-                for (let xPos = startX; xPos <= endX; xPos += 1) {
-                    const z = (xPos - centerX) / displaySigma;
-                    const y = Math.exp(-0.5 * z * z);
-                    const scaledY = baseY - y * scalingFactor;
-                    points.push(`${xPos},${scaledY}`);
+                // Bracket path (Flat line with arrow markers)
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", `M ${xStart + 4},${y} L ${xEnd - 4},${y}`);
+                path.setAttribute("stroke", "#000");
+                path.setAttribute("stroke-width", "1");
+                path.setAttribute("marker-start", "url(#arrow)");
+                path.setAttribute("marker-end", "url(#arrow)");
+                bracketsGroup.appendChild(path);
+
+                // Percentage Label
+                const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txt.setAttribute("x", centerX);
+                txt.setAttribute("y", y - 5);
+                txt.setAttribute("class", "percent-label");
+                txt.textContent = conf.p;
+                bracketsGroup.appendChild(txt);
+
+                // Vertical dash lines at the limits
+                const v1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                v1.setAttribute("x1", xStart); v1.setAttribute("y1", baseY);
+                v1.setAttribute("x2", xStart); v1.setAttribute("y2", y);
+                v1.setAttribute("stroke", "#000"); v1.setAttribute("stroke-width", "0.5");
+                v1.setAttribute("stroke-dasharray", "3 3");
+                bracketsGroup.appendChild(v1);
+
+                const v2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                v2.setAttribute("x1", xEnd); v2.setAttribute("y1", baseY);
+                v2.setAttribute("x2", xEnd); v2.setAttribute("y2", y);
+                v2.setAttribute("stroke", "#000"); v2.setAttribute("stroke-width", "0.5");
+                v2.setAttribute("stroke-dasharray", "3 3");
+                bracketsGroup.appendChild(v2);
+            });
+
+            // 5. Dynamic Process Performance Curve (The actual observed spread)
+            const currentMean = labState.processMean || labScenarios[labState.currentScenario].baseMean;
+            const targetMean = labScenarios[labState.currentScenario].baseMean;
+            const diff = (currentMean - targetMean) * 40; // Shift multiplier
+
+            // Calculate "Actual" sigma for visual spread based on chaos factors
+            let totalSigma = labState.baseVariation || labScenarios[labState.currentScenario].baseVariation;
+            for (let id in labState.chaosFactors) {
+                if (labState.chaosFactors[id].active) {
+                    totalSigma += labState.chaosFactors[id].sigma;
                 }
-
-                const pathD = `M ${startX},${baseY} L ` + points.join(' L ') + ` L ${endX},${baseY} Z`;
-                const zone = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                zone.setAttribute("d", pathD);
-                zone.setAttribute("class", "sigma-zone");
-                zone.setAttribute("fill", color);
-                zone.setAttribute("stroke", "#1d4ed8");
-                zone.setAttribute("stroke-width", "0.5");
-                zone.setAttribute("fill-opacity", "0.8");
-
-                zone.onmouseover = (e) => showSigmaDetails(e, s, s + 1, sigmaPercentages[zVal]);
-                zone.onmouseout = hideSigmaDetails;
-                zonesGroup.appendChild(zone);
-
-                // Axis Tick
-                const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                tick.setAttribute("x1", startX); tick.setAttribute("y1", baseY);
-                tick.setAttribute("x2", startX); tick.setAttribute("y2", baseY + 8);
-                tick.setAttribute("stroke", "#000"); tick.setAttribute("stroke-width", "1.5");
-                document.getElementById('sigma-markers').appendChild(tick);
-
-                // Labels: μ ± nσ (Horizontal as per Image 1)
-                const labelGroup = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                labelGroup.setAttribute("x", startX);
-                labelGroup.setAttribute("y", baseY + 25);
-                labelGroup.setAttribute("text-anchor", "middle");
-                labelGroup.setAttribute("fill", "#000");
-                labelGroup.setAttribute("style", "font-weight: 700; font-size: 10px; font-family: Inter, sans-serif;");
-
-                let mathLabel = s === 0 ? "μ" : (s < 0 ? `μ - ${Math.abs(s)}σ` : `μ + ${s}σ`);
-                labelGroup.textContent = mathLabel;
-                document.getElementById('sigma-markers').appendChild(labelGroup);
             }
 
-            // Final labels for +6σ
-            const finalX = centerX + 6 * displaySigma;
-            const finalTick = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            finalTick.setAttribute("x1", finalX); finalTick.setAttribute("y1", baseY);
-            finalTick.setAttribute("x2", finalX); finalTick.setAttribute("y2", baseY + 8);
-            finalTick.setAttribute("stroke", "#000"); finalTick.setAttribute("stroke-width", "1.5");
-            document.getElementById('sigma-markers').appendChild(finalTick);
+            // Scaled sigma for the visualizer
+            const visualSigmaScale = (totalSigma / labScenarios[labState.currentScenario].baseVariation) * stdUnits;
 
-            const finalLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            finalLabel.setAttribute("x", finalX); finalLabel.setAttribute("y", baseY + 25);
-            finalLabel.setAttribute("text-anchor", "middle"); finalLabel.setAttribute("fill", "#000");
-            finalLabel.setAttribute("style", "font-weight: 700; font-size: 10px; font-family: Inter, sans-serif;");
-            finalLabel.textContent = "μ + 6σ";
-            document.getElementById('sigma-markers').appendChild(finalLabel);
-
-            // Blue Bell Curve Line Overlay (High Saturation)
-            const linePoints = [];
-            for (let xPos = 5; xPos <= 395; xPos += 1) {
-                const z = (xPos - centerX) / displaySigma;
-                const y = Math.exp(-0.5 * z * z);
-                const scaledY = baseY - y * scalingFactor;
-                linePoints.push(`${xPos},${scaledY}`);
+            let processPoints = [];
+            for (let x = centerX - 240; x <= centerX + 240; x += 2) {
+                const z = (x - (centerX + diff)) / visualSigmaScale;
+                const y = baseY - Math.exp(-0.5 * z * z) * (curveAmp * 1.15); // Slightly taller than background
+                if (y <= baseY + 10) processPoints.push(`${x},${y}`);
             }
-            return { line: `M ` + linePoints.join(' L ') };
+
+            const procPath = document.getElementById('process-curve-path');
+            if (procPath) {
+                procPath.setAttribute('d', `M ` + processPoints.join(" L "));
+            }
         }
 
         function drawSigmaMarker(x, label, color) {
@@ -3407,11 +3471,7 @@
 
         // Update bell curve display
         function updateBellCurve() {
-            const sigma = getCurrentSigma();
-            const paths = generateBellCurve(sigma);
-
-            document.getElementById('bell-path').setAttribute('d', paths.line);
-            // updateSigmaMarkers(sigma); // Removed as zones handle this
+            generateBellCurve();
         }
 
         // Update Sigma Markers (lines and labels) - This function is now deprecated/removed
@@ -3781,6 +3841,13 @@
             lucide.createIcons();
         });
     </script>
+
+    <!-- DPMO Pop-up Modal -->
+    <div class="modal-backdrop" id="dpmo-backdrop" onclick="closeDpmoTable()" style="z-index:100001;"></div>
+    <div class="dpmo-popup-modal" id="dpmo-popup">
+        <div class="dpmo-close" onclick="closeDpmoTable()">×</div>
+        <img src="../assets/module-intro/dpmo_reference.png" class="dpmo-full-img" alt="DPMO Reference Table">
+    </div>
 
     <script src="AssistantTools.js"></script>
 </body>
