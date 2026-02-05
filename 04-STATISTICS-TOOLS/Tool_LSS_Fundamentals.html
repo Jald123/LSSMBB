@@ -1448,33 +1448,125 @@
             min-height: 400px;
         }
 
-        .magnify-lens {
+        /* Sigma Explorer - Draggable Lens */
+        .sigma-explorer {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 140px;
-            height: 140px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 60;
+            user-select: none;
+            transition: transform 0.1s ease-out;
+        }
+
+        .sigma-explorer:active {
+            cursor: grabbing;
+        }
+
+        .explorer-lens {
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             border: 3px solid #6366f1;
-            background: #000;
+            background: rgba(0, 0, 0, 0.9);
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
-            z-index: 50;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5), inset 0 0 20px rgba(99, 102, 241, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .magnify-lens::after {
-            content: 'TAIL ZOOM (1000x)';
+        .explorer-lens.sigma-1 {
+            border-color: #ef4444;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+        }
+
+        .explorer-lens.sigma-2 {
+            border-color: #f59e0b;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+        }
+
+        .explorer-lens.sigma-3 {
+            border-color: #eab308;
+            box-shadow: 0 0 30px rgba(234, 179, 8, 0.5);
+        }
+
+        .explorer-lens.sigma-4 {
+            border-color: #22c55e;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+        }
+
+        .explorer-lens.sigma-5 {
+            border-color: #10b981;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+
+        .explorer-lens.sigma-6 {
+            border-color: #6366f1;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .explorer-data {
             position: absolute;
-            bottom: 10px;
-            width: 100%;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 10px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            min-width: 140px;
             text-align: center;
-            font-size: 8px;
-            font-weight: 800;
+            backdrop-filter: blur(10px);
+        }
+
+        .explorer-sigma {
+            font-size: 28px;
+            font-weight: 900;
             color: #6366f1;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .explorer-stats {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .explorer-stats .stat-label {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .explorer-stats div {
+            margin: 4px 0;
+        }
+
+        .explorer-hint {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.4);
+            white-space: nowrap;
+            text-transform: uppercase;
             letter-spacing: 1px;
+            animation: pulse-hint 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-hint {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
         }
 
         .simulation-layer {
@@ -2578,11 +2670,23 @@
 
             <!-- PANEL B: BELL CURVE STAGE -->
             <div class="lab-stage">
-                <div class="magnify-lens" id="mag-lens">
-                    <svg id="mag-svg" viewBox="0 0 100 100" style="width:100%; height:100%;">
-                        <path id="mag-curve" fill="rgba(239, 68, 68, 0.3)" stroke="#ef4444" stroke-width="2" d="" />
-                        <line x1="80" y1="0" x2="80" y2="100" stroke="#fff" stroke-width="1" stroke-dasharray="2 2" />
-                    </svg>
+                <div class="sigma-explorer" id="sigma-explorer">
+                    <div class="explorer-lens" id="explorer-lens">
+                        <svg id="explorer-svg" viewBox="0 0 100 100" style="width:100%; height:100%;">
+                            <path id="explorer-curve" fill="rgba(99, 102, 241, 0.3)" stroke="#6366f1" stroke-width="2"
+                                d="" />
+                            <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"
+                                stroke-dasharray="2 2" />
+                        </svg>
+                    </div>
+                    <div class="explorer-data" id="explorer-data">
+                        <div class="explorer-sigma" id="explorer-sigma">3σ</div>
+                        <div class="explorer-stats">
+                            <div><span class="stat-label">DPMO:</span> <span id="explorer-dpmo">66,807</span></div>
+                            <div><span class="stat-label">Yield:</span> <span id="explorer-yield">93.3%</span></div>
+                        </div>
+                    </div>
+                    <div class="explorer-hint">↔ Drag to explore sigma zones</div>
                 </div>
 
                 <div class="curve-stage-container">
@@ -2924,6 +3028,7 @@
             renderScenarios();
             switchScenario('coffee');
             setupDrag();
+            initSigmaExplorer();
         }
 
         function renderScenarios() {
@@ -3007,7 +3112,6 @@
             document.getElementById('cost-display').innerText = '$' + copq.toLocaleString();
 
             renderMainCurve(config.mean, currentStd, labState.lsl, labState.usl);
-            renderMagnifyingLens(config.mean, currentStd, labState.usl);
         }
 
         function renderMainCurve(mean, std, lsl, usl) {
@@ -3059,47 +3163,149 @@
             document.getElementById('usl-label').setAttribute('x', uslX);
         }
 
-        function renderMagnifyingLens(mean, std, usl) {
-            const zU = (usl - mean) / std;
-            const magCurve = document.getElementById('mag-curve');
+        // Sigma Reference Data (with 1.5 sigma shift)
+        const sigmaReferenceData = {
+            1: { dpmo: 691462, yield: 30.85, color: '#ef4444' },
+            2: { dpmo: 308538, yield: 69.15, color: '#f59e0b' },
+            3: { dpmo: 66807, yield: 93.32, color: '#eab308' },
+            4: { dpmo: 6210, yield: 99.38, color: '#22c55e' },
+            5: { dpmo: 233, yield: 99.977, color: '#10b981' },
+            6: { dpmo: 3.4, yield: 99.99966, color: '#6366f1' }
+        };
 
-            // Calculate the probability density at the USL
-            const pdfAtUSL = Math.exp(-0.5 * zU * zU);
+        let explorerState = {
+            isDragging: false,
+            offsetX: 0,
+            offsetY: 0,
+            currentSigma: 3
+        };
 
-            // Adaptive amplification - scale based on how small the tail is
-            const amplification = Math.min(1e8, 1 / Math.max(pdfAtUSL, 1e-10));
+        function initSigmaExplorer() {
+            const explorer = document.getElementById('sigma-explorer');
+            const stage = document.querySelector('.lab-stage');
+            if (!explorer || !stage) return;
 
+            // Mouse events
+            explorer.addEventListener('mousedown', startExplorerDrag);
+            document.addEventListener('mousemove', dragExplorer);
+            document.addEventListener('mouseup', stopExplorerDrag);
+
+            // Touch events
+            explorer.addEventListener('touchstart', startExplorerDrag, { passive: false });
+            document.addEventListener('touchmove', dragExplorer, { passive: false });
+            document.addEventListener('touchend', stopExplorerDrag);
+
+            // Initial update
+            updateExplorerData(3);
+            renderExplorerCurve(3);
+        }
+
+        function startExplorerDrag(e) {
+            e.preventDefault();
+            explorerState.isDragging = true;
+            const explorer = document.getElementById('sigma-explorer');
+            const rect = explorer.getBoundingClientRect();
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            explorerState.offsetX = clientX - rect.left - rect.width / 2;
+            explorerState.offsetY = clientY - rect.top - rect.height / 2;
+
+            explorer.style.transition = 'none';
+        }
+
+        function dragExplorer(e) {
+            if (!explorerState.isDragging) return;
+            e.preventDefault();
+
+            const explorer = document.getElementById('sigma-explorer');
+            const stage = document.querySelector('.curve-stage-container');
+            if (!stage) return;
+
+            const stageRect = stage.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            // Calculate position relative to stage
+            let x = clientX - stageRect.left - explorerState.offsetX;
+            let y = clientY - stageRect.top - explorerState.offsetY;
+
+            // Constrain to stage bounds
+            x = Math.max(60, Math.min(stageRect.width - 60, x));
+            y = Math.max(80, Math.min(stageRect.height - 120, y));
+
+            explorer.style.left = x + 'px';
+            explorer.style.top = y + 'px';
+            explorer.style.transform = 'translate(-50%, -50%)';
+
+            // Calculate sigma level based on X position
+            const centerX = stageRect.width / 2;
+            const sigmaWidth = stageRect.width / 12; // Each sigma covers ~1/12 of width
+            const zScore = Math.abs((x - centerX) / sigmaWidth);
+            const sigmaLevel = Math.min(6, Math.max(1, Math.ceil(zScore)));
+
+            if (sigmaLevel !== explorerState.currentSigma) {
+                explorerState.currentSigma = sigmaLevel;
+                updateExplorerData(sigmaLevel);
+                renderExplorerCurve(sigmaLevel);
+            }
+        }
+
+        function stopExplorerDrag() {
+            explorerState.isDragging = false;
+            const explorer = document.getElementById('sigma-explorer');
+            if (explorer) {
+                explorer.style.transition = 'transform 0.1s ease-out';
+            }
+        }
+
+        function updateExplorerData(sigmaLevel) {
+            const data = sigmaReferenceData[sigmaLevel];
+            if (!data) return;
+
+            const sigmaEl = document.getElementById('explorer-sigma');
+            const dpmoEl = document.getElementById('explorer-dpmo');
+            const yieldEl = document.getElementById('explorer-yield');
+            const lensEl = document.getElementById('explorer-lens');
+
+            if (sigmaEl) {
+                sigmaEl.textContent = sigmaLevel + 'σ';
+                sigmaEl.style.color = data.color;
+            }
+            if (dpmoEl) dpmoEl.textContent = data.dpmo.toLocaleString();
+            if (yieldEl) yieldEl.textContent = data.yield + '%';
+
+            if (lensEl) {
+                // Remove all sigma classes
+                lensEl.className = 'explorer-lens sigma-' + sigmaLevel;
+            }
+        }
+
+        function renderExplorerCurve(sigmaLevel) {
+            const curve = document.getElementById('explorer-curve');
+            if (!curve) return;
+
+            const zoomCenter = sigmaLevel;
+            const zoomWidth = 1.0;
             let pts = [];
-            const zoomWidth = 0.5;
 
             for (let i = 0; i <= 100; i++) {
                 const localX = i;
-                const relativeZ = zU - zoomWidth + (i / 100) * (2 * zoomWidth);
-                const pdfValue = Math.exp(-0.5 * relativeZ * relativeZ);
-                const normalizedHeight = (pdfValue * amplification) * 80;
-                const y = 100 - Math.min(95, Math.max(5, normalizedHeight));
-                pts.push(`${localX},${y}`);
+                const z = (zoomCenter - zoomWidth) + (i / 100) * (2 * zoomWidth);
+                const pdfValue = Math.exp(-0.5 * z * z);
+                // Scale to fit in the 100x100 viewbox
+                const y = 100 - (pdfValue * 250);
+                pts.push(`${localX},${Math.max(5, Math.min(95, y))}`);
             }
 
-            magCurve.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
+            curve.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
 
-            // Color the lens based on sigma level
-            const lensEl = document.getElementById('mag-lens');
-            if (lensEl) {
-                const pDefect = 1 - cdf(zU);
-                if (pDefect < 0.0000034) {
-                    lensEl.style.borderColor = '#6366f1';
-                    lensEl.style.boxShadow = '0 0 20px rgba(99, 102, 241, 0.6)';
-                } else if (pDefect < 0.00023) {
-                    lensEl.style.borderColor = '#10b981';
-                    lensEl.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.6)';
-                } else if (pDefect < 0.0062) {
-                    lensEl.style.borderColor = '#f59e0b';
-                    lensEl.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.6)';
-                } else {
-                    lensEl.style.borderColor = '#ef4444';
-                    lensEl.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.6)';
-                }
+            // Update curve color based on sigma
+            const data = sigmaReferenceData[sigmaLevel];
+            if (data) {
+                curve.setAttribute("fill", data.color + '33'); // 20% opacity
+                curve.setAttribute("stroke", data.color);
             }
         }
 
