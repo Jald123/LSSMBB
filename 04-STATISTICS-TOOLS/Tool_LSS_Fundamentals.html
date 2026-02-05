@@ -1843,12 +1843,13 @@
         }
 
         /* Zoom Functionality */
-        .curve-container {
+        .curve-stage-container {
             cursor: zoom-in;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
         }
 
-        .curve-container.zoomed {
+        .curve-stage-container.zoomed {
             cursor: zoom-out;
             transform: scale(1.4);
             z-index: 50;
@@ -1859,6 +1860,57 @@
             transition: all 0.3s ease;
             cursor: crosshair;
         }
+
+        /* Lab Legend */
+        .lab-legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 70;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.green {
+            background: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        }
+
+        .legend-dot.yellow {
+            background: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+        }
+
+        .legend-dot.red {
+            background: #ef4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+        }
+
 
         .sigma-zone:hover {
             fill-opacity: 0.6 !important;
@@ -2700,6 +2752,13 @@
                     <div class="explorer-hint">↔ Drag to explore sigma zones</div>
                 </div>
 
+                <div class="lab-legend">
+                    <div class="legend-item"><span class="legend-dot green"></span> Stability (±2σ)</div>
+                    <div class="legend-item"><span class="legend-dot yellow"></span> Warning (±3σ)</div>
+                    <div class="legend-item"><span class="legend-dot red"></span> Outlier (>±3σ)</div>
+                </div>
+
+
                 <div class="curve-stage-container">
                     <svg id="lab-svg" viewBox="0 0 800 500" style="width:100%; height:100%; overflow:visible;">
                         <!-- Sigma Zone Colors -->
@@ -3145,7 +3204,7 @@
             const scaleX = 40;
 
             // Draw sigma zone fills
-            const drawZone = (zStart, zEnd, color) => {
+            const drawZone = (zStart, zEnd, color, explanation) => {
                 let pts = [];
                 for (let z = zStart; z <= zEnd; z += 0.1) {
                     const x = centerX + z * scaleX;
@@ -3157,14 +3216,21 @@
                 p.setAttribute("d", pathD);
                 p.setAttribute("fill", color);
                 p.setAttribute("fill-opacity", "0.2");
+                p.classList.add("sigma-zone");
+                p.dataset.explanation = explanation;
+
+                p.onmouseenter = (e) => showLabTooltip(e, explanation);
+                p.onmousemove = (e) => moveLabTooltip(e);
+                p.onmouseleave = () => hideLabTooltip();
+
                 zoneGroup.appendChild(p);
             };
 
-            drawZone(-6, -3, "#ef4444");
-            drawZone(-3, -2, "#f59e0b");
-            drawZone(-2, 2, "#10b981");
-            drawZone(2, 3, "#f59e0b");
-            drawZone(3, 6, "#ef4444");
+            drawZone(-6, -3, "#ef4444", "<strong>Outlier Zone (Left)</strong><br>Defects occur frequently in this region. This is the 'waste' area.");
+            drawZone(-3, -2, "#f59e0b", "<strong>Warning Zone</strong><br>Process is approaching lower specification limits.");
+            drawZone(-2, 2, "#10b981", "<strong>Stability Zone (μ ± 2σ)</strong><br>~95% of your process output lives here in a healthy system.");
+            drawZone(2, 3, "#f59e0b", "<strong>Warning Zone</strong><br>Process is approaching upper specification limits.");
+            drawZone(3, 6, "#ef4444", "<strong>Outlier Zone (Right)</strong><br>Extreme variations that lead to rejects and customer dissatisfaction.");
 
             // Draw sigma level lines and labels (-6σ to +6σ)
             for (let sigma = -6; sigma <= 6; sigma++) {
@@ -3292,20 +3358,29 @@
 
             // Calculate position relative to stage
             let x = clientX - stageRect.left - explorerState.offsetX;
-            let y = clientY - stageRect.top - explorerState.offsetY;
 
-            // Constrain to stage bounds
+            // Constrain X to stage bounds
             x = Math.max(60, Math.min(stageRect.width - 60, x));
-            y = Math.max(80, Math.min(stageRect.height - 120, y));
+
+            // Calculate sigma level and curve alignment based on X position
+            const centerX = stageRect.width / 2;
+            const sigmaWidth = stageRect.width / 12; // Each sigma covers ~1/12 of width
+            const zScoreSigned = (x - centerX) / sigmaWidth;
+
+            // Force Y to follow the bell curve line vertically
+            // Mapped SVG coordinates: centerY = 450, curveScale = 350, totalHeight = 500
+            const baselineY = stageRect.height * (450 / 500);
+            const peakHeight = stageRect.height * (350 / 500);
+            let y = baselineY - (Math.exp(-0.5 * zScoreSigned * zScoreSigned) * peakHeight);
+
+            // Additional vertical constraint to avoid clipping high peaks
+            y = Math.max(80, Math.min(stageRect.height - 80, y));
 
             explorer.style.left = x + 'px';
             explorer.style.top = y + 'px';
             explorer.style.transform = 'translate(-50%, -50%)';
 
-            // Calculate sigma level based on X position
-            const centerX = stageRect.width / 2;
-            const sigmaWidth = stageRect.width / 12; // Each sigma covers ~1/12 of width
-            const zScore = Math.abs((x - centerX) / sigmaWidth);
+            const zScore = Math.abs(zScoreSigned);
             const sigmaLevel = Math.min(6, Math.max(1, Math.ceil(zScore)));
 
             if (sigmaLevel !== explorerState.currentSigma) {
@@ -3442,6 +3517,36 @@
                 svg.appendChild(distanceLine);
             }
         }
+
+        // Tooltip Helpers
+        function showLabTooltip(e, text) {
+            const tooltip = document.getElementById('lab-tooltip');
+            tooltip.innerHTML = text;
+            tooltip.style.display = 'block';
+            moveLabTooltip(e);
+        }
+
+        function moveLabTooltip(e) {
+            const tooltip = document.getElementById('lab-tooltip');
+            tooltip.style.left = (e.clientX + 15) + 'px';
+            tooltip.style.top = (e.clientY + 15) + 'px';
+        }
+
+        function hideLabTooltip() {
+            document.getElementById('lab-tooltip').style.display = 'none';
+        }
+
+        // Add Zoom Toggle to Curve Stage
+        document.addEventListener('DOMContentLoaded', () => {
+            const stage = document.querySelector('.curve-stage-container');
+            if (stage) {
+                stage.addEventListener('click', (e) => {
+                    // Don't zoom if clicking on handles
+                    if (e.target.classList.contains('limit-handle')) return;
+                    stage.classList.toggle('zoomed');
+                });
+            }
+        });
 
         function setupDrag() {
             const svg = document.getElementById('lab-svg');
@@ -3604,7 +3709,12 @@
     <div class="modal-backdrop" id="dpmo-backdrop" onclick="closeDpmoTable()" style="z-index:100001;"></div>
     <div class="dpmo-popup-modal" id="dpmo-popup">
         <div class="dpmo-close" onclick="closeDpmoTable()">×</div>
-        <img src="../assets/module-intro/dpmo_reference.png" class="dpmo-full-img" alt="DPMO Reference Table">
+        <img src="images/fundamentals/dpmo_reference.png" class="dpmo-full-img" alt="DPMO Reference Table">
+    </div>
+
+    <!-- Lab Tooltip -->
+    <div id="lab-tooltip"
+        style="position:fixed; display:none; background:rgba(15,23,42,0.95); color:white; padding:12px; border-radius:8px; border:1px solid var(--sigma-color); z-index:100002; pointer-events:none; font-size:12px; max-width:250px; box-shadow:0 10px 30px rgba(0,0,0,0.5); backdrop-filter:blur(10px);">
     </div>
 
     <script src="AssistantTools.js"></script>

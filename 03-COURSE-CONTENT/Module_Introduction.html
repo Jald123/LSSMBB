@@ -408,12 +408,14 @@
         .lean-card h2 {
             background: linear-gradient(135deg, var(--accent-lean), #34d399);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .sigma-card h2 {
             background: linear-gradient(135deg, var(--accent-sigma), #818cf8);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -760,7 +762,8 @@
             <!-- LEAN Card -->
             <div class="methodology-card lean-card">
                 <div class="bg-image" id="lean-bg"
-                    style="background-image: url('../assets/module-intro/lean_healthcare.png');"></div>
+                    style="background-image: url('../04-STATISTICS-TOOLS/images/fundamentals/lean_healthcare.png');">
+                </div>
                 <div class="bg-overlay"></div>
                 <div class="content">
                     <div class="badge">Speed · Efficiency · Flow</div>
@@ -778,7 +781,8 @@
             <!-- SIX SIGMA Card -->
             <div class="methodology-card sigma-card">
                 <div class="bg-image" id="sigma-bg"
-                    style="background-image: url('../assets/module-intro/sixsigma_healthcare.png');"></div>
+                    style="background-image: url('../04-STATISTICS-TOOLS/images/fundamentals/sixsigma_healthcare.png');">
+                </div>
                 <div class="bg-overlay"></div>
                 <div class="content">
                     <div class="badge">Quality · Consistency · Precision</div>
@@ -901,14 +905,14 @@
 
         const contextImages = {
             lean: {
-                general: '../assets/module-intro/lean_general.png',
-                healthcare: '../assets/module-intro/lean_healthcare.png',
-                daily_life: '../assets/module-intro/lean_dailylife.png'
+                general: '../04-STATISTICS-TOOLS/images/fundamentals/lean_general.png',
+                healthcare: '../04-STATISTICS-TOOLS/images/fundamentals/lean_healthcare.png',
+                daily_life: '../04-STATISTICS-TOOLS/images/fundamentals/lean_dailylife.png'
             },
             sigma: {
-                general: '../assets/module-intro/sixsigma_general.png',
-                healthcare: '../assets/module-intro/sixsigma_healthcare.png',
-                daily_life: '../assets/module-intro/sixsigma_dailylife.png'
+                general: '../04-STATISTICS-TOOLS/images/fundamentals/sixsigma_general.png',
+                healthcare: '../04-STATISTICS-TOOLS/images/fundamentals/sixsigma_healthcare.png',
+                daily_life: '../04-STATISTICS-TOOLS/images/fundamentals/sixsigma_dailylife.png'
             }
         };
 
