@@ -3347,77 +3347,100 @@
         }
 
         function renderExplorerCurve(sigmaLevel) {
-            const curve = document.getElementById('explorer-curve');
-            const sigmaLine = document.getElementById('explorer-sigma-line');
-            const distanceLine = document.getElementById('explorer-distance');
-            const distanceLabel = document.getElementById('explorer-distance-label');
-            if (!curve) return;
+            const svg = document.getElementById('explorer-svg');
+            if (!svg) return;
 
-            // 1. Calculate PDF at the specific sigma level (center of lens)
-            const centerPdf = Math.exp(-0.5 * sigmaLevel * sigmaLevel);
+            // Clear current SVG content to rebuild it based on mode
+            svg.innerHTML = '';
 
-            // 2. FORCE SCALING: Normalized height relative to this specific sigma level
-            // We want the curve to intersect the center vertical line at exactly y=60 (40% up from bottom)
-            // This guarantees visibility regardless of sigma level (1 or 6)
-            const targetHeightPx = 40; // Height of curve at center (from bottom)
-            const amplification = targetHeightPx / centerPdf;
+            // --- MODE A: High Sigma Schematic View (5 & 6 Sigma) ---
+            // Matches the specific user request: Red text, Orange line, Purple curve
+            if (sigmaLevel >= 5) {
+                // 1. Orange Limit Line (Bottom)
+                const orangeLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                orangeLine.setAttribute("x1", "0");
+                orangeLine.setAttribute("y1", "65");
+                orangeLine.setAttribute("x2", "100");
+                orangeLine.setAttribute("y2", "65");
+                orangeLine.setAttribute("stroke", "#f97316"); // Orange
+                orangeLine.setAttribute("stroke-width", "4");
+                svg.appendChild(orangeLine);
 
-            // 3. Draw curve with centered zoom
-            const zoomWidth = 0.8; // Narrower zoom to show local detail
-            let pts = [];
+                // 2. Purple Curve (Custom Bezier)
+                const curve = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                // 5 Sigma: Curve approaches line but leaves a gap
+                // 6 Sigma: Curve gets extremely close/flat against line
+                const d = sigmaLevel === 5
+                    ? "M 0,35 Q 40,55 80,60"  // 5 Sigma shape
+                    : "M 0,35 Q 40,62 80,64"; // 6 Sigma shape (closer)
 
-            for (let i = 0; i <= 100; i++) {
-                const localX = i;
-                // Map localX (0-100) to Z-score range [sigma - zoomWidth, sigma + zoomWidth]
-                const z = (sigmaLevel - zoomWidth) + (i / 100) * (2 * zoomWidth);
-                const pdfValue = Math.exp(-0.5 * z * z);
+                curve.setAttribute("d", d);
+                curve.setAttribute("fill", "none");
+                curve.setAttribute("stroke", "#a855f7"); // Purple
+                curve.setAttribute("stroke-width", "3");
+                curve.setAttribute("stroke-linecap", "round");
+                svg.appendChild(curve);
 
-                // Calculate Y: 100 is bottom, 0 is top. 
-                // Height is pdf * amp. Y = 100 - Height.
-                const height = pdfValue * amplification;
-                const y = 100 - height;
-
-                pts.push(`${localX},${Math.max(0, Math.min(100, y))}`);
+                // 3. Red Label Text
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", "50");
+                text.setAttribute("y", "40"); // Positioned in center-top
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("fill", "#dc2626"); // Red
+                text.setAttribute("font-weight", "800");
+                text.setAttribute("font-family", "system-ui, sans-serif");
+                text.setAttribute("font-size", "14");
+                text.textContent = `${sigmaLevel} sigma`;
+                svg.appendChild(text);
             }
 
-            curve.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
-
-            // 4. Update Reference Elements
-            if (sigmaLine) {
-                sigmaLine.setAttribute("x1", 50);
-                sigmaLine.setAttribute("x2", 50);
-            }
-
-            if (distanceLine && distanceLabel) {
-                // The gap is visually the area UNDER the curve in this normalized view
-                // But user wanted to see "distance". In this tailored view, it's just the height.
-                const centerCurveY = 100 - targetHeightPx;
-
-                distanceLine.setAttribute("x1", 50);
-                distanceLine.setAttribute("y1", centerCurveY);
-                distanceLine.setAttribute("x2", 50);
-                distanceLine.setAttribute("y2", 100);
-
-                // Don't show confusing percent label, the visual line is enough
-                distanceLabel.textContent = "";
-            }
-
-            // 5. Update Colors
-            const data = sigmaReferenceData[sigmaLevel] || { color: '#6366f1' }; // Fallback color
-
-            curve.setAttribute("fill", data.color + '40');
-            curve.setAttribute("stroke", data.color);
-            curve.setAttribute("stroke-width", "3"); // Thicker line for visibility
-
-            if (sigmaLine) {
-                sigmaLine.setAttribute("stroke", "#ffffff");
-                sigmaLine.setAttribute("stroke-opacity", "0.8");
+            // --- MODE B: Standard Adaptive View (1-4 Sigma) ---
+            else {
+                // 1. Vertical Center Line
+                const sigmaLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                sigmaLine.setAttribute("x1", "50");
+                sigmaLine.setAttribute("y1", "0");
+                sigmaLine.setAttribute("x2", "50");
+                sigmaLine.setAttribute("y2", "100");
+                sigmaLine.setAttribute("stroke", "#fff");
+                sigmaLine.setAttribute("stroke-opacity", "0.5");
                 sigmaLine.setAttribute("stroke-dasharray", "3 3");
-            }
-            if (distanceLine) {
+                svg.appendChild(sigmaLine);
+
+                // 2. Calculate Normalized Curve Points
+                const centerPdf = Math.exp(-0.5 * sigmaLevel * sigmaLevel);
+                const targetHeightPx = 40;
+                const amplification = targetHeightPx / centerPdf;
+                const zoomWidth = 0.8;
+                let pts = [];
+
+                for (let i = 0; i <= 100; i++) {
+                    const z = (sigmaLevel - zoomWidth) + (i / 100) * (2 * zoomWidth);
+                    const pdfValue = Math.exp(-0.5 * z * z);
+                    const y = 100 - (pdfValue * amplification);
+                    // Clamp to keep inside view
+                    pts.push(`${i},${Math.max(0, Math.min(100, y))}`);
+                }
+
+                // 3. Draw The Curve
+                const curvePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                curvePath.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
+
+                const data = sigmaReferenceData[sigmaLevel] || { color: '#6366f1' }; // Fallback color
+                curvePath.setAttribute("fill", data.color + '40');
+                curvePath.setAttribute("stroke", data.color);
+                curvePath.setAttribute("stroke-width", "3");
+                svg.appendChild(curvePath);
+
+                // 4. Distance Line (Visual Aid)
+                const distanceLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                distanceLine.setAttribute("x1", "50");
+                distanceLine.setAttribute("y1", 100 - targetHeightPx);
+                distanceLine.setAttribute("x2", "50");
+                distanceLine.setAttribute("y2", "100");
                 distanceLine.setAttribute("stroke", data.color);
                 distanceLine.setAttribute("stroke-width", "2");
-                distanceLine.setAttribute("stroke-dasharray", "none"); // Solid line for clarity
+                svg.appendChild(distanceLine);
             }
         }
 
