@@ -2556,7 +2556,8 @@
             <div class="lab-sidebar">
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                     <div style="background:#6366f1; width:3px; height:20px;"></div>
-                    <h3 style="font-size: 14px; text-transform:uppercase; letter-spacing:1px; margin:0;">Scenario Lab
+                    <h3 id="lab-title-text"
+                        style="font-size: 14px; text-transform:uppercase; letter-spacing:1px; margin:0;">Scenario Lab
                     </h3>
                 </div>
 
@@ -2781,282 +2782,6 @@
         timelineNodes.forEach(node => observer.observe(node));
 
         // ============================================
-        // PROCESS LAB - SIGMA SIMULATOR
-        // ============================================
-        const labScenarios = {
-            latte: {
-                title: "☕ The Perfect Latte Lab",
-                visualizerTitle: "The Latte Pour Distribution",
-                unit: "oz",
-                baseMean: 12.0,
-                baseVariation: 0.15,
-                btnIcon: "☕",
-                btnText: "Pour 100 Cups",
-                chaos: {
-                    1: { name: "👤 Untrained Barista", impact: "+0.4σ", sigma: 0.40, meanShift: 0, desc: "Inconsistent pouring technique adds major variation to fill levels." },
-                    2: { name: "⚙️ Old Espresso Machine", impact: "+0.25σ", sigma: 0.25, meanShift: 0.05, desc: "Machine pressure fluctuates, causing inconsistent fill and slight mean shift." },
-                    3: { name: "🥛 Cheap Milk Supplier", impact: "+0.15σ", sigma: 0.15, meanShift: 0, desc: "Milk froth density varies batch-to-batch, affecting final volume." }
-                },
-                customers: {
-                    1: { name: 'The Commuter', icon: "🚗", lsl: 11.0, usl: 13.0, desc: "Easygoing: 11.0oz - 13.0oz tolerance" },
-                    2: { name: 'The Connoisseur', icon: "🧐", lsl: 11.8, usl: 12.2, desc: "Picky: 11.8oz - 12.2oz tolerance" }
-                }
-            },
-            medical: {
-                title: "🏥 Emergency Triage Lab",
-                visualizerTitle: "ER Triage Wait Time Process",
-                unit: "min",
-                baseMean: 20.0,
-                baseVariation: 1.5,
-                btnIcon: "🏥",
-                btnText: "Process 100 Patients",
-                chaos: {
-                    1: { name: "📋 Surge in Arrivals", impact: "+2.0σ", sigma: 2.0, meanShift: 5.0, desc: "Sudden influx of patients overwhelms triage staff and increases wait." },
-                    2: { name: "💾 EHR System Downtime", impact: "+0.8σ", sigma: 0.8, meanShift: 2.5, desc: "Digital charting lag forces manual entry, causing delays and variation." },
-                    3: { name: "😴 Staff Fatigue (End of Shift)", impact: "+1.2σ", sigma: 1.2, meanShift: 0, desc: "Long hours lead to inconsistent triage decisions and slower processing." }
-                },
-                customers: {
-                    1: { name: 'Standard Triage', icon: "🩺", lsl: 10.0, usl: 30.0, desc: "General Case: 10-30 min wait threshold" },
-                    2: { name: 'Trauma Protocol', icon: "🚨", lsl: 15.0, usl: 25.0, desc: "Critical Need: Strict 15-25 min target" }
-                }
-            },
-            med_dosage: {
-                title: "💉 Medication Dosage Lab",
-                visualizerTitle: "Medication Dosage Distribution",
-                unit: "mg",
-                baseMean: 100.0,
-                baseVariation: 0.8, // Normal Finding (High Sigma)
-                btnIcon: "💊",
-                btnText: "Prepare 100 Doses",
-                chaos: {
-                    1: { name: "⚖️ Balance Drift", impact: "+2.0σ", sigma: 2.0, meanShift: 0, desc: "Electronic scale calibration error." },
-                    2: { name: "🌡️ Humidity Factor", impact: "+1.5σ", sigma: 1.5, meanShift: 0.5, desc: "Powder density changes with moisture." },
-                    3: { name: "✍️ Manual Calc Error", impact: "+3.0σ", sigma: 3.0, meanShift: 1.0, desc: "Typo in dosage calculation." }
-                },
-                customers: {
-                    1: { name: 'Standard Care', icon: "🧑", lsl: 95.0, usl: 105.0, desc: "+/- 5mg Safety Range" },
-                    2: { name: 'Critical Care', icon: "🚨", lsl: 98.5, usl: 101.5, desc: "Tight +/- 1.5mg Limit" }
-                }
-            },
-            lab_tat: {
-                title: "🧪 Lab Result TAT Lab",
-                visualizerTitle: "Lab Result Turnaround Time",
-                unit: "min",
-                baseMean: 60.0,
-                baseVariation: 5.0,
-                btnIcon: "🔬",
-                btnText: "Process 100 Samples",
-                chaos: {
-                    1: { name: "📦 Sample Backlog", impact: "+15.0σ", sigma: 15.0, meanShift: 10.0, desc: "High volume of incoming samples creates delays in processing." },
-                    2: { name: "🛠️ Equipment Malfunction", impact: "+7.5σ", sigma: 7.5, meanShift: 5.0, desc: "Breakdowns or maintenance increase processing time variability." },
-                    3: { name: "👩‍🔬 Staff Shortage", impact: "+4.0σ", sigma: 4.0, meanShift: 3.0, desc: "Fewer technicians lead to slower sample handling and analysis." }
-                },
-                customers: {
-                    1: { name: 'Routine Test', icon: "🗓️", lsl: 45.0, usl: 75.0, desc: "Standard: 45-75 min acceptable TAT" },
-                    2: { name: 'Urgent Test', icon: "⚡", lsl: 50.0, usl: 70.0, desc: "Time-Sensitive: Strict 50-70 min TAT" }
-                }
-            },
-            surgical: {
-                title: "🏢 Surgical Prep Lab",
-                visualizerTitle: "Surgical Room Turnover Time",
-                unit: "min",
-                baseMean: 30.0,
-                baseVariation: 1.0, // Normal Finding (Stable process)
-                btnIcon: "🛏️",
-                btnText: "Prep 100 Rooms",
-                chaos: {
-                    1: { name: "🧹 Deep Clean Delay", impact: "+5.0σ", sigma: 5.0, meanShift: 10.0, desc: "Unplanned contamination cleanup." },
-                    2: { name: "🧱 Instrument Gap", impact: "+3.0σ", sigma: 3.0, meanShift: 5.0, desc: "Sterile tray missing key kit." },
-                    3: { name: "🤝 Handover Lag", impact: "+2.0σ", sigma: 2.0, meanShift: 0, desc: "Miscommunication between nursing teams." }
-                },
-                customers: {
-                    1: { name: 'Standard Surgery', icon: "🛌", lsl: 20.0, usl: 45.0, desc: "Routine turnover window" },
-                    2: { name: 'Lean Efficiency', icon: "⏱️", lsl: 28.0, usl: 32.0, desc: "Six Sigma optimized target" }
-                }
-            },
-            radiology: {
-                title: "☢️ Radiology Report TAT",
-                visualizerTitle: "MRI/CT Analysis Speed",
-                unit: "min",
-                baseMean: 60.0,
-                baseVariation: 5.0,
-                btnIcon: "🩻",
-                btnText: "Analyze 100 Scans",
-                chaos: {
-                    1: { name: "📋 Large File Transfer", impact: "+10.0σ", sigma: 10.0, meanShift: 5.0, desc: "Network lag during high-res scan transfers." },
-                    2: { name: "👤 Resident Fatigue", impact: "+4.0σ", sigma: 4.0, meanShift: 0, desc: "Complex cases at end of shift take longer to read." },
-                    3: { name: "🖨️ Printer Error", impact: "+2.0σ", sigma: 2.0, meanShift: 1.0, desc: "Paper jams in legacy reporting units." }
-                },
-                customers: {
-                    1: { name: 'Routine Care', icon: "🩺", lsl: 40.0, usl: 80.0, desc: "Standard: 40-80 min" },
-                    2: { name: 'Emergency Room', icon: "🚨", lsl: 50.0, usl: 70.0, desc: "Urgent: 50-70 min" }
-                }
-            },
-            discharge: {
-                title: "🚪 Patient Discharge Process",
-                visualizerTitle: "Discharge Cycle Time",
-                unit: "min",
-                baseMean: 120.0,
-                baseVariation: 8.0,
-                btnIcon: "🏠",
-                btnText: "Discharge 100 Patients",
-                chaos: {
-                    1: { name: "🤝 Handover Delay", impact: "+20.0σ", sigma: 20.0, meanShift: 15.0, desc: "Waiting for transport or family pickup." },
-                    2: { name: "📝 Pharmacy Queue", impact: "+12.0σ", sigma: 12.0, meanShift: 10.0, desc: "Medication prep backlog at pharmacy." },
-                    3: { name: "🧹 Room Prep Lag", impact: "+5.0σ", sigma: 5.0, meanShift: 0, desc: "Environmental services delay for deep cleaning." }
-                },
-                customers: {
-                    1: { name: 'Standard Care', icon: "🏥", lsl: 90.0, usl: 150.0, desc: "Target: Under 150 min" },
-                    2: { name: 'High Throughput', icon: "⚡", lsl: 100.0, usl: 130.0, desc: "Lean Target: 100-130 min" }
-                }
-            },
-            phlebotomy: {
-                title: "🩸 Blood Collection Prep",
-                visualizerTitle: "Sample Collection Time",
-                unit: "min",
-                baseMean: 10.0,
-                baseVariation: 0.5,
-                btnIcon: "🧪",
-                btnText: "Collect 100 Samples",
-                chaos: {
-                    1: { name: "👤 Difficult Insertion", impact: "+2.0σ", sigma: 2.0, meanShift: 3.0, desc: "Vein access issues on complex patients." },
-                    2: { name: "📋 Labeling Error", impact: "+1.5σ", sigma: 1.5, meanShift: 0, desc: "Re-scanning and re-printing labels slows process." },
-                    3: { name: "🚶‍♂️ Long Walk", impact: "+1.0σ", sigma: 1.0, meanShift: 1.0, desc: "Extended travel distance to the main lab." }
-                },
-                customers: {
-                    1: { name: 'Standard Clinic', icon: "🏢", lsl: 5.0, usl: 15.0, desc: "Routine: 5-15 min" },
-                    2: { name: 'Fast Track', icon: "⏱️", lsl: 8.0, usl: 12.0, desc: "Premium: 8-12 min" }
-                }
-            },
-            it_support: {
-                title: "💻 IT Service Desk Hub",
-                visualizerTitle: "Ticket Resolution Distribution",
-                unit: "hr",
-                baseMean: 4.0,
-                baseVariation: 0.2,
-                btnIcon: "🛠️",
-                btnText: "Resolve 100 Tickets",
-                chaos: {
-                    1: { name: "📶 Network Outage", impact: "+3.0σ", sigma: 3.0, meanShift: 8.0, desc: "Major incidents overwhelm support staff." },
-                    2: { name: "🔑 MFA Reset Surge", impact: "+1.5σ", sigma: 1.5, meanShift: 2.0, desc: "High volume of simple repetitive tasks." },
-                    3: { name: "👤 New Hire Training", impact: "+2.0σ", sigma: 2.0, meanShift: 0, desc: "Slower processing by uncertified agents." }
-                },
-                customers: {
-                    1: { name: 'Silver Support', icon: "🥈", lsl: 1.0, usl: 8.0, desc: "SLA: 8hr resolution" },
-                    2: { name: 'Platinum Support', icon: "💎", lsl: 3.0, usl: 5.0, desc: "VIP SLA: 5hr resolution" }
-                }
-            },
-            auto_assembly: {
-                title: "⚙️ Auto Assembly (Industrial)",
-                visualizerTitle: "Engine Cylinder Diameter",
-                unit: "mm",
-                baseMean: 85.0,
-                baseVariation: 0.05,
-                btnIcon: "🔩",
-                btnText: "Machine 100 Units",
-                chaos: {
-                    1: { name: "🌡️ Thermal Expansion", impact: "+0.2σ", sigma: 0.2, meanShift: 0.05, desc: "Heat changes material properties during shift." },
-                    2: { name: "🔧 Tool Wear", impact: "+0.1σ", sigma: 0.1, meanShift: 0.02, desc: "Dull bits increase diameter variation." },
-                    3: { name: "💾 CNC Logic Error", impact: "+0.5σ", sigma: 0.5, meanShift: 0, desc: "Subtle software glitch affects precision." }
-                },
-                customers: {
-                    1: { name: 'Standard Build', icon: "🚗", lsl: 84.8, usl: 85.2, desc: "Tolerance: +/- 0.2mm" },
-                    2: { name: 'Racing Performance', icon: "🏎️", lsl: 84.95, usl: 85.05, desc: "Tight Profile: +/- 0.05mm" }
-                }
-            },
-            pharmacy_dispense: {
-                title: "💊 Pharmacy Dispensing Lab",
-                visualizerTitle: "Medication Dispensing Time",
-                unit: "min",
-                baseMean: 5.0,
-                baseVariation: 0.5,
-                btnIcon: "🧾",
-                btnText: "Dispense 100 Prescriptions",
-                chaos: {
-                    1: { name: "📝 Complex Prescriptions", impact: "+2.0σ", sigma: 2.0, meanShift: 2.0, desc: "Requires manual verification, increasing time." },
-                    2: { name: "📦 Out-of-Stock Item", impact: "+1.5σ", sigma: 1.5, meanShift: 3.0, desc: "Requires ordering or substitution, causing delays." },
-                    3: { name: "📞 High Call Volume", impact: "+1.0σ", sigma: 1.0, meanShift: 1.0, desc: "Pharmacists interrupted, slowing down dispensing." }
-                },
-                customers: {
-                    1: { name: 'Routine Pickup', icon: "🚶", lsl: 3.0, usl: 8.0, desc: "Acceptable: 3-8 min wait" },
-                    2: { name: 'Urgent Medication', icon: "🚨", lsl: 4.0, usl: 6.0, desc: "Critical: 4-6 min target" }
-                }
-            },
-            patient_wait: {
-                title: "⏱️ Patient Wait Time Lab",
-                visualizerTitle: "Clinic Patient Wait Time",
-                unit: "min",
-                baseMean: 15.0,
-                baseVariation: 3.0,
-                btnIcon: "🪑",
-                btnText: "Check-in 100 Patients",
-                chaos: {
-                    1: { name: "👩‍⚕️ Doctor Running Late", impact: "+5.0σ", sigma: 5.0, meanShift: 10.0, desc: "Previous appointments overrunning, delaying all subsequent patients." },
-                    2: { name: "📄 Paperwork Issues", impact: "+2.5σ", sigma: 2.5, meanShift: 5.0, desc: "Incomplete forms or insurance verification delays." },
-                    3: { name: "💻 System Glitch", impact: "+1.5σ", sigma: 1.5, meanShift: 2.0, desc: "EHR or scheduling system slowdowns." }
-                },
-                customers: {
-                    1: { name: 'Standard Patient', icon: "😊", lsl: 10.0, usl: 25.0, desc: "Tolerable: 10-25 min" },
-                    2: { name: 'Busy Professional', icon: "💼", lsl: 12.0, usl: 18.0, desc: "Preferred: 12-18 min" }
-                }
-            },
-            blood_pressure: {
-                title: "❤️ Blood Pressure Reading Lab",
-                visualizerTitle: "Systolic Blood Pressure Reading",
-                unit: "mmHg",
-                baseMean: 120.0,
-                baseVariation: 2.0,
-                btnIcon: "🩺",
-                btnText: "Measure 100 Readings",
-                chaos: {
-                    1: { name: "📏 Incorrect Cuff Size", impact: "+5.0σ", sigma: 5.0, meanShift: 0, desc: "Too small/large cuff leads to inaccurate readings." },
-                    2: { name: "🗣️ Patient Anxiety", impact: "+3.0σ", sigma: 3.0, meanShift: 5.0, desc: "Stress elevates readings, adding variability." },
-                    3: { name: "⏱️ Rapid Measurement", impact: "+2.0σ", sigma: 2.0, meanShift: 0, desc: "Not allowing patient to rest before measurement." }
-                },
-                customers: {
-                    1: { name: 'General Health', icon: "💚", lsl: 100.0, usl: 140.0, desc: "Healthy Range: 100-140 mmHg" },
-                    2: { name: 'Optimal Health', icon: "💙", lsl: 115.0, usl: 125.0, desc: "Ideal Range: 115-125 mmHg" }
-                }
-            },
-            software_bug: {
-                title: "🐛 Software Bug Rate Lab",
-                visualizerTitle: "Bugs per 1000 Lines of Code",
-                unit: "bugs",
-                baseMean: 2.0,
-                baseVariation: 0.5,
-                btnIcon: "💻",
-                btnText: "Test 100 Code Modules",
-                chaos: {
-                    1: { name: "👨‍💻 Junior Dev Team", impact: "+1.5σ", sigma: 1.5, meanShift: 1.0, desc: "Less experienced developers introduce more bugs." },
-                    2: { name: "⏰ Tight Deadlines", impact: "+1.0σ", sigma: 1.0, meanShift: 0.5, desc: "Rushed development leads to lower code quality." },
-                    3: { name: "📚 Poor Documentation", impact: "+0.8σ", sigma: 0.8, meanShift: 0, desc: "Lack of clear specs causes misinterpretations." }
-                },
-                customers: {
-                    1: { name: 'Standard Release', icon: "🚀", lsl: 0.5, usl: 4.0, desc: "Acceptable: 0.5-4 bugs/1000 LOC" },
-                    2: { name: 'Critical System', icon: "🔒", lsl: 0.0, usl: 1.0, desc: "High Quality: 0-1 bug/1000 LOC" }
-                }
-            },
-            food_prep: {
-                title: "🍔 Food Prep Time Lab",
-                visualizerTitle: "Burger Assembly Time",
-                unit: "sec",
-                baseMean: 90.0,
-                baseVariation: 10.0,
-                btnIcon: "🔪",
-                btnText: "Assemble 100 Burgers",
-                chaos: {
-                    1: { name: "🍳 Grill Overload", impact: "+20.0σ", sigma: 20.0, meanShift: 15.0, desc: "Too many orders at once, slowing down cooking." },
-                    2: { name: "🧊 Ingredient Shortage", impact: "+15.0σ", sigma: 15.0, meanShift: 10.0, desc: "Waiting for restock of key items." },
-                    3: { name: "🧼 Equipment Breakdown", impact: "+10.0σ", sigma: 10.0, meanShift: 5.0, desc: "Malfunctioning toaster or fryer." }
-                },
-                customers: {
-                    1: { name: 'Casual Diner', icon: "🍽️", lsl: 60.0, usl: 150.0, desc: "Tolerable: 60-150 sec" },
-                    2: { name: 'Fast Food Expectation', icon: "🏎️", lsl: 75.0, usl: 105.0, desc: "Quick: 75-105 sec" }
-                }
-            }
-        };
-
-        // ============================================
         // GAMIFIED PROCESS LAB ENGINE
         // ============================================
         const gamifiedScenarios = {
@@ -3215,7 +2940,11 @@
             const config = gamifiedScenarios[id];
             labState.lsl = config.lsl;
             labState.usl = config.usl;
-            
+
+            // Update UI Title
+            const titleEl = document.getElementById('lab-title-text');
+            if (titleEl) titleEl.innerHTML = `<span style="margin-right:8px;">${config.icon}</span>${config.title}`;
+
             renderScenarios();
             renderChaos();
             updateLabVisuals();
@@ -3264,7 +2993,7 @@
             document.getElementById('yield-display').innerText = yieldVal.toFixed(yieldVal > 99.9 ? 5 : 2) + '%';
             document.getElementById('dpmo-display').innerText = Math.round(dpmo).toLocaleString();
             document.getElementById('sigma-display').innerText = sigmaLevel.toFixed(1) + 'σ';
-            
+
             const display = document.getElementById('sigma-display');
             document.getElementById('sigma-status').innerText = sigmaLevel < 3 ? "CHAOS" : (sigmaLevel < 5 ? "AVERAGE" : (sigmaLevel < 6 ? "ELITE" : "WORLD CLASS"));
             display.style.color = sigmaLevel < 3 ? '#ef4444' : (sigmaLevel < 5 ? '#f59e0b' : (sigmaLevel < 6 ? '#10b981' : '#6366f1'));
@@ -3284,8 +3013,8 @@
 
             const centerX = 400;
             const centerY = 450;
-            const scaleX = 40; 
-            
+            const scaleX = 40;
+
             const drawZone = (zStart, zEnd, color) => {
                 let pts = [];
                 for (let z = zStart; z <= zEnd; z += 0.1) {
@@ -3331,8 +3060,8 @@
             let pts = [];
             for (let i = 0; i <= 100; i++) {
                 const localX = i;
-                const relativeZ = zU + (i - 80) * 0.001; 
-                const y = 100 - (Math.exp(-0.5 * relativeZ * relativeZ) * 100000); 
+                const relativeZ = zU + (i - 80) * 0.001;
+                const y = 100 - (Math.exp(-0.5 * relativeZ * relativeZ) * 100000);
                 pts.push(`${localX},${Math.min(100, Math.max(0, y))}`);
             }
             magCurve.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
