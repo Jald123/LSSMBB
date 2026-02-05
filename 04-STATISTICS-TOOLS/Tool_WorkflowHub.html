@@ -750,9 +750,86 @@
             font-size: 8px;
             color: #fff;
             font-weight: 800;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             text-align: center;
             line-height: 1;
+            margin-top: 4px;
+            text-shadow: 0 0 10px rgba(255, 62, 62, 0.5);
+        }
+
+        /* HOLOGRAPHIC PORTAL STYLES */
+        .portal-container {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .portal-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 62, 62, 0.4);
+            transition: 0.4s;
+        }
+
+        .ring-1 {
+            width: 42px;
+            height: 42px;
+            animation: orbitalRotate 4s linear infinite;
+        }
+
+        .ring-2 {
+            width: 32px;
+            height: 32px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: rgba(255, 62, 62, 0.2);
+            animation: orbitalRotate 3s linear infinite reverse;
+        }
+
+        .portal-core {
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 16px solid #ff3e3e;
+            margin-left: 4px;
+            filter: drop-shadow(0 0 15px #ff3e3e);
+            animation: coreBreathe 2s ease-in-out infinite;
+        }
+
+        @keyframes orbitalRotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes coreBreathe {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px #ff3e3e);
+                opacity: 0.9;
+            }
+
+            50% {
+                transform: scale(1.15);
+                filter: drop-shadow(0 0 25px #ff3e3e);
+                opacity: 1;
+            }
+        }
+
+        .cinemax-watch-btn:hover .portal-ring {
+            border-color: #ff3e3e;
+            border-style: solid;
+            box-shadow: 0 0 15px rgba(255, 62, 62, 0.3);
         }
 
         .close-btn {
@@ -914,7 +991,11 @@
                                 <div class="cinemax-watch-btn"
                                     onclick="openVideoModal('https://www.youtube.com/embed/LLdtKa8RFtI'); event.stopPropagation();"
                                     title="Watch Phase Briefing">
-                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <div class="portal-container">
+                                        <div class="portal-ring ring-1"></div>
+                                        <div class="portal-ring ring-2"></div>
+                                        <div class="portal-core"></div>
+                                    </div>
                                     <span class="cinemax-text">WATCH NOW!</span>
                                 </div>
                                 <span class="phase-select-all"
@@ -1110,7 +1191,11 @@
                                 <div class="cinemax-watch-btn"
                                     onclick="openVideoModal('https://www.youtube.com/embed/q2tYMN0AKsU'); event.stopPropagation();"
                                     title="Watch Phase Briefing">
-                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <div class="portal-container">
+                                        <div class="portal-ring ring-1"></div>
+                                        <div class="portal-ring ring-2"></div>
+                                        <div class="portal-core"></div>
+                                    </div>
                                     <span class="cinemax-text">WATCH NOW!</span>
                                 </div>
                                 <span class="phase-select-all"
@@ -1334,7 +1419,11 @@
                                 <div class="cinemax-watch-btn"
                                     onclick="openVideoModal('https://www.youtube.com/embed/8lQG4slswqM'); event.stopPropagation();"
                                     title="Watch Phase Briefing">
-                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <div class="portal-container">
+                                        <div class="portal-ring ring-1"></div>
+                                        <div class="portal-ring ring-2"></div>
+                                        <div class="portal-core"></div>
+                                    </div>
                                     <span class="cinemax-text">WATCH NOW!</span>
                                 </div>
                                 <span class="phase-select-all"
@@ -1535,7 +1624,11 @@
                                 <div class="cinemax-watch-btn"
                                     onclick="openVideoModal('https://www.youtube.com/embed/-J381hSomWk'); event.stopPropagation();"
                                     title="Watch Phase Briefing">
-                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <div class="portal-container">
+                                        <div class="portal-ring ring-1"></div>
+                                        <div class="portal-ring ring-2"></div>
+                                        <div class="portal-core"></div>
+                                    </div>
                                     <span class="cinemax-text">WATCH NOW!</span>
                                 </div>
                                 <span class="phase-select-all"
@@ -1697,7 +1790,11 @@
                                 <div class="cinemax-watch-btn"
                                     onclick="openVideoModal('https://www.youtube.com/embed/M5ss9ppryF8'); event.stopPropagation();"
                                     title="Watch Phase Briefing">
-                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <div class="portal-container">
+                                        <div class="portal-ring ring-1"></div>
+                                        <div class="portal-ring ring-2"></div>
+                                        <div class="portal-core"></div>
+                                    </div>
                                     <span class="cinemax-text">WATCH NOW!</span>
                                 </div>
                                 <span class="phase-select-all"
