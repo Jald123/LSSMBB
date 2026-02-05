@@ -2737,12 +2737,8 @@
         // MODAL SYSTEM
         // ============================================
         function openModal(type) {
-            alert('Opening: ' + type);
-            console.log('Opening modal:', type);
             const backdrop = document.getElementById(`${type}-backdrop`);
             const modal = document.getElementById(`${type}-modal`);
-            console.log('Backdrop element:', backdrop);
-            console.log('Modal element:', modal);
             if (backdrop) backdrop.classList.add('active');
             if (modal) modal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -3066,14 +3062,45 @@
         function renderMagnifyingLens(mean, std, usl) {
             const zU = (usl - mean) / std;
             const magCurve = document.getElementById('mag-curve');
+
+            // Calculate the probability density at the USL
+            const pdfAtUSL = Math.exp(-0.5 * zU * zU);
+
+            // Adaptive amplification - scale based on how small the tail is
+            const amplification = Math.min(1e8, 1 / Math.max(pdfAtUSL, 1e-10));
+
             let pts = [];
+            const zoomWidth = 0.5;
+
             for (let i = 0; i <= 100; i++) {
                 const localX = i;
-                const relativeZ = zU + (i - 80) * 0.001;
-                const y = 100 - (Math.exp(-0.5 * relativeZ * relativeZ) * 100000);
-                pts.push(`${localX},${Math.min(100, Math.max(0, y))}`);
+                const relativeZ = zU - zoomWidth + (i / 100) * (2 * zoomWidth);
+                const pdfValue = Math.exp(-0.5 * relativeZ * relativeZ);
+                const normalizedHeight = (pdfValue * amplification) * 80;
+                const y = 100 - Math.min(95, Math.max(5, normalizedHeight));
+                pts.push(`${localX},${y}`);
             }
+
             magCurve.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
+
+            // Color the lens based on sigma level
+            const lensEl = document.getElementById('mag-lens');
+            if (lensEl) {
+                const pDefect = 1 - cdf(zU);
+                if (pDefect < 0.0000034) {
+                    lensEl.style.borderColor = '#6366f1';
+                    lensEl.style.boxShadow = '0 0 20px rgba(99, 102, 241, 0.6)';
+                } else if (pDefect < 0.00023) {
+                    lensEl.style.borderColor = '#10b981';
+                    lensEl.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.6)';
+                } else if (pDefect < 0.0062) {
+                    lensEl.style.borderColor = '#f59e0b';
+                    lensEl.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.6)';
+                } else {
+                    lensEl.style.borderColor = '#ef4444';
+                    lensEl.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.6)';
+                }
+            }
         }
 
         function setupDrag() {
