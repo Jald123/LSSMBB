@@ -1546,7 +1546,10 @@
 
         .explorer-hint {
             position: absolute;
-            bottom: -60px;
+            top: 100%;
+            /* Move relative to parent */
+            margin-top: 130px;
+            /* Space it well below the data box */
             left: 50%;
             transform: translateX(-50%);
             font-size: 9px;
@@ -1554,8 +1557,10 @@
             white-space: nowrap;
             text-transform: uppercase;
             letter-spacing: 1px;
+            pointer-events: none;
             animation: pulse-hint 2s ease-in-out infinite;
         }
+
 
         @keyframes pulse-hint {
 
@@ -3348,62 +3353,71 @@
             const distanceLabel = document.getElementById('explorer-distance-label');
             if (!curve) return;
 
-            // Calculate curve at this sigma level
-            const zoomCenter = sigmaLevel;
-            const zoomWidth = 1.5; // Wider view for better context
+            // 1. Calculate PDF at the specific sigma level (center of lens)
+            const centerPdf = Math.exp(-0.5 * sigmaLevel * sigmaLevel);
+
+            // 2. FORCE SCALING: Normalized height relative to this specific sigma level
+            // We want the curve to intersect the center vertical line at exactly y=60 (40% up from bottom)
+            // This guarantees visibility regardless of sigma level (1 or 6)
+            const targetHeightPx = 40; // Height of curve at center (from bottom)
+            const amplification = targetHeightPx / centerPdf;
+
+            // 3. Draw curve with centered zoom
+            const zoomWidth = 0.8; // Narrower zoom to show local detail
             let pts = [];
-            let curveYAtSigma = 100;
 
             for (let i = 0; i <= 100; i++) {
                 const localX = i;
-                const z = (zoomCenter - zoomWidth) + (i / 100) * (2 * zoomWidth);
+                // Map localX (0-100) to Z-score range [sigma - zoomWidth, sigma + zoomWidth]
+                const z = (sigmaLevel - zoomWidth) + (i / 100) * (2 * zoomWidth);
                 const pdfValue = Math.exp(-0.5 * z * z);
-                // Scale based on sigma level - adaptive scaling
-                const maxScale = sigmaLevel <= 2 ? 120 : (sigmaLevel <= 4 ? 300 : 800);
-                const y = 100 - (pdfValue * maxScale);
-                pts.push(`${localX},${Math.max(5, Math.min(98, y))}`);
 
-                // Track curve Y at the sigma line position (center = 50)
-                if (i === 50) {
-                    curveYAtSigma = Math.max(5, Math.min(98, y));
-                }
+                // Calculate Y: 100 is bottom, 0 is top. 
+                // Height is pdf * amp. Y = 100 - Height.
+                const height = pdfValue * amplification;
+                const y = 100 - height;
+
+                pts.push(`${localX},${Math.max(0, Math.min(100, y))}`);
             }
 
             curve.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
 
-            // Position sigma line at center
+            // 4. Update Reference Elements
             if (sigmaLine) {
                 sigmaLine.setAttribute("x1", 50);
                 sigmaLine.setAttribute("x2", 50);
             }
 
-            // Draw distance indicator from curve to baseline
             if (distanceLine && distanceLabel) {
+                // The gap is visually the area UNDER the curve in this normalized view
+                // But user wanted to see "distance". In this tailored view, it's just the height.
+                const centerCurveY = 100 - targetHeightPx;
+
                 distanceLine.setAttribute("x1", 50);
-                distanceLine.setAttribute("y1", curveYAtSigma);
+                distanceLine.setAttribute("y1", centerCurveY);
                 distanceLine.setAttribute("x2", 50);
                 distanceLine.setAttribute("y2", 100);
 
-                // Calculate the visual distance percentage
-                const distancePercent = Math.round((100 - curveYAtSigma));
-                distanceLabel.setAttribute("y", curveYAtSigma + (100 - curveYAtSigma) / 2 + 3);
-                distanceLabel.textContent = distancePercent > 5 ? `${distancePercent}%` : '';
+                // Don't show confusing percent label, the visual line is enough
+                distanceLabel.textContent = "";
             }
 
-            // Update colors based on sigma
-            const data = sigmaReferenceData[sigmaLevel];
-            if (data) {
-                curve.setAttribute("fill", data.color + '40'); // 25% opacity
-                curve.setAttribute("stroke", data.color);
-                if (sigmaLine) {
-                    sigmaLine.setAttribute("stroke", data.color);
-                }
-                if (distanceLine) {
-                    distanceLine.setAttribute("stroke", "#ffffff");
-                }
-                if (distanceLabel) {
-                    distanceLabel.setAttribute("fill", "#ffffff");
-                }
+            // 5. Update Colors
+            const data = sigmaReferenceData[sigmaLevel] || { color: '#6366f1' }; // Fallback color
+
+            curve.setAttribute("fill", data.color + '40');
+            curve.setAttribute("stroke", data.color);
+            curve.setAttribute("stroke-width", "3"); // Thicker line for visibility
+
+            if (sigmaLine) {
+                sigmaLine.setAttribute("stroke", "#ffffff");
+                sigmaLine.setAttribute("stroke-opacity", "0.8");
+                sigmaLine.setAttribute("stroke-dasharray", "3 3");
+            }
+            if (distanceLine) {
+                distanceLine.setAttribute("stroke", data.color);
+                distanceLine.setAttribute("stroke-width", "2");
+                distanceLine.setAttribute("stroke-dasharray", "none"); // Solid line for clarity
             }
         }
 
