@@ -599,7 +599,147 @@
             width: 90%;
             max-width: 600px;
             position: relative;
-            box-shadow: 0 0 50px rgba(183, 134, 40, 0.2);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* VIDEO MODAL ENHANCEMENTS */
+        .video-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .video-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .video-modal-content {
+            width: 90%;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 53, 0.5);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 1), 0 0 30px rgba(255, 107, 53, 0.2);
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+        }
+
+        .video-modal-overlay.active .video-modal-content {
+            transform: scale(1);
+        }
+
+        .video-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-close-btn {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            font-family: 'Orbitron';
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-close-btn:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        /* CINEMAX WATCH BUTTON */
+        .cinemax-watch-btn {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 80px;
+            height: 80px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        .cinemax-watch-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .cinemax-watch-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .cinemax-watch-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .cinemax-icon {
+            color: #ff0000;
+            font-size: 32px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.4));
+            animation: playPulse 2s infinite;
+        }
+
+        @keyframes playPulse {
+            0% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.4));
+            }
+
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.8));
+            }
+
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.4));
+            }
+        }
+
+        .cinemax-text {
+            font-family: 'Orbitron';
+            font-size: 8px;
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-align: center;
+            line-height: 1;
         }
 
         .close-btn {
@@ -757,7 +897,13 @@
                                         title="Phase Wisdom">💡</span></h3>
                                 <div style="font-size:12px;opacity:0.7;">Charter, Scope, VOC, Teams</div>
                             </div>
-                            <div style="display:flex; align-items:center;">
+                            <div style="display:flex; align-items:center; gap: 15px;">
+                                <div class="cinemax-watch-btn"
+                                    onclick="openVideoModal('https://www.youtube.com/embed/LLdtKa8RFtI'); event.stopPropagation();"
+                                    title="Watch Phase Briefing">
+                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <span class="cinemax-text">WATCH NOW!</span>
+                                </div>
                                 <span class="phase-select-all"
                                     onclick="togglePhaseAll(this, 'dmaic-content-1'); event.stopPropagation();">Select
                                     All</span>
@@ -947,7 +1093,13 @@
                                         title="Phase Wisdom">💡</span></h3>
                                 <div style="font-size:12px;opacity:0.7;">MSA, Capability, Statistics</div>
                             </div>
-                            <div style="display:flex; align-items:center;">
+                            <div style="display:flex; align-items:center; gap: 15px;">
+                                <div class="cinemax-watch-btn"
+                                    onclick="openVideoModal('https://www.youtube.com/embed/q2tYMN0AKsU'); event.stopPropagation();"
+                                    title="Watch Phase Briefing">
+                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <span class="cinemax-text">WATCH NOW!</span>
+                                </div>
                                 <span class="phase-select-all"
                                     onclick="togglePhaseAll(this, 'dmaic-content-2'); event.stopPropagation();">Select
                                     All</span>
@@ -1165,7 +1317,13 @@
                                         title="Phase Wisdom">💡</span></h3>
                                 <div style="font-size:12px;opacity:0.7;">Root Cause, Hypothesis, FMEA</div>
                             </div>
-                            <div style="display:flex; align-items:center;">
+                            <div style="display:flex; align-items:center; gap: 15px;">
+                                <div class="cinemax-watch-btn"
+                                    onclick="openVideoModal('https://www.youtube.com/embed/8lQG4slswqM'); event.stopPropagation();"
+                                    title="Watch Phase Briefing">
+                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <span class="cinemax-text">WATCH NOW!</span>
+                                </div>
                                 <span class="phase-select-all"
                                     onclick="togglePhaseAll(this, 'dmaic-content-3'); event.stopPropagation();">Select
                                     All</span>
@@ -1360,7 +1518,13 @@
                                         title="Phase Wisdom">💡</span></h3>
                                 <div style="font-size:12px;opacity:0.7;">Solutions, DOE, Implementation</div>
                             </div>
-                            <div style="display:flex; align-items:center;">
+                            <div style="display:flex; align-items:center; gap: 15px;">
+                                <div class="cinemax-watch-btn"
+                                    onclick="openVideoModal('https://www.youtube.com/embed/-J381hSomWk'); event.stopPropagation();"
+                                    title="Watch Phase Briefing">
+                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <span class="cinemax-text">WATCH NOW!</span>
+                                </div>
                                 <span class="phase-select-all"
                                     onclick="togglePhaseAll(this, 'dmaic-content-4'); event.stopPropagation();">Select
                                     All</span>
@@ -1516,7 +1680,13 @@
                                         title="Phase Wisdom">💡</span></h3>
                                 <div style="font-size:12px;opacity:0.7;">SPC, Control Plans, Sustaining</div>
                             </div>
-                            <div style="display:flex; align-items:center;">
+                            <div style="display:flex; align-items:center; gap: 15px;">
+                                <div class="cinemax-watch-btn"
+                                    onclick="openVideoModal('https://www.youtube.com/embed/M5ss9ppryF8'); event.stopPropagation();"
+                                    title="Watch Phase Briefing">
+                                    <i class="fas fa-play-circle cinemax-icon"></i>
+                                    <span class="cinemax-text">WATCH NOW!</span>
+                                </div>
                                 <span class="phase-select-all"
                                     onclick="togglePhaseAll(this, 'dmaic-content-5'); event.stopPropagation();">Select
                                     All</span>
@@ -3013,7 +3183,6 @@
             border: 1px dashed rgba(255, 255, 255, 0.1);
             padding: 20px;
             overflow: auto;
-            overflow-x: hidden;
         }
 
         .btn-game {
@@ -3032,6 +3201,96 @@
         .btn-game:hover {
             background: #22d3ee;
             box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+
+        /* --- MISSION NAVIGATION CONTROLS --- */
+        .mission-nav-bar {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 50px;
+            padding: 10px 25px;
+            display: none;
+            /* Only show in games */
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(6, 182, 212, 0.1);
+            z-index: 10000;
+            backdrop-filter: blur(12px);
+            animation: slideUpFade 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .nav-control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
+            padding-right: 15px;
+        }
+
+        .nav-control-group:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        .nav-btn-sm {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .nav-btn-sm:hover {
+            background: rgba(6, 182, 212, 0.2);
+            border-color: #06b6d4;
+            color: #06b6d4;
+            transform: scale(1.1);
+        }
+
+        .nav-top-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: 0.2s;
+            padding: 0 10px;
+        }
+
+        .nav-top-btn:hover {
+            color: #22d3ee;
+            transform: translateY(-2px);
+        }
+
+        .nav-top-label {
+            font-family: 'Orbitron';
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: 1px;
         }
 
         /* Analyst Armory: Holographic Stations */
@@ -3747,6 +4006,37 @@
                 <div class="game-content" id="game-surface">
                     <!-- Content injected by JS -->
                 </div>
+
+                <!-- FLOATING MISSION TOOLBAR -->
+                <div id="mission-nav" class="mission-nav-bar">
+                    <div class="nav-control-group">
+                        <div class="nav-btn-sm" onclick="showLobby()" title="Back to Hub"><i
+                                class="fas fa-arrow-left"></i></div>
+                        <div class="nav-btn-sm" onclick="location.href='Tool_BlackBeltCommandCenter.html'"
+                            title="Command Center"><i class="fas fa-th-large"></i></div>
+                        <div class="nav-btn-sm" title="Badges/Milestones"><i class="fas fa-medal"></i></div>
+                        <div class="nav-btn-sm" title="Calibration Lab"><i class="fas fa-flask"></i></div>
+                    </div>
+
+                    <div class="nav-control-group" style="gap: 8px; margin: 0 5px;">
+                        <div class="nav-btn-sm" onclick="scrollGame('up')" title="Scroll Up"><i
+                                class="fas fa-chevron-up"></i></div>
+                        <div class="nav-btn-sm" onclick="scrollGame('down')" title="Scroll Down"><i
+                                class="fas fa-chevron-down"></i></div>
+                    </div>
+
+                    <div class="nav-control-group" style="gap: 8px; margin: 0 5px;">
+                        <div class="nav-btn-sm" onclick="scrollGame('left')" title="Scroll Left"><i
+                                class="fas fa-chevron-left"></i></div>
+                        <div class="nav-btn-sm" onclick="scrollGame('right')" title="Scroll Right"><i
+                                class="fas fa-chevron-right"></i></div>
+                    </div>
+
+                    <div class="nav-top-btn" onclick="scrollGame('top')">
+                        <i class="fas fa-arrow-up" style="font-size: 16px;"></i>
+                        <span class="nav-top-label" style="font-size: 8px;">TOP</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -3912,9 +4202,23 @@
 
         function updateTooltipPos(e) {
             const tooltip = document.getElementById('game-tooltip');
-            if (tooltip.style.display === 'block') {
+            if (tooltip && tooltip.style.display === 'block') {
                 tooltip.style.left = (e.clientX + 15) + 'px';
                 tooltip.style.top = (e.clientY + 15) + 'px';
+            }
+        }
+
+        function scrollGame(dir) {
+            const surface = document.getElementById('game-surface');
+            const amt = 300;
+            if (!surface) return;
+
+            switch (dir) {
+                case 'up': surface.scrollBy({ top: -amt, behavior: 'smooth' }); break;
+                case 'down': surface.scrollBy({ top: amt, behavior: 'smooth' }); break;
+                case 'left': surface.scrollBy({ left: -amt, behavior: 'smooth' }); break;
+                case 'right': surface.scrollBy({ left: amt, behavior: 'smooth' }); break;
+                case 'top': surface.scrollTo({ top: 0, behavior: 'smooth' }); break;
             }
         }
 
@@ -4006,6 +4310,7 @@
         function showLobby() {
             document.getElementById('armory-lobby').style.display = 'block';
             document.getElementById('station-panel').style.display = 'none';
+            document.getElementById('mission-nav').style.display = 'none';
         }
 
         function startStation(id) {
@@ -4013,7 +4318,8 @@
             armoryState.round = 1;
             armoryState.score = 0;
             document.getElementById('armory-lobby').style.display = 'none';
-            document.getElementById('station-panel').style.display = 'block';
+            document.getElementById('station-panel').style.display = 'flex';
+            document.getElementById('mission-nav').style.display = 'flex';
 
             const station = bootcampData.pre_lab.stations.find(s => s.id === id);
             setTimeout(() => {
@@ -4598,7 +4904,38 @@
             const modal = document.getElementById('wisdomModal');
             if (modal) modal.style.display = 'none';
         }
+
+        // VIDEO MODAL LOGIC
+        function openVideoModal(url) {
+            const overlay = document.getElementById('videoModalOverlay');
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = url + "?autoplay=1&rel=0";
+            overlay.classList.add('active');
+        }
+
+        function closeVideoModal() {
+            const overlay = document.getElementById('videoModalOverlay');
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = "";
+            overlay.classList.remove('active');
+        }
+
+        // Close on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeVideoModal();
+        });
     </script>
+
+    <!-- VIDEO MODAL STRUCTURE -->
+    <div id="videoModalOverlay" class="video-modal-overlay" onclick="closeVideoModal()">
+        <div class="video-modal-content" onclick="event.stopPropagation()">
+            <div class="video-close-btn" onclick="closeVideoModal()">
+                <span>CLOSE</span> <i class="fas fa-times"></i>
+            </div>
+            <iframe id="videoIframe" class="video-iframe" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
+    </div>
+
     <script src="AssistantTools.js"></script>
 </body>
 
