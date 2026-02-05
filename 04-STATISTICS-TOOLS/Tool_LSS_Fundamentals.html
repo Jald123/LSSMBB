@@ -3233,8 +3233,8 @@
             2: { dpmo: 308538, yield: 69.15, color: '#f59e0b' },
             3: { dpmo: 66807, yield: 93.32, color: '#eab308' },
             4: { dpmo: 6210, yield: 99.38, color: '#22c55e' },
-            5: { dpmo: 233, yield: 99.977, color: '#10b981' },
-            6: { dpmo: 3.4, yield: 99.99966, color: '#6366f1' }
+            5: { dpmo: 233, yield: 99.977, color: '#22c55e' }, // Brighter Green to match drawing
+            6: { dpmo: 3.4, yield: 99.99966, color: '#a855f7' } // Rich Purple to match drawing
         };
 
         let explorerState = {
@@ -3356,41 +3356,41 @@
             // --- MODE A: High Sigma Schematic View (5 & 6 Sigma) ---
             // Matches the specific user request: Red text, Orange line, Purple curve
             if (sigmaLevel >= 5) {
-                // 1. Orange Limit Line (Bottom)
+                // 1. Orange Limit Line (Thicker and Glowing)
                 const orangeLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                orangeLine.setAttribute("x1", "0");
-                orangeLine.setAttribute("y1", "65");
-                orangeLine.setAttribute("x2", "100");
-                orangeLine.setAttribute("y2", "65");
-                orangeLine.setAttribute("stroke", "#f97316"); // Orange
-                orangeLine.setAttribute("stroke-width", "4");
+                orangeLine.setAttribute("x1", "5");
+                orangeLine.setAttribute("y1", "72");
+                orangeLine.setAttribute("x2", "95");
+                orangeLine.setAttribute("y2", "72");
+                orangeLine.setAttribute("stroke", "#f97316"); // Pure Orange
+                orangeLine.setAttribute("stroke-width", "5");
+                orangeLine.setAttribute("stroke-linecap", "round");
                 svg.appendChild(orangeLine);
 
-                // 2. Purple Curve (Custom Bezier)
+                // 2. Purple Curve (Custom Bezier following the drawing)
                 const curve = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                // 5 Sigma: Curve approaches line but leaves a gap
-                // 6 Sigma: Curve gets extremely close/flat against line
-                const d = sigmaLevel === 5
-                    ? "M 0,35 Q 40,55 80,60"  // 5 Sigma shape
-                    : "M 0,35 Q 40,62 80,64"; // 6 Sigma shape (closer)
+                // Path for 5 Sigma (visible gap) vs 6 Sigma (almost touching)
+                const pathD = sigmaLevel < 5.8
+                    ? "M 10,48 Q 45,62 85,64"  // 5 Sigma swoop (higher)
+                    : "M 10,50 Q 45,70 85,71"; // 6 Sigma swoop (extreme precision)
 
-                curve.setAttribute("d", d);
+                curve.setAttribute("d", pathD);
                 curve.setAttribute("fill", "none");
-                curve.setAttribute("stroke", "#a855f7"); // Purple
-                curve.setAttribute("stroke-width", "3");
+                curve.setAttribute("stroke", "#a855f7"); // Vibrant Purple
+                curve.setAttribute("stroke-width", "4");
                 curve.setAttribute("stroke-linecap", "round");
                 svg.appendChild(curve);
 
-                // 3. Red Label Text
+                // 3. Bold Red Label
                 const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 text.setAttribute("x", "50");
-                text.setAttribute("y", "40"); // Positioned in center-top
+                text.setAttribute("y", "38");
                 text.setAttribute("text-anchor", "middle");
-                text.setAttribute("fill", "#dc2626"); // Red
-                text.setAttribute("font-weight", "800");
+                text.setAttribute("fill", "#ff0000"); // Standard Red
+                text.setAttribute("font-weight", "900");
                 text.setAttribute("font-family", "system-ui, sans-serif");
-                text.setAttribute("font-size", "14");
-                text.textContent = `${sigmaLevel} sigma`;
+                text.setAttribute("font-size", "15");
+                text.textContent = `${Math.round(sigmaLevel)} sigma`;
                 svg.appendChild(text);
             }
 
