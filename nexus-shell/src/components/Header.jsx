@@ -185,10 +185,14 @@ const Header = ({ onMenuClick }) => {
     // Phase Tracker Logic
     const { methodology } = useNexus();
     const location = useLocation();
-    const currentPath = location.pathname.split('/').pop(); // e.g., 'define' based on /journey/define
-    const activePhase = Object.keys(methodologyData[methodology] || {}).includes(currentPath) ? currentPath : 'define';
 
-    const phases = Object.entries(methodologyData[methodology] || {}).map(([key, data]) => ({
+    // Normalize methodology key (e.g., FOCUS PDCA -> FOCUS)
+    const activeMethodologyKey = methodology?.split(' ')[0].toUpperCase() || 'DMAIC';
+
+    const currentPath = location.pathname.split('/').pop(); // e.g., 'define' based on /journey/define
+    const activePhase = Object.keys(methodologyData[activeMethodologyKey] || {}).includes(currentPath) ? currentPath : 'define';
+
+    const phases = Object.entries(methodologyData[activeMethodologyKey] || {}).map(([key, data]) => ({
         id: key,
         label: data.title,
         icon: key === 'define' || key === 'find' ? Target

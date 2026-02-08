@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
     Rocket,
     Target,
-    BarChart3,
+    BarChart2,
     Zap,
     Settings2,
     ShieldCheck,
@@ -26,7 +26,7 @@ import { useNexus } from '../context/NexusContext';
 const ICON_MAP = {
     // DMAIC/DFSS
     'define': Target,
-    'measure': BarChart3,
+    'measure': BarChart2,
     'analyze': Zap,
     'improve': Settings2,
     'control': ShieldCheck,
