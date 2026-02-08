@@ -1,193 +1,379 @@
 export const toolRegistry = {
     // --- DEFINE ---
     'charter': {
-        name: 'Project Charter',
+        name: 'Project Charter (Premium)',
         src: '/04-STATISTICS-TOOLS/Tool_ProjectCharter_Premium.html',
-        phase: 'Define'
-    },
-    'triage': {
-        name: 'Project Triage',
-        src: '/04-STATISTICS-TOOLS/Tool_ProjectTriage.html',
-        phase: 'Define'
+        phase: 'Define',
+        category: 'PROJ. MGMT',
+        priority: 1,
+        belt: 'YB'
     },
     'stakeholders': {
-        name: 'Stakeholder Analysis',
+        name: 'Stakeholder Matrix',
         src: '/04-STATISTICS-TOOLS/Tool_StakeholderAnalysis.html',
-        phase: 'Define'
+        phase: 'Define',
+        category: 'PROJ. MGMT',
+        priority: 2,
+        belt: 'GB'
     },
-    'kano': {
-        name: 'Kano Model',
-        src: '/04-STATISTICS-TOOLS/Tool_KanoModel.html',
-        phase: 'Define'
+    'triage': {
+        name: 'Project Triage & Scoping',
+        src: '/04-STATISTICS-TOOLS/Tool_ProjectTriage.html',
+        phase: 'Define',
+        category: 'PROJ. MGMT',
+        priority: 3,
+        belt: 'BB'
     },
-    'fundamentals': {
-        name: 'LSS Fundamentals',
-        src: '/04-STATISTICS-TOOLS/Tool_LSS_Fundamentals.html',
-        phase: 'Define'
+    'hoshin': {
+        name: 'Hoshin Kanri X-Matrix',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanStrategyHub.html',
+        phase: 'Define',
+        category: 'STRATEGY',
+        priority: 1,
+        belt: 'BB'
     },
-    'voc': {
-        name: 'VOC Collector',
-        src: '/02-TEMPLATES/Template_VOC.html',
-        phase: 'Define'
-    },
-    'workflow': {
-        name: 'SIPOC Workflow',
+    'sipoc': {
+        name: 'SIPOC Diagram',
         src: '/04-STATISTICS-TOOLS/Tool_WorkflowHub.html',
-        phase: 'Define'
+        phase: 'Define',
+        category: 'SIX SIGMA',
+        priority: 1,
+        belt: 'YB'
+    },
+    'qfd': {
+        name: 'QFD House of Quality',
+        src: '/04-STATISTICS-TOOLS/Tool_QFD_HouseOfQuality.html',
+        phase: 'Define',
+        category: 'SIX SIGMA',
+        priority: 2,
+        belt: 'GB'
+    },
+    'swimlane-adv': {
+        name: 'Advanced Swimlane Architect',
+        src: '/04-STATISTICS-TOOLS/Tool_Swimlane_Advanced.html',
+        phase: 'Define',
+        category: 'LEAN',
+        priority: 3,
+        belt: 'GB'
+    },
+    'affinity': {
+        name: 'Affinity Diagram',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=affinity',
+        phase: 'Define',
+        category: 'LEAN',
+        priority: 'REC.',
+        belt: 'YB'
+    },
+    'gantt': {
+        name: 'Project Timelines (Gantt)',
+        src: '/04-STATISTICS-TOOLS/Tool_GanttChart.html',
+        phase: 'Define',
+        category: 'PROJ. MGMT',
+        priority: 'REC.',
+        belt: 'GB'
+    },
+    'leadership': {
+        name: 'Leadership & Management (ADKAR)',
+        src: '/04-STATISTICS-TOOLS/Tool_ChangeMgmt_ADKAR.html',
+        phase: 'Define',
+        category: 'CHANGE MGMT',
+        priority: 'OPT.',
+        belt: 'BB'
     },
 
     // --- MEASURE ---
     'msa': {
-        name: 'MSA Wizard',
+        name: 'MSA (Gage R&R) Premium',
         src: '/04-STATISTICS-TOOLS/Tool_MSA_Premium.html',
-        phase: 'Measure'
-    },
-    'fmea': {
-        name: 'Process FMEA',
-        src: '/04-STATISTICS-TOOLS/Tool_DFMEA_Premium.html',
-        phase: 'Measure'
-    },
-    'transcript': {
-        name: 'Skill Matrix',
-        src: '/04-STATISTICS-TOOLS/Tool_QualificationTranscript.html',
-        phase: 'Measure'
-    },
-    'vsm': {
-        name: 'Value Stream Map',
-        src: '/04-STATISTICS-TOOLS/Tool_VSM.html',
-        phase: 'Measure'
+        phase: 'Measure',
+        category: 'SIX SIGMA',
+        priority: 1,
+        belt: 'GB'
     },
     'desc-stats': {
         name: 'Descriptive Stats',
         src: '/04-STATISTICS-TOOLS/Calculator_DescriptiveStats.html',
-        phase: 'Measure'
+        phase: 'Measure',
+        category: 'SIX SIGMA',
+        priority: 2,
+        belt: 'YB'
     },
-    'sigma-calc': {
-        name: 'Sigma Level Calc',
-        src: '/04-STATISTICS-TOOLS/Calculator_SigmaLevel.html',
-        phase: 'Measure'
+    'capability': {
+        name: 'Process Capability (Cp/Cpk)',
+        src: '/04-STATISTICS-TOOLS/Calculator_ProcessCapability.html',
+        phase: 'Measure',
+        category: 'SIX SIGMA',
+        priority: 3,
+        belt: 'GB'
     },
-
-    // --- ANALYZE ---
-    'hypothesis': {
-        name: 'Hypothesis Wizard',
-        src: '/04-STATISTICS-TOOLS/Tool_HypothesisWizard_Premium.html',
-        phase: 'Analyze'
-    },
-    'doe': {
-        name: 'DOE Premium',
-        src: '/04-STATISTICS-TOOLS/Tool_DOE_Premium.html',
-        phase: 'Analyze'
-    },
-    'anova': {
-        name: 'ANOVA Lab',
-        src: '/04-STATISTICS-TOOLS/Calculator_ANOVA.html',
-        phase: 'Analyze'
-    },
-    'chi-square': {
-        name: 'Chi-Square Test',
-        src: '/04-STATISTICS-TOOLS/Calculator_ChiSquare.html',
-        phase: 'Analyze'
-    },
-    'regression': {
-        name: 'Regression Engine',
-        src: '/04-STATISTICS-TOOLS/Calculator_Regression.html',
-        phase: 'Analyze'
-    },
-    'pareto': {
-        name: 'Pareto Analysis',
-        src: '/04-STATISTICS-TOOLS/Tool_ParetoAnalysis.html',
-        phase: 'Analyze'
-    },
-    '5whys': {
-        name: '5-Whys Studio',
-        src: '/02-TEMPLATES/Template_5Whys.html',
-        phase: 'Analyze'
-    },
-    'fishbone': {
-        name: 'Fishbone Diagram',
-        src: '/02-TEMPLATES/Template_Fishbone.html',
-        phase: 'Analyze'
-    },
-    'wastes': {
-        name: '8 Wastes (DOWNTIME)',
-        src: '/04-STATISTICS-TOOLS/Tool_8Wastes_DOWNTIME.html',
-        phase: 'Analyze'
+    'benchmarking': {
+        name: 'Competitive Benchmarking',
+        src: '/04-STATISTICS-TOOLS/Tool_Benchmarking.html',
+        phase: 'Measure',
+        category: 'STRATEGY',
+        priority: 'REC.',
+        belt: 'BB'
     },
     'dist-lab': {
         name: 'Distribution Lab',
         src: '/04-STATISTICS-TOOLS/Tool_DistributionPowerLab.html',
-        phase: 'Analyze'
+        phase: 'Measure',
+        category: 'SIX SIGMA',
+        priority: 'REC.',
+        belt: 'GB'
     },
-    'advanced-analytics': {
-        name: 'Advanced Analytics',
+    'sigma-calc': {
+        name: 'Sigma Level Calculator',
+        src: '/04-STATISTICS-TOOLS/Calculator_SigmaLevel.html',
+        phase: 'Measure',
+        category: 'SIX SIGMA',
+        priority: 'OPT.',
+        belt: 'YB'
+    },
+    'histogram': {
+        name: 'Histogram Tool',
+        src: '/04-STATISTICS-TOOLS/Tool_Histogram.html',
+        phase: 'Measure',
+        category: 'SIX SIGMA',
+        priority: 'OPT.',
+        belt: 'YB'
+    },
+    'boxplot': {
+        name: 'Box & Whisker Plot',
+        src: '/04-STATISTICS-TOOLS/Tool_BoxPlot.html',
+        phase: 'Measure',
+        category: 'SIX SIGMA',
+        priority: 'OPT.',
+        belt: 'GB'
+    },
+    'vsm': {
+        name: 'Value Stream Map (VSM)',
+        src: '/04-STATISTICS-TOOLS/Tool_VSM.html',
+        phase: 'Measure',
+        category: 'LEAN',
+        priority: 2,
+        belt: 'BB'
+    },
+    'raci': {
+        name: 'Modern RACI Matrix',
+        src: '/04-STATISTICS-TOOLS/Tool_RACI_Premium.html',
+        phase: 'Measure',
+        category: 'PROJ. MGMT',
+        priority: 2,
+        belt: 'YB'
+    },
+    'ctq': {
+        name: 'CTQ Tree',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=ctq',
+        phase: 'Measure',
+        category: 'SIX SIGMA',
+        priority: 'REC.',
+        belt: 'GB'
+    },
+    'spaghetti': {
+        name: 'Spaghetti Diagram',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=spaghetti',
+        phase: 'Measure',
+        category: 'LEAN',
+        priority: 'REC.',
+        belt: 'YB'
+    },
+
+    // --- ANALYZE ---
+    'hypothesis': {
+        name: 'Hypothesis Wizard (Premium)',
+        src: '/04-STATISTICS-TOOLS/Tool_HypothesisWizard_Premium.html',
+        phase: 'Analyze',
+        category: 'SIX SIGMA',
+        priority: 1,
+        belt: 'GB'
+    },
+    'fmea': {
+        name: 'DFMEA Risk Manager',
+        src: '/04-STATISTICS-TOOLS/Tool_DFMEA_Premium.html',
+        phase: 'Analyze',
+        category: 'SIX SIGMA',
+        priority: 2,
+        belt: 'GB'
+    },
+    'pareto': {
+        name: 'Pareto Analysis (80/20)',
+        src: '/04-STATISTICS-TOOLS/Tool_ParetoAnalysis.html',
+        phase: 'Analyze',
+        category: 'SIX SIGMA',
+        priority: 3,
+        belt: 'YB'
+    },
+    'fishbone': {
+        name: 'Fishbone Diagram',
+        src: '/02-TEMPLATES/Template_Fishbone.html',
+        phase: 'Analyze',
+        category: 'ROOT CAUSE',
+        priority: 1,
+        belt: 'YB'
+    },
+    '5whys': {
+        name: '5 Whys Analysis',
+        src: '/02-TEMPLATES/Template_5Whys.html',
+        phase: 'Analyze',
+        category: 'ROOT CAUSE',
+        priority: 2,
+        belt: 'YB'
+    },
+    'ttest': {
+        name: 't-Test Analysis',
+        src: '/04-STATISTICS-TOOLS/Calculator_tTest.html',
+        phase: 'Analyze',
+        category: 'SIX SIGMA',
+        priority: 'REC.',
+        belt: 'GB'
+    },
+    'anova': {
+        name: 'ANOVA / F-Test',
+        src: '/04-STATISTICS-TOOLS/Calculator_ANOVA.html',
+        phase: 'Analyze',
+        category: 'SIX SIGMA',
+        priority: 'REC.',
+        belt: 'BB'
+    },
+    'chisquare': {
+        name: 'Chi-Square Test',
+        src: '/04-STATISTICS-TOOLS/Calculator_ChiSquare.html',
+        phase: 'Analyze',
+        category: 'SIX SIGMA',
+        priority: 'REC.',
+        belt: 'GB'
+    },
+    'regression': {
+        name: 'Regression & Trends',
+        src: '/04-STATISTICS-TOOLS/Calculator_Regression.html',
+        phase: 'Analyze',
+        category: 'SIX SIGMA',
+        priority: 'REC.',
+        belt: 'BB'
+    },
+    'adv-analytics': {
+        name: 'Advanced Analytics (MVA)',
         src: '/04-STATISTICS-TOOLS/Tool_AdvancedAnalytics.html',
-        phase: 'Analyze'
+        phase: 'Analyze',
+        category: 'SIX SIGMA',
+        priority: 'OPT.',
+        belt: 'BB'
+    },
+    'swimlane': {
+        name: 'Swimlane Diagram',
+        src: '/04-STATISTICS-TOOLS/Tool_Swimlane_Advanced.html',
+        phase: 'Analyze',
+        category: 'FLOW',
+        priority: 'REC.',
+        belt: 'GB'
+    },
+    'swot': {
+        name: 'SWOT Analysis',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=swot',
+        phase: 'Analyze',
+        category: 'STRATEGY',
+        priority: 'OPT.',
+        belt: 'YB'
     },
 
     // --- IMPROVE ---
-    'prioritization': {
-        name: 'Kaizen Priority',
-        src: '/04-STATISTICS-TOOLS/Tool_KaizenPrioritization_Premium.html',
-        phase: 'Improve'
+    'brainstorm': {
+        name: 'Brainstorming Board',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=brainstorm',
+        phase: 'Improve',
+        category: 'IDEATION',
+        priority: 1,
+        belt: 'YB'
     },
-    'pdca': {
-        name: 'PDCA Cycle',
-        src: '/04-STATISTICS-TOOLS/Tool_KaizenPDCA.html',
-        phase: 'Improve'
+    'cba': {
+        name: 'Cost Benefit Analysis',
+        src: '/04-STATISTICS-TOOLS/Tool_Financials_ROI.html',
+        phase: 'Improve',
+        category: 'FINANCE',
+        priority: 2,
+        belt: 'GB'
     },
     'poka-yoke': {
-        name: 'Poka Yoke',
+        name: 'Poka-Yoke Architect',
         src: '/04-STATISTICS-TOOLS/Tool_PokaYoke_Premium.html',
-        phase: 'Improve'
+        phase: 'Improve',
+        category: 'LEAN',
+        priority: 1,
+        belt: 'YB'
     },
-    'sop': {
-        name: 'Standard Work (SOP)',
-        src: '/04-STATISTICS-TOOLS/Tool_SOP_Premium.html',
-        phase: 'Improve'
+    'doe': {
+        name: 'DOE Optimizer',
+        src: '/04-STATISTICS-TOOLS/Tool_DOE_Premium.html',
+        phase: 'Improve',
+        category: 'SIX SIGMA',
+        priority: 2,
+        belt: 'BB'
     },
-    'pugh': {
-        name: 'Pugh Matrix',
-        src: '/04-STATISTICS-TOOLS/Tool_PughMatrix_Premium.html',
-        phase: 'Improve'
+    'forecast': {
+        name: 'Forecast & Trend',
+        src: '/04-STATISTICS-TOOLS/Tool_Forecast.html',
+        phase: 'Improve',
+        category: 'SIX SIGMA',
+        priority: 'OPT.',
+        belt: 'GB'
     },
-    'pilot': {
-        name: 'Pilot Plan',
-        src: '/04-STATISTICS-TOOLS/Tool_PilotExecution_Premium.html',
-        phase: 'Improve'
+    'samplesize': {
+        name: 'Sample Size Calculator',
+        src: '/04-STATISTICS-TOOLS/Calculator_SampleSize.html',
+        phase: 'Improve',
+        category: 'SIX SIGMA',
+        priority: 'REC.',
+        belt: 'GB'
+    },
+    'moscow': {
+        name: 'MoSCoW Rules',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=moscow',
+        phase: 'Improve',
+        category: 'PRIORITIZ.',
+        priority: 'REC.',
+        belt: 'YB'
+    },
+    '5s': {
+        name: '5S Checklist',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=5s',
+        phase: 'Improve',
+        category: 'LEAN',
+        priority: 'REC.',
+        belt: 'YB'
     },
 
     // --- CONTROL ---
     'control-charts': {
-        name: 'Control Charts',
+        name: 'Control Charts (SPC)',
         src: '/04-STATISTICS-TOOLS/Calculator_ControlCharts.html',
-        phase: 'Control'
+        phase: 'Control',
+        category: 'SIX SIGMA',
+        priority: 1,
+        belt: 'GB'
     },
     'risk-registrar': {
-        name: 'Risk Monitor',
+        name: 'Modern Risk Registrar',
         src: '/04-STATISTICS-TOOLS/Tool_RiskRegistrar_Premium.html',
-        phase: 'Control'
+        phase: 'Control',
+        category: 'SIX SIGMA',
+        priority: 2,
+        belt: 'YB'
     },
-    'capability': {
-        name: 'Process Capability',
-        src: '/04-STATISTICS-TOOLS/Calculator_ProcessCapability.html',
-        phase: 'Control'
+    'sop': {
+        name: "Professional SOP Engine",
+        src: '/04-STATISTICS-TOOLS/Tool_SOP_Premium.html',
+        phase: 'Control',
+        category: 'LEAN',
+        priority: 1,
+        belt: 'YB'
     },
-    'gantt': {
-        name: 'Gantt Tracker',
-        src: '/04-STATISTICS-TOOLS/Tool_GanttChart.html',
-        phase: 'Control'
-    },
-
-    // --- SYSTEM / REWARDS ---
-    'exam-engine': {
-        name: 'LSS Exam Engine',
-        src: '/04-STATISTICS-TOOLS/Tool_ExamEngine.html',
-        phase: 'Rewards'
-    },
-    'templates-gallery': {
-        name: 'Templates Gallery',
-        src: '/04-STATISTICS-TOOLS/Tool_TemplatesGallery.html',
-        phase: 'System'
+    'a3': {
+        name: 'A3 Problem Solving',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=a3',
+        phase: 'Control',
+        category: 'LEAN',
+        priority: 'REC.',
+        belt: 'YB'
     }
 };
