@@ -19,6 +19,8 @@ export const NexusProvider = ({ children }) => {
             lastToolId: 'charter',
             completedTools: [],
             completedPhases: [],
+            industry: 'healthcare',
+            methodology: 'DMAIC',
             isSidebarCollapsed: false,
             isRightPanelOpen: true,
             hasSeenOnboarding: false,
@@ -59,13 +61,18 @@ export const NexusProvider = ({ children }) => {
         setState(prev => ({ ...prev, hasSeenOnboarding: true }));
     };
 
+    const setIndustry = (val) => updateProgress('industry', val);
+    const setMethodology = (val) => updateProgress('methodology', val);
+
     const value = {
         ...state,
         updateProgress,
         markToolComplete,
         toggleSidebar,
         toggleRightPanel,
-        completeOnboarding
+        completeOnboarding,
+        setIndustry,
+        setMethodology
     };
 
     return (

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
 
 // Context & State
 import { NexusProvider, useNexus } from './context/NexusContext';
@@ -25,8 +24,6 @@ import ScopeSniper from './pages/ScopeSniper';
 import CompletionCeremony from './pages/CompletionCeremony';
 
 const NexusOS_Layout = () => {
-  const [context, setContext] = useState('healthcare');
-  const [method, setMethod] = useState('DMAIC');
   const { isSidebarCollapsed, toggleSidebar, isRightPanelOpen } = useNexus();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile drawer
   const location = useLocation();
@@ -48,10 +45,6 @@ const NexusOS_Layout = () => {
       {/* 🔝 HEADER */}
       <Header
         onMenuClick={() => setIsSidebarOpen(true)}
-        context={context}
-        setContext={setContext}
-        method={method}
-        setMethod={setMethod}
       />
 
       <div className="flex flex-1 pt-16 h-full">

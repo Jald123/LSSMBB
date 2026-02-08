@@ -15,8 +15,9 @@ import {
 
 import { useNexus } from '../context/NexusContext';
 
-const HangarHome = ({ context }) => {
-    const { xp, completedTools } = useNexus();
+const HangarHome = () => {
+    const { xp, completedTools, industry } = useNexus();
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -48,7 +49,7 @@ const HangarHome = ({ context }) => {
                 <div className="inline-flex items-center gap-2 bg-nexus-cyan/10 border border-nexus-cyan/30 px-5 py-2 rounded-full mb-6">
                     <Activity className="w-4 h-4 text-nexus-cyan" />
                     <span className="text-[10px] font-black font-orbitron text-nexus-cyan tracking-[0.2em] uppercase">
-                        System Online: {context.toUpperCase()} ENV
+                        System Online: {industry.toUpperCase()} ENV
                     </span>
                 </div>
                 <h1 className="text-7xl font-black font-orbitron leading-[1.1] mb-6 tracking-tight">

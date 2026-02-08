@@ -11,11 +11,13 @@ import {
     Rocket,
     Terminal,
     Activity,
-    X
+    X,
+    ChevronRight
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
 import { phasesData } from '../data/journeyData';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNexus } from '../context/NexusContext';
 
 const GlobalSearch = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -172,7 +174,9 @@ const GlobalSearch = () => {
     );
 };
 
-const Header = ({ onMenuClick, context, setContext, method, setMethod }) => {
+const Header = ({ onMenuClick }) => {
+    const { industry, setIndustry, methodology, setMethodology } = useNexus();
+
     return (
         <header className="fixed top-0 left-0 w-full h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[1000]">
             {/* Logo & Mobile Menu */}
@@ -199,10 +203,10 @@ const Header = ({ onMenuClick, context, setContext, method, setMethod }) => {
                     {['healthcare', 'business', 'life'].map((ctx) => (
                         <button
                             key={ctx}
-                            onClick={() => setContext(ctx)}
-                            className={`px-4 py-1.5 rounded-xl text-[10px] font-black font-orbitron transition-all duration-300 ${context === ctx
-                                    ? 'bg-nexus-cyan/20 text-nexus-cyan shadow-[0_0_15px_rgba(34,211,238,0.2)]'
-                                    : 'text-slate-500 hover:text-slate-300'
+                            onClick={() => setIndustry(ctx)}
+                            className={`px-4 py-1.5 rounded-xl text-[10px] font-black font-orbitron transition-all duration-300 ${industry === ctx
+                                ? 'bg-nexus-cyan/20 text-nexus-cyan shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                                : 'text-slate-500 hover:text-slate-300'
                                 }`}
                         >
                             {ctx.toUpperCase()}
@@ -216,10 +220,10 @@ const Header = ({ onMenuClick, context, setContext, method, setMethod }) => {
                     {['DMAIC', 'DMADV', 'KAIZEN'].map((m) => (
                         <button
                             key={m}
-                            onClick={() => setMethod(m)}
-                            className={`px-5 py-2 rounded-full text-[10px] font-black font-orbitron transition-all duration-300 ${method === m
-                                    ? 'bg-white text-nexus-navy shadow-[0_0_15px_rgba(255,255,255,0.3)]'
-                                    : 'text-slate-500 hover:text-slate-300'
+                            onClick={() => setMethodology(m)}
+                            className={`px-5 py-2 rounded-full text-[10px] font-black font-orbitron transition-all duration-300 ${methodology === m
+                                ? 'bg-white text-nexus-navy shadow-[0_0_15px_rgba(255,255,255,0.3)]'
+                                : 'text-slate-500 hover:text-slate-300'
                                 }`}
                         >
                             {m}
