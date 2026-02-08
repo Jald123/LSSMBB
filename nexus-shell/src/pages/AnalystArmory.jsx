@@ -1,33 +1,35 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FlaskConical, Cpu, Crosshair, ChevronRight, Activity } from 'lucide-react';
+import { FlaskConical, Cpu, Crosshair, ChevronRight, Activity, Terminal, Shield } from 'lucide-react';
 import RouteTransitionOutlet from '../components/RouteTransitionOutlet';
 
 const AnalystArmory = () => {
     const stations = [
         { to: '/armory/sigma-lab', icon: FlaskConical, label: 'Sigma Lab', color: 'text-nexus-gold', status: 'Active' },
-        { to: '/armory/docking-game', icon: Cpu, label: 'Docking Sequence', color: 'text-nexus-cyan', status: 'Online' },
-        { to: '/armory/scope-sniper', icon: Crosshair, label: 'Scope Sniper', color: 'text-red-500', status: 'Locked' },
+        { to: '/workspace/doe', icon: Cpu, label: 'DOE Engine', color: 'text-nexus-cyan', status: 'Online' },
+        { to: '/workspace/dist-lab', icon: Activity, label: 'Distribution Lab', color: 'text-nexus-purple', status: 'Online' },
+        { to: '/workspace/exam-engine', icon: Shield, label: 'Exam Engine', color: 'text-nexus-success', status: 'Active' },
+        { to: '/armory/docking-game', icon: Terminal, label: 'Docking Game', color: 'text-slate-500', status: 'Online' },
     ];
 
     return (
         <div className="min-h-screen pt-16 flex flex-col">
             {/* 🛠️ ARMORY SUB-HEADER */}
             <nav className="fixed top-16 left-0 right-0 h-20 glass-panel bg-black/60 border-b border-nexus-border z-[800] px-10 flex items-center justify-center transition-all duration-300 lg:pl-[240px] group-has-[[data-collapsed=true]]:lg:pl-[80px]">
-                <div className="flex items-center gap-6 max-w-4xl w-full">
-                    <div className="flex items-center gap-2 mr-6 border-r border-nexus-border pr-8">
+                <div className="flex items-center gap-6 max-w-6xl w-full overflow-x-auto no-scrollbar py-4">
+                    <div className="flex items-center gap-2 mr-6 border-r border-nexus-border pr-8 flex-shrink-0">
                         <Activity className="w-5 h-5 text-slate-500" />
                         <span className="text-[10px] font-black font-orbitron text-white tracking-widest uppercase">Armory Stations</span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                         {stations.map((station) => (
                             <NavLink
                                 key={station.to}
                                 to={station.to}
                                 className={({ isActive }) => `
-                  group relative flex items-center gap-3 px-6 py-2.5 rounded-2xl transition-all duration-500 border border-transparent
+                  group relative flex items-center gap-3 px-6 py-2.5 rounded-2xl transition-all duration-500 border border-transparent flex-shrink-0
                   ${isActive
                                         ? 'bg-white/10 text-white border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]'
                                         : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}

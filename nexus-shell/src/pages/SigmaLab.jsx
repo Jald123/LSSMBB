@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FlaskConical, Beaker, Zap, Activity } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { FlaskConical, Beaker, Zap, Activity, Terminal } from 'lucide-react';
 
 const SigmaLab = () => {
     return (
@@ -22,7 +23,7 @@ const SigmaLab = () => {
                 Adjust your sigma level and witness real-time probability shifts.
             </p>
 
-            <div className="grid grid-cols-3 gap-6 w-full max-w-3xl">
+            <div className="grid grid-cols-3 gap-6 w-full max-w-3xl mb-12">
                 {[
                     { label: 'Variance', value: '0.042', icon: Activity },
                     { label: 'Confidence', value: '95.4%', icon: Zap },
@@ -35,6 +36,13 @@ const SigmaLab = () => {
                     </div>
                 ))}
             </div>
+
+            <Link
+                to="/workspace/advanced-analytics"
+                className="inline-flex items-center gap-4 bg-white text-nexus-navy px-12 py-5 rounded-2xl font-orbitron font-black text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+            >
+                <Terminal className="w-5 h-5" /> INITIALIZE ANALYTICS GRID
+            </Link>
         </div>
     );
 };
