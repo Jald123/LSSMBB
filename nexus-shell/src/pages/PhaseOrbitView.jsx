@@ -13,11 +13,20 @@ import {
     ShieldCheck,
     Lock
 } from 'lucide-react';
-import { phasesData } from '../data/journeyData';
+import { methodologyData } from '../data/journeyData';
+import { useNexus } from '../context/NexusContext';
 
 const PhaseOrbitView = () => {
     const { phaseId } = useParams();
-    const phase = phasesData[phaseId?.toLowerCase()] || phasesData['define'];
+    const { methodology } = useNexus();
+
+    // Normalize methodology key (e.g., FOCUS PDCA -> FOCUS)
+    const activeMethodology = methodology.split(' ')[0].toUpperCase();
+    const activeSet = methodologyData[activeMethodology] || methodologyData['DMAIC'];
+
+    // Find phase by ID or default to the first phase of the methodology
+    const phaseKey = phaseId?.toLowerCase();
+    const phase = activeSet[phaseKey] || Object.values(activeSet)[0];
 
     const containerVariants = {
         hidden: { opacity: 0 },

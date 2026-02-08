@@ -15,7 +15,7 @@ import {
     ChevronRight
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
-import { phasesData } from '../data/journeyData';
+import { methodologyData } from '../data/journeyData';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNexus } from '../context/NexusContext';
 
@@ -28,13 +28,15 @@ const GlobalSearch = () => {
 
     // Search Indexing
     const searchItems = [
-        ...Object.entries(phasesData).map(([id, data]) => ({
-            id,
-            type: 'phase',
-            name: data.title,
-            desc: data.subtitle,
-            target: `/journey/${id}`
-        })),
+        ...Object.entries(methodologyData).flatMap(([mName, mPhases]) =>
+            Object.entries(mPhases).map(([id, data]) => ({
+                id: `${mName}-${id}`,
+                type: 'phase',
+                name: `${mName}: ${data.title}`,
+                desc: data.subtitle,
+                target: `/journey/${id}`
+            }))
+        ),
         ...Object.entries(toolRegistry).map(([id, data]) => ({
             id,
             type: 'tool',
@@ -217,7 +219,7 @@ const Header = ({ onMenuClick }) => {
                 <div className="w-px h-6 bg-nexus-border" />
 
                 <div className="flex bg-black/40 p-1.5 rounded-full border border-nexus-border">
-                    {['DMAIC', 'DMADV', 'KAIZEN'].map((m) => (
+                    {['DMAIC', 'DMADV', 'KAIZEN', 'FOCUS'].map((m) => (
                         <button
                             key={m}
                             onClick={() => setMethodology(m)}
@@ -226,7 +228,7 @@ const Header = ({ onMenuClick }) => {
                                 : 'text-slate-500 hover:text-slate-300'
                                 }`}
                         >
-                            {m}
+                            {m === 'FOCUS' ? 'FOCUS' : m}
                         </button>
                     ))}
                 </div>

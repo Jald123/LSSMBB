@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
     Flame,
     ChevronRight,
@@ -16,7 +16,8 @@ import {
 import { useNexus } from '../context/NexusContext';
 
 const HangarHome = () => {
-    const { xp, completedTools, industry } = useNexus();
+    const { xp, completedTools, industry, methodology, setMethodology } = useNexus();
+    const navigate = useNavigate();
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -142,54 +143,78 @@ const HangarHome = () => {
                     </div>
                 </motion.div>
 
-                {/* TRIAGE CARDS (PROMPT 2) */}
-                <div className="col-span-12 lg:col-span-4 flex flex-col gap-8">
+                {/* TRIAGE CARDS (METHODOLOGIES) */}
+                <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
+                    {/* DMAIC Card */}
                     <motion.div
                         variants={itemVariants}
                         whileHover={{ scale: 1.02, x: 10 }}
-                        className="flex-1 bg-nexus-surface/40 hover:bg-white/5 border border-nexus-border rounded-[2.5rem] p-8 flex items-center gap-6 relative group cursor-pointer"
+                        onClick={() => { setMethodology('DMAIC'); navigate('/journey/define'); }}
+                        className={`flex-1 bg-nexus-surface/40 hover:bg-white/5 border border-nexus-border rounded-[2.5rem] p-6 flex items-center gap-6 relative group cursor-pointer transition-all ${methodology === 'DMAIC' ? 'border-nexus-cyan/50 bg-nexus-cyan/5' : ''}`}
                     >
-                        <div className="w-20 h-20 rounded-2xl bg-nexus-cyan/20 border border-nexus-cyan/40 flex items-center justify-center flex-shrink-0 group-hover:bg-nexus-cyan transition-colors">
-                            <Zap className="w-10 h-10 text-nexus-cyan group-hover:text-nexus-navy group-hover:fill-nexus-navy" />
+                        <div className="w-16 h-16 rounded-2xl bg-nexus-cyan/20 border border-nexus-cyan/40 flex items-center justify-center flex-shrink-0 group-hover:bg-nexus-cyan transition-colors">
+                            <Zap className="w-8 h-8 text-nexus-cyan group-hover:text-nexus-navy group-hover:fill-nexus-navy" />
                         </div>
                         <div>
-                            <div className="text-nexus-cyan font-orbitron font-black text-[10px] tracking-widest mb-1 uppercase">DMAIC Path</div>
-                            <h4 className="text-2xl font-black text-white">Engine Tuning</h4>
-                            <p className="text-xs text-slate-500 font-medium">Optimize existing performance.</p>
+                            <div className="text-nexus-cyan font-orbitron font-black text-[9px] tracking-widest mb-1 uppercase">Standard Path</div>
+                            <h4 className="text-xl font-black text-white">DMAIC Engine</h4>
+                            <p className="text-[10px] text-slate-500 font-medium">Root Cause Analysis & Optimization.</p>
                         </div>
-                        <ChevronRight className="ml-auto w-6 h-6 text-slate-700 group-hover:text-nexus-cyan transition-colors" />
+                        <ChevronRight className="ml-auto w-5 h-5 text-slate-700 group-hover:text-nexus-cyan transition-colors" />
                     </motion.div>
 
+                    {/* DMADV Card */}
                     <motion.div
                         variants={itemVariants}
                         whileHover={{ scale: 1.02, x: 10 }}
-                        className="flex-1 bg-nexus-surface/40 hover:bg-white/5 border border-nexus-border rounded-[2.5rem] p-8 flex items-center gap-6 relative group cursor-pointer"
+                        onClick={() => { setMethodology('DMADV'); navigate('/journey/define'); }}
+                        className={`flex-1 bg-nexus-surface/40 hover:bg-white/5 border border-nexus-border rounded-[2.5rem] p-6 flex items-center gap-6 relative group cursor-pointer transition-all ${methodology === 'DMADV' ? 'border-nexus-gold/50 bg-nexus-gold/5' : ''}`}
                     >
-                        <div className="w-20 h-20 rounded-2xl bg-nexus-gold/20 border border-nexus-gold/40 flex items-center justify-center flex-shrink-0 group-hover:bg-nexus-gold transition-colors">
-                            <PenTool className="w-10 h-10 text-nexus-gold group-hover:text-nexus-navy group-hover:fill-nexus-navy" />
+                        <div className="w-16 h-16 rounded-2xl bg-nexus-gold/20 border border-nexus-gold/40 flex items-center justify-center flex-shrink-0 group-hover:bg-nexus-gold transition-colors">
+                            <PenTool className="w-8 h-8 text-nexus-gold group-hover:text-nexus-navy group-hover:fill-nexus-navy" />
                         </div>
                         <div>
-                            <div className="text-nexus-gold font-orbitron font-black text-[10px] tracking-widest mb-1 uppercase">DMADV Path</div>
-                            <h4 className="text-2xl font-black text-white">Blueprint Mode</h4>
-                            <p className="text-xs text-slate-500 font-medium">Design new world-class workflows.</p>
+                            <div className="text-nexus-gold font-orbitron font-black text-[9px] tracking-widest mb-1 uppercase">Design Path</div>
+                            <h4 className="text-xl font-black text-white">DMADV (DFSS)</h4>
+                            <p className="text-[10px] text-slate-500 font-medium">Design for Six Sigma & Innovation.</p>
                         </div>
-                        <ChevronRight className="ml-auto w-6 h-6 text-slate-700 group-hover:text-nexus-gold transition-colors" />
+                        <ChevronRight className="ml-auto w-5 h-5 text-slate-700 group-hover:text-nexus-gold transition-colors" />
                     </motion.div>
 
+                    {/* KAIZEN Card */}
                     <motion.div
                         variants={itemVariants}
                         whileHover={{ scale: 1.02, x: 10 }}
-                        className="flex-1 bg-nexus-surface/40 hover:bg-white/5 border border-nexus-border rounded-[2.5rem] p-8 flex items-center gap-6 relative group cursor-pointer"
+                        onClick={() => { setMethodology('KAIZEN'); navigate('/journey/kickoff'); }}
+                        className={`flex-1 bg-nexus-surface/40 hover:bg-white/5 border border-nexus-border rounded-[2.5rem] p-6 flex items-center gap-6 relative group cursor-pointer transition-all ${methodology === 'KAIZEN' ? 'border-nexus-purple/50 bg-nexus-purple/5' : ''}`}
                     >
-                        <div className="w-20 h-20 rounded-2xl bg-nexus-purple/20 border border-nexus-purple/40 flex items-center justify-center flex-shrink-0 group-hover:bg-nexus-purple transition-colors">
-                            <Trophy className="w-10 h-10 text-nexus-purple group-hover:text-nexus-navy group-hover:fill-nexus-navy" />
+                        <div className="w-16 h-16 rounded-2xl bg-nexus-purple/20 border border-nexus-purple/40 flex items-center justify-center flex-shrink-0 group-hover:bg-nexus-purple transition-colors">
+                            <Trophy className="w-8 h-8 text-nexus-purple group-hover:text-nexus-navy group-hover:fill-nexus-navy" />
                         </div>
                         <div>
-                            <div className="text-nexus-purple font-orbitron font-black text-[10px] tracking-widest mb-1 uppercase">Rapid Event</div>
-                            <h4 className="text-2xl font-black text-white">Kaizen Gemba</h4>
-                            <p className="text-xs text-slate-500 font-medium">3-day rapid impact blitz.</p>
+                            <div className="text-nexus-purple font-orbitron font-black text-[9px] tracking-widest mb-1 uppercase">Rapid Event</div>
+                            <h4 className="text-xl font-black text-white">Kaizen Event</h4>
+                            <p className="text-[10px] text-slate-500 font-medium">3-5 Day Rapid Improvement Blitz.</p>
                         </div>
-                        <ChevronRight className="ml-auto w-6 h-6 text-slate-700 group-hover:text-nexus-purple transition-colors" />
+                        <ChevronRight className="ml-auto w-5 h-5 text-slate-700 group-hover:text-nexus-purple transition-colors" />
+                    </motion.div>
+
+                    {/* FOCUS-PDCA Card */}
+                    <motion.div
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.02, x: 10 }}
+                        onClick={() => { setMethodology('FOCUS'); navigate('/journey/find'); }}
+                        className={`flex-1 bg-nexus-surface/40 hover:bg-white/5 border border-nexus-border rounded-[2.5rem] p-6 flex items-center gap-6 relative group cursor-pointer transition-all ${methodology === 'FOCUS' ? 'border-nexus-success/50 bg-nexus-success/5' : ''}`}
+                    >
+                        <div className="w-16 h-16 rounded-2xl bg-green-500/20 border border-green-500/40 flex items-center justify-center flex-shrink-0 group-hover:bg-green-500 transition-colors">
+                            <Activity className="w-8 h-8 text-green-500 group-hover:text-nexus-navy group-hover:fill-nexus-navy" />
+                        </div>
+                        <div>
+                            <div className="text-green-500 font-orbitron font-black text-[9px] tracking-widest mb-1 uppercase">Continuous Imp.</div>
+                            <h4 className="text-xl font-black text-white">FOCUS-PDCA</h4>
+                            <p className="text-[10px] text-slate-500 font-medium">Systematic Problem Solving Cycle.</p>
+                        </div>
+                        <ChevronRight className="ml-auto w-5 h-5 text-slate-700 group-hover:text-green-500 transition-colors" />
                     </motion.div>
                 </div>
             </div>

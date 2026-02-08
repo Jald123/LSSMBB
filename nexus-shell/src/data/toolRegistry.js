@@ -1,10 +1,18 @@
 export const toolRegistry = {
-    // --- DEFINE ---
+    // --- DEFINE / KICKOFF ---
     'charter': {
         name: 'Project Charter (Premium)',
         src: '/04-STATISTICS-TOOLS/Tool_ProjectCharter_Premium.html',
         phase: 'Define',
         category: 'PROJ. MGMT',
+        priority: 1,
+        belt: 'YB'
+    },
+    'event-charter': {
+        name: 'Event Charter',
+        src: '/04-STATISTICS-TOOLS/Tool_ProjectCharter_Premium.html',
+        phase: 'Kickoff',
+        category: 'LEAN',
         priority: 1,
         belt: 'YB'
     },
@@ -64,6 +72,14 @@ export const toolRegistry = {
         priority: 'REC.',
         belt: 'YB'
     },
+    'voc-tree': {
+        name: 'VOC Plan & Themes',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=ctq',
+        phase: 'Define',
+        category: 'VOC',
+        priority: 'PRIORITY 1',
+        belt: 'GB'
+    },
     'gantt': {
         name: 'Project Timelines (Gantt)',
         src: '/04-STATISTICS-TOOLS/Tool_GanttChart.html',
@@ -81,7 +97,7 @@ export const toolRegistry = {
         belt: 'BB'
     },
 
-    // --- MEASURE ---
+    // --- MEASURE / CURRENT STATE ---
     'msa': {
         name: 'MSA (Gage R&R) Premium',
         src: '/04-STATISTICS-TOOLS/Tool_MSA_Premium.html',
@@ -146,6 +162,14 @@ export const toolRegistry = {
         priority: 'OPT.',
         belt: 'GB'
     },
+    'kano': {
+        name: 'Kano Model',
+        src: '/04-STATISTICS-TOOLS/Tool_KanoModel.html',
+        phase: 'Measure',
+        category: 'VOC',
+        priority: 'PRIORITY 2',
+        belt: 'GB'
+    },
     'vsm': {
         name: 'Value Stream Map (VSM)',
         src: '/04-STATISTICS-TOOLS/Tool_VSM.html',
@@ -163,7 +187,7 @@ export const toolRegistry = {
         belt: 'YB'
     },
     'ctq': {
-        name: 'CTQ Tree',
+        name: 'CTQ Tree (Advanced)',
         src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=ctq',
         phase: 'Measure',
         category: 'SIX SIGMA',
@@ -176,6 +200,14 @@ export const toolRegistry = {
         phase: 'Measure',
         category: 'LEAN',
         priority: 'REC.',
+        belt: 'YB'
+    },
+    'gemba': {
+        name: 'Gemba Walk: Waste ID',
+        src: '/04-STATISTICS-TOOLS/Tool_8Wastes_DOWNTIME.html',
+        phase: 'Current State',
+        category: 'LEAN',
+        priority: 'PRIORITY 1',
         belt: 'YB'
     },
 
@@ -194,6 +226,14 @@ export const toolRegistry = {
         phase: 'Analyze',
         category: 'SIX SIGMA',
         priority: 2,
+        belt: 'GB'
+    },
+    'mini-fmea': {
+        name: 'Risk Scan (Mini-FMEA)',
+        src: '/04-STATISTICS-TOOLS/Tool_MiniFMEA_Premium.html',
+        phase: 'Analyze',
+        category: 'RISK',
+        priority: 'PRIORITY 2',
         belt: 'GB'
     },
     'pareto': {
@@ -219,6 +259,22 @@ export const toolRegistry = {
         category: 'ROOT CAUSE',
         priority: 2,
         belt: 'YB'
+    },
+    'triz': {
+        name: 'TRIZ / Trade-offs',
+        src: '/04-STATISTICS-TOOLS/Tool_SpecializedEngineering.html',
+        phase: 'Analyze',
+        category: 'INNOVATION',
+        priority: 'PRIORITY 3',
+        belt: 'BB'
+    },
+    'pugh': {
+        name: 'Pugh Matrix',
+        src: '/04-STATISTICS-TOOLS/Tool_PughMatrix_Premium.html',
+        phase: 'Analyze',
+        category: 'SELECTION',
+        priority: 'PRIORITY 2',
+        belt: 'GB'
     },
     'ttest': {
         name: 't-Test Analysis',
@@ -260,14 +316,6 @@ export const toolRegistry = {
         priority: 'OPT.',
         belt: 'BB'
     },
-    'swimlane': {
-        name: 'Swimlane Diagram',
-        src: '/04-STATISTICS-TOOLS/Tool_Swimlane_Advanced.html',
-        phase: 'Analyze',
-        category: 'FLOW',
-        priority: 'REC.',
-        belt: 'GB'
-    },
     'swot': {
         name: 'SWOT Analysis',
         src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=swot',
@@ -277,7 +325,7 @@ export const toolRegistry = {
         belt: 'YB'
     },
 
-    // --- IMPROVE ---
+    // --- IMPROVE / DESIGN ---
     'brainstorm': {
         name: 'Brainstorming Board',
         src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=brainstorm',
@@ -342,8 +390,16 @@ export const toolRegistry = {
         priority: 'REC.',
         belt: 'YB'
     },
+    'implementation-plan': {
+        name: 'Implementation Plan',
+        src: '/04-STATISTICS-TOOLS/Tool_ImplementationPlan_Premium.html',
+        phase: 'Improve',
+        category: 'PLANNING',
+        priority: 'PRIORITY 2',
+        belt: 'YB'
+    },
 
-    // --- CONTROL ---
+    // --- CONTROL / VERIFY ---
     'control-charts': {
         name: 'Control Charts (SPC)',
         src: '/04-STATISTICS-TOOLS/Calculator_ControlCharts.html',
@@ -369,11 +425,35 @@ export const toolRegistry = {
         belt: 'YB'
     },
     'a3': {
-        name: 'A3 Problem Solving',
+        name: 'A3 Report Out',
         src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=a3',
         phase: 'Control',
         category: 'LEAN',
         priority: 'REC.',
         belt: 'YB'
+    },
+    'dvpr': {
+        name: 'DVP&R / Pilot Report',
+        src: '/04-STATISTICS-TOOLS/Tool_DVPR_Premium.html',
+        phase: 'Verify',
+        category: 'DFSS',
+        priority: 'PRIORITY 1',
+        belt: 'GB'
+    },
+    'before-after': {
+        name: 'Before/After Verification',
+        src: '/04-STATISTICS-TOOLS/Tool_BeforeAfter_Premium.html',
+        phase: 'Verify',
+        category: 'RESULTS',
+        priority: 'PRIORITY 1',
+        belt: 'YB'
+    },
+    'simulation': {
+        name: 'Monte Carlo Simulation',
+        src: '/04-STATISTICS-TOOLS/Tool_AdvancedAnalytics.html',
+        phase: 'Verify',
+        category: 'STATS',
+        priority: 'PRIORITY 3',
+        belt: 'BB'
     }
 };
