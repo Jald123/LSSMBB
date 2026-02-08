@@ -9,7 +9,8 @@ import {
     ChevronLeft,
     ChevronRight,
     Monitor,
-    Command
+    Command,
+    Activity
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNexus } from '../context/NexusContext';
@@ -103,52 +104,60 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
                         <NavItem key={item.to} item={item} />
                     ))}
 
-                    {/* Context Selectors - Integrated into Sidebar */}
+                    {/* Context Hub - Advanced "Mission Control" Style */}
                     {!isCollapsed && (
-                        <div className="mt-6 px-4 space-y-6">
-                            {/* Industry Selector */}
-                            <div className="space-y-2">
-                                <h3 className="text-[9px] font-black text-nexus-text-secondary/40 uppercase tracking-widest pl-2">Sector</h3>
-                                <div className="flex flex-col gap-1">
-                                    {['healthcare', 'business', 'life'].map((ctx) => (
-                                        <button
-                                            key={ctx}
-                                            onClick={() => setIndustry(ctx)}
-                                            className={`text-[10px] font-bold font-orbitron text-left px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center justify-between group ${industry === ctx
-                                                ? 'bg-nexus-cyan/10 text-nexus-cyan border border-nexus-cyan/20'
-                                                : 'text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5'
-                                                }`}
-                                        >
-                                            {ctx.toUpperCase()}
-                                            {industry === ctx && <div className="w-1.5 h-1.5 rounded-full bg-nexus-cyan shadow-[0_0_5px_#22d3ee]" />}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                        <div className="mt-6 px-3">
+                            <div className="bg-nexus-card/50 border border-nexus-border/50 rounded-xl p-3 space-y-4 shadow-inner relative overflow-hidden group">
+                                {/* Decorator Line */}
+                                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-nexus-cyan/0 via-nexus-cyan/20 to-nexus-cyan/0" />
 
-                            {/* Methodology Selector */}
-                            <div className="space-y-2">
-                                <h3 className="text-[9px] font-black text-nexus-text-secondary/40 uppercase tracking-widest pl-2">Engine</h3>
-                                <div className="flex flex-col gap-1">
-                                    {['DMAIC', 'DMADV', 'KAIZEN', 'FOCUS'].map((m) => (
-                                        <button
-                                            key={m}
-                                            onClick={() => {
-                                                setMethodology(m);
-                                                const target = m === 'DMAIC' || m === 'DMADV' ? 'define'
-                                                    : m === 'KAIZEN' ? 'kickoff'
-                                                        : 'find';
-                                                navigate(`/journey/${target}`);
-                                            }}
-                                            className={`text-[10px] font-bold font-orbitron text-left px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center justify-between group ${methodology === m
-                                                ? 'bg-nexus-text-primary text-nexus-bg-deep shadow-md'
-                                                : 'text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5'
-                                                }`}
-                                        >
-                                            {m === 'FOCUS' ? 'FOCUS' : m}
-                                            {methodology === m && <div className="w-1.5 h-1.5 rounded-full bg-nexus-navy" />}
-                                        </button>
-                                    ))}
+                                {/* Industry (Sector) Selector */}
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-[9px] font-black text-nexus-text-secondary/60 uppercase tracking-widest pl-1">
+                                        <div className="w-1 h-1 rounded-full bg-nexus-gold" /> SECTOR
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-1">
+                                        {['healthcare', 'business', 'life'].map((ctx) => (
+                                            <button
+                                                key={ctx}
+                                                onClick={() => setIndustry(ctx)}
+                                                className={`relative overflow-hidden text-[9px] font-bold font-orbitron text-left px-3 py-1.5 rounded border transition-all duration-300 flex items-center justify-between group/btn ${industry === ctx
+                                                    ? 'bg-nexus-cyan/10 border-nexus-cyan/30 text-nexus-cyan shadow-[0_0_10px_rgba(34,211,238,0.1)]'
+                                                    : 'bg-transparent border-transparent hover:bg-nexus-text-primary/5 text-nexus-text-secondary hover:text-nexus-text-primary'
+                                                    }`}
+                                            >
+                                                {ctx.toUpperCase()}
+                                                {industry === ctx && <Activity className="w-3 h-3" />}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Methodology (Engine) Selector - Compact Grid */}
+                                <div className="space-y-2 pt-2 border-t border-nexus-border/30">
+                                    <div className="flex items-center gap-2 text-[9px] font-black text-nexus-text-secondary/60 uppercase tracking-widest pl-1">
+                                        <div className="w-1 h-1 rounded-full bg-nexus-cyan" /> ENGINE
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-1.5">
+                                        {['DMAIC', 'DMADV', 'KAIZEN', 'FOCUS'].map((m) => (
+                                            <button
+                                                key={m}
+                                                onClick={() => {
+                                                    setMethodology(m);
+                                                    const target = m === 'DMAIC' || m === 'DMADV' ? 'define'
+                                                        : m === 'KAIZEN' ? 'kickoff'
+                                                            : 'find';
+                                                    navigate(`/journey/${target}`);
+                                                }}
+                                                className={`text-[9px] font-black font-orbitron text-center py-1.5 rounded border transition-all duration-300 ${methodology === m
+                                                    ? 'bg-nexus-text-primary text-nexus-bg-deep border-nexus-text-primary shadow-sm'
+                                                    : 'bg-nexus-bg/50 border-nexus-border/50 text-nexus-text-secondary hover:border-nexus-cyan/50 hover:text-nexus-cyan'
+                                                    }`}
+                                            >
+                                                {m === 'FOCUS' ? 'FOCUS' : m}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>

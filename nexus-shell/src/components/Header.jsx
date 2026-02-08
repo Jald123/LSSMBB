@@ -12,12 +12,17 @@ import {
     Terminal,
     Activity,
     X,
-    ChevronRight
+    ChevronRight,
+    Target,
+    BarChart2,
+    Sliders,
+    ShieldCheck
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
 import { methodologyData } from '../data/journeyData';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNexus } from '../context/NexusContext';
+import { useLocation } from 'react-router-dom';
 
 const GlobalSearch = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -177,7 +182,22 @@ const GlobalSearch = () => {
 };
 
 const Header = ({ onMenuClick }) => {
-    // Context moved to Sidebar
+    // Phase Tracker Logic
+    const { methodology } = useNexus();
+    const location = useLocation();
+    const currentPath = location.pathname.split('/').pop(); // e.g., 'define' based on /journey/define
+    const activePhase = Object.keys(methodologyData[methodology] || {}).includes(currentPath) ? currentPath : 'define';
+
+    const phases = Object.entries(methodologyData[methodology] || {}).map(([key, data]) => ({
+        id: key,
+        label: data.title,
+        icon: key === 'define' || key === 'find' ? Target
+            : key === 'measure' || key === 'organize' ? BarChart2
+                : key === 'analyze' || key === 'clarify' || key === 'understand' ? Zap
+                    : key === 'improve' || key === 'design' || key === 'select' || key === 'plan' || key === 'do' ? Sliders
+                        : key === 'control' || key === 'verify' || key === 'check' || key === 'act' ? ShieldCheck
+                            : Activity // Fallback
+    }));
 
     return (
         <header className="fixed top-0 left-0 w-full h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[1000]">
@@ -199,8 +219,33 @@ const Header = ({ onMenuClick }) => {
                 </Link>
             </div>
 
-            {/* Spacer for Flex Layout */}
-            <div className="flex-1" />
+            {/* PHASE TRACKER (Center) */}
+            <div className="hidden xl:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
+                {phases.map((phase, idx) => {
+                    const isActive = phase.id === activePhase;
+                    const Icon = phase.icon;
+
+                    return (
+                        <React.Fragment key={phase.id}>
+                            <Link to={`/journey/${phase.id}`}>
+                                <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full transition-all duration-300 border ${isActive
+                                    ? 'bg-nexus-surface border-nexus-cyan/30 shadow-[0_0_15px_rgba(34,211,238,0.15)] translate-y-[-1px]'
+                                    : 'border-transparent opacity-50 hover:opacity-100 hover:bg-nexus-surface/30'
+                                    }`}>
+                                    <Icon className={`w-4 h-4 ${isActive ? 'text-nexus-cyan' : 'text-nexus-text-secondary'}`} />
+                                    <span className={`text-[11px] font-black font-orbitron tracking-widest ${isActive ? 'text-nexus-text-primary' : 'text-nexus-text-secondary'}`}>
+                                        <span className="mr-1 opacity-50">{phase.label.charAt(0)}</span>
+                                        {phase.label.toUpperCase()}
+                                    </span>
+                                </div>
+                            </Link>
+                            {idx < phases.length - 1 && (
+                                <ChevronRight className="w-3 h-3 text-nexus-border" />
+                            )}
+                        </React.Fragment>
+                    );
+                })}
+            </div>
 
             {/* Quick Actions & User */}
             <div className="flex items-center gap-3 ml-auto">
