@@ -8,6 +8,17 @@ import {
     Zap,
     Settings2,
     ShieldCheck,
+    Hammer,
+    ClipboardCheck,
+    Flame,
+    Play,
+    Search,
+    Users,
+    Map,
+    Eye,
+    BookOpen,
+    CheckSquare,
+    Activity
 } from 'lucide-react';
 import { methodologyData } from '../data/journeyData';
 import { useNexus } from '../context/NexusContext';
