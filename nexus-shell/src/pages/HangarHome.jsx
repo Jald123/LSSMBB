@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import {
     Flame,
@@ -10,7 +10,11 @@ import {
     PenTool,
     Target,
     Trophy,
-    ArrowRight
+    ArrowRight,
+    X,
+    Cpu,
+    Shield,
+    BookOpen
 } from 'lucide-react';
 
 import { useNexus } from '../context/NexusContext';
@@ -18,6 +22,7 @@ import { useNexus } from '../context/NexusContext';
 const HangarHome = () => {
     const { xp, completedTools, industry, methodology, setMethodology } = useNexus();
     const navigate = useNavigate();
+    const [activeModal, setActiveModal] = useState(null);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -37,12 +42,53 @@ const HangarHome = () => {
         }
     };
 
+    // 🏗️ INFO MODAL COMPONENT
+    const InfoModal = ({ title, subtitle, onClose, children, action }) => (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            onClick={onClose}
+        >
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-nexus-card border border-nexus-border rounded-3xl p-8 max-w-2xl w-full relative overflow-hidden shadow-2xl"
+            >
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-slate-400 hover:text-white"
+                >
+                    <X className="w-5 h-5" />
+                </button>
+
+                <div className="mb-6">
+                    <h3 className="text-2xl font-black font-orbitron text-nexus-text-primary mb-1">{title}</h3>
+                    <p className="text-sm text-nexus-text-secondary font-medium tracking-wide">{subtitle}</p>
+                </div>
+
+                <div className="mb-8 text-slate-300 leading-relaxed text-sm space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                    {children}
+                </div>
+
+                {action && (
+                    <div className="flex justify-end pt-6 border-t border-nexus-border/50">
+                        {action}
+                    </div>
+                )}
+            </motion.div>
+        </motion.div>
+    );
+
     return (
         <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="pt-32 pb-24 px-10 max-w-[1440px] mx-auto min-h-screen"
+            className="pt-32 pb-24 px-10 max-w-[1440px] mx-auto min-h-screen relative"
         >
             {/* 🚀 HERO SECTION */}
             <motion.div variants={itemVariants} className="text-center mb-16 relative">
@@ -65,7 +111,7 @@ const HangarHome = () => {
                 </p>
             </motion.div>
 
-            {/* 📚 PHASE 0: FOUNDATION STAGE (Restored) */}
+            {/* 📚 PHASE 0: FOUNDATION STAGE */}
             <motion.div variants={itemVariants} className="mb-12">
                 <div className="flex items-center gap-4 mb-6 px-4">
                     <h3 className="text-2xl font-black text-nexus-text-primary font-orbitron">
@@ -86,19 +132,19 @@ const HangarHome = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                             {/* LSS Fundamentals */}
-                            <div className="bg-nexus-text-primary/5 border border-nexus-border p-4 rounded-xl flex items-center gap-4 group hover:bg-nexus-text-primary/10 transition-colors cursor-pointer">
+                            <div className="bg-nexus-text-primary/5 border border-nexus-border p-4 rounded-xl flex items-center gap-4 group hover:bg-nexus-text-primary/10 transition-colors cursor-pointer" onClick={() => setActiveModal('fundamentals')}>
                                 <div className="w-12 h-12 bg-nexus-cyan/20 rounded-lg flex items-center justify-center text-nexus-cyan">
                                     <Layers className="w-6 h-6" />
                                 </div>
                                 <div>
                                     <h5 className="text-nexus-text-primary font-bold text-sm">LSS Fundamentals</h5>
                                     <p className="text-xs text-nexus-text-secondary mb-2">History, Belts, Principles.</p>
-                                    <button onClick={() => navigate('/workspace/fundamentals')} className="px-3 py-1 bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 border border-nexus-border rounded text-[9px] font-black font-orbitron text-nexus-text-secondary">OPEN GUIDE</button>
+                                    <button className="px-3 py-1 bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 border border-nexus-border rounded text-[9px] font-black font-orbitron text-nexus-text-secondary">OPEN GUIDE</button>
                                 </div>
                             </div>
 
-                            {/* Mission Prep -> ARMORY LINK */}
-                            <div className="bg-gradient-to-r from-nexus-cyan/10 to-transparent border border-nexus-cyan/20 p-4 rounded-xl flex items-center gap-4 group hover:border-nexus-cyan/40 transition-colors">
+                            {/* Mission Prep -> POPUP -> ARMORY */}
+                            <div className="bg-gradient-to-r from-nexus-cyan/10 to-transparent border border-nexus-cyan/20 p-4 rounded-xl flex items-center gap-4 group hover:border-nexus-cyan/40 transition-colors cursor-pointer" onClick={() => setActiveModal('mission')}>
                                 <div className="w-12 h-12 bg-nexus-cyan/20 rounded-lg flex items-center justify-center text-nexus-cyan shadow-[0_0_15px_rgba(34,211,238,0.2)]">
                                     <Zap className="w-6 h-6" />
                                 </div>
@@ -106,7 +152,6 @@ const HangarHome = () => {
                                     <h5 className="text-nexus-text-primary font-bold text-sm">MISSION PREP</h5>
                                     <p className="text-xs text-nexus-text-secondary mb-2">The Essential 6 Pillars</p>
                                     <button
-                                        onClick={() => navigate('/armory')}
                                         className="px-4 py-1.5 bg-nexus-cyan text-nexus-navy rounded text-[9px] font-black font-orbitron hover:scale-105 transition-transform shadow-[0_0_10px_rgba(34,211,238,0.3)]"
                                     >
                                         ENTER ARMORY
@@ -306,6 +351,76 @@ const HangarHome = () => {
                     </div>
                 </div>
             </motion.div>
+
+            {/* 🖼️ POPUP MODALS */}
+            <AnimatePresence>
+                {activeModal === 'fundamentals' && (
+                    <InfoModal
+                        title="Lean Six Sigma Fundamentals"
+                        subtitle="The Core Principles, History, and Belt Hierarchy"
+                        onClose={() => setActiveModal(null)}
+                        action={
+                            <button
+                                onClick={() => navigate('/workspace/fundamentals')}
+                                className="flex items-center gap-2 px-6 py-3 bg-nexus-cyan text-nexus-navy rounded-xl font-black font-orbitron hover:scale-105 transition-transform"
+                            >
+                                <BookOpen className="w-4 h-4" />
+                                LAUNCH FULL MODULE
+                            </button>
+                        }
+                    >
+                        <p>Welcome to the Nexus Lean Six Sigma Fundamentals module. This foundational system is designed to orient new Analysts to the core methodologies of process improvement.</p>
+                        <div className="grid grid-cols-2 gap-4 my-6">
+                            <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                                <h4 className="text-nexus-cyan font-bold font-orbitron mb-2">LEAN</h4>
+                                <p className="text-xs text-slate-400">Focuses on waste removal, flow, and creating value for the customer. Origin: Toyota Production System.</p>
+                            </div>
+                            <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                                <h4 className="text-nexus-purple font-bold font-orbitron mb-2">SIX SIGMA</h4>
+                                <p className="text-xs text-slate-400">Focuses on reducing variation and defects using statistical tools. Origin: Motorola.</p>
+                            </div>
+                        </div>
+                        <p>Completion of this module will unlock your <span className="text-nexus-gold font-bold">White Belt Certification</span>.</p>
+                    </InfoModal>
+                )}
+
+                {activeModal === 'mission' && (
+                    <InfoModal
+                        title="Mission Prep: 6 Pillars"
+                        subtitle="Essential Strategy for Project Success"
+                        onClose={() => setActiveModal(null)}
+                        action={
+                            <button
+                                onClick={() => navigate('/armory')}
+                                className="flex items-center gap-2 px-6 py-3 bg-nexus-gold text-nexus-navy rounded-xl font-black font-orbitron hover:scale-105 transition-transform"
+                            >
+                                <Shield className="w-4 h-4" />
+                                ENTER ANALYST ARMORY
+                            </button>
+                        }
+                    >
+                        <p>Before deploying to a project, every Nexus Analyst must master the 6 Strategic Pillars of high-performance execution.</p>
+                        <ul className="space-y-3 my-4">
+                            {[
+                                { label: 'Customer First', desc: 'Always validate the Voice of the Customer (VOC).' },
+                                { label: 'Data Driven', desc: 'Trust in God, all others bring data.' },
+                                { label: 'Process Focus', desc: 'Bad processes beat good people.' },
+                                { label: 'Root Cause', desc: 'Treat the disease, not just the symptom.' },
+                                { label: 'Collaboration', desc: 'Silos destroy value; cross-functionality builds it.' },
+                                { label: 'Continuous Imp.', desc: 'Better than yesterday, every day.' }
+                            ].map((pillar, i) => (
+                                <li key={i} className="flex items-start gap-3 p-2 bg-nexus-surface rounded-lg border border-nexus-border/50">
+                                    <div className="w-5 h-5 rounded-full bg-nexus-cyan/10 flex items-center justify-center text-nexus-cyan font-bold text-xs ring-1 ring-nexus-cyan/30">{i + 1}</div>
+                                    <div>
+                                        <span className="font-bold text-nexus-text-primary text-xs block">{pillar.label}</span>
+                                        <span className="text-[10px] text-slate-500">{pillar.desc}</span>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </InfoModal>
+                )}
+            </AnimatePresence>
         </motion.div>
     );
 };

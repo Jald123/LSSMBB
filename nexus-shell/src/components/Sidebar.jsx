@@ -171,7 +171,6 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
                             <div className="flex items-center justify-between px-2 text-[9px] font-bold text-nexus-text-secondary font-orbitron tracking-widest">
                                 <button className="hover:text-nexus-cyan transition-colors">HOME</button>
                                 <button className="hover:text-nexus-cyan transition-colors">SUPPORT</button>
-                                <button className="hover:text-nexus-cyan transition-colors text-nexus-cyan">AI SENSEI</button>
                             </div>
                             <div className="h-px bg-nexus-text-primary/10 w-full my-1" />
                             <div className="flex flex-col gap-1 px-2">

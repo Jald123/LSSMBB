@@ -64,7 +64,7 @@ const RightPanel = () => {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed top-20 right-4 bottom-24 w-80 glass-panel border border-nexus-border z-[1900] flex flex-col rounded-3xl shadow-2xl overflow-hidden bg-black/90 backdrop-blur-2xl"
+                        className="fixed top-20 right-4 bottom-24 w-[400px] glass-panel border border-nexus-border z-[1900] flex flex-col rounded-3xl shadow-2xl overflow-hidden bg-black/90 backdrop-blur-2xl"
                     >
                         {/* Header & Close */}
                         <div className="p-4 border-b border-nexus-border flex items-center justify-between bg-black/40">
