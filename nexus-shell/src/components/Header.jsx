@@ -222,7 +222,13 @@ const Header = ({ onMenuClick }) => {
                     {['DMAIC', 'DMADV', 'KAIZEN', 'FOCUS'].map((m) => (
                         <button
                             key={m}
-                            onClick={() => setMethodology(m)}
+                            onClick={() => {
+                                setMethodology(m);
+                                const target = m === 'DMAIC' || m === 'DMADV' ? 'define'
+                                    : m === 'KAIZEN' ? 'kickoff'
+                                        : 'find';
+                                navigate(`/journey/${target}`);
+                            }}
                             className={`px-5 py-2 rounded-full text-[10px] font-black font-orbitron transition-all duration-300 ${methodology === m
                                 ? 'bg-white text-nexus-navy shadow-[0_0_15px_rgba(255,255,255,0.3)]'
                                 : 'text-slate-500 hover:text-slate-300'

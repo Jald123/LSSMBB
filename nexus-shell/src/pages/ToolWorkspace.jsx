@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Backpack,
@@ -17,15 +17,34 @@ import {
     CheckCircle2
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
+import { methodologyData } from '../data/journeyData';
 import { useNexus } from '../context/NexusContext';
 
 const ToolWorkspace = () => {
     const { toolId } = useParams();
     const navigate = useNavigate();
-    const [viewMode, setViewMode] = useState('do');
+    const location = useLocation();
+    const [viewMode, setViewMode] = useState(location.state?.mode || 'do');
 
-    const { markToolComplete, completedTools, updateProgress } = useNexus();
+    const { markToolComplete, completedTools, updateProgress, methodology } = useNexus();
     const tool = toolRegistry[toolId];
+
+    // Identify Next Station Logic
+    const activeMethodology = methodology.split(' ')[0].toUpperCase();
+    const activePhases = methodologyData[activeMethodology] || methodologyData['DMAIC'];
+
+    // Flatten tools list for navigation
+    const allTools = Object.values(activePhases).flatMap(p => p.tools);
+    const currentIndex = allTools.findIndex(t => t.id === toolId);
+    const nextTool = allTools[currentIndex + 1];
+
+    const handleNextStation = () => {
+        if (nextTool) {
+            navigate(`/workspace/${nextTool.id}`);
+        } else {
+            navigate('/journey');
+        }
+    };
     const isCompleted = completedTools.includes(toolId);
 
     // Update last visited tool in persistent state
@@ -104,8 +123,8 @@ const ToolWorkspace = () => {
                     <button
                         onClick={() => setViewMode('do')}
                         className={`px-8 py-2 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'do'
-                                ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)] scale-105'
-                                : 'text-slate-500 hover:text-slate-300'
+                            ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)] scale-105'
+                            : 'text-slate-500 hover:text-slate-300'
                             }`}
                     >
                         <Terminal className="w-3 h-3" /> DO
@@ -113,8 +132,8 @@ const ToolWorkspace = () => {
                     <button
                         onClick={() => setViewMode('learn')}
                         className={`px-8 py-2 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'learn'
-                                ? 'bg-nexus-purple text-white shadow-[0_0_15px_rgba(168,85,247,0.4)] scale-105'
-                                : 'text-slate-500 hover:text-slate-300'
+                            ? 'bg-nexus-purple text-white shadow-[0_0_15px_rgba(168,85,247,0.4)] scale-105'
+                            : 'text-slate-500 hover:text-slate-300'
                             }`}
                     >
                         <FileText className="w-3 h-3" /> LEARN
@@ -131,8 +150,13 @@ const ToolWorkspace = () => {
                     >
                         <ExternalLink className="w-4 h-4" />
                     </a>
-                    <button className="flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all group">
-                        <span className="text-[10px] font-black font-orbitron text-slate-400 group-hover:text-white">NEXT STATION</span>
+                    <button
+                        onClick={handleNextStation}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all group"
+                    >
+                        <span className="text-[10px] font-black font-orbitron text-slate-400 group-hover:text-white">
+                            {nextTool ? 'NEXT STATION' : 'MISSION COMPLETE'}
+                        </span>
                         <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-nexus-cyan" />
                     </button>
                 </div>

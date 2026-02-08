@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 // Context & State
 import { NexusProvider, useNexus } from './context/NexusContext';
@@ -91,11 +91,17 @@ function App() {
             </Route>
             <Route path="workspace/:toolId" element={<ToolWorkspace />} />
             <Route path="armory" element={<AnalystArmory />}>
+              <Route index element={<Navigate to="sigma-lab" replace />} />
               <Route path="sigma-lab" element={<SigmaLab />} />
               <Route path="docking-game" element={<DockingGame />} />
               <Route path="scope-sniper" element={<ScopeSniper />} />
             </Route>
             <Route path="certification" element={<CompletionCeremony />} />
+            <Route path="settings" element={
+              <div className="h-full flex items-center justify-center text-slate-500 font-orbitron">
+                SYSTEM SETTINGS // COMING SOON v2.0
+              </div>
+            } />
           </Route>
         </Routes>
       </BrowserRouter>

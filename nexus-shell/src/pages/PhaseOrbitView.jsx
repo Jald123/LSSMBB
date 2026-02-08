@@ -92,6 +92,17 @@ const PhaseOrbitView = () => {
                         />
                     </div>
                     <span className="text-nexus-cyan font-orbitron font-black text-xs">45% READY</span>
+
+                    {/* RESTORED: Watch Now Button */}
+                    <button className="mt-4 flex items-center gap-3 px-6 py-4 bg-gradient-to-br from-slate-800 to-black border border-white/10 rounded-2xl group hover:border-nexus-error/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all">
+                        <div className="w-8 h-8 rounded-full border border-nexus-error/30 flex items-center justify-center bg-nexus-error/10 text-nexus-error group-hover:scale-110 transition-transform">
+                            <Activity className="w-4 h-4 fill-nexus-error" />
+                        </div>
+                        <div className="text-left leading-none">
+                            <div className="text-[9px] font-black font-orbitron text-nexus-error tracking-widest uppercase mb-1">Briefing</div>
+                            <div className="text-xs font-black text-white group-hover:text-nexus-error transition-colors">WATCH NOW</div>
+                        </div>
+                    </button>
                 </div>
             </motion.div>
 
@@ -168,9 +179,13 @@ const PhaseOrbitView = () => {
                                 <Terminal className="w-4 h-4" /> EXECUTE
                             </Link>
 
-                            <button className="w-14 h-14 rounded-2xl bg-black/40 border border-nexus-border flex items-center justify-center group/btn hover:border-nexus-purple hover:bg-nexus-purple/5 transition-all">
+                            <Link
+                                to={`/workspace/${tool.id}`}
+                                state={{ mode: 'learn' }}
+                                className="w-14 h-14 rounded-2xl bg-black/40 border border-nexus-border flex items-center justify-center group/btn hover:border-nexus-purple hover:bg-nexus-purple/5 transition-all"
+                            >
                                 <BookOpen className="w-5 h-5 text-slate-600 group-hover/btn:text-nexus-purple transition-colors" />
-                            </button>
+                            </Link>
                         </div>
                     </motion.div>
                 ))}
