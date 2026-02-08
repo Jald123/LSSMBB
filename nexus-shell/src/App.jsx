@@ -33,7 +33,7 @@ const NexusOS_Layout = () => {
   const isWorkspace = location.pathname.startsWith('/workspace');
 
   return (
-    <div className="nexus-os-shell min-h-screen bg-nexus-navy text-white selection:bg-nexus-cyan selection:text-nexus-navy overflow-hidden flex flex-col">
+    <div className="nexus-os-shell min-h-screen bg-nexus-navy text-nexus-text-primary selection:bg-nexus-cyan selection:text-nexus-text-primary overflow-hidden flex flex-col">
       {/* 🌌 Atmospheric Layers */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-nexus-cyan/5 rounded-full blur-[120px]" />

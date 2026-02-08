@@ -36,7 +36,7 @@ const RightPanel = () => {
             {/* Toggle Button */}
             <button
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-nexus-surface border border-nexus-border flex items-center justify-center text-slate-400 hover:text-white transition-all shadow-xl z-10"
+                className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-nexus-surface border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary transition-all shadow-xl z-10"
             >
                 {isCollapsed ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
             </button>
@@ -52,7 +52,7 @@ const RightPanel = () => {
                         }}
                         className={`
               relative p-3 rounded-xl transition-all duration-300
-              ${activeTab === section.id && !isCollapsed ? section.color + ' bg-white/5' : 'text-slate-500 hover:text-white'}
+              ${activeTab === section.id && !isCollapsed ? section.color + ' bg-nexus-text-primary/5' : 'text-nexus-text-secondary hover:text-nexus-text-primary'}
             `}
                     >
                         <section.icon className="w-5 h-5" />
@@ -61,7 +61,7 @@ const RightPanel = () => {
                         )}
 
                         {isCollapsed && (
-                            <div className="absolute right-full mr-4 px-3 py-1 bg-black border border-nexus-border rounded-md text-[10px] font-black font-orbitron text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+                            <div className="absolute right-full mr-4 px-3 py-1 bg-nexus-surface border border-nexus-border rounded-md text-[10px] font-black font-orbitron text-nexus-text-primary opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
                                 {section.label.toUpperCase()}
                             </div>
                         )}
@@ -77,7 +77,7 @@ const RightPanel = () => {
                     className="flex-1 flex flex-col overflow-hidden"
                 >
                     <div className="p-6 border-b border-nexus-border">
-                        <h3 className="text-xs font-black font-orbitron tracking-widest text-white uppercase">
+                        <h3 className="text-xs font-black font-orbitron tracking-widest text-nexus-text-primary uppercase">
                             {sections.find(s => s.id === activeTab).label}
                         </h3>
                     </div>
@@ -97,7 +97,7 @@ const RightPanel = () => {
                                             <Sparkles className="w-4 h-4" />
                                             <span className="text-[10px] font-black font-orbitron uppercase tracking-widest">Active Analysis</span>
                                         </div>
-                                        <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                                        <p className="text-xs text-nexus-text-secondary leading-relaxed font-medium">
                                             Waiting for tool interaction. I will summarize root causes as you data logs.
                                         </p>
                                         <div className="absolute -bottom-2 -right-2 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -106,10 +106,10 @@ const RightPanel = () => {
                                     </div>
 
                                     <div className="flex flex-col gap-2">
-                                        <button className="flex items-center gap-3 w-full bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 text-[10px] font-bold text-slate-400 transition-all">
+                                        <button className="flex items-center gap-3 w-full bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 p-3 rounded-xl border border-nexus-text-primary/5 text-[10px] font-bold text-nexus-text-secondary transition-all">
                                             <MessageSquare className="w-4 h-4" /> Explain Current Tool
                                         </button>
-                                        <button className="flex items-center gap-3 w-full bg-white/5 hover:bg-white/10 p-3 rounded-xl border border-white/5 text-[10px] font-bold text-slate-400 transition-all">
+                                        <button className="flex items-center gap-3 w-full bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 p-3 rounded-xl border border-nexus-text-primary/5 text-[10px] font-bold text-nexus-text-secondary transition-all">
                                             <History className="w-4 h-4" /> View Mission History
                                         </button>
                                     </div>
@@ -129,11 +129,11 @@ const RightPanel = () => {
                                         { label: 'Draft SIPOC Map', checked: false },
                                         { label: 'Obtain VOC Data', checked: false },
                                     ].map((item, i) => (
-                                        <div key={i} className="flex items-center gap-4 bg-black/20 p-4 rounded-xl border border-white/5 hover:border-nexus-gold/30 transition-all cursor-pointer">
+                                        <div key={i} className="flex items-center gap-4 bg-nexus-card p-4 rounded-xl border border-nexus-border hover:border-nexus-gold/30 transition-all cursor-pointer">
                                             <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${item.checked ? 'bg-nexus-gold border-nexus-gold text-nexus-navy' : 'border-slate-700'}`}>
                                                 {item.checked && <ClipboardCheck className="w-3.5 h-3.5 font-bold" />}
                                             </div>
-                                            <span className={`text-[11px] font-bold ${item.checked ? 'text-slate-200' : 'text-slate-500'}`}>{item.label}</span>
+                                            <span className={`text-[11px] font-bold ${item.checked ? 'text-nexus-text-primary' : 'text-nexus-text-secondary'}`}>{item.label}</span>
                                         </div>
                                     ))}
                                 </motion.div>
@@ -151,12 +151,12 @@ const RightPanel = () => {
                                         'Observation_Log_02.csv',
                                         'Stakeholder_Matrix.xlsx',
                                     ].map((file, i) => (
-                                        <div key={i} className="flex items-center justify-between p-4 bg-black/20 rounded-xl border border-white/5 hover:bg-white/5 transition-all cursor-pointer">
+                                        <div key={i} className="flex items-center justify-between p-4 bg-nexus-card rounded-xl border border-nexus-border hover:bg-nexus-text-primary/5 transition-all cursor-pointer">
                                             <div className="flex items-center gap-3 overflow-hidden">
                                                 <Link2 className="w-4 h-4 text-nexus-purple flex-shrink-0" />
-                                                <span className="text-[11px] font-bold text-slate-300 truncate">{file}</span>
+                                                <span className="text-[11px] font-bold text-nexus-text-primary truncate">{file}</span>
                                             </div>
-                                            <ExternalLink className="w-3 h-3 text-slate-600" />
+                                            <ExternalLink className="w-3 h-3 text-nexus-text-secondary" />
                                         </div>
                                     ))}
                                     <button className="w-full border border-nexus-purple/30 text-nexus-purple text-[10px] font-black font-orbitron py-3 rounded-xl bg-nexus-purple/5 hover:bg-nexus-purple/10 transition-all mt-4">
@@ -167,8 +167,8 @@ const RightPanel = () => {
                         </AnimatePresence>
                     </div>
 
-                    <div className="p-6 bg-black/30 border-t border-nexus-border">
-                        <div className="text-[9px] font-black font-orbitron text-slate-600 uppercase tracking-tighter mb-1">Station ID</div>
+                    <div className="p-6 bg-nexus-card border-t border-nexus-border">
+                        <div className="text-[9px] font-black font-orbitron text-nexus-text-secondary uppercase tracking-tighter mb-1">Station ID</div>
                         <div className="text-[10px] text-nexus-cyan font-bold tracking-widest uppercase">NEXUS-A-774</div>
                     </div>
                 </motion.div>

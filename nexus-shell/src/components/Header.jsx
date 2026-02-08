@@ -87,11 +87,11 @@ const GlobalSearch = () => {
         <>
             {/* Search Trigger */}
             <div className="hidden md:flex relative group mr-4 cursor-pointer" onClick={() => setIsOpen(true)}>
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-hover:text-nexus-cyan transition-colors" />
-                <div className="bg-black/40 border border-nexus-border rounded-xl py-1.5 pl-10 pr-12 text-[10px] font-medium text-slate-500 w-32 group-hover:w-48 transition-all flex items-center">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-nexus-text-secondary group-hover:text-nexus-cyan transition-colors" />
+                <div className="bg-nexus-card border border-nexus-border rounded-xl py-1.5 pl-10 pr-12 text-[10px] font-medium text-nexus-text-secondary w-32 group-hover:w-48 transition-all flex items-center">
                     Search...
                 </div>
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1 bg-white/5 border border-white/10 rounded text-[8px] font-bold text-slate-600">
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1 bg-nexus-text-primary/10 border border-nexus-border rounded text-[8px] font-bold text-nexus-text-secondary">
                     <Command className="w-2 h-2" /> K
                 </div>
             </div>
@@ -114,9 +114,9 @@ const GlobalSearch = () => {
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     placeholder="Where do you want to navigate?"
-                                    className="flex-1 bg-transparent border-none outline-none text-white font-orbitron font-bold text-sm placeholder:text-slate-600"
+                                    className="flex-1 bg-transparent border-none outline-none text-nexus-text-primary font-orbitron font-bold text-sm placeholder:text-nexus-text-secondary"
                                 />
-                                <button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                                <button onClick={() => setIsOpen(false)} className="text-nexus-text-secondary hover:text-nexus-text-primary transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
@@ -128,15 +128,15 @@ const GlobalSearch = () => {
                                             <button
                                                 key={result.id}
                                                 onClick={() => handleSelect(result.target)}
-                                                className="w-full flex items-center gap-4 p-4 hover:bg-white/5 rounded-2xl border border-transparent hover:border-nexus-cyan/20 transition-all group text-left"
+                                                className="w-full flex items-center gap-4 p-4 hover:bg-nexus-surface/50 rounded-2xl border border-transparent hover:border-nexus-cyan/20 transition-all group text-left"
                                             >
                                                 <div className="w-10 h-10 rounded-xl bg-nexus-cyan/10 flex items-center justify-center text-nexus-cyan group-hover:bg-nexus-cyan group-hover:text-nexus-navy transition-colors">
                                                     {result.type === 'phase' ? <Rocket className="w-5 h-5" /> : <Terminal className="w-5 h-5" />}
                                                 </div>
                                                 <div>
-                                                    <div className="text-[9px] font-black font-orbitron text-slate-500 uppercase tracking-widest">{result.type}</div>
-                                                    <h4 className="text-white font-bold">{result.name}</h4>
-                                                    <p className="text-[10px] text-slate-500 font-medium">{result.desc}</p>
+                                                    <div className="text-[9px] font-black font-orbitron text-nexus-text-secondary uppercase tracking-widest">{result.type}</div>
+                                                    <h4 className="text-nexus-text-primary font-bold">{result.name}</h4>
+                                                    <p className="text-[10px] text-nexus-text-secondary font-medium">{result.desc}</p>
                                                 </div>
                                                 <ChevronRight className="ml-auto w-4 h-4 text-slate-700 group-hover:text-nexus-cyan transition-all" />
                                             </button>
@@ -144,15 +144,15 @@ const GlobalSearch = () => {
                                     </div>
                                 ) : query.trim() !== '' ? (
                                     <div className="py-12 text-center">
-                                        <Activity className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-                                        <p className="text-slate-500 font-orbitron text-xs font-black tracking-widest uppercase">No navigation targets found</p>
+                                        <Activity className="w-12 h-12 text-nexus-text-secondary mx-auto mb-4" />
+                                        <p className="text-nexus-text-secondary font-orbitron text-xs font-black tracking-widest uppercase">No navigation targets found</p>
                                     </div>
                                 ) : (
                                     <div className="py-8 px-4">
-                                        <p className="text-[10px] font-black font-orbitron text-slate-600 uppercase tracking-widest mb-4 italic">Common Destinations</p>
+                                        <p className="text-[10px] font-black font-orbitron text-nexus-text-secondary uppercase tracking-widest mb-4 italic">Common Destinations</p>
                                         <div className="grid grid-cols-2 gap-3">
                                             {['charter', 'triage', 'journey', 'armory'].map(target => (
-                                                <div key={target} className="p-4 bg-white/5 border border-white/5 rounded-2xl text-[10px] font-bold text-slate-400 capitalize">
+                                                <div key={target} className="p-4 bg-nexus-card border border-nexus-border rounded-2xl text-[10px] font-bold text-nexus-text-secondary capitalize">
                                                     {target}
                                                 </div>
                                             ))}
@@ -161,10 +161,10 @@ const GlobalSearch = () => {
                                 )}
                             </div>
 
-                            <div className="p-4 bg-black/40 border-t border-nexus-border flex items-center justify-between">
-                                <div className="flex items-center gap-4 text-[9px] font-bold text-slate-600">
-                                    <span className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded">↑↓</span> to navigate</span>
-                                    <span className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded">Enter</span> to select</span>
+                            <div className="p-4 bg-nexus-card border-t border-nexus-border flex items-center justify-between">
+                                <div className="flex items-center gap-4 text-[9px] font-bold text-nexus-text-secondary">
+                                    <span className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-nexus-text-primary/10 border border-nexus-border rounded">↑↓</span> to navigate</span>
+                                    <span className="flex items-center gap-1"><span className="px-1.5 py-0.5 bg-nexus-text-primary/10 border border-nexus-border rounded">Enter</span> to select</span>
                                 </div>
                                 <div className="text-[9px] font-black font-orbitron text-nexus-cyan tracking-widest">GLOBAL NEXUS INDEX</div>
                             </div>
@@ -177,7 +177,7 @@ const GlobalSearch = () => {
 };
 
 const Header = ({ onMenuClick }) => {
-    const { industry, setIndustry, methodology, setMethodology } = useNexus();
+    // Context moved to Sidebar
 
     return (
         <header className="fixed top-0 left-0 w-full h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[1000]">
@@ -185,70 +185,32 @@ const Header = ({ onMenuClick }) => {
             <div className="flex items-center gap-4">
                 <button
                     onClick={onMenuClick}
-                    className="lg:hidden p-2 hover:bg-white/5 rounded-lg transition-colors"
+                    className="lg:hidden p-2 hover:bg-nexus-surface/50 rounded-lg transition-colors"
                 >
-                    <Menu className="w-5 h-5 text-slate-400" />
+                    <Menu className="w-5 h-5 text-nexus-text-secondary" />
                 </button>
                 <Link to="/" className="flex items-center gap-2 group">
                     <div className="w-8 h-8 bg-nexus-gold rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.3)] group-hover:scale-110 transition-transform">
                         <Zap className="w-5 h-5 text-nexus-navy fill-nexus-navy" />
                     </div>
-                    <span className="text-white font-black font-orbitron tracking-widest text-lg hidden sm:block">
+                    <span className="text-nexus-text-primary font-black font-orbitron tracking-widest text-lg hidden sm:block">
                         NEXUS<span className="text-nexus-gold">OS</span>
                     </span>
                 </Link>
             </div>
 
-            {/* 🔮 CONTEXT SELECTORS (Engagement Center) */}
-            <div className="hidden xl:flex items-center gap-6 flex-1 justify-center max-w-2xl px-10">
-                <div className="flex bg-black/40 p-1.5 rounded-2xl border border-nexus-border shadow-inner">
-                    {['healthcare', 'business', 'life'].map((ctx) => (
-                        <button
-                            key={ctx}
-                            onClick={() => setIndustry(ctx)}
-                            className={`px-4 py-1.5 rounded-xl text-[10px] font-black font-orbitron transition-all duration-300 ${industry === ctx
-                                ? 'bg-nexus-cyan/20 text-nexus-cyan shadow-[0_0_15px_rgba(34,211,238,0.2)]'
-                                : 'text-slate-500 hover:text-slate-300'
-                                }`}
-                        >
-                            {ctx.toUpperCase()}
-                        </button>
-                    ))}
-                </div>
-
-                <div className="w-px h-6 bg-nexus-border" />
-
-                <div className="flex bg-black/40 p-1.5 rounded-full border border-nexus-border">
-                    {['DMAIC', 'DMADV', 'KAIZEN', 'FOCUS'].map((m) => (
-                        <button
-                            key={m}
-                            onClick={() => {
-                                setMethodology(m);
-                                const target = m === 'DMAIC' || m === 'DMADV' ? 'define'
-                                    : m === 'KAIZEN' ? 'kickoff'
-                                        : 'find';
-                                navigate(`/journey/${target}`);
-                            }}
-                            className={`px-5 py-2 rounded-full text-[10px] font-black font-orbitron transition-all duration-300 ${methodology === m
-                                ? 'bg-white text-nexus-navy shadow-[0_0_15px_rgba(255,255,255,0.3)]'
-                                : 'text-slate-500 hover:text-slate-300'
-                                }`}
-                        >
-                            {m === 'FOCUS' ? 'FOCUS' : m}
-                        </button>
-                    ))}
-                </div>
-            </div>
+            {/* Spacer for Flex Layout */}
+            <div className="flex-1" />
 
             {/* Quick Actions & User */}
             <div className="flex items-center gap-3 ml-auto">
                 <GlobalSearch />
 
                 <div className="flex items-center gap-1 border-r border-nexus-border pr-3">
-                    <button className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all" title="Help">
+                    <button className="p-2 text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-surface/50 rounded-lg transition-all" title="Help">
                         <HelpCircle className="w-5 h-5" />
                     </button>
-                    <button className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all relative" title="Notifications">
+                    <button className="p-2 text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-surface/50 rounded-lg transition-all relative" title="Notifications">
                         <Bell className="w-5 h-5" />
                         <span className="absolute top-2 right-2 w-2 h-2 bg-nexus-error rounded-full border-2 border-nexus-navy" />
                     </button>
@@ -256,8 +218,8 @@ const Header = ({ onMenuClick }) => {
 
                 <button className="flex items-center gap-3 pl-2 group">
                     <div className="text-right hidden lg:block">
-                        <div className="text-[10px] font-black text-white group-hover:text-nexus-cyan transition-colors">HA.LSSMBB</div>
-                        <div className="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">Pilot Account</div>
+                        <div className="text-[10px] font-black text-nexus-text-primary group-hover:text-nexus-cyan transition-colors">HA.LSSMBB</div>
+                        <div className="text-[9px] text-nexus-text-secondary font-bold uppercase tracking-tighter">Pilot Account</div>
                     </div>
                     <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 border border-nexus-border flex items-center justify-center group-hover:border-nexus-cyan transition-all overflow-hidden ring-2 ring-transparent group-hover:ring-nexus-cyan/20">
                         <User className="w-5 h-5 text-slate-400 group-hover:text-nexus-cyan translate-y-0.5" />

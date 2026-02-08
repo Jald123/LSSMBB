@@ -1,48 +1,110 @@
 @import "tailwindcss";
 
-@theme {
-  --color-nexus-navy: #020617;
-  --color-nexus-surface: #0f172a;
-  --color-nexus-card: rgba(30, 41, 59, 0.4);
-  --color-nexus-border: rgba(255, 255, 255, 0.1);
-
-  --color-nexus-cyan: #22d3ee;
-  --color-nexus-gold: #f59e0b;
-  --color-nexus-purple: #a855f7;
-
-  --color-nexus-success: #10b981;
-  --color-nexus-warn: #f59e0b;
-  --color-nexus-error: #ef4444;
-
-  --radius-nexus: 1.5rem;
-  --radius-nexus-lg: 2.5rem;
-
-  --shadow-nexus: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  --shadow-nexus-glow: 0 0 20px rgba(34, 211, 238, 0.2);
-}
+@import "tailwindcss";
 
 :root {
-  /* Design Tokens as CSS variables for shell-only application */
-  --nexus-bg-deep: #020617;
-  --nexus-bg-surface: #0f172a;
-  --nexus-glass: rgba(15, 23, 42, 0.7);
-  --nexus-border: rgba(255, 255, 255, 0.1);
-  --nexus-accent: #22d3ee;
-  --nexus-text-primary: #f8fafc;
-  --nexus-text-secondary: #94a3b8;
+  /* --- CORE PALETTE (DEFAULT / DARK) --- */
+  --color-nexus-navy-base: #020617;
+  --color-nexus-surface-base: #0f172a;
+  --color-nexus-card-base: rgba(30, 41, 59, 0.4);
+  --color-nexus-border-base: rgba(255, 255, 255, 0.1);
 
+  --color-nexus-cyan-base: #22d3ee;
+  --color-nexus-gold-base: #f59e0b;
+  --color-nexus-purple-base: #a855f7;
+
+  --color-nexus-success-base: #10b981;
+  --color-nexus-warn-base: #f59e0b;
+  --color-nexus-error-base: #ef4444;
+
+  /* --- UTILITIES --- */
+  --nexus-glass-base: rgba(15, 23, 42, 0.7);
+  --nexus-text-primary-base: #f8fafc;
+  --nexus-text-secondary-base: #94a3b8;
+  --nexus-shadow-base: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+
+  /* Shared */
+  --radius-nexus: 1.5rem;
+  --radius-nexus-lg: 2.5rem;
+  --shadow-nexus-glow: 0 0 20px rgba(34, 211, 238, 0.2);
+
+  /* --- BASE MAPPING --- */
+  --nexus-bg-deep: var(--color-nexus-navy-base);
+  --nexus-bg-surface: var(--color-nexus-surface-base);
+  --nexus-glass: var(--nexus-glass-base);
+  --nexus-border: var(--color-nexus-border-base);
+  --nexus-accent: var(--color-nexus-cyan-base);
+  --nexus-text-primary: var(--nexus-text-primary-base);
+  --nexus-text-secondary: var(--nexus-text-secondary-base);
+
+  /* Standard Settings */
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: dark;
   color: var(--nexus-text-primary);
   background-color: var(--nexus-bg-deep);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- LIGHT MODE OVERRIDES --- */
+.light-mode {
+  /* engaging, Professional, most modern, eye catching */
+  --color-nexus-navy-base: #f0f4f8;
+  /* Very light cool gray/blue foundation */
+  --color-nexus-surface-base: #ffffff;
+  /* Crisp white surfaces */
+  --color-nexus-card-base: rgba(255, 255, 255, 0.8);
+  --color-nexus-border-base: rgba(148, 163, 184, 0.2);
+  /* Slate-400 20% */
+
+  /* Slightly adjusted accents for light mode visibility if needed, 
+     but keeping the vibrant ones often looks better as 'eye catching' */
+  --color-nexus-cyan-base: #06b6d4;
+  /* Cyan-500 (slightly darker than 400 for text contrast) */
+  --color-nexus-gold-base: #d97706;
+  /* Amber-600 */
+  --color-nexus-purple-base: #9333ea;
+  /* Purple-600 */
+
+  /* Text & Utilities */
+  --nexus-glass-base: rgba(255, 255, 255, 0.75);
+  /* White frosted glass */
+  --nexus-text-primary-base: #0f172a;
+  /* Slate-900 (High contrast) */
+  --nexus-text-secondary-base: #475569;
+  /* Slate-600 */
+  --nexus-shadow-base: 0 15px 35px -5px rgba(148, 163, 184, 0.3);
+  /* Softer, colored shadow */
+
+  /* Update mappings */
+  color-scheme: light;
+  --shadow-nexus-glow: 0 0 25px rgba(6, 182, 212, 0.25);
+  /* Cyan glow adaptation */
+}
+
+@theme {
+  --color-nexus-navy: var(--color-nexus-navy-base);
+  --color-nexus-surface: var(--color-nexus-surface-base);
+  --color-nexus-card: var(--color-nexus-card-base);
+  --color-nexus-border: var(--color-nexus-border-base);
+
+  --color-nexus-cyan: var(--color-nexus-cyan-base);
+  --color-nexus-gold: var(--color-nexus-gold-base);
+  --color-nexus-purple: var(--color-nexus-purple-base);
+
+  --color-nexus-success: var(--color-nexus-success-base);
+  --color-nexus-warn: var(--color-nexus-warn-base);
+  --color-nexus-error: var(--color-nexus-error-base);
+
+  --radius-nexus: var(--radius-nexus);
+  --radius-nexus-lg: var(--radius-nexus-lg);
+
+  --shadow-nexus: var(--nexus-shadow-base);
+  --shadow-nexus-glow: var(--shadow-nexus-glow);
 }
 
 body {
@@ -51,6 +113,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background-color: var(--nexus-bg-deep);
+  color: var(--nexus-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Shell Utility Classes */
@@ -58,6 +122,8 @@ body {
   background: var(--nexus-glass);
   backdrop-filter: blur(12px);
   border: 1px solid var(--nexus-border);
+  box-shadow: var(--shadow-nexus);
+  /* Added shadow for better depth in light mode */
 }
 
 .nexus-focus {
@@ -104,5 +170,6 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(148, 163, 184, 0.5);
+  /* Adaptive hover color */
 }
