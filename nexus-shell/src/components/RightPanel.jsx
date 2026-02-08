@@ -9,6 +9,7 @@ import {
     MessageSquare,
     Sparkles,
     ExternalLink,
+    History
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useNexus } from '../context/NexusContext';

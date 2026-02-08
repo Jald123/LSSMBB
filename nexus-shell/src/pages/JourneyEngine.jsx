@@ -1,6 +1,5 @@
 import React from 'react';
-import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import {
     Rocket,
     Target,
