@@ -1,8 +1,7 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FlaskConical, Cpu, Crosshair, ChevronRight, Activity, Terminal, Shield } from 'lucide-react';
-import RouteTransitionOutlet from '../components/RouteTransitionOutlet';
 
 const AnalystArmory = () => {
     const stations = [
@@ -52,7 +51,7 @@ const AnalystArmory = () => {
 
             {/* 🌌 STATION CANVAS */}
             <div className="flex-1 mt-20">
-                <RouteTransitionOutlet />
+                <Outlet />
             </div>
         </div>
     );

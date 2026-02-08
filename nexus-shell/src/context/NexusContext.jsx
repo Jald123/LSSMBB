@@ -25,13 +25,20 @@ export const NexusProvider = ({ children }) => {
             isRightPanelOpen: true,
             hasSeenOnboarding: false,
             currentMission: 'ER Wait Time Reduction',
-            xp: 1240
+            xp: 1240,
+            theme: 'dark'
         };
     });
 
     // Persist state changes
     useEffect(() => {
         localStorage.setItem('nexus_os_state', JSON.stringify(state));
+        // Apply theme to document body
+        if (state.theme === 'light') {
+            document.documentElement.classList.add('light-mode');
+        } else {
+            document.documentElement.classList.remove('light-mode');
+        }
     }, [state]);
 
     // --- ACTIONS ---
@@ -57,6 +64,10 @@ export const NexusProvider = ({ children }) => {
         setState(prev => ({ ...prev, isRightPanelOpen: !prev.isRightPanelOpen }));
     };
 
+    const toggleTheme = () => {
+        setState(prev => ({ ...prev, theme: prev.theme === 'dark' ? 'light' : 'dark' }));
+    };
+
     const completeOnboarding = () => {
         setState(prev => ({ ...prev, hasSeenOnboarding: true }));
     };
@@ -70,6 +81,7 @@ export const NexusProvider = ({ children }) => {
         markToolComplete,
         toggleSidebar,
         toggleRightPanel,
+        toggleTheme,
         completeOnboarding,
         setIndustry,
         setMethodology

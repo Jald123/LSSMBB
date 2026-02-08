@@ -22,6 +22,7 @@ import SigmaLab from './pages/SigmaLab';
 import DockingGame from './pages/DockingGame';
 import ScopeSniper from './pages/ScopeSniper';
 import CompletionCeremony from './pages/CompletionCeremony';
+import Settings from './pages/Settings';
 
 const NexusOS_Layout = () => {
   const { isSidebarCollapsed, toggleSidebar, isRightPanelOpen } = useNexus();
@@ -97,11 +98,7 @@ function App() {
               <Route path="scope-sniper" element={<ScopeSniper />} />
             </Route>
             <Route path="certification" element={<CompletionCeremony />} />
-            <Route path="settings" element={
-              <div className="h-full flex items-center justify-center text-slate-500 font-orbitron">
-                SYSTEM SETTINGS // COMING SOON v2.0
-              </div>
-            } />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </BrowserRouter>

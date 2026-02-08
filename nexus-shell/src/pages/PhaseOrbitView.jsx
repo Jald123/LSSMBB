@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     ArrowUpRight,
     Terminal,
@@ -19,6 +19,7 @@ import { useNexus } from '../context/NexusContext';
 const PhaseOrbitView = () => {
     const { phaseId } = useParams();
     const { methodology } = useNexus();
+    const [isVideoOpen, setIsVideoOpen] = useState(false);
 
     // Normalize methodology key (e.g., FOCUS PDCA -> FOCUS)
     const activeMethodology = methodology.split(' ')[0].toUpperCase();
@@ -51,8 +52,47 @@ const PhaseOrbitView = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="max-w-6xl mx-auto pb-20"
+            className="max-w-6xl mx-auto pb-20 relative"
         >
+            {/* VIDEO MODAL */}
+            <AnimatePresence>
+                {isVideoOpen && (
+                    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-8">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsVideoOpen(false)}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="relative w-full max-w-4xl aspect-video bg-black border border-nexus-border rounded-3xl overflow-hidden shadow-2xl z-10"
+                        >
+                            <div className="absolute top-4 right-4 z-20">
+                                <button
+                                    onClick={() => setIsVideoOpen(false)}
+                                    className="p-2 bg-black/50 hover:bg-nexus-error text-white rounded-full transition-colors backdrop-blur-md border border-white/10"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+
+                            {/* Placeholder for Video Player */}
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 text-white">
+                                <Activity className="w-16 h-16 text-nexus-cyan animate-pulse mb-6" />
+                                <h3 className="text-2xl font-black font-orbitron mb-2">TACTICAL BRIEFING // OFFLINE</h3>
+                                <p className="text-slate-400 font-mono text-sm max-w-md text-center">
+                                    Video feed for <span className="text-nexus-cyan">{phase.title}</span> is currently encrypted or unavailable in this sector.
+                                </p>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
             {/* 📡 PHASE HEADER */}
             <motion.div variants={nodeVariants} className="mb-12 flex flex-col md:flex-row items-center md:items-end justify-between border-b border-nexus-border pb-10 gap-8">
                 <div className="flex-1">
@@ -94,7 +134,10 @@ const PhaseOrbitView = () => {
                     <span className="text-nexus-cyan font-orbitron font-black text-xs">45% READY</span>
 
                     {/* RESTORED: Watch Now Button */}
-                    <button className="mt-4 flex items-center gap-3 px-6 py-4 bg-gradient-to-br from-slate-800 to-black border border-white/10 rounded-2xl group hover:border-nexus-error/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all">
+                    <button
+                        onClick={() => setIsVideoOpen(true)}
+                        className="mt-4 flex items-center gap-3 px-6 py-4 bg-gradient-to-br from-slate-800 to-black border border-white/10 rounded-2xl group hover:border-nexus-error/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all"
+                    >
                         <div className="w-8 h-8 rounded-full border border-nexus-error/30 flex items-center justify-center bg-nexus-error/10 text-nexus-error group-hover:scale-110 transition-transform">
                             <Activity className="w-4 h-4 fill-nexus-error" />
                         </div>

@@ -23,7 +23,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
     ];
 
     const sidebarVariants = {
-        expanded: { width: '240px' },
+        expanded: { width: '200px' },
         collapsed: { width: '80px' }
     };
 
@@ -43,7 +43,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
                 <motion.span
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="text-xs font-black font-orbitron tracking-widest whitespace-nowrap"
+                    className="text-[10px] font-black font-orbitron tracking-widest whitespace-nowrap"
                 >
                     {item.label.toUpperCase()}
                 </motion.span>
@@ -89,7 +89,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
                 animate={isCollapsed ? 'collapsed' : 'expanded'}
                 className={`
           fixed top-16 left-0 h-[calc(100vh-64px)] glass-panel border-r border-nexus-border z-[1200]
-          flex flex-col py-6 transition-all duration-300
+          flex flex-col py-4 transition-all duration-300
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
             >
@@ -100,26 +100,35 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
                     ))}
                 </div>
 
-                {/* Footer Area */}
-                <div className="px-3 border-t border-nexus-border pt-6 pb-2 space-y-2">
-                    <div className={`flex items-center gap-4 px-4 py-2 ${isCollapsed ? 'justify-center' : ''}`}>
-                        <Monitor className="w-4 h-4 text-slate-500" />
-                        {!isCollapsed && <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">v1.6 Stable</span>}
-                    </div>
+                {/* Footer Area - REDUCED HEIGHT & UPDATED CONTENT */}
+                <div className="px-3 border-t border-nexus-border pt-4 pb-2 space-y-3">
+                    {!isCollapsed ? (
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center justify-between px-2 text-[9px] font-bold text-slate-500 font-orbitron tracking-widest">
+                                <button className="hover:text-nexus-cyan transition-colors">HOME</button>
+                                <button className="hover:text-nexus-cyan transition-colors">SUPPORT</button>
+                                <button className="hover:text-nexus-cyan transition-colors text-nexus-cyan">AI SENSEI</button>
+                            </div>
+                            <div className="h-px bg-white/5 w-full my-1" />
+                            <div className="flex flex-col gap-1 px-2">
+                                <span className="text-[8px] text-slate-600 font-black uppercase tracking-tighter">ENGINEERED BY <span className="text-nexus-gold">HOSSAM ALDHAHER</span></span>
+                                <span className="text-[8px] text-nexus-cyan/50 font-black uppercase tracking-widest">HIGH QUALITY LEADERS SYSTEM</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center gap-4">
+                            <button className="w-8 h-8 rounded-lg bg-nexus-cyan/10 flex items-center justify-center text-nexus-cyan hover:bg-nexus-cyan hover:text-navy transition-colors">
+                                <Monitor className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )}
 
+                    {/* Collapser - Minimal */}
                     <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        className={`
-              w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all
-              ${isCollapsed ? 'justify-center' : ''}
-            `}
+                        className="w-full h-6 flex items-center justify-center text-slate-600 hover:text-white transition-colors"
                     >
-                        {isCollapsed ? <ChevronRight className="w-5 h-5" /> : (
-                            <>
-                                <ChevronLeft className="w-5 h-5" />
-                                <span className="text-[10px] font-black font-orbitron tracking-widest uppercase">Collapse</span>
-                            </>
-                        )}
+                        {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
                     </button>
                 </div>
             </motion.aside>

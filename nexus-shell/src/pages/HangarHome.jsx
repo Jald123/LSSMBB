@@ -65,6 +65,62 @@ const HangarHome = () => {
                 </p>
             </motion.div>
 
+            {/* 📚 PHASE 0: FOUNDATION STAGE (Restored) */}
+            <motion.div variants={itemVariants} className="mb-12">
+                <div className="flex items-center gap-4 mb-6 px-4">
+                    <h3 className="text-2xl font-black text-white font-orbitron">
+                        Project Workflow Guide <span className="text-nexus-gold text-xs px-2 py-1 bg-nexus-gold/10 rounded ml-2">SMART</span>
+                    </h3>
+                    <p className="text-slate-500 text-xs hidden sm:block">Comprehensive workflow logic with Belt Level filtering.</p>
+                </div>
+
+                <div className="p-1 rounded-[2rem] bg-gradient-to-r from-nexus-gold/20 via-transparent to-nexus-cyan/20 border border-white/5">
+                    <div className="bg-[#0a0f1c] rounded-[1.8rem] p-8 relative overflow-hidden">
+                        <div className="flex justify-between items-start mb-8 relative z-10">
+                            <div>
+                                <h4 className="text-xl font-bold text-white mb-2">Phase 0: Foundation & Strategy</h4>
+                                <p className="text-slate-400 text-sm">Master the basics before you begin.</p>
+                            </div>
+                            <span className="px-3 py-1 bg-nexus-gold text-nexus-navy text-[10px] font-black font-orbitron rounded uppercase">Required</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                            {/* LSS Fundamentals */}
+                            <div className="bg-white/5 border border-white/5 p-4 rounded-xl flex items-center gap-4 group hover:bg-white/10 transition-colors cursor-pointer">
+                                <div className="w-12 h-12 bg-nexus-blue/20 rounded-lg flex items-center justify-center text-blue-400">
+                                    <Layers className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h5 className="text-white font-bold text-sm">LSS Fundamentals</h5>
+                                    <p className="text-xs text-slate-500 mb-2">History, Belts, Principles.</p>
+                                    <button onClick={() => navigate('/workspace/fundamentals')} className="px-3 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-[9px] font-black font-orbitron text-slate-300">OPEN GUIDE</button>
+                                </div>
+                            </div>
+
+                            {/* Mission Prep -> ARMORY LINK */}
+                            <div className="bg-gradient-to-r from-nexus-cyan/10 to-transparent border border-nexus-cyan/20 p-4 rounded-xl flex items-center gap-4 group hover:border-nexus-cyan/40 transition-colors">
+                                <div className="w-12 h-12 bg-nexus-cyan/20 rounded-lg flex items-center justify-center text-nexus-cyan shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                                    <Zap className="w-6 h-6" />
+                                </div>
+                                <div className="flex-1">
+                                    <h5 className="text-white font-bold text-sm">MISSION PREP</h5>
+                                    <p className="text-xs text-slate-500 mb-2">The Essential 6 Pillars</p>
+                                    <button
+                                        onClick={() => navigate('/armory')}
+                                        className="px-4 py-1.5 bg-nexus-cyan text-nexus-navy rounded text-[9px] font-black font-orbitron hover:scale-105 transition-transform shadow-[0_0_10px_rgba(34,211,238,0.3)]"
+                                    >
+                                        ENTER ARMORY
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Background Decoration */}
+                        <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-nexus-gold/5 to-transparent pointer-events-none" />
+                    </div>
+                </div>
+            </motion.div>
+
             {/* 🛠️ MISSION DASHBOARD GRID */}
             <div className="grid grid-cols-12 gap-8 mb-16 px-4">
 
