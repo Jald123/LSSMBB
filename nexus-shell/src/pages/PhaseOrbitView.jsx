@@ -93,61 +93,21 @@ const PhaseOrbitView = () => {
                 )}
             </AnimatePresence>
 
-            {/* 📡 PHASE HEADER */}
-            <motion.div variants={nodeVariants} className="mb-12 flex flex-col md:flex-row items-center md:items-end justify-between border-b border-nexus-border pb-10 gap-8">
-                <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-2xl bg-nexus-cyan/10 border border-nexus-cyan/30 flex items-center justify-center text-nexus-cyan">
-                            <Activity className="w-6 h-6 animate-pulse" />
-                        </div>
-                        <div>
-                            <span className="text-nexus-cyan font-orbitron font-black text-[10px] tracking-[0.3em] uppercase opacity-70">Target Phase</span>
-                            <h1 className="text-6xl font-black font-orbitron text-white leading-none tracking-tighter">{phase.title}</h1>
-                        </div>
-                    </div>
-                    <p className="text-slate-400 text-lg font-medium italic max-w-2xl leading-relaxed">
-                        "{phase.description}"
-                    </p>
+            {/* 🛠️ TOOL GRID - Enhanced with Spacing */}
 
-                    {/* 🚀 SKILLS REGION */}
-                    <div className="mt-8 flex flex-wrap gap-2">
-                        <div className="text-[10px] font-black font-orbitron text-slate-500 uppercase tracking-widest w-full mb-2 flex items-center gap-2">
-                            <Zap className="w-3 h-3 text-nexus-gold" /> Skills Unlocked
-                        </div>
-                        {phase.skills?.map((skill, idx) => (
-                            <span key={idx} className="bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-[10px] font-bold text-slate-300 flex items-center gap-2">
-                                <ShieldCheck className="w-3 h-3 text-nexus-cyan" /> {skill}
-                            </span>
-                        ))}
+            {/* Minimal Title - Just to anchor the grid */}
+            <div className="mb-8 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-nexus-cyan/10 flex items-center justify-center border border-nexus-cyan/20">
+                        <Activity className="w-5 h-5 text-nexus-cyan" />
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-black font-orbitron text-white tracking-wide">{phase.title} TOOLS</h2>
+                        <span className="text-[10px] text-nexus-text-secondary font-mono">SELECT PROTOCOL TO INITIATE</span>
                     </div>
                 </div>
+            </div>
 
-                <div className="flex flex-col items-center md:items-end gap-3 min-w-[200px]">
-                    <div className="text-[10px] text-slate-500 font-black tracking-widest uppercase">Phase Completion</div>
-                    <div className="w-48 h-2.5 bg-white/5 border border-white/10 rounded-full overflow-hidden relative">
-                        <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: '45%' }}
-                            className="absolute h-full bg-nexus-cyan shadow-[0_0_15px_rgba(34,211,238,0.5)]"
-                        />
-                    </div>
-                    <span className="text-nexus-cyan font-orbitron font-black text-xs">45% READY</span>
-
-                    {/* RESTORED: Watch Now Button */}
-                    <button
-                        onClick={() => setIsVideoOpen(true)}
-                        className="mt-4 flex items-center gap-3 px-6 py-4 bg-gradient-to-br from-slate-800 to-black border border-white/10 rounded-2xl group hover:border-nexus-error/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)] transition-all"
-                    >
-                        <div className="w-8 h-8 rounded-full border border-nexus-error/30 flex items-center justify-center bg-nexus-error/10 text-nexus-error group-hover:scale-110 transition-transform">
-                            <Activity className="w-4 h-4 fill-nexus-error" />
-                        </div>
-                        <div className="text-left leading-none">
-                            <div className="text-[9px] font-black font-orbitron text-nexus-error tracking-widest uppercase mb-1">Briefing</div>
-                            <div className="text-xs font-black text-white group-hover:text-nexus-error transition-colors">WATCH NOW</div>
-                        </div>
-                    </button>
-                </div>
-            </motion.div>
 
             {/* 🛠️ TOOL GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

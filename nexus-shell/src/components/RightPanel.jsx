@@ -9,8 +9,10 @@ import {
     MessageSquare,
     Sparkles,
     ExternalLink,
-    History
 } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { useNexus } from '../context/NexusContext';
+import { methodologyData } from '../data/journeyData';
 
 const RightPanel = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -27,6 +29,16 @@ const RightPanel = () => {
         { id: 'artifacts', icon: Link2, label: 'Artifacts', color: 'text-nexus-purple' },
     ];
 
+    const location = useLocation();
+    const { methodology } = useNexus();
+
+    // 🧠 Context Intelligence Logic
+    const isJourney = location.pathname.includes('/journey/');
+    const currentPhaseId = isJourney ? location.pathname.split('/').pop() : null;
+    const activeMethodologyKey = methodology?.split(' ')[0].toUpperCase() || 'DMAIC';
+    const activeSet = methodologyData[activeMethodologyKey] || methodologyData['DMAIC'];
+    const phaseData = currentPhaseId ? activeSet[currentPhaseId] : null;
+
     return (
         <motion.aside
             variants={panelVariants}
@@ -41,7 +53,7 @@ const RightPanel = () => {
                 {isCollapsed ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
             </button>
 
-            {/* Tabs / Icons Sidebar */}
+            {/* Sidebar Tabs */}
             <div className="w-16 flex flex-col items-center py-6 border-r border-nexus-border gap-6">
                 {sections.map((section) => (
                     <button
@@ -51,7 +63,7 @@ const RightPanel = () => {
                             if (isCollapsed) setIsCollapsed(false);
                         }}
                         className={`
-              relative p-3 rounded-xl transition-all duration-300
+              relative p-3 rounded-xl transition-all duration-300 group
               ${activeTab === section.id && !isCollapsed ? section.color + ' bg-nexus-text-primary/5' : 'text-nexus-text-secondary hover:text-nexus-text-primary'}
             `}
                     >
@@ -60,11 +72,10 @@ const RightPanel = () => {
                             <motion.div layoutId="active-tab" className={`absolute -left-[1px] top-1/2 -translate-y-1/2 w-[2px] h-6 ${section.color.replace('text-', 'bg-')}`} />
                         )}
 
-                        {isCollapsed && (
-                            <div className="absolute right-full mr-4 px-3 py-1 bg-nexus-surface border border-nexus-border rounded-md text-[10px] font-black font-orbitron text-nexus-text-primary opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
-                                {section.label.toUpperCase()}
-                            </div>
-                        )}
+                        {/* Tooltip */}
+                        <div className="absolute right-full mr-4 px-3 py-1 bg-nexus-surface border border-nexus-border rounded-md text-[10px] font-black font-orbitron text-nexus-text-primary opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                            {section.label.toUpperCase()}
+                        </div>
                     </button>
                 ))}
             </div>
@@ -76,10 +87,11 @@ const RightPanel = () => {
                     animate={{ opacity: 1 }}
                     className="flex-1 flex flex-col overflow-hidden"
                 >
-                    <div className="p-6 border-b border-nexus-border">
+                    <div className="p-6 border-b border-nexus-border flex justify-between items-center">
                         <h3 className="text-xs font-black font-orbitron tracking-widest text-nexus-text-primary uppercase">
                             {sections.find(s => s.id === activeTab).label}
                         </h3>
+                        {phaseData && <span className="text-[9px] font-black text-nexus-cyan bg-nexus-cyan/10 px-2 py-0.5 rounded border border-nexus-cyan/20">ACTIVE</span>}
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -90,27 +102,60 @@ const RightPanel = () => {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="space-y-4"
+                                    className="space-y-6"
                                 >
-                                    <div className="bg-nexus-cyan/5 border border-nexus-cyan/20 p-4 rounded-2xl relative overflow-hidden group">
-                                        <div className="flex items-center gap-2 text-nexus-cyan mb-2">
-                                            <Sparkles className="w-4 h-4" />
-                                            <span className="text-[10px] font-black font-orbitron uppercase tracking-widest">Active Analysis</span>
+                                    {/* 🛰️ DYNAMIC PHASE INTEL */}
+                                    {phaseData ? (
+                                        <div className="bg-nexus-card/50 border border-nexus-cyan/20 p-5 rounded-2xl relative overflow-hidden group">
+                                            {/* Header */}
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-nexus-cyan animate-pulse" />
+                                                <span className="text-[10px] font-black font-orbitron text-nexus-cyan tracking-widest uppercase">
+                                                    PHASE: {phaseData.title}
+                                                </span>
+                                            </div>
+
+                                            {/* Description */}
+                                            <p className="text-xs text-nexus-text-secondary leading-relaxed font-medium mb-4 border-l-2 border-nexus-border pl-3">
+                                                {phaseData.description}
+                                            </p>
+
+                                            {/* Progress Mini-Bar */}
+                                            <div className="space-y-1.5">
+                                                <div className="flex justify-between text-[9px] font-black font-orbitron text-slate-500 uppercase">
+                                                    <span>Completeness</span>
+                                                    <span className="text-nexus-cyan">45%</span>
+                                                </div>
+                                                <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden">
+                                                    <div className="h-full w-[45%] bg-nexus-cyan rounded-full" />
+                                                </div>
+                                            </div>
+
+                                            {/* Deco Icon */}
+                                            <div className="absolute -bottom-3 -right-3 opacity-5 group-hover:opacity-10 transition-opacity">
+                                                <Bot className="w-24 h-24 rotate-12" />
+                                            </div>
                                         </div>
-                                        <p className="text-xs text-nexus-text-secondary leading-relaxed font-medium">
-                                            Waiting for tool interaction. I will summarize root causes as you data logs.
-                                        </p>
-                                        <div className="absolute -bottom-2 -right-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                                            <Bot className="w-16 h-16 text-nexus-cyan" />
+                                    ) : (
+                                        <div className="bg-nexus-cyan/5 border border-nexus-cyan/20 p-4 rounded-2xl relative overflow-hidden group">
+                                            <div className="flex items-center gap-2 text-nexus-cyan mb-2">
+                                                <Sparkles className="w-4 h-4" />
+                                                <span className="text-[10px] font-black font-orbitron uppercase tracking-widest">System Idle</span>
+                                            </div>
+                                            <p className="text-xs text-nexus-text-secondary leading-relaxed font-medium">
+                                                Select a phase from the Journey Engine to initiate mission analysis protocols.
+                                            </p>
                                         </div>
-                                    </div>
+                                    )}
 
                                     <div className="flex flex-col gap-2">
-                                        <button className="flex items-center gap-3 w-full bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 p-3 rounded-xl border border-nexus-text-primary/5 text-[10px] font-bold text-nexus-text-secondary transition-all">
-                                            <MessageSquare className="w-4 h-4" /> Explain Current Tool
+                                        <button className="flex items-center gap-3 w-full bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 p-3 rounded-xl border border-nexus-text-primary/5 text-[10px] font-bold text-nexus-text-secondary transition-all group">
+                                            <MessageSquare className="w-4 h-4 group-hover:text-nexus-cyan transition-colors" />
+                                            <span>Ask AI Sensei</span>
                                         </button>
-                                        <button className="flex items-center gap-3 w-full bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 p-3 rounded-xl border border-nexus-text-primary/5 text-[10px] font-bold text-nexus-text-secondary transition-all">
-                                            <History className="w-4 h-4" /> View Mission History
+                                        <button className="flex items-center gap-3 w-full bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 p-3 rounded-xl border border-nexus-text-primary/5 text-[10px] font-bold text-nexus-text-secondary transition-all group">
+                                            <History className="w-4 h-4 group-hover:text-nexus-gold transition-colors" />
+                                            <span>Mission Log</span>
                                         </button>
                                     </div>
                                 </motion.div>
