@@ -29,6 +29,12 @@ const RightPanel = () => {
     const activeSet = methodologyData[activeMethodologyKey] || methodologyData['DMAIC'];
     const phaseData = currentPhaseId ? activeSet[currentPhaseId] : null;
 
+    const sections = [
+        { id: 'assistant', icon: Bot, label: 'Assistant', color: 'text-nexus-cyan' },
+        { id: 'checklist', icon: ClipboardCheck, label: 'Checklist', color: 'text-nexus-gold' },
+        { id: 'artifacts', icon: Link2, label: 'Artifacts', color: 'text-nexus-purple' },
+    ];
+
     return (
         <>
             {/* 🔮 AI SENSEI ORB (Floating Trigger) */}

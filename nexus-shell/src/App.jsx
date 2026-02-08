@@ -62,7 +62,6 @@ const NexusOS_Layout = () => {
           className={`
             flex-1 relative z-10 w-full h-full transition-all duration-300
             ${isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-60'}
-            ${(!isWorkspace && isRightPanelOpen) ? 'xl:pr-[320px]' : ''} 
           `}
         >
           <div className="h-full overflow-y-auto">
