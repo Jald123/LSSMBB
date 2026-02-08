@@ -455,5 +455,30 @@ export const toolRegistry = {
         category: 'STATS',
         priority: 'PRIORITY 3',
         belt: 'BB'
+    },
+    'fundamentals': {
+        name: 'LSS Fundamentals',
+        src: '/04-STATISTICS-TOOLS/Tool_LSS_Fundamentals.html',
+        phase: 'Foundation',
+        category: 'BASICS',
+        priority: 1,
+        belt: 'WB'
+    },
+    'exam-engine': {
+        name: 'Certification Exam Engine',
+        src: '/04-STATISTICS-TOOLS/Tool_ExamEngine.html',
+        phase: 'Armory',
+        category: 'TESTING',
+        priority: 1,
+        belt: 'BB'
+    },
+    // Alias for 'adv-analytics' to support legacy links
+    'advanced-analytics': {
+        name: 'Advanced Analytics (MVA)',
+        src: '/04-STATISTICS-TOOLS/Tool_AdvancedAnalytics.html',
+        phase: 'Analyze',
+        category: 'SIX SIGMA',
+        priority: 'OPT.',
+        belt: 'BB'
     }
 };

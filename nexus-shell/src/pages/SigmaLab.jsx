@@ -38,7 +38,7 @@ const SigmaLab = () => {
             </div>
 
             <Link
-                to="/workspace/advanced-analytics"
+                to="/workspace/adv-analytics"
                 className="inline-flex items-center gap-4 bg-white text-nexus-navy px-12 py-5 rounded-2xl font-orbitron font-black text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]"
             >
                 <Terminal className="w-5 h-5" /> INITIALIZE ANALYTICS GRID
