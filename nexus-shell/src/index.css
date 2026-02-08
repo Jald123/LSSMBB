@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --color-nexus-navy: #020617;
+  --color-nexus-surface: #0f172a;
+  --color-nexus-card: rgba(30, 41, 59, 0.4);
+  --color-nexus-border: rgba(255, 255, 255, 0.1);
+
+  --color-nexus-cyan: #22d3ee;
+  --color-nexus-gold: #f59e0b;
+  --color-nexus-purple: #a855f7;
+
+  --color-nexus-success: #10b981;
+  --color-nexus-warn: #f59e0b;
+  --color-nexus-error: #ef4444;
+
+  --radius-nexus: 1.5rem;
+  --radius-nexus-lg: 2.5rem;
+
+  --shadow-nexus: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --shadow-nexus-glow: 0 0 20px rgba(34, 211, 238, 0.2);
+}
+
+:root {
+  /* Design Tokens as CSS variables for shell-only application */
+  --nexus-bg-deep: #020617;
+  --nexus-bg-surface: #0f172a;
+  --nexus-glass: rgba(15, 23, 42, 0.7);
+  --nexus-border: rgba(255, 255, 255, 0.1);
+  --nexus-accent: #22d3ee;
+  --nexus-text-primary: #f8fafc;
+  --nexus-text-secondary: #94a3b8;
+
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: var(--nexus-text-primary);
+  background-color: var(--nexus-bg-deep);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--nexus-bg-deep);
+}
+
+/* Shell Utility Classes */
+.glass-panel {
+  background: var(--nexus-glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--nexus-border);
+}
+
+.nexus-focus {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--nexus-accent);
+  ring-offset: 2px;
+  ring-offset-color: var(--nexus-bg-deep);
+}
+
+/* Animations */
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-flow {
+  background-size: 200% 200%;
+  animation: gradient-flow 6s ease infinite;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nexus-border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

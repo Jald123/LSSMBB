@@ -1,27 +1,15 @@
 {
     "version": 2,
-    "builds": [
+    "buildCommand": "cd nexus-shell && npm install && npm run build",
+    "outputDirectory": "nexus-shell/dist",
+    "rewrites": [
         {
-            "src": "**/*.html",
-            "use": "@vercel/static"
+            "source": "/(04-STATISTICS-TOOLS|02-TEMPLATES)/(.*)",
+            "destination": "/$1/$2"
         },
         {
-            "src": "**/*.js",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "**/*.css",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "**/*.{jpg,jpeg,png,gif,svg,ico,webp}",
-            "use": "@vercel/static"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/$1"
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }
