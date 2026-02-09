@@ -50,7 +50,7 @@ export const toolRegistry = {
     },
     'qfd': {
         name: 'QFD House of Quality',
-        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=qfd',
+        src: '/04-STATISTICS-TOOLS/Tool_QFD_HouseOfQuality.html',
         phase: 'Define',
         category: 'SIX SIGMA',
         priority: 2,
@@ -58,7 +58,7 @@ export const toolRegistry = {
     },
     'swimlane-adv': {
         name: 'Advanced Swimlane Architect',
-        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=swimlane',
+        src: '/04-STATISTICS-TOOLS/Tool_Swimlane_Advanced.html',
         phase: 'Define',
         category: 'LEAN',
         priority: 3,
@@ -90,7 +90,7 @@ export const toolRegistry = {
     },
     'leadership': {
         name: 'Leadership & Management (ADKAR)',
-        src: '/04-STATISTICS-TOOLS/Tool_ChangeMgmt_ADKAR.html',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanLeadership.html',
         phase: 'Define',
         category: 'CHANGE MGMT',
         priority: 'OPT.',
@@ -172,7 +172,7 @@ export const toolRegistry = {
     },
     'vsm': {
         name: 'Value Stream Map (VSM)',
-        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=vsm',
+        src: '/04-STATISTICS-TOOLS/Tool_VSM.html',
         phase: 'Measure',
         category: 'LEAN',
         priority: 2,
@@ -180,7 +180,7 @@ export const toolRegistry = {
     },
     'raci': {
         name: 'Modern RACI Matrix',
-        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=raci',
+        src: '/04-STATISTICS-TOOLS/Tool_RACI_Premium.html',
         phase: 'Measure',
         category: 'PROJ. MGMT',
         priority: 2,
