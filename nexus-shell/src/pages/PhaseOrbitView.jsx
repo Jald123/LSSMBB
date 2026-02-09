@@ -136,7 +136,7 @@ const PhaseOrbitView = () => {
                         <div className="flex-1 mb-8">
                             <div className="flex items-center gap-2 mb-2">
                                 <span className="text-[10px] text-nexus-gold font-orbitron font-black tracking-[0.2em] uppercase">{tool.category}</span>
-                                <div className="h-px flex-1 bg-white/5" />
+                                <div className="h-px flex-1 bg-nexus-border" />
                                 <span className={`
                                     px-2 py-0.5 rounded text-[8px] font-black font-orbitron border
                                     ${tool.belt === 'YB' ? 'border-nexus-gold/30 text-nexus-gold bg-nexus-gold/5' :
@@ -151,7 +151,7 @@ const PhaseOrbitView = () => {
                                 {tool.name}
                             </h3>
                             <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                                Heavy-duty protocol for <span className="text-slate-400">{tool.category.toLowerCase()}</span> mastery. Optimized for <span className="text-slate-400">{tool.belt}</span> level operations.
+                                Heavy-duty protocol for <span className="text-nexus-text-secondary">{tool.category.toLowerCase()}</span> mastery. Optimized for <span className="text-nexus-text-secondary">{tool.belt}</span> level operations.
                             </p>
                         </div>
 
@@ -177,7 +177,7 @@ const PhaseOrbitView = () => {
                         <div className="mt-8 flex gap-4 relative z-10">
                             <Link
                                 to={`/workspace/${tool.id}`}
-                                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-white text-nexus-navy font-orbitron font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl hover:shadow-nexus-cyan/20"
+                                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-nexus-text-primary text-nexus-bg-deep font-orbitron font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl hover:shadow-nexus-cyan/20"
                             >
                                 <Terminal className="w-4 h-4" /> EXECUTE
                             </Link>
@@ -196,7 +196,7 @@ const PhaseOrbitView = () => {
                 {/* 📚 PERSISTENT LEARNING HUB STUB */}
                 <motion.div
                     variants={nodeVariants}
-                    className="bg-black/20 border border-dashed border-nexus-border rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-center opacity-40 hover:opacity-100 transition-all cursor-pointer group hover:bg-white/5 hover:border-nexus-cyan/40"
+                    className="bg-black/20 border border-dashed border-nexus-border rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-center opacity-40 hover:opacity-100 transition-all cursor-pointer group hover:bg-nexus-text-primary/5 hover:border-nexus-cyan/40"
                 >
                     <Layers className="w-12 h-12 text-slate-600 mb-6 group-hover:text-nexus-cyan group-hover:scale-110 transition-all duration-500" />
                     <div className="text-[10px] font-black font-orbitron text-slate-500 tracking-widest uppercase mb-1">Deep Learning</div>
