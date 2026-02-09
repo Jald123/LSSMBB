@@ -398,7 +398,7 @@
             color: white;
         }
 
-        /* DASHBOARD ENHANCEMENTS */
+        /* Dashboard ENHANCEMENTS */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1.5fr 1fr;
@@ -596,7 +596,7 @@
             }
         }
 
-        /* DASHBOARD HOVER TOOLTIP */
+        /* Dashboard HOVER TOOLTIP */
         .dashboard-tooltip {
             position: fixed;
             background: rgba(10, 10, 30, 0.98);
@@ -631,7 +631,7 @@
             🚀 Open Waste Visualizer
         </button>
         <br>
-        <a href="Tool_LeanLeadership.html" class="nav-back">← Back to Hub</a>
+        <a href="Tool_LeanLeadership.html" class="nav-back">←  Dashboard</a>
     </div>
 
     <!-- WASTE VISUALIZER MODAL -->
@@ -777,7 +777,7 @@
                 </div>
             </div>
 
-            <!-- ENHANCED DASHBOARD RESULTS -->
+            <!-- ENHANCED Dashboard RESULTS -->
             <div class="dashboard-grid">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
                     <div class="metric-card" onmouseenter="showResultTooltip(event, 'financial')"
@@ -869,7 +869,7 @@
             document.getElementById('waste-content').innerHTML = html;
         }
 
-        // --- DASHBOARD CALCULATION LOGIC ---
+        // --- Dashboard CALCULATION LOGIC ---
         const HOURLY_RATE = 50;
         const APPT_LENGTH = 0.5; // 30 mins
         const WEEKS_YEAR = 52;
@@ -1038,7 +1038,7 @@
             calculateMasterImpact();
         }
 
-        // --- DASHBOARD TOOLTIP LOGIC ---
+        // --- Dashboard TOOLTIP LOGIC ---
         function showResultTooltip(e, type) {
             const tooltip = document.getElementById('dashboardTooltip');
             let title = "";

@@ -50,7 +50,7 @@ export const toolRegistry = {
     },
     'qfd': {
         name: 'QFD House of Quality',
-        src: '/04-STATISTICS-TOOLS/Tool_QFD_HouseOfQuality.html',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=qfd',
         phase: 'Define',
         category: 'SIX SIGMA',
         priority: 2,
@@ -58,7 +58,7 @@ export const toolRegistry = {
     },
     'swimlane-adv': {
         name: 'Advanced Swimlane Architect',
-        src: '/04-STATISTICS-TOOLS/Tool_Swimlane_Advanced.html',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=swimlane',
         phase: 'Define',
         category: 'LEAN',
         priority: 3,
@@ -172,7 +172,7 @@ export const toolRegistry = {
     },
     'vsm': {
         name: 'Value Stream Map (VSM)',
-        src: '/04-STATISTICS-TOOLS/Tool_VSM.html',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=vsm',
         phase: 'Measure',
         category: 'LEAN',
         priority: 2,
@@ -180,7 +180,7 @@ export const toolRegistry = {
     },
     'raci': {
         name: 'Modern RACI Matrix',
-        src: '/04-STATISTICS-TOOLS/Tool_RACI_Premium.html',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=raci',
         phase: 'Measure',
         category: 'PROJ. MGMT',
         priority: 2,
@@ -262,7 +262,7 @@ export const toolRegistry = {
     },
     'triz': {
         name: 'TRIZ / Trade-offs',
-        src: '/04-STATISTICS-TOOLS/Tool_SpecializedEngineering.html',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=triz',
         phase: 'Analyze',
         category: 'INNOVATION',
         priority: 'PRIORITY 3',
