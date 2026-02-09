@@ -246,19 +246,19 @@ export const toolRegistry = {
     },
     'fishbone': {
         name: 'Fishbone Diagram',
-        src: '/02-TEMPLATES/Template_Fishbone.html',
+        src: 'https://lssmbb-4wxicpks0-hossan-nclexs-projects.vercel.app/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=fishbone',
         phase: 'Analyze',
         category: 'ROOT CAUSE',
         priority: 1,
-        belt: 'YB'
+        belt: 'GB'
     },
     '5whys': {
         name: '5 Whys Analysis',
-        src: '/02-TEMPLATES/Template_5Whys.html',
+        src: 'https://lssmbb-4wxicpks0-hossan-nclexs-projects.vercel.app/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=5whys',
         phase: 'Analyze',
         category: 'ROOT CAUSE',
         priority: 2,
-        belt: 'YB'
+        belt: 'GB'
     },
     'triz': {
         name: 'TRIZ / Trade-offs',

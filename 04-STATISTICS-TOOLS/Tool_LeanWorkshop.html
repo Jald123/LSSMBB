@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Ôªø<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -247,7 +247,7 @@
         <div class="flex-between"
             style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px;">
             <div>
-                <h1 style="font-size: 24px;">?? Premium Lean Studio</h1>
+                <h1 style="font-size: 24px;"> Premium Lean Studio</h1>
                 <p style="color:var(--text-secondary); font-size: 14px; margin:0;">Black Belt Standard Visual Tools.
                     <span class="ai-badge">AI ENABLED</span>
                 </p>
@@ -261,24 +261,24 @@
             <!-- SIDEBAR MENU -->
             <div class="sidebar">
                 <div class="phase-header">Define</div>
-                <button class="tool-btn active" onclick="renderTool('sipoc')" id="btn-sipoc">?? SIPOC Diagram</button>
-                <button class="tool-btn" onclick="renderTool('qfd')" id="btn-qfd">?? QFD House of Quality</button>
+                <button class="tool-btn active" onclick="renderTool('sipoc')" id="btn-sipoc"> SIPOC Diagram</button>
+                <button class="tool-btn" onclick="renderTool('qfd')" id="btn-qfd"> QFD House of Quality</button>
                 <button class="tool-btn" onclick="renderTool('affinity')" id="btn-affinity">??? Affinity
                     Diagram</button>
                 <button class="tool-btn" onclick="renderTool('flowchart')" id="btn-flowchart">?? Process
                     Flowchart</button>
 
                 <div class="phase-header">Measure</div>
-                <button class="tool-btn" onclick="renderTool('ctq')" id="btn-ctq">?? CTQ Tree</button>
-                <button class="tool-btn" onclick="renderTool('voc_tree')" id="btn-voc_tree">?? VOC Tree Diagram</button>
-                <button class="tool-btn" onclick="renderTool('vsm')" id="btn-vsm">?? Value Stream Map</button>
-                <button class="tool-btn" onclick="renderTool('raci')" id="btn-raci">? RACI Matrix</button>
+                <button class="tool-btn" onclick="renderTool('ctq')" id="btn-ctq"> CTQ Tree</button>
+                <button class="tool-btn" onclick="renderTool('voc_tree')" id="btn-voc_tree"> VOC Tree Diagram</button>
+                <button class="tool-btn" onclick="renderTool('vsm')" id="btn-vsm"> Value Stream Map</button>
+                <button class="tool-btn" onclick="renderTool('raci')" id="btn-raci"> RACI Matrix</button>
                 <button class="tool-btn" onclick="renderTool('spaghetti')" id="btn-spaghetti">?? Spaghetti
                     Diagram</button>
                 <button class="tool-btn" onclick="renderTool('gager')" id="btn-gager">?? Gage R&R Sheet</button>
 
                 <div class="phase-header">Analyze</div>
-                <button class="tool-btn" onclick="renderTool('fishbone')" id="btn-fishbone">?? Fishbone Diagram</button>
+                <button class="tool-btn" onclick="renderTool('fishbone')" id="btn-fishbone"> Fishbone Diagram</button>
                 <button class="tool-btn" onclick="renderTool('5whys')" id="btn-5whys">? 5 Whys</button>
                 <button class="tool-btn" onclick="renderTool('swot')" id="btn-swot">?? SWOT Analysis</button>
                 <button class="tool-btn" onclick="renderTool('swimlane')" id="btn-swimlane">?? Swimlane Diagram</button>
@@ -551,7 +551,7 @@
                 render: (data) => `
                     <div style="font-family:sans-serif;">
                         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #34495e; padding-bottom:10px; margin-bottom:15px;">
-                            <h3 style="color:#2c3e50; margin:0;">?? SIPOC Diagram</h3>
+                            <h3 style="color:#2c3e50; margin:0;"> SIPOC Diagram</h3>
                             <div style="text-align:right; font-size:11px; color:#7f8c8d;">
                                 <strong>Created By:</strong> ${data.meta_created_by || 'Unknown'}<br>
                                 <strong>Date:</strong> ${data.meta_date || new Date().toLocaleDateString()}
@@ -588,7 +588,7 @@
                 `
             },
             'qfd': {
-                title: "?? House of Quality (QFD)",
+                title: " House of Quality (QFD)",
                 phase: "DEFINE",
                 hook: "Translate Voice of Customer into Technical Specs.",
                 history: "Developed in 1966 by Yoji Akao in Japan, QFD was a secret weapon of Mitsubishi Heavy Industries before Toyota adopted it to drastically reduce design costs. It ensures every technical spec traces back to a customer need.",
@@ -2387,7 +2387,7 @@
             // CTQ TREE (Critical-To-Quality)
             // =====================================
             'ctq': {
-                title: "?? CTQ Tree",
+                title: " CTQ Tree",
                 phase: "DEFINE",
                 hook: "Translate customer needs into measurable specifications.",
                 history: "A core Six Sigma tool that bridges Voice of Customer (VOC) to actionable, measurable requirements.",
@@ -2609,7 +2609,7 @@ Cost, Lower Scrap, Scrap Rate %, < 1%`
                         <!-- HEADER -->
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #ecf0f1;">
                             <div>
-                                <h2 style="margin:0; font-size:20px; color:#2c3e50;">?? CTQ Tree</h2>
+                                <h2 style="margin:0; font-size:20px; color:#2c3e50;"> CTQ Tree</h2>
                                 <span style="font-size:11px; color:#7f8c8d;">Critical-To-Quality Decomposition</span>
                             </div>
                             <div style="display:flex; gap:8px; font-size:10px;">
@@ -2647,7 +2647,7 @@ Cost, Lower Scrap, Scrap Rate %, < 1%`
             // RACI MATRIX
             // =====================================
             'raci': {
-                title: "? RACI Matrix",
+                title: " RACI Matrix",
                 phase: "DEFINE",
                 hook: "Clarify roles and responsibilities for every task.",
                 history: "Developed in the 1950s for project management. RACI stands for Responsible, Accountable, Consulted, Informed.",
@@ -2897,7 +2897,7 @@ Launch Marketing`,
                         <!-- HEADER -->
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #ecf0f1;">
                             <div>
-                                <h2 style="margin:0; font-size:20px; color:#2c3e50;">? RACI Matrix</h2>
+                                <h2 style="margin:0; font-size:20px; color:#2c3e50;"> RACI Matrix</h2>
                                 <span style="font-size:11px; color:#7f8c8d;">Roles & Responsibilities Chart</span>
                             </div>
                             <div style="display:flex; gap:10px; font-size:11px;">
@@ -2962,7 +2962,7 @@ Launch Marketing`,
             // SPAGHETTI DIAGRAM
             // =====================================
             'spaghetti': {
-                title: "?? Spaghetti Diagram",
+                title: " Spaghetti Diagram",
                 phase: "MEASURE",
                 hook: "Visualize motion waste and optimize physical flow.",
                 history: "A Lean tool that traces the physical path of people, materials, or paperwork to identify unnecessary movement ? one of the 8 wastes (Muda).",
@@ -3366,7 +3366,7 @@ Copy Room, Front Desk, 6, #1abc9c`,
                         <!-- HEADER -->
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #ecf0f1;">
                             <div>
-                                <h2 style="margin:0; font-size:20px; color:#2c3e50;">?? Spaghetti Diagram</h2>
+                                <h2 style="margin:0; font-size:20px; color:#2c3e50;"> Spaghetti Diagram</h2>
                                 <span style="font-size:11px; color:#7f8c8d;">Motion Path Visualization & Waste Analysis</span>
                             </div>
                             <div style="display:flex; gap:15px; font-size:11px;">
@@ -3450,7 +3450,7 @@ Copy Room, Front Desk, 6, #1abc9c`,
             // FISHBONE DIAGRAM (ISHIKAWA)
             // =====================================
             'fishbone': {
-                title: "?? Fishbone Diagram",
+                title: " Fishbone Diagram",
                 phase: "ANALYZE",
                 hook: "Visualize cause-and-effect relationships for root cause analysis.",
                 history: "Created by Kaoru Ishikawa in 1943. Also called Ishikawa Diagram or Cause-and-Effect Diagram. A cornerstone of quality management.",
@@ -3826,7 +3826,7 @@ Promotion, Unclear product descriptions`
                     return `
                     <div style="background:#f5fbff; padding:20px; border-radius:15px; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                            <h2 style="margin:0; color:#1976D2; font-size:18px; display:flex; align-items:center; gap:10px;">?? Premium Fishbone Visualizer</h2>
+                            <h2 style="margin:0; color:#1976D2; font-size:18px; display:flex; align-items:center; gap:10px;"> Premium Fishbone Visualizer</h2>
                             <span style="background:#1976D2; color:white; padding:4px 12px; border-radius:15px; font-size:11px; font-weight:bold;">${catFormat.toUpperCase()} MODEL</span>
                         </div>
                         <div style="background:white; border-radius:12px; padding:10px; box-shadow: 0 6px 20px rgba(0,0,0,0.04); overflow:hidden;">
@@ -4035,7 +4035,7 @@ Promotion, Unclear product descriptions`
             // SWOT ANALYSIS
             // =====================================
             'swot': {
-                title: "?? SWOT Analysis",
+                title: " SWOT Analysis",
                 phase: "ANALYZE",
                 hook: "Strategic analysis of Strengths, Weaknesses, Opportunities, and Threats.",
                 history: "Developed at Stanford Research Institute in the 1960s-70s by Albert Humphrey. A fundamental strategic planning tool used worldwide.",
@@ -4247,7 +4247,7 @@ Privacy regulations affecting data usage`
             // CAUSE & EFFECT MATRIX
             // =====================================
             'ce_matrix': {
-                title: "?? C&E Matrix",
+                title: " C&E Matrix",
                 phase: "MEASURE",
                 hook: "Prioritize inputs (X's) based on impact on outputs (Y's).",
                 history: "Also known as the X-Y Matrix. A core Six Sigma tool for narrowing down variables.",
@@ -4522,7 +4522,7 @@ Privacy regulations affecting data usage`
             // VALUE STREAM MAP (VSM)
             // =====================================
             'vsm': {
-                title: "??? Value Stream Map",
+                title: "? Value Stream Map",
                 phase: "MEASURE",
                 hook: "Visualize flow and identify waste (Muda).",
                 history: "Originated at Toyota. Also known as Material and Information Flow Mapping.",
@@ -4689,7 +4689,7 @@ Privacy regulations affecting data usage`
 
                     let html = `<div style="font-family:'Segoe UI',sans-serif; padding:15px; background:white;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                        <h3 style="color:#2c3e50; margin:0;">?? Value Stream Map</h3>
+                        <h3 style="color:#2c3e50; margin:0;"> Value Stream Map</h3>
                         <div style="text-align:right;">
                             <span style="background:#e8f6f3; color:#16a085; padding:5px 10px; border-radius:4px; font-weight:bold; font-size:12px;">Total Lead Time: ${totalLTDays} days</span>
                             <span style="background:#fef5e7; color:#f39c12; padding:5px 10px; border-radius:4px; font-weight:bold; font-size:12px; margin-left:10px;">Value Added: ${totalVA} sec</span>
@@ -4710,7 +4710,7 @@ Privacy regulations affecting data usage`
             // FLOWCHART
             // =====================================
             'flowchart': {
-                title: "?? Process Flowchart",
+                title: " Process Flowchart",
                 phase: "DEFINE",
                 hook: "Drag-and-drop process mapping with standard symbols.",
                 history: "Standardized by ANSI and ISO. The most common process mapping tool used across all industries.",
@@ -5054,7 +5054,7 @@ P10, E`
             // SWIMLANE DIAGRAM
             // =====================================
             'swimlane': {
-                title: "?? Swimlane Diagram",
+                title: " Swimlane Diagram",
                 phase: "DEFINE",
                 hook: "Visualize process handoffs across departments with swimmer icons.",
                 history: "Also known as Cross-Functional Flowchart or Deployment Flowchart. Essential for identifying handoff delays.",
@@ -5344,7 +5344,7 @@ P5, E`
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                                 <div>
                                     <h2 style="margin:0; color:white; font-size:20px;">?? ${processTitle}</h2>
-                                    <div style="color:#7f8c8d; font-size:12px; margin-top:5px;">${laneNames.length} lanes ï ${Object.keys(nodes).length} steps ï ${handoffCount} handoffs</div>
+                                    <div style="color:#7f8c8d; font-size:12px; margin-top:5px;">${laneNames.length} lanes ‚Ä¢ ${Object.keys(nodes).length} steps ‚Ä¢ ${handoffCount} handoffs</div>
                                 </div>
                                 <div style="display:flex; gap:10px;">
                                     <span style="background:rgba(231,76,60,0.2); color:#e74c3c; padding:6px 14px; border-radius:20px; font-size:11px; font-weight:bold; border:1px solid #e74c3c;">?? ${handoffCount} Handoffs</span>
@@ -5368,7 +5368,7 @@ P5, E`
             },
 
             'brainstorm': {
-                title: "?? Brainstorming",
+                title: " Brainstorming",
                 phase: "DEFINE",
                 hook: "Generate creative ideas without judgment.",
                 history: "Developed by Alex Osborn in 1939. A foundational technique for creative problem-solving.",
@@ -5571,7 +5571,7 @@ Process: Document and video current changeovers
             // MOSCOW PRIORITIZATION
             // =====================================
             'moscow': {
-                title: "?? MoSCoW Prioritization",
+                title: " MoSCoW Prioritization",
                 phase: "DEFINE",
                 hook: "Prioritize requirements by Must, Should, Could, Won't.",
                 history: "Developed by Dai Clegg at Oracle UK in 1994. Widely used in Agile and project management.",
@@ -5770,7 +5770,7 @@ VR interface`
             // 5S CHECKLIST
             // =====================================
             '5s': {
-                title: "?? 5S Checklist",
+                title: " 5S Checklist",
                 phase: "IMPROVE",
                 hook: "Organize the workplace: Sort, Set, Shine, Standardize, Sustain.",
                 history: "Originated in Japan as part of the Toyota Production System. Each 'S' represents a step to workplace organization.",
@@ -5997,7 +5997,7 @@ VR interface`
             // CONTROL PLAN
             // =====================================
             'controlplan': {
-                title: "?? Control Plan",
+                title: " Control Plan",
                 phase: "CONTROL",
                 hook: "Document how to maintain and monitor process improvements.",
                 history: "A key deliverable in Six Sigma's Control phase. Ensures gains from improvement projects are sustained.",
@@ -6113,7 +6113,7 @@ Visual Defects | Zero defects | Visual inspection | 100 % | Operator | Reject pa
             // RISK REGISTER
             // =====================================
             'riskreg': {
-                title: "?? Risk Register",
+                title: " Risk Register",
                 phase: "CONTROL",
                 hook: "Identify, assess, and plan mitigation for project risks.",
                 history: "A fundamental project management tool used across industries to track potential risks.",
@@ -6362,7 +6362,7 @@ Data migration errors | 3 | 4 | Multiple test migrations, validation scripts | D
             // A3 PROBLEM SOLVING
             // =====================================
             'a3': {
-                title: "?? A3 Problem Solving",
+                title: " A3 Problem Solving",
                 phase: "ANALYZE",
                 hook: "Tell the story of problem-solving on one page.",
                 history: "Developed at Toyota. Named after A3 paper size (11x17 inches). Forces concise, visual thinking.",
@@ -6399,12 +6399,12 @@ Data migration errors | 3 | 4 | Multiple test migrations, validation scripts | D
                             title: "Reduce Inpatient Falls by 40%",
                             owner: "Mary Johnson, Nurse Manager | December 2024",
                             background: "Patient falls have increased to 4.5 per 1,000 patient days (up from 2.8 last year). This exceeds the national benchmark of 3.0. Falls result in extended stays, increased costs (~$14K per fall), and potential harm to patients.",
-                            current: "ï 18 falls last month (4.5 per 1,000 patient days)\nï 22% resulted in injury\nï 60% occur at night shift\nï 45% in patients >75 years\nï Fall risk assessment compliance: 78%",
-                            goal: "ï Reduce falls to <2.5 per 1,000 patient days by Q2\nï Zero falls with serious injury\nï 100% fall risk assessment compliance\nï 95% hourly rounding compliance",
+                            current: "‚Ä¢ 18 falls last month (4.5 per 1,000 patient days)\n‚Ä¢ 22% resulted in injury\n‚Ä¢ 60% occur at night shift\n‚Ä¢ 45% in patients >75 years\n‚Ä¢ Fall risk assessment compliance: 78%",
+                            goal: "‚Ä¢ Reduce falls to <2.5 per 1,000 patient days by Q2\n‚Ä¢ Zero falls with serious injury\n‚Ä¢ 100% fall risk assessment compliance\n‚Ä¢ 95% hourly rounding compliance",
                             rootcause: "5 Whys Analysis:\n1. Why do falls occur at night? ? Patients attempt to ambulate unassisted\n2. Why unassisted? ? Call lights not answered promptly\n3. Why delayed response? ? Staff busy with other patients\n4. Why? ? Inadequate staffing ratios at night\n5. Why? ? Historical scheduling pattern not aligned with patient needs",
                             countermeasures: "1. Implement hourly rounding protocol\n2. Install bed exit alarms for high-risk patients\n3. Adjust night shift staffing ratios\n4. Use yellow non-slip socks for high-risk patients\n5. Create falls dashboard visible on unit",
                             actionplan: "Hourly rounding training | Nursing Ed | Week 1\nBed alarm installation | Biomedical | Week 2\nStaffing adjustment proposal | CNO | Week 2\nYellow sock protocol | Unit Manager | Week 1\nDashboard deployment | Quality/IT | Week 3",
-                            followup: "ï Daily fall huddles at shift change\nï Weekly falls committee review\nï Monthly trending and analysis\nï Quarterly benchmark comparison\nï Patient/family surveys on communication"
+                            followup: "‚Ä¢ Daily fall huddles at shift change\n‚Ä¢ Weekly falls committee review\n‚Ä¢ Monthly trending and analysis\n‚Ä¢ Quarterly benchmark comparison\n‚Ä¢ Patient/family surveys on communication"
                         }
                     },
                     'mfg': {
@@ -6413,12 +6413,12 @@ Data migration errors | 3 | 4 | Multiple test migrations, validation scripts | D
                             title: "Reduce Scrap Rate from 8% to 2%",
                             owner: "Tom Williams, Production Manager | December 2024",
                             background: "Scrap rate on Line 3 has risen to 8%, costing approximately $45,000/month in wasted materials. This exceeds our target of 2% and is impacting overall equipment effectiveness (OEE) and profitability.",
-                            current: "ï Scrap rate: 8% (target: 2%)\nï Main defect: Dimensional out-of-spec (65%)\nï Secondary: Surface defects (25%)\nï Cost impact: $45K/month\nï OEE: 72% (target: 85%)",
-                            goal: "ï Reduce scrap rate to <2% by end of Q1\nï Save $40K/month in material costs\nï Improve OEE to 85%\nï Reduce customer complaints related to quality by 50%",
+                            current: "‚Ä¢ Scrap rate: 8% (target: 2%)\n‚Ä¢ Main defect: Dimensional out-of-spec (65%)\n‚Ä¢ Secondary: Surface defects (25%)\n‚Ä¢ Cost impact: $45K/month\n‚Ä¢ OEE: 72% (target: 85%)",
+                            goal: "‚Ä¢ Reduce scrap rate to <2% by end of Q1\n‚Ä¢ Save $40K/month in material costs\n‚Ä¢ Improve OEE to 85%\n‚Ä¢ Reduce customer complaints related to quality by 50%",
                             rootcause: "Fishbone Analysis:\nMachine: Tool wear not detected early, calibration drift\nMethod: No SPC in place, operators skip measurements\nMaterial: Incoming material variation\nMan: New operators not fully trained\nMeasurement: Gauges not calibrated regularly",
                             countermeasures: "1. Implement SPC with automated alerts\n2. Install tool wear monitoring sensors\n3. Establish incoming material inspection\n4. Develop operator training certification\n5. Weekly gauge calibration schedule",
                             actionplan: "SPC software setup | Quality Eng | Jan 15\nTool sensors installation | Maintenance | Jan 20\nIncoming inspection SOP | Quality | Jan 10\nTraining program develop | Training | Jan 25\nCalibration schedule | Quality | Jan 8",
-                            followup: "ï Daily scrap review at morning meeting\nï Weekly SPC chart review\nï Monthly defect Pareto analysis\nï Quarterly training effectiveness review\nï Operator feedback sessions monthly"
+                            followup: "‚Ä¢ Daily scrap review at morning meeting\n‚Ä¢ Weekly SPC chart review\n‚Ä¢ Monthly defect Pareto analysis\n‚Ä¢ Quarterly training effectiveness review\n‚Ä¢ Operator feedback sessions monthly"
                         }
                     },
                     'quality': {
@@ -6427,12 +6427,12 @@ Data migration errors | 3 | 4 | Multiple test migrations, validation scripts | D
                             title: "Reduce Customer Complaints by 50%",
                             owner: "Jane Doe, Quality Manager | December 2024",
                             background: "Customer complaints have increased 30% over the past quarter, affecting our Net Promoter Score (down from 45 to 32). This is impacting customer retention and requires immediate attention.",
-                            current: "ï 45 complaints per month (vs. target of 20)\nï Top issues: Shipping delays (40%), Product defects (35%), Wrong items (25%)\nï Average resolution time: 5 days\nï Customer satisfaction: 65%",
-                            goal: "ï Reduce complaints to <20 per month by Q1\nï Improve resolution time to <2 days\nï Achieve 85% customer satisfaction",
+                            current: "‚Ä¢ 45 complaints per month (vs. target of 20)\n‚Ä¢ Top issues: Shipping delays (40%), Product defects (35%), Wrong items (25%)\n‚Ä¢ Average resolution time: 5 days\n‚Ä¢ Customer satisfaction: 65%",
+                            goal: "‚Ä¢ Reduce complaints to <20 per month by Q1\n‚Ä¢ Improve resolution time to <2 days\n‚Ä¢ Achieve 85% customer satisfaction",
                             rootcause: "5 Whys Analysis:\n1. Why delays? ? Warehouse picking errors\n2. Why picking errors? ? Outdated inventory system\n3. Why outdated? ? No real-time sync\n4. Why no sync? ? Legacy software limitations\n5. Why legacy? ? No IT budget allocated",
                             countermeasures: "1. Implement barcode scanning for picks\n2. Upgrade to real-time inventory system\n3. Add quality check station before shipping\n4. Create customer communication SOP",
                             actionplan: "Barcode scanners | IT Team | Jan 15\nInventory upgrade | IT + Ops | Feb 28\nQC station setup | Quality | Jan 20\nCommunication SOP | Customer Service | Jan 10",
-                            followup: "ï Weekly complaint tracking dashboard\nï Monthly review meetings with stakeholders\nï Customer survey at 30/60/90 days\nï Audit QC station effectiveness weekly"
+                            followup: "‚Ä¢ Weekly complaint tracking dashboard\n‚Ä¢ Monthly review meetings with stakeholders\n‚Ä¢ Customer survey at 30/60/90 days\n‚Ä¢ Audit QC station effectiveness weekly"
                         }
                     }
                 },
@@ -6550,7 +6550,7 @@ Data migration errors | 3 | 4 | Multiple test migrations, validation scripts | D
 
         // --- CTQ TREE (Merged with VOC Tree) ---
         toolDB['ctq'] = {
-            title: "?? CTQ Tree (VOC to Requirements)",
+            title: " CTQ Tree (VOC to Requirements)",
             phase: "MEASURE",
             hook: "Translate Voice of Customer into measurable Critical-to-Quality requirements.",
             history: "A key Six Sigma tool that bridges customer needs to measurable specifications.",
@@ -6730,7 +6730,7 @@ Refund Speed: =5 business days, Instant for store credit`
                     <div style="background:white; border-radius:16px; padding:30px; box-shadow:0 20px 40px -10px rgba(0,0,0,0.1); margin-bottom:30px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
                             <div>
-                                <h2 style="margin:0; color:#0f172a; font-size:28px; font-weight:800;">?? CTQ Tree: ${title}</h2>
+                                <h2 style="margin:0; color:#0f172a; font-size:28px; font-weight:800;"> CTQ Tree: ${title}</h2>
                                 <div style="color:#64748b; font-size:14px; margin-top:8px; font-weight:500;">Voice of Customer ? Quality Drivers ? CTQ Requirements</div>
                             </div>
                             
@@ -6792,7 +6792,7 @@ Refund Speed: =5 business days, Instant for store credit`
 
         // --- VALUE STREAM MAP (VSM) ---
         toolDB['vsm'] = {
-            title: "?? Value Stream Map",
+            title: " Value Stream Map",
             phase: "MEASURE",
             hook: "Visualize the flow of materials and information to identify waste.",
             history: "Developed from Toyota Production System. Made popular by 'Learning to See' by Rother & Shook.",
@@ -6907,7 +6907,7 @@ Refund Speed: =5 business days, Instant for store credit`
                     <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:25px; flex-wrap:wrap; gap:15px;">
                             <div>
-                                <h2 style="margin:0; color:#2c3e50; font-size:22px;">?? Value Stream Map</h2>
+                                <h2 style="margin:0; color:#2c3e50; font-size:22px;"> Value Stream Map</h2>
                                 <div style="color:#7f8c8d; font-size:14px; margin-top:5px;">${title}</div>
                             </div>
                             <div style="display:flex; gap:12px; flex-wrap:wrap;">
@@ -6936,7 +6936,7 @@ Refund Speed: =5 business days, Instant for store credit`
 
         // --- RACI MATRIX ---
         toolDB['raci'] = {
-            title: "? RACI Matrix",
+            title: " RACI Matrix",
             phase: "MEASURE",
             hook: "Clarify roles and responsibilities across tasks.",
             history: "A responsibility assignment matrix to eliminate confusion about who does what.",
@@ -7030,7 +7030,7 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
                     <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; flex-wrap:wrap; gap:15px;">
                             <div>
-                                <h2 style="margin:0; color:#2c3e50; font-size:22px;">? RACI Matrix</h2>
+                                <h2 style="margin:0; color:#2c3e50; font-size:22px;"> RACI Matrix</h2>
                                 <div style="color:#7f8c8d; font-size:14px; margin-top:5px;">${title}</div>
                             </div>
                             <div style="display:flex; gap:8px;">
@@ -7077,7 +7077,7 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
         // --- VOC TREE (Redirect to CTQ) ---
         toolDB['voc_tree'] = {
             ...toolDB['ctq'],
-            title: "?? VOC Tree Diagram",
+            title: " VOC Tree Diagram",
             hook: "Visualize Voice of Customer hierarchy. (Now merged with CTQ Tree)"
         };
 
@@ -7133,12 +7133,12 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
                 </div>
 
                 <div class="header-meta-grid">
-                    <div class="meta-box"><span class="meta-label">What Is It?</span><div class="meta-value">${tool.what}</div></div>
-                    <div class="meta-box"><span class="meta-label">Why Use It?</span><div class="meta-value">${tool.why}</div></div>
-                    <div class="meta-box"><span class="meta-label">When To Use?</span><div class="meta-value">${tool.when}</div></div>
-                    <div class="meta-box"><span class="meta-label">The Standard</span><div class="meta-value">${tool.standard}</div></div>
-                    <div class="meta-box"><span class="meta-label">Interpretation</span><div class="meta-value">${tool.interp}</div></div>
-                    <div class="meta-box"><span class="meta-label">Reference Values</span><div class="meta-value">${tool.ref}</div></div>
+                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">What Is It?</span><div class="meta-value">${tool.what}</div></div>
+                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">Why Use It?</span><div class="meta-value">${tool.why}</div></div>
+                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">When To Use?</span><div class="meta-value">${tool.when}</div></div>
+                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">The Standard</span><div class="meta-value">${tool.standard}</div></div>
+                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">Interpretation</span><div class="meta-value">${tool.interp}</div></div>
+                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">Reference Values</span><div class="meta-value">${tool.ref}</div></div>
                 </div>
 
             ${(() => {
@@ -7287,9 +7287,9 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
                 const keys = ['health', 'mfg', 'service'];
                 keys.forEach(k => {
                     if (tool.scenarios[k]) {
-                        let icon = '??';
-                        if (k === 'mfg') icon = '??';
-                        if (k === 'service') icon = '??';
+                        let icon = '';
+                        if (k === 'mfg') icon = '';
+                        if (k === 'service') icon = 'üè•';
                         let label = tool.scenarios[k].desc;
                         if (k === 'health') label = "Healthcare: " + label;
                         if (k === 'mfg') label = "Manufacturing: " + label;
@@ -7302,7 +7302,7 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
                 for (const [key, val] of Object.entries(tool.scenarios)) {
                     if (!keys.includes(key) && key !== 'ex1' && key !== 'ex2') {
                         let label = val.desc || key.toUpperCase();
-                        select.innerHTML += `<option value="${key}">?? ${label}</option>`;
+                        select.innerHTML += `<option value="${key}">üõ†Ô∏è </option>`;
                     }
                 }
             }
@@ -7494,7 +7494,7 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
                 modal.innerHTML = `
                     <div id="helpContent" style="background:#0f172a; padding:30px; border-radius:15px; max-width:800px; width:100%; max-height:80vh; overflow-y:auto; border:1px solid var(--accent); position:relative; box-shadow:0 0 50px rgba(0,255,255,0.2);">
                         <button onclick="closeHelpModal()" style="position:absolute; right:20px; top:20px; background:none; border:none; color:white; font-size:24px; cursor:pointer; opacity:0.5;">&times;</button>
-                        <h2 style="margin-top:0; color:var(--accent);">?? Tool Help & Guide</h2>
+                        <h2 style="margin-top:0; color:var(--accent);"> Tool Help & Guide</h2>
                         <p><strong>1. Select Scenario:</strong> Choose a pre-filled example (Healthcare, Manufacturing) to understand how the tool works.</p>
                         <p><strong>2. Input Data:</strong> Enter your specific project data into the fields. Use the "AI Auto-Fill" button to generate realistic content automatically!</p>
                         <p><strong>3. Analyze:</strong> The "Interpretation" card provides tips on what to look for in your results.</p>
@@ -7517,7 +7517,7 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
                     apiKey = inputKey.trim();
                     localStorage.setItem('gemini_api_key', apiKey);
                 } else {
-                    alert("?? API Key is required to use AI features.");
+                    alert(" API Key is required to use AI features.");
                     return;
                 }
             }
@@ -7663,6 +7663,38 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
             }
         }
     </style>
-<script src="AssistantTools.js"></script></body>
+<script src="AssistantTools.js"></script><style>
+.meta-box { cursor: pointer; transition: all 0.3s ease; }
+.meta-box .meta-value { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+.meta-box.active .meta-value { display: block; animation: fadeIn 0.3s; }
+.meta-box.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); transform: translateY(-2px); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Hide Back/Nav buttons
+    const buttons = document.querySelectorAll('a, button');
+    buttons.forEach(btn => {
+        const txt = btn.textContent.trim();
+        if (txt.includes('Back') || txt.includes('Tools Hub') || txt.includes('Dashboard')) {
+            btn.style.setProperty('display', 'none', 'important');
+        }
+    });
+    
+    // Ensure Meta Boxes are interactive
+    // They already have onclick from previous edit, just ensure CSS is there
+});
+</script>
+<style>
+/* Meta Box Toggle Styles */
+.meta-box { cursor: pointer; transition: all 0.3s ease; }
+.meta-box .meta-value { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+.meta-box.active .meta-value { display: block; animation: fadeIn 0.3s; }
+.meta-box.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); transform: translateY(-2px); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</body>
 
 </html>
+
+
