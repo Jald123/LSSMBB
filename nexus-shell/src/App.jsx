@@ -44,24 +44,24 @@ const NexusOS_Layout = () => {
       <OnboardingTour />
 
       {/* 🔝 HEADER */}
-      <Header
-        onMenuClick={() => setIsSidebarOpen(true)}
-      />
+      {!isWorkspace && <Header onMenuClick={() => setIsSidebarOpen(true)} />}
 
-      <div className="flex flex-1 pt-16 h-full">
+      <div className={`flex flex-1 h-full ${!isWorkspace ? 'pt-16' : ''}`}>
         {/* ⬅️ LEFT SIDEBAR */}
-        <Sidebar
-          isCollapsed={isSidebarCollapsed}
-          setIsCollapsed={toggleSidebar}
-          isOpen={isSidebarOpen}
-          setIsOpen={setIsSidebarOpen}
-        />
+        {!isWorkspace && (
+          <Sidebar
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={toggleSidebar}
+            isOpen={isSidebarOpen}
+            setIsOpen={setIsSidebarOpen}
+          />
+        )}
 
         {/* 🚀 CONTENT REGION */}
         <main
           className={`
             flex-1 relative z-10 w-full h-full transition-all duration-300
-            ${isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-60'}
+            ${!isWorkspace ? (isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-60') : ''}
           `}
         >
           <div className="h-full overflow-y-auto">
@@ -74,7 +74,7 @@ const NexusOS_Layout = () => {
       </div>
 
       {/* 🏷️ FOOTER */}
-      <Footer />
+      {!isWorkspace && <Footer />}
     </div>
   );
 };

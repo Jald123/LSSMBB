@@ -96,7 +96,7 @@ const ToolWorkspace = () => {
             const style = doc.createElement('style');
             style.textContent = `
                 /* Hiding legacy top navigations */
-                nav, header, .navbar, .top-bar, .site-header, #header { display: none !important; }
+                nav, header, .navbar, .top-bar, .site-header, #header, .tool-nav, .navigation, #nav-bar { display: none !important; }
                 
                 /* Keeping the '3rd one' (Action Bars/Toolbars) usually .toolbar, .actions or specific IDs */
                 /* If the action bar is unfortunately inside a header tag, this might hide it, 
@@ -222,7 +222,7 @@ const ToolWorkspace = () => {
             </div>
 
             {/* 🎮 MISSION CONTROL FOOTER (Floating) */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-4">
+            <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-4">
                 {/* Previous Component */}
                 <button
                     onClick={() => {
@@ -230,7 +230,7 @@ const ToolWorkspace = () => {
                         if (prevTool) navigate(`/workspace/${prevTool.id}`);
                         else navigate('/journey');
                     }}
-                    className="w-12 h-12 rounded-full glass-panel border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-all shadow-lg active:scale-95 group"
+                    className="w-12 h-12 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
                     title="Previous Station"
                 >
                     <ChevronLeft className="w-6 h-6 group-hover:-translate-x-0.5 transition-transform" />
@@ -238,7 +238,7 @@ const ToolWorkspace = () => {
 
                 {/* Central Command */}
                 <motion.div
-                    className="glass-panel border border-nexus-border/50 bg-black/80 backdrop-blur-xl rounded-full px-2 py-2 flex items-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]"
+                    className="glass-panel border border-nexus-border/50 bg-nexus-surface/80 backdrop-blur-xl rounded-full px-2 py-2 flex items-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]"
                 >
                     <button
                         onClick={() => markToolComplete(toolId)}
@@ -246,7 +246,7 @@ const ToolWorkspace = () => {
                             relative flex items-center justify-center gap-3 px-8 py-3 rounded-full font-black font-orbitron text-xs tracking-widest transition-all duration-500
                             ${isCompleted
                                 ? 'bg-gradient-to-r from-nexus-success to-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]'
-                                : 'bg-white/5 hover:bg-white/10 text-white border border-white/5 hover:border-nexus-cyan/30'
+                                : 'bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 text-nexus-text-primary border border-nexus-border hover:border-nexus-cyan/30'
                             }
                         `}
                     >
@@ -261,7 +261,7 @@ const ToolWorkspace = () => {
                 {/* Next Component */}
                 <button
                     onClick={handleNextStation}
-                    className="group flex items-center gap-3 pl-5 pr-4 py-3 h-12 rounded-full glass-panel border border-white/10 text-white hover:bg-nexus-cyan/10 hover:border-nexus-cyan/30 transition-all shadow-lg active:scale-95"
+                    className="group flex items-center gap-3 pl-5 pr-4 py-3 h-12 rounded-full glass-panel border border-nexus-border text-nexus-text-primary hover:bg-nexus-cyan/10 hover:border-nexus-cyan/30 transition-all shadow-lg active:scale-95"
                 >
                     <span className="text-xs font-black font-orbitron tracking-widest">NEXT STATION</span>
                     <ChevronRight className="w-5 h-5 text-nexus-cyan group-hover:translate-x-1 transition-transform" />
