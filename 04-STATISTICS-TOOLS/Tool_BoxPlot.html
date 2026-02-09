@@ -696,129 +696,7 @@
             drawBoxPlot();
         }
 
-        // --- STATS HELPER FUNCTIONS ---
-        function getQuantile(array, quantile) {
-            const sorted = array.slice().sort((a, b) => a - b);
-            const pos = (sorted.length - 1) * quantile;
-            const base = Math.floor(pos);
-            const rest = pos - base;
-            if (sorted[base + 1] !== undefined) {
-                return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
-            } else {
-                return sorted[base];
-            }
-        }
 
-        function generateStatsTable(datasets) {
-            let html = '<table style="width:100%; border-collapse:collapse; font-size:11px; font-family:Inter, sans-serif; color:#333;">';
-            html += '<thead><tr style="background:#f1f5f9; text-align:left; border-bottom:2px solid #cbd5e1;"><th style="padding:6px;">Group</th><th style="padding:6px;">Min</th><th style="padding:6px;">Q1</th><th style="padding:6px;">Median</th><th style="padding:6px;">Q3</th><th style="padding:6px;">Max</th><th style="padding:6px;">IQR</th><th style="padding:6px;">Outliers</th></tr></thead>';
-            html += '<tbody>';
-
-            datasets.forEach(ds => {
-                const data = ds.data[0]; // array of numbers
-                if (!data || data.length === 0) return;
-
-                // Basic calculations
-                const sorted = data.slice().sort((a, b) => a - b);
-                const min = sorted[0];
-                const max = sorted[sorted.length - 1];
-                const q1 = getQuantile(sorted, 0.25);
-                const median = getQuantile(sorted, 0.50);
-                const q3 = getQuantile(sorted, 0.75);
-                const iqr = q3 - q1;
-
-                // Outliers
-                const lowerFence = q1 - 1.5 * iqr;
-                const upperFence = q3 + 1.5 * iqr;
-                const outliers = sorted.filter(x => x < lowerFence || x > upperFence);
-
-                html += `<tr style="border-bottom:1px solid #e2e8f0;">
-                    <td style="padding:6px; font-weight:bold; color:#334155;">${ds.label}</td>
-                    <td style="padding:6px;">${min.toFixed(2)}</td>
-                    <td style="padding:6px;">${q1.toFixed(2)}</td>
-                    <td style="padding:6px; font-weight:bold; color:#2563eb;">${median.toFixed(2)}</td>
-                    <td style="padding:6px;">${q3.toFixed(2)}</td>
-                    <td style="padding:6px;">${max.toFixed(2)}</td>
-                    <td style="padding:6px;">${iqr.toFixed(2)}</td>
-                    <td style="padding:6px; font-weight:bold; color:${outliers.length > 0 ? '#dc2626' : '#16a34a'};">${outliers.length}</td>
-                </tr>`;
-            });
-
-            html += '</tbody></table>';
-            document.getElementById('statsTableContainer').innerHTML = html;
-        }
-
-        function drawBoxPlot() {
-            const raw = document.getElementById('dataInput').value.trim();
-            let datasets = [];
-
-            // Detect JSON
-            if (raw.startsWith('[') || raw.startsWith('{')) {
-                try {
-                    const json = JSON.parse(raw);
-                    if (Array.isArray(json)) {
-                        datasets = json.map(item => ({
-                            label: item.label || 'Series',
-                            data: [item.data],
-                            backgroundColor: 'rgba(52, 152, 219, 0.5)',
-                            borderColor: '#3498DB',
-                            borderWidth: 1,
-                            outlierColor: '#E74C3C'
-                        }));
-                    }
-                } catch (e) {
-                    alert('Invalid JSON format');
-                    return;
-                }
-            } else {
-                const lines = raw.split('\n');
-                lines.forEach(line => {
-                    if (!line.includes(':') && !line.includes(',')) return;
-                    const parts = line.includes(':') ? line.split(':') : ['Series', line];
-                    const name = parts[0];
-                    const vals = parts[1].split(',').map(n => parseFloat(n)).filter(n => !isNaN(n));
-                    if (vals.length > 0) {
-                        datasets.push({
-                            label: name,
-                            data: [vals],
-                            backgroundColor: 'rgba(52, 152, 219, 0.5)',
-                            borderColor: '#3498DB',
-                            borderWidth: 1,
-                            outlierColor: '#E74C3C'
-                        });
-                    }
-                });
-            }
-
-            // Generate Statistics Table
-            generateStatsTable(datasets);
-
-            const ctx = document.getElementById('boxChart').getContext('2d');
-            if (chart) chart.destroy();
-            chart = new Chart(ctx, {
-                type: 'boxplot',
-                data: { labels: ['Compare'], datasets: datasets },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top' },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    const raw = context.raw;
-                                    if (raw && raw.q3 !== undefined) {
-                                        const iqr = (raw.q3 - raw.q1).toFixed(2);
-                                        return `${context.dataset.label}: Min:${raw.min}, Q1:${raw.q1}, Med:${raw.median}, Q3:${raw.q3}, Max:${raw.max}, IQR:${iqr}`;
-                                    }
-                                    return '';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
         function downloadChart() {
             const a = document.createElement('a');
             a.download = 'BoxPlot.png';
@@ -954,6 +832,7 @@
             }
         }
     </style>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>

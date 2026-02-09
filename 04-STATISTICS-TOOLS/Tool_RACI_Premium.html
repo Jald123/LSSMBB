@@ -463,15 +463,17 @@
 </head>
 
 <body>
-    <header>
-        <div class="logo">S.W.I.M. Studio</div>
-        <div class="tool-title">
-            <h1>RACI Matrix Master</h1>
-            <p>Defining Governance & Responsibility Architectures</p>
+    <header style="justify-content: center;">
+        <div class="tool-title" style="display: flex; flex-direction: column; align-items: center;">
+            <h1 style="margin-bottom: 5px;">RACI Matrix Master</h1>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <p style="margin: 0;">Defining Governance & Responsibility Architectures</p>
+                <button class="btn btn-ghost" onclick="openInfoModal()"
+                    style="padding: 4px 10px; font-size: 11px; height: auto;">
+                    <i class="fas fa-info-circle"></i> Info
+                </button>
+            </div>
         </div>
-        <button class="btn btn-ghost" onclick="openInfoModal()">
-            <i class="fas fa-info-circle"></i> Info
-        </button>
     </header>
 
     <style>
@@ -1478,6 +1480,7 @@
             </div>
         </div>
     </div>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>

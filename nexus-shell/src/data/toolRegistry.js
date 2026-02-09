@@ -42,7 +42,7 @@ export const toolRegistry = {
     },
     'sipoc': {
         name: 'SIPOC Diagram',
-        src: '/04-STATISTICS-TOOLS/Tool_WorkflowHub.html',
+        src: 'https://lssmbb-4wxicpks0-hossan-nclexs-projects.vercel.app/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=sipoc',
         phase: 'Define',
         category: 'SIX SIGMA',
         priority: 1,
@@ -90,7 +90,7 @@ export const toolRegistry = {
     },
     'leadership': {
         name: 'Leadership & Management (ADKAR)',
-        src: '/04-STATISTICS-TOOLS/Tool_ChangeMgmt_ADKAR.html',
+        src: 'https://lssmbb-5dqa0vpsi-hossan-nclexs-projects.vercel.app/workspace/leadership',
         phase: 'Define',
         category: 'CHANGE MGMT',
         priority: 'OPT.',
