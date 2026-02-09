@@ -18,7 +18,7 @@ import { useNexus } from '../context/NexusContext';
 
 const PhaseOrbitView = () => {
     const { phaseId } = useParams();
-    const { methodology } = useNexus();
+    const { methodology, theme } = useNexus();
     const [isVideoOpen, setIsVideoOpen] = useState(false);
 
     // Normalize methodology key (e.g., FOCUS PDCA -> FOCUS)
@@ -177,7 +177,8 @@ const PhaseOrbitView = () => {
                         <div className="mt-8 flex gap-4 relative z-10">
                             <Link
                                 to={`/workspace/${tool.id}`}
-                                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-nexus-text-primary text-nexus-bg-deep font-orbitron font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl hover:shadow-nexus-cyan/20"
+                                className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-orbitron font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl hover:shadow-nexus-cyan/20
+                                    ${theme === 'dark' ? 'bg-nexus-cyan text-nexus-navy' : 'bg-nexus-text-primary text-nexus-bg-deep'}`}
                             >
                                 <Terminal className="w-4 h-4" /> EXECUTE
                             </Link>
@@ -194,15 +195,22 @@ const PhaseOrbitView = () => {
                 ))}
 
                 {/* 📚 PERSISTENT LEARNING HUB STUB */}
+                {/* 📚 PERSISTENT LEARNING HUB STUB (Compact Banner Style) */}
                 <motion.div
                     variants={nodeVariants}
-                    className="bg-black/20 border border-dashed border-nexus-border rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-center opacity-40 hover:opacity-100 transition-all cursor-pointer group hover:bg-nexus-text-primary/5 hover:border-nexus-cyan/40"
+                    className="bg-nexus-gold/10 border border-dashed border-nexus-gold/30 rounded-2xl p-6 flex items-center justify-between text-left opacity-60 hover:opacity-100 transition-all cursor-pointer group hover:bg-nexus-gold/20"
                 >
-                    <Layers className="w-12 h-12 text-slate-600 mb-6 group-hover:text-nexus-cyan group-hover:scale-110 transition-all duration-500" />
-                    <div className="text-[10px] font-black font-orbitron text-slate-500 tracking-widest uppercase mb-1">Deep Learning</div>
-                    <h4 className="text-nexus-text-primary font-bold tracking-tight">Theory Archives</h4>
-                    <p className="text-[10px] text-slate-600 mt-2 max-w-[150px]">Access methodology deep-dives and case studies.</p>
-                    <ArrowUpRight className="w-5 h-5 text-nexus-cyan mt-6 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0" />
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-nexus-gold/20 flex items-center justify-center">
+                            <Layers className="w-5 h-5 text-nexus-gold" />
+                        </div>
+                        <div>
+                            <div className="text-[9px] font-black font-orbitron text-nexus-gold tracking-widest uppercase mb-0.5">Deep Learning archive</div>
+                            <h4 className="text-nexus-text-primary font-bold text-sm tracking-tight">Theory & Case Studies</h4>
+                        </div>
+                    </div>
+
+                    <ArrowUpRight className="w-5 h-5 text-nexus-gold opacity-50 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
                 </motion.div>
             </div>
         </motion.div>

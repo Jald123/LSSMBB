@@ -14,7 +14,10 @@ import {
     AlertTriangle,
     FileText,
     Rocket,
-    CheckCircle2
+    Rocket,
+    CheckCircle2,
+    Home,
+    ArrowUp
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
 import { methodologyData } from '../data/journeyData';
@@ -25,6 +28,7 @@ const ToolWorkspace = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [viewMode, setViewMode] = useState(location.state?.mode || 'do');
+    const [activeIframe, setActiveIframe] = useState(null);
 
     const { markToolComplete, completedTools, updateProgress, methodology } = useNexus();
     const tool = toolRegistry[toolId];
@@ -92,6 +96,7 @@ const ToolWorkspace = () => {
     const handleIframeLoad = (e) => {
         try {
             const iframe = e.target;
+            setActiveIframe(iframe);
             const doc = iframe.contentWindow.document;
             const style = doc.createElement('style');
             let cssRules = `
@@ -228,7 +233,16 @@ const ToolWorkspace = () => {
             </div>
 
             {/* 🎮 MISSION CONTROL FOOTER (Floating) */}
-            <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-4">
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-4">
+                {/* Home Button */}
+                <button
+                    onClick={() => navigate('/')}
+                    className="w-12 h-12 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
+                    title="Return to Home"
+                >
+                    <Home className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </button>
+
                 {/* Previous Component */}
                 <button
                     onClick={() => {
@@ -271,6 +285,19 @@ const ToolWorkspace = () => {
                 >
                     <span className="text-xs font-black font-orbitron tracking-widest">NEXT STATION</span>
                     <ChevronRight className="w-5 h-5 text-nexus-cyan group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                {/* Page Up Button */}
+                <button
+                    onClick={() => {
+                        if (activeIframe?.contentWindow) {
+                            activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    }}
+                    className="w-12 h-12 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
+                    title="Scroll to Top"
+                >
+                    <ArrowUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
                 </button>
             </div>
 
