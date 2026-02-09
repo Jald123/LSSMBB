@@ -99,18 +99,15 @@ const ToolWorkspace = () => {
                 body { padding-top: 0 !important; margin: 0 !important; width: 100vw; height: 100vh; overflow-x: hidden; }
             `;
 
-            if (toolId === 'hoshin') {
-                // For Hoshin X-Matrix: Only hide top headers, keep the footer/nav visible
+            if (toolId !== 'hoshin') {
+                // For all tools EXCEPT Hoshin: Hide ONLY the legacy bottom navigation/footer
+                // We keep the top headers visible as requested.
                 cssRules += `
-                    header, .navbar, .top-bar, .site-header, #header, .tool-nav, #nav-bar { display: none !important; }
-                `;
-            } else {
-                // For all other tools: Hide EVERYTHING legacy (Top Headers & Bottom Footers/Navs)
-                cssRules += `
-                    nav, header, .navbar, .top-bar, .site-header, #header, .tool-nav, .navigation, #nav-bar,
-                    footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer { display: none !important; }
+                    footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer, .tool-nav-bottom, .navigation-bottom { display: none !important; }
                 `;
             }
+            // For Hoshin (toolId === 'hoshin'), we add NO extra hiding rules, 
+            // so both its Header and Bottom Nav remain visible.
 
             style.textContent = cssRules;
             doc.head.appendChild(style);
