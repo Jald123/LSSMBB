@@ -102,7 +102,7 @@ const ToolWorkspace = () => {
                 /* If the action bar is unfortunately inside a header tag, this might hide it, 
                    but usually action bars are div.toolbar or inside .container */
                 
-                body { padding-top: 0 !important; overflow-x: hidden; }
+                body { padding-top: 0 !important; margin: 0 !important; width: 100vw; height: 100vh; overflow-x: hidden; }
             `;
             doc.head.appendChild(style);
         } catch (err) {
@@ -111,10 +111,10 @@ const ToolWorkspace = () => {
     };
 
     return (
-        <div className="h-screen pt-16 flex flex-col bg-nexus-navy overflow-hidden relative">
+        <div className="h-screen w-full flex flex-col bg-nexus-navy overflow-hidden relative">
 
             {/* 🔝 MINIMAL TOP BAR */}
-            <div className="h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[900] bg-black/40 backdrop-blur-3xl absolute top-16 left-0 right-0">
+            <div className="h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[900] bg-black/40 backdrop-blur-3xl absolute top-0 left-0 right-0">
                 <div className="flex items-center gap-6">
                     <button
                         onClick={() => navigate(-1)}
