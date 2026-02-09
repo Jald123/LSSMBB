@@ -103,7 +103,7 @@ const ToolWorkspace = () => {
                 // For all tools EXCEPT Hoshin: Hide ONLY the legacy bottom navigation/footer
                 // We keep the top headers visible as requested.
                 cssRules += `
-                    footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer, .tool-nav-bottom, .navigation-bottom { display: none !important; }
+                    footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer, .tool-nav-bottom, .navigation-bottom, .universal-nav-bar { display: none !important; }
                 `;
             }
             // For Hoshin (toolId === 'hoshin'), we add NO extra hiding rules, 
