@@ -94,16 +94,25 @@ const ToolWorkspace = () => {
             const iframe = e.target;
             const doc = iframe.contentWindow.document;
             const style = doc.createElement('style');
-            style.textContent = `
-                /* Hiding legacy top navigations */
-                nav, header, .navbar, .top-bar, .site-header, #header, .tool-nav, .navigation, #nav-bar { display: none !important; }
-                
-                /* Keeping the '3rd one' (Action Bars/Toolbars) usually .toolbar, .actions or specific IDs */
-                /* If the action bar is unfortunately inside a header tag, this might hide it, 
-                   but usually action bars are div.toolbar or inside .container */
-                
+            let cssRules = `
+                /* Layout Reset */
                 body { padding-top: 0 !important; margin: 0 !important; width: 100vw; height: 100vh; overflow-x: hidden; }
             `;
+
+            if (toolId === 'hoshin') {
+                // For Hoshin X-Matrix: Only hide top headers, keep the footer/nav visible
+                cssRules += `
+                    header, .navbar, .top-bar, .site-header, #header, .tool-nav, #nav-bar { display: none !important; }
+                `;
+            } else {
+                // For all other tools: Hide EVERYTHING legacy (Top Headers & Bottom Footers/Navs)
+                cssRules += `
+                    nav, header, .navbar, .top-bar, .site-header, #header, .tool-nav, .navigation, #nav-bar,
+                    footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer { display: none !important; }
+                `;
+            }
+
+            style.textContent = cssRules;
             doc.head.appendChild(style);
         } catch (err) {
             console.warn("Could not inject styles into iframe (CORS limitation or other error):", err);
