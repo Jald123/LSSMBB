@@ -34,14 +34,18 @@ const AnalystArmory = () => {
                                         : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}
                 `}
                             >
-                                <station.icon className={`w-4 h-4 ${station.color}`} />
-                                <span className="text-[11px] font-black font-orbitron tracking-widest uppercase">{station.label}</span>
+                                {({ isActive }) => (
+                                    <>
+                                        <station.icon className={`w-4 h-4 ${station.color}`} />
+                                        <span className="text-[11px] font-black font-orbitron tracking-widest uppercase">{station.label}</span>
 
-                                {isActive && (
-                                    <motion.div
-                                        layoutId="armory-indicator"
-                                        className="absolute -bottom-1 left-4 right-4 h-1 bg-nexus-gold rounded-full shadow-[0_0_10px_#f59e0b]"
-                                    />
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="armory-indicator"
+                                                className="absolute -bottom-1 left-4 right-4 h-1 bg-nexus-gold rounded-full shadow-[0_0_10px_#f59e0b]"
+                                            />
+                                        )}
+                                    </>
                                 )}
                             </NavLink>
                         ))}

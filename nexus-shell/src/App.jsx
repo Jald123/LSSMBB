@@ -18,6 +18,7 @@ import JourneyEngine from './pages/JourneyEngine';
 import PhaseOrbitView from './pages/PhaseOrbitView';
 import ToolWorkspace from './pages/ToolWorkspace';
 import AnalystArmory from './pages/AnalystArmory';
+import ArmoryHub from './pages/ArmoryHub';
 import SigmaLab from './pages/SigmaLab';
 import DockingGame from './pages/DockingGame';
 import ScopeSniper from './pages/ScopeSniper';
@@ -91,7 +92,7 @@ function App() {
             </Route>
             <Route path="workspace/:toolId" element={<ToolWorkspace />} />
             <Route path="armory" element={<AnalystArmory />}>
-              <Route index element={<Navigate to="sigma-lab" replace />} />
+              <Route index element={<ArmoryHub />} />
               <Route path="sigma-lab" element={<SigmaLab />} />
               <Route path="docking-game" element={<DockingGame />} />
               <Route path="scope-sniper" element={<ScopeSniper />} />

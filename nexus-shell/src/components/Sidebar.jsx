@@ -165,24 +165,17 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
                 </div>
 
                 {/* Footer Area - REDUCED HEIGHT & UPDATED CONTENT */}
-                <div className="px-3 border-t border-nexus-border pt-4 pb-2 space-y-3">
-                    {!isCollapsed ? (
-                        <div className="flex flex-col gap-2">
-                            <div className="flex items-center justify-between px-2 text-[9px] font-bold text-nexus-text-secondary font-orbitron tracking-widest">
-                                <button className="hover:text-nexus-cyan transition-colors">HOME</button>
-                                <button className="hover:text-nexus-cyan transition-colors">SUPPORT</button>
-                            </div>
-                            <div className="h-px bg-nexus-text-primary/10 w-full my-1" />
-                            <div className="flex flex-col gap-1 px-2">
-                                <span className="text-[8px] text-nexus-text-secondary font-black uppercase tracking-tighter">ENGINEERED BY <span className="text-nexus-gold">HOSSAM ALDHAHER</span></span>
-                                <span className="text-[8px] text-nexus-cyan/70 font-black uppercase tracking-widest">HIGH QUALITY LEADERS SYSTEM</span>
-                            </div>
-                        </div>
-                    ) : (
+                <div className="px-3 border-t border-nexus-border py-4">
+                    {isCollapsed ? (
                         <div className="flex flex-col items-center gap-4">
                             <button className="w-8 h-8 rounded-lg bg-nexus-cyan/10 flex items-center justify-center text-nexus-cyan hover:bg-nexus-cyan hover:text-nexus-navy transition-colors">
                                 <Monitor className="w-4 h-4" />
                             </button>
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center gap-4 text-nexus-text-secondary">
+                            <Monitor className="w-4 h-4 opacity-50" />
+                            <span className="text-[10px] font-bold font-orbitron tracking-tighter">OS v2.4</span>
                         </div>
                     )}
 
