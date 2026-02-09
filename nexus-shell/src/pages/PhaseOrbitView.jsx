@@ -102,7 +102,7 @@ const PhaseOrbitView = () => {
                         <Activity className="w-5 h-5 text-nexus-cyan" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black font-orbitron text-white tracking-wide">{phase.title} TOOLS</h2>
+                        <h2 className="text-2xl font-black font-orbitron text-nexus-text-primary tracking-wide">{phase.title} TOOLS</h2>
                         <span className="text-[10px] text-nexus-text-secondary font-mono">SELECT PROTOCOL TO INITIATE</span>
                     </div>
                 </div>
@@ -128,7 +128,7 @@ const PhaseOrbitView = () => {
                             </div>
                             <div className="flex flex-col items-end">
                                 <span className="text-[9px] font-black font-orbitron text-slate-600 tracking-tighter uppercase mb-1">Station ID</span>
-                                <span className="text-[10px] text-white font-black font-orbitron">{tool.id.toUpperCase()}</span>
+                                <span className="text-[10px] text-nexus-text-primary font-black font-orbitron">{tool.id.toUpperCase()}</span>
                             </div>
                         </div>
 
@@ -147,7 +147,7 @@ const PhaseOrbitView = () => {
                                 </span>
                             </div>
 
-                            <h3 className="text-2xl font-black text-white group-hover:text-nexus-cyan transition-colors mb-3 leading-tight tracking-tight">
+                            <h3 className="text-2xl font-black text-nexus-text-primary group-hover:text-nexus-cyan transition-colors mb-3 leading-tight tracking-tight">
                                 {tool.name}
                             </h3>
                             <p className="text-xs text-slate-500 font-medium leading-relaxed">
@@ -161,7 +161,7 @@ const PhaseOrbitView = () => {
                                 <span className="text-[8px] font-black font-orbitron text-slate-600 uppercase tracking-widest mb-1">Priority</span>
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-2 h-2 rounded-full bg-nexus-cyan" />
-                                    <span className="text-[10px] font-black font-orbitron text-white">{tool.priority}</span>
+                                    <span className="text-[10px] font-black font-orbitron text-nexus-text-primary">{tool.priority}</span>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end">
@@ -200,7 +200,7 @@ const PhaseOrbitView = () => {
                 >
                     <Layers className="w-12 h-12 text-slate-600 mb-6 group-hover:text-nexus-cyan group-hover:scale-110 transition-all duration-500" />
                     <div className="text-[10px] font-black font-orbitron text-slate-500 tracking-widest uppercase mb-1">Deep Learning</div>
-                    <h4 className="text-white font-bold tracking-tight">Theory Archives</h4>
+                    <h4 className="text-nexus-text-primary font-bold tracking-tight">Theory Archives</h4>
                     <p className="text-[10px] text-slate-600 mt-2 max-w-[150px]">Access methodology deep-dives and case studies.</p>
                     <ArrowUpRight className="w-5 h-5 text-nexus-cyan mt-6 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0" />
                 </motion.div>
