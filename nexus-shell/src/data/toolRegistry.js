@@ -42,7 +42,7 @@ export const toolRegistry = {
     },
     'sipoc': {
         name: 'SIPOC Diagram',
-        src: 'https://lssmbb-4wxicpks0-hossan-nclexs-projects.vercel.app/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=sipoc',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=sipoc',
         phase: 'Define',
         category: 'SIX SIGMA',
         priority: 1,
@@ -90,7 +90,7 @@ export const toolRegistry = {
     },
     'leadership': {
         name: 'Leadership & Management (ADKAR)',
-        src: 'https://lssmbb-5dqa0vpsi-hossan-nclexs-projects.vercel.app/workspace/leadership',
+        src: '/04-STATISTICS-TOOLS/Tool_ChangeMgmt_ADKAR.html',
         phase: 'Define',
         category: 'CHANGE MGMT',
         priority: 'OPT.',
@@ -246,7 +246,7 @@ export const toolRegistry = {
     },
     'fishbone': {
         name: 'Fishbone Diagram',
-        src: 'https://lssmbb-4wxicpks0-hossan-nclexs-projects.vercel.app/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=fishbone',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=fishbone',
         phase: 'Analyze',
         category: 'ROOT CAUSE',
         priority: 1,
@@ -254,7 +254,7 @@ export const toolRegistry = {
     },
     '5whys': {
         name: '5 Whys Analysis',
-        src: 'https://lssmbb-4wxicpks0-hossan-nclexs-projects.vercel.app/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=5whys',
+        src: '/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=5whys',
         phase: 'Analyze',
         category: 'ROOT CAUSE',
         priority: 2,
