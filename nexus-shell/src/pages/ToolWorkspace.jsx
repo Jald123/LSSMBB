@@ -14,7 +14,6 @@ import {
     AlertTriangle,
     FileText,
     Rocket,
-    Rocket,
     CheckCircle2,
     Home,
     ArrowUp
