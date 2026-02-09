@@ -291,18 +291,24 @@
                 <button class="tool-btn" onclick="renderTool('ce_matrix')" id="btn-ce_matrix">🔢 C&E Matrix</button>
                 <button class="tool-btn" onclick="renderTool('triz')" id="btn-triz">💡 TRIZ Ideas</button>
 
-                <div class="phase-header">Improve</div>
+                <div class="phase-header">Improve / Control</div>
                 <button class="tool-btn" onclick="renderTool('brainstorm')" id="btn-brainstorm">💭
                     Brainstorming</button>
                 <button class="tool-btn" onclick="renderTool('cba')" id="btn-cba">💰 CBA</button>
                 <button class="tool-btn" onclick="renderTool('moscow')" id="btn-moscow">🎯 MoSCoW</button>
                 <button class="tool-btn" onclick="renderTool('5s')" id="btn-5s">🧹 5S Checklist</button>
-
                 <button class="tool-btn" onclick="renderTool('controlplan')" id="btn-controlplan">🛡️ Control
                     Plan</button>
-                <button class="tool-btn" onclick="renderTool('riskreg')" id="btn-riskreg">⚠️ Risk Register</button>
-                <button class="tool-btn" onclick="renderTool('specs')" id="btn-specs">✍️ Design Specs</button>
                 <button class="tool-btn" onclick="renderTool('a3')" id="btn-a3">📄 A3 Report Out</button>
+
+                <div class="phase-header">DESIGN (DMADV)</div>
+                <button class="tool-btn" onclick="renderTool('blueprint')" id="btn-blueprint">📐 Visual
+                    Blueprint</button>
+                <button class="tool-btn" onclick="renderTool('specs')" id="btn-specs">✍️ Design Specs</button>
+                <button class="tool-btn" onclick="renderTool('pugh')" id="btn-pugh">⚖️ Pugh Matrix</button>
+                <button class="tool-btn" onclick="renderTool('verification')" id="btn-verification">🧪 Design
+                    Verification</button>
+                <button class="tool-btn" onclick="renderTool('riskreg')" id="btn-riskreg">⚠️ Risk Register</button>
             </div>
 
             <!-- MAIN STAGE -->
@@ -794,13 +800,13 @@
                 title: " CTQ Tree",
                 phase: "MEASURE",
                 hook: "Drill down needs into measurable metrics.",
-                history: "A core tool of Design for Six Sigma (DFSS). It bridges the gap between vague marketing language ('Make it fast') and engineering specifications ('<3 seconds load time').",
+                history: "A core tool of Design for Six Sigma (DFSS). It bridges the gap between vague marketing language ('Make it fast') and engineering specifications ('<3 seconds load time'). **(Refer to the second attached document for the Baseline KPI List (CTQ) structure).**",
                 what: "Decomposes broad Needs into Drivers, and Drivers into Requirements (CTQs).",
                 why: "You can't manage what you can't measure. Makes fuzzy needs specific.",
                 when: "After collecting VOC, before setting specifications.",
                 standard: "Need -> Quality Driver -> Performance Requirement.",
                 interp: "Check if Requirements are truly measurable (e.g., 'fast' is not a metric, 'wait < 5 min' is).",
-                ref: "Start with 1 Need, 2-3 Drivers, 1-2 Metrics each.",
+                ref: "Start with 1 Need, 2-3 Drivers, 1-2 Metrics each. (Refer to the 2nd Attached Document).",
                 preReqs: "Validated Customer Needs (Voice of Camera), Subject Matter Experts on product performance.",
                 strictRoles: "Voice of Customer Rep (defines Needs), Technical Lead (defines Requirements), Analyst (validates measurement systems).",
                 steps: [
@@ -1670,24 +1676,69 @@
                     </div>
                 `
             },
+            'blueprint': {
+                title: "Visual Blueprint",
+                phase: "DESIGN",
+                hook: "A high-level architectural view of the proposed solution.",
+                history: "Originating in architecture and engineering, the blueprint provides a multi-dimensional perspective of a system before physical construction. In DMADV, it bridges the gap between technical specs and the final pilot. **Refer to the first attached document for the master template.**",
+                what: "A technical drawing or architectural diagram of the future state solution.",
+                why: "To align stakeholders on the visual and functional structure of the design.",
+                when: "DMADV Design phase, after Pugh Matrix selection.",
+                standard: "ISO Blueprint Standards / Architectural Schematics.",
+                interp: "Ensure all 'Hows' from QFD are visually represented in the schematic.",
+                ref: "Refer to the first attached document (Design Document A).",
+                steps: [
+                    { title: "1. Identify Components", desc: "Break down the solution into its primary subsystems." },
+                    { title: "2. Draw Connections", desc: "Show how the components interact (mechanically or digitally)." },
+                    { title: "3. Overlay Dimensions", desc: "Add tolerances and boundaries from Design Specs." }
+                ],
+                inputs: [
+                    { id: 'data', label: 'Blueprint Components (Name, Type, Connection)', type: 'textarea', tip: 'Describe the structure.', placeholder: 'Main Frame, Structure, Sub-A\nControl Panel, Interface, Main Frame' }
+                ],
+                render: (data) => {
+                    return `
+                    <div style="padding:20px; font-family:sans-serif; background:#f4f7f9; border-radius:8px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                            <h3 style="color:#2c3e50; border-bottom:3px solid #3b82f6; padding-bottom:5px; margin:0;">Visual Solution Blueprint</h3>
+                            <span style="font-family:monospace; background:#34495e; color:white; padding:2px 10px; border-radius:4px; font-size:10px;">REV 1.0</span>
+                        </div>
+                        <div style="border:2px dashed #3b82f6; border-radius:8px; padding:40px; text-align:center; min-height:300px; background:white; position:relative; box-shadow:inset 0 0 20px rgba(59,130,246,0.05);">
+                             <div style="position:absolute; top:10px; left:10px; color:#3b82f6; font-family:monospace; font-size:10px;">DWG: NEXUS-DESIGN-B1</div>
+                             <div style="font-size:16px; color:#34495e; font-weight:bold; margin-bottom:30px; letter-spacing:2px; text-transform:uppercase;">Future State System Architecture</div>
+                             <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:30px;">
+                                 ${data.data.split('\n').filter(l => l).map((l, i) => {
+                        const [name, type] = l.split(',');
+                        return `<div style="border:1.5px solid #3b82f6; padding:20px; background:rgba(59,130,246,0.02); color:#2c3e50; width:160px; font-size:12px; border-radius:4px; box-shadow:0 4px 6px rgba(0,0,0,0.05);">
+                                         <div style="font-size:9px; color:#3b82f6; text-transform:uppercase; margin-bottom:5px;">${type || 'Module'}</div>
+                                         <strong>${name}</strong>
+                                     </div>`;
+                    }).join('<div style="align-self:center; color:#3b82f6; font-size:24px;">?</div>')}
+                             </div>
+                             <div style="margin-top:60px; font-size:11px; color:#7f8c8d; border-top:1px solid #eee; padding-top:15px; font-style:italic;">
+                                 * System components must adhere to Design Specification Document B *
+                             </div>
+                        </div>
+                    </div>`;
+                }
+            },
             'specs': {
                 title: "Design Specifications",
                 phase: "DESIGN",
                 hook: "Lock in the technical requirements for the solution.",
-                history: "Derived from the 'Design for Six Sigma' (DFSS) methodology. It transforms the CTQ (Customer requirement) into a specific manufacturing or service tolerance that a system can reliably achieve.",
+                history: "Derived from the 'Design for Six Sigma' (DFSS) methodology. It transforms the CTQ (Customer requirement) into a specific manufacturing or service tolerance. **Refer to the second attached document for the engineering master data.**",
                 what: "Table of engineering specs and tolerances.",
                 why: "To define clear boundaries for 'Good' vs 'Bad' before production.",
                 when: "Design/Verify phase of DMADV.",
                 standard: "Target, LSL (Lower Spec Limit), USL (Upper Spec Limit).",
                 interp: "Ensure 'Gap' between USL and LSL is wide enough for process capability.",
-                ref: "6 Sigma = 2 * (USL-LSL) / 12 ... no, Cp = (USL-LSL)/6s.",
+                ref: "Refer to the second attached document (Analysis Document B).",
                 steps: [
                     { title: "1. List Parameters", desc: "What measurable things define success?" },
                     { title: "2. Define Target", desc: "What is the ideal value?" },
                     { title: "3. Set Limits", desc: "Define USL and LSL based on customer impact." }
                 ],
                 inputs: [
-                    { id: 'data', label: 'Spec Table Data (Format: Param, Target, LSL, USL, Unit)', type: 'textarea', tip: 'One per line.', placeholder: 'Temperature, 100, 95, 105, C\nResponse Time, 5, 2, 7, Sec' }
+                    { id: 'data', label: 'Spec Table Data (Param, Target, LSL, USL, Unit)', type: 'textarea', tip: 'One per line.', placeholder: 'Temperature, 100, 95, 105, C\nResponse Time, 5, 2, 7, Sec' }
                 ],
                 scenarios: {
                     'mfg': { desc: "Precision Engine Valve", data: { data: "Stem Diameter, 8.000, 7.995, 8.005, mm\nSurface Finish, 0.4, 0.2, 0.6, Ra\nHardness, 60, 58, 62, HRC" } },
@@ -1697,28 +1748,34 @@
                     const rows = data.data.split('\n').filter(l => l).map(line => {
                         const p = line.split(',');
                         return `<tr>
-                            <td style="font-weight:bold; padding:8px; border:1px solid #ddd;">${p[0] || ''}</td>
-                            <td style="text-align:center; border:1px solid #ddd;">${p[1] || ''} ${p[4] || ''}</td>
-                            <td style="text-align:center; color:#e74c3c; border:1px solid #ddd;">${p[2] || ''}</td>
-                            <td style="text-align:center; color:#e74c3c; border:1px solid #ddd;">${p[3] || ''}</td>
-                            <td style="text-align:right; color:#7f8c8d; font-size:10px; border:1px solid #ddd;">${p[4] || ''}</td>
+                            <td style="font-weight:bold; padding:12px; border:1px solid #eee;">${p[0] || ''}</td>
+                            <td style="text-align:center; border:1px solid #eee; background:#f9fbff; font-weight:bold;">${p[1] || ''} ${p[4] || ''}</td>
+                            <td style="text-align:center; color:#e74c3c; border:1px solid #eee; background:#fff5f5;">${p[2] || ''}</td>
+                            <td style="text-align:center; color:#e74c3c; border:1px solid #eee; background:#fff5f5;">${p[3] || ''}</td>
+                            <td style="text-align:right; color:#7f8c8d; font-size:11px; border:1px solid #eee; padding-right:15px;">${p[4] || ''}</td>
                         </tr>`;
                     }).join('');
                     return `
-                    <div style="padding:10px; font-family:sans-serif;">
-                        <h3 style="color:#2c3e50; border-bottom:2px solid #27ae60; padding-bottom:5px; margin-bottom:15px;">Engineering Specifications</h3>
-                        <table class="sipoc-table" style="width:100%; border-collapse:collapse; background:white; font-size:13px;">
+                    <div style="padding:20px; font-family:sans-serif; background:white; border-radius:8px;">
+                        <h3 style="color:#2c3e50; border-bottom:3px solid #27ae60; padding-bottom:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                            Engineering Design Specifications
+                            <span style="font-size:11px; color:#27ae60; background:#e8f6f3; padding:4px 12px; border-radius:20px;">DESIGN PHASE ACTIVE</span>
+                        </h3>
+                        <table class="sipoc-table" style="width:100%; border-collapse:collapse; background:white; font-size:13px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);">
                             <thead style="background:#27ae60; color:white;">
                                 <tr>
-                                    <th style="padding:10px;">Parameter</th>
+                                    <th style="padding:15px; text-align:left;">Parameter</th>
                                     <th>Target Value</th>
                                     <th>LSL</th>
                                     <th>USL</th>
-                                    <th style="text-align:right; padding-right:10px;">Unit</th>
+                                    <th style="text-align:right; padding-right:15px;">Unit</th>
                                 </tr>
                             </thead>
                             <tbody>${rows}</tbody>
                         </table>
+                        <div style="margin-top:20px; padding:15px; background:#f8fafc; border-radius:6px; font-size:11px; color:#64748b; border-left:4px solid #27ae60;">
+                            <strong>Note:</strong> Specifications are derived from QFD House of Quality (Technical Requirements) and validated during Pilot Verification.
+                        </div>
                     </div>`;
                 }
             },
@@ -2426,13 +2483,13 @@
                 title: " CTQ Tree",
                 phase: "DEFINE",
                 hook: "Translate customer needs into measurable specifications.",
-                history: "A core Six Sigma tool that bridges Voice of Customer (VOC) to actionable, measurable requirements.",
+                history: "A core Six Sigma tool that bridges Voice of Customer (VOC) to actionable, measurable requirements. **(Refer to the second attached document for the Baseline KPI List (CTQ) structure).**",
                 what: "A hierarchical diagram breaking down customer needs into Drivers, CTQs, Measurements, and Targets.",
                 why: "To ensure product/service design directly addresses what customers truly value.",
                 when: "Early in the Define phase, after gathering VOC data.",
                 standard: "Six Sigma DMAIC - Define Phase.",
                 interp: "Each branch should trace from a high-level need to a specific, measurable target.",
-                ref: "Need ? Driver ? CTQ ? Measurement ? Target",
+                ref: "Need ? Driver ? CTQ ? Measurement ? Target (Refer to the 2nd Attached Document).",
                 steps: [
                     { title: "1. Define Need", desc: "Capture the overarching customer need or goal." },
                     { title: "2. Identify Drivers", desc: "Break the need into key drivers (categories like Cost, Quality, Time)." },
@@ -7700,113 +7757,6 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
     </style>
     <script src="AssistantTools.js"></script>
     <style>
-        .meta-box {
-            cursor: pointer;
-            cursor: pointer;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .meta-box .meta-box.active {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-            transform: translateY(-2px);
-        }
-
-        .meta-box.active .meta-value {
-            display: block;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeIn 0.3s forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .meta-value {
-            display: none;
-            display: none;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .meta-box.active .meta-box.active {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-            transform: translateY(-2px);
-        }
-
-        .meta-box.active .meta-value {
-            display: block;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeIn 0.3s forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .meta-value {
-            display: none;
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        .meta-box.active {
-            border-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.1);
-            transform: translateY(-2px);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Hide Back/Nav buttons
-            const buttons = document.querySelectorAll('a, button');
-            buttons.forEach(btn => {
-                const txt = btn.textContent.trim();
-                if (txt.includes('Back') || txt.includes(' Dashboard') || txt.includes('Dashboard')) {
-                    btn.style.setProperty('display', 'none', 'important');
-                }
-            });
-
-            // Ensure Meta Boxes are interactive
-            // They already have onclick from previous edit, just ensure CSS is there
-        });
-    </script>
-    <style>
         /* Modern Meta Box Interaction Styles */
         .header-meta-grid {
             display: grid;
@@ -7856,30 +7806,17 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
             max-height: 0;
             opacity: 0;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
         }
 
         .meta-box.active .meta-value {
-            max-height: 200px;
+            max-height: 1000px;
             opacity: 1;
             margin-top: 10px;
             padding-top: 10px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
     </style>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Meta Box Interaction Handler

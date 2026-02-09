@@ -65,18 +65,20 @@
         /* FIXED NAVIGATION (MISSION CONTROL) */
         .mission-control {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background: rgba(2, 6, 23, 0.8);
+            top: 15px;
+            left: 20px;
+            right: 20px;
+            height: 70px;
+            background: rgba(2, 6, 23, 0.7);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
+            padding: 0 30px;
             z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         .nav-logo {
@@ -162,6 +164,73 @@
             width: 48px;
             height: 48px;
             position: relative;
+        }
+
+        .return-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .return-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Orbitron';
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .return-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-cyan);
+        }
+
+        .return-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #0f172a;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            min-width: 180px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-top: 10px;
+            overflow: hidden;
+            z-index: 1100;
+        }
+
+        .return-dropdown:hover .return-content {
+            display: block;
+        }
+
+        .return-link {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            transition: 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .return-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent-cyan);
+            padding-left: 25px;
+        }
+
+        .return-link i {
+            margin-right: 10px;
+            color: var(--accent-gold);
         }
 
         /* FOOTER (AUTHORITY BAR) */
@@ -522,6 +591,18 @@
         </div>
 
         <div class="progress-cluster">
+            <div class="return-dropdown">
+                <button class="return-btn"><i class="fas fa-undo"></i> RETURN TO</button>
+                <div class="return-content" id="methodology-links">
+                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="return-link"><i
+                            class="fas fa-project-diagram"></i> DMAIC</a>
+                    <a href="Tool_LeanWorkshop.html?tool=blueprint" class="return-link"><i
+                            class="fas fa-drafting-compass"></i> DMADV</a>
+                    <a href="Tool_KaizenPDCA.html" class="return-link"><i class="fas fa-bolt"></i> KAIZEN</a>
+                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="return-link"><i class="fas fa-hospital-user"></i>
+                        FOCUS PDCA</a>
+                </div>
+            </div>
             <div class="belt-gauge">
                 <svg width="48" height="48" viewBox="0 0 48 48">
                     <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4" />
@@ -857,6 +938,31 @@
 
             // Update Lab
             document.querySelector('.lab-card p').innerText = "Simulating: " + data.dpmo_preset;
+
+            // Update Methodology Links (Dynamic Icons/Text based on Sector)
+            const links = document.getElementById('methodology-links');
+            if (context === 'healthcare') {
+                links.innerHTML = `
+                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="return-link"><i class="fas fa-notes-medical"></i> CLINICAL DMAIC</a>
+                    <a href="Tool_LeanWorkshop.html?tool=blueprint" class="return-link"><i class="fas fa-hospital-alt"></i> CLINICAL DMADV</a>
+                    <a href="Tool_KaizenPDCA.html" class="return-link"><i class="fas fa-stethoscope"></i> SAFETY KAIZEN</a>
+                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="return-link"><i class="fas fa-user-check"></i> FOCUS PDCA</a>
+                `;
+            } else if (context === 'life') {
+                links.innerHTML = `
+                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="return-link"><i class="fas fa-user-ninja"></i> MASTERY DMAIC</a>
+                    <a href="Tool_LeanWorkshop.html?tool=blueprint" class="return-link"><i class="fas fa-gem"></i> LIFE DMADV</a>
+                    <a href="Tool_KaizenPDCA.html" class="return-link"><i class="fas fa-walking"></i> HABIT KAIZEN</a>
+                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="return-link"><i class="fas fa-mountain"></i> PEAK FOCUS</a>
+                `;
+            } else {
+                links.innerHTML = `
+                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="return-link"><i class="fas fa-industry"></i> MFG DMAIC</a>
+                    <a href="Tool_LeanWorkshop.html?tool=blueprint" class="return-link"><i class="fas fa-cog"></i> DESIGN DMADV</a>
+                    <a href="Tool_KaizenPDCA.html" class="return-link"><i class="fas fa-sync"></i> OPS KAIZEN</a>
+                    <a href="Tool_LeanWorkshop.html?tool=sipoc" class="return-link"><i class="fas fa-microchip"></i> FOCUS PDCA</a>
+                `;
+            }
 
             // Visual feedback on buttons
             document.querySelectorAll('.context-btn').forEach(btn => {
