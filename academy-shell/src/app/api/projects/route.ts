@@ -71,7 +71,7 @@ export async function POST(request: Request) {
             data: {
                 projectId: project.id,
                 totalSteps: framework.steps.length,
-                currentStep: 0
+                completedSteps: 0
             }
         });
 
