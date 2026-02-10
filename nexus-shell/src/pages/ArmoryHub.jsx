@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Map, Scale, Activity, ListFilter, Bone } from 'lucide-react';
+import { Shield, X } from 'lucide-react';
 
 const ArmoryHub = () => {
     const navigate = useNavigate();
@@ -10,129 +10,153 @@ const ArmoryHub = () => {
         {
             id: 'charter',
             name: 'THE CONTRACT',
-            tag: 'Project Charter',
+            tag: 'PROJECT CHARTER',
             desc: 'Define project scope, objectives, and team boundaries.',
-            icon: Shield,
-            color: 'from-blue-500 to-cyan-500',
+            img: '/04-STATISTICS-TOOLS/images/armory/station_charter.png',
             glow: 'rgba(59, 130, 246, 0.5)',
             path: '/workspace/charter'
         },
         {
             id: 'sipoc',
             name: 'THE MAP',
-            tag: 'SIPOC Diagram',
+            tag: 'SIPOC DIAGRAM',
             desc: 'Map high-level process flow: Suppliers to Customers.',
-            icon: Map,
-            color: 'from-emerald-500 to-teal-500',
+            img: '/04-STATISTICS-TOOLS/images/armory/station_sipoc.png',
             glow: 'rgba(16, 185, 129, 0.5)',
             path: '/workspace/sipoc'
         },
         {
             id: 'msa',
             name: 'THE TRUST',
-            tag: 'MSA / Gage R&R',
+            tag: 'MSA / GAGE R&R',
             desc: 'Validate measurement precision and gauge reliability.',
-            icon: Scale,
-            color: 'from-amber-500 to-orange-500',
+            img: '/04-STATISTICS-TOOLS/images/armory/station_msa.png',
             glow: 'rgba(245, 158, 11, 0.5)',
             path: '/workspace/msa'
         },
         {
             id: 'stats',
             name: 'THE DOCKING SEQUENCE',
-            tag: 'Process Capability',
+            tag: 'PROCESS CAPABILITY',
             desc: 'Optimize Cp and Cpk to dock the cargo drone safely through the tunnel.',
-            icon: Activity,
-            color: 'from-cyan-500 to-blue-500',
+            img: '/04-STATISTICS-TOOLS/images/armory/station_docking.png',
             glow: 'rgba(6, 182, 212, 0.5)',
             path: '/armory/docking-game'
         },
         {
             id: 'pareto',
             name: 'THE FOCUS',
-            tag: 'Pareto Analysis',
+            tag: 'PARETO ANALYSIS',
             desc: 'Identify the vital few issues causing 80% of pain.',
-            icon: ListFilter,
-            color: 'from-purple-500 to-pink-500',
+            img: '/04-STATISTICS-TOOLS/images/armory/station_pareto.png',
             glow: 'rgba(168, 85, 247, 0.5)',
             path: '/workspace/pareto'
         },
         {
             id: 'fishbone',
             name: 'THE ANATOMY',
-            tag: 'Fishbone Diagram',
+            tag: 'FISHBONE DIAGRAM',
             desc: 'Trace potential root causes across the 6M categories.',
-            icon: Bone,
-            color: 'from-rose-500 to-red-500',
+            img: '/04-STATISTICS-TOOLS/images/armory/station_fishbone.png',
             glow: 'rgba(225, 29, 72, 0.5)',
             path: '/workspace/fishbone'
         }
     ];
 
     return (
-        <div className="max-w-7xl mx-auto px-6 py-12">
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center mb-16"
-            >
-                <h2 className="text-4xl font-black font-orbitron text-white mb-4 tracking-tight">
-                    MISSION PREP: <span className="text-nexus-cyan">THE ESSENTIAL 6</span>
-                </h2>
-                <p className="text-slate-400 font-medium max-w-2xl mx-auto">
-                    Select a station to calibrate your core skills. Master these, or fail the project.
-                </p>
-            </motion.div>
+        <div className="max-w-7xl mx-auto px-6 py-8">
+            {/* 🛡️ Modal-Style Frame */}
+            <div className="bg-[#0f172a]/95 border border-cyan-500/30 rounded-[2.5rem] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]">
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {missions.map((mission, index) => (
-                    <motion.div
-                        key={mission.id}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ y: -10, scale: 1.02 }}
-                        onClick={() => mission.path.startsWith('http') ? window.location.href = mission.path : navigate(mission.path)}
-                        className="group relative h-[400px] cursor-pointer"
-                    >
-                        {/* 💎 Glass Background */}
-                        <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden transition-all duration-500 group-hover:border-white/30 shadow-2xl">
-                            {/* 🌌 Ambient Glow */}
-                            <div
-                                className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-[80px] opacity-20 transition-opacity duration-500 group-hover:opacity-40"
-                                style={{ background: mission.glow }}
-                            />
-
-                            {/* Card Content */}
-                            <div className="relative h-full flex flex-col items-center justify-between p-10 text-center">
-                                {/* 🛠️ Icon Hub */}
-                                <div className="relative mb-8">
-                                    <div className={`absolute inset-0 blur-[20px] opacity-30 bg-gradient-to-br ${mission.color}`} />
-                                    <div className={`w-24 h-24 rounded-full bg-slate-950 border-2 border-white/10 flex items-center justify-center relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:border-white/30`}>
-                                        <mission.icon className="w-10 h-10 text-white" />
-                                    </div>
-                                </div>
-
-                                {/* 📝 Info */}
-                                <div className="space-y-3">
-                                    <h4 className="text-[10px] font-black text-slate-500 tracking-[0.3em] uppercase">{mission.tag}</h4>
-                                    <h3 className="text-xl font-black font-orbitron text-white leading-tight transition-colors group-hover:text-nexus-cyan">{mission.name}</h3>
-                                    <p className="text-xs text-slate-400 font-medium leading-relaxed px-4">{mission.desc}</p>
-                                </div>
-
-                                {/* 🚀 Action Button */}
-                                <div className="mt-8 w-full">
-                                    <div className="relative inline-flex group/btn w-full">
-                                        <div className={`absolute -inset-px rounded-xl blur-[10px] opacity-0 group-hover:opacity-50 transition-opacity duration-300 bg-gradient-to-r ${mission.color}`} />
-                                        <button className="relative w-full px-8 py-3 bg-slate-950 border border-white/10 rounded-xl text-[10px] font-black font-orbitron text-white tracking-widest hover:border-white/30 transition-all duration-300 uppercase">
-                                            Solve Mission
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                {/* 🏷️ Header Bar */}
+                <div className="bg-black/40 border-b border-cyan-500/20 px-8 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 bg-cyan-500/10 rounded flex items-center justify-center border border-cyan-500/30">
+                            <Shield className="w-3.5 h-3.5 text-cyan-400" />
                         </div>
-                    </motion.div>
-                ))}
+                        <h1 className="text-xs font-black font-orbitron tracking-[0.2em] text-cyan-400">THE ANALYST'S ARMORY</h1>
+                    </div>
+                    <button
+                        onClick={() => navigate('/')}
+                        className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 hover:text-white hover:border-white/30 transition-all"
+                    >
+                        <X className="w-4 h-4" />
+                    </button>
+                </div>
+
+                <div className="p-12">
+                    {/* 🎯 Mission Title */}
+                    <div className="text-center mb-16 space-y-4">
+                        <motion.h2
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-3xl font-black font-orbitron text-white tracking-widest"
+                        >
+                            MISSION PREP: <span className="text-nexus-cyan">THE ESSENTIAL 6</span>
+                        </motion.h2>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-slate-400 text-sm font-medium tracking-wide"
+                        >
+                            Select a station to calibrate your core skills. Master these, or fail the project.
+                        </motion.p>
+                    </div>
+
+                    {/* 🏗️ Mission Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">
+                        {missions.map((mission, index) => (
+                            <motion.div
+                                key={mission.id}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: index * 0.05 }}
+                                whileHover={{ y: -8 }}
+                                className="group relative"
+                            >
+                                <div className="h-full bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-[2rem] p-8 flex flex-col items-center text-center transition-all duration-300 group-hover:border-cyan-500/40 group-hover:bg-cyan-500/5">
+
+                                    {/* 📀 Circular Hologram Image */}
+                                    <div className="relative mb-6">
+                                        <div className="absolute inset-0 rounded-full blur-2xl transition-opacity duration-300 opacity-0 group-hover:opacity-40"
+                                            style={{ background: mission.glow }} />
+                                        <div className="w-32 h-32 rounded-full border-2 border-cyan-500/20 p-1 bg-black shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] overflow-hidden transition-all duration-500 group-hover:border-cyan-400 group-hover:shadow-[0_0_25px_rgba(34,211,238,0.4)]">
+                                            <img
+                                                src={mission.img}
+                                                alt={mission.name}
+                                                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* 📝 Labels */}
+                                    <div className="space-y-4 flex-1">
+                                        <div>
+                                            <h3 className="text-lg font-black font-orbitron text-white tracking-wider group-hover:text-cyan-400 transition-colors uppercase">
+                                                {mission.name}
+                                            </h3>
+                                            <p className="text-[10px] font-black text-slate-500 tracking-[0.2em] uppercase mt-1">
+                                                {mission.tag}
+                                            </p>
+                                        </div>
+                                        <p className="text-xs text-slate-400 font-medium leading-relaxed">
+                                            {mission.desc}
+                                        </p>
+                                    </div>
+
+                                    {/* 🚀 Button */}
+                                    <button
+                                        onClick={() => navigate(mission.path)}
+                                        className="mt-8 w-full py-4 rounded-full border border-cyan-500/30 bg-cyan-500/5 text-xs font-black font-orbitron text-cyan-400 tracking-[0.3em] uppercase transition-all duration-300 hover:bg-cyan-400 hover:text-black hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]"
+                                    >
+                                        SOLVE MISSION
+                                    </button>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );
