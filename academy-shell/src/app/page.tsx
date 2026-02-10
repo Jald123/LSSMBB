@@ -51,7 +51,7 @@ export default function Home() {
                                     <h3 className="text-xl font-black mb-2 uppercase tracking-tight">{module}</h3>
                                     <p className="text-sm text-muted mb-6">Master the core concepts and required tools for this milestone.</p>
                                     <div className="h-1.5 w-full bg-surface rounded-full overflow-hidden">
-                                        <div className="h-full bg-primary" style={{ width: `${Math.random() * 80}%` }} />
+                                        <div className="h-full bg-primary" style={{ width: `${(i + 1) * 15}%` }} />
                                     </div>
                                 </div>
                             ))}
