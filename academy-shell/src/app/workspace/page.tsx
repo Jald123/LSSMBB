@@ -15,13 +15,33 @@ export default function WorkspacePage() {
         if (projectId) {
             fetch(`/api/projects/${projectId}`)
                 .then(res => res.json())
-                .then(data => setProjectData(data));
+                .then(data => {
+                    if (data.project) {
+                        setProjectData(data);
+                    } else {
+                        setProjectData({ error: data.error || "Project not found" });
+                    }
+                })
+                .catch(err => setProjectData({ error: "Failed to connect to system" }));
         }
     }, [projectId]);
 
     if (!projectData) return (
         <div className="h-screen flex items-center justify-center bg-background">
             <div className="text-[10px] font-black tracking-[0.4em] text-primary animate-pulse uppercase">Initializing Workspace...</div>
+        </div>
+    );
+
+    if (projectData.error) return (
+        <div className="h-screen flex flex-col items-center justify-center bg-background gap-6">
+            <div className="text-[10px] font-black tracking-[0.4em] text-rose-500 uppercase">System Error</div>
+            <h1 className="text-2xl font-black uppercase">{projectData.error}</h1>
+            <button
+                onClick={() => window.location.href = '/'}
+                className="text-[10px] font-black tracking-widest uppercase underline underline-offset-8 decoration-primary decoration-4"
+            >
+                Return to Command Center
+            </button>
         </div>
     );
 
