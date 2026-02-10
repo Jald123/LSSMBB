@@ -43,8 +43,11 @@ async function main() {
         });
 
         for (let i = 0; i < f.steps.length; i++) {
-            await prisma.phase.create({
-                data: {
+            await prisma.phase.upsert({
+                where: { id: `${f.id}-${i}` }, // Predictable ID for idempotency
+                update: { name: f.steps[i], order: i },
+                create: {
+                    id: `${f.id}-${i}`,
                     name: f.steps[i],
                     order: i,
                     frameworkId: fw.id,
@@ -90,7 +93,43 @@ async function main() {
     ];
 
     for (const c of cases) {
-        await prisma.caseStudy.create({ data: c });
+        await prisma.caseStudy.upsert({
+            where: { id: c.title.replace(/\s+/g, '-').toLowerCase() },
+            update: {},
+            create: {
+                id: c.title.replace(/\s+/g, '-').toLowerCase(),
+                ...c
+            }
+        });
+    }
+
+    // 5. Tool Mappings (DMAIC)
+    console.log("🔗 MAPPING TOOLS TO PHASES...");
+    const dmaic = await prisma.framework.findUnique({ where: { name: "DMAIC" }, include: { steps: true } });
+    if (dmaic) {
+        const toolPhaseMap: Record<string, string[]> = {
+            "Define": ["Project Charter", "SIPOC", "VOC Analysis"],
+            "Measure": ["MSA", "Capability Analysis"],
+            "Analyze": ["Fishbone Diagram", "5 Whys", "Pareto Chart"],
+            "Improve": ["FMEA"],
+            "Control": ["Control Plan"]
+        };
+
+        for (const phase of dmaic.steps) {
+            const toolNames = toolPhaseMap[phase.name];
+            if (toolNames) {
+                for (const tName of toolNames) {
+                    const tool = await prisma.tool.findUnique({ where: { name: tName } });
+                    if (tool) {
+                        await prisma.toolStepMapping.upsert({
+                            where: { toolId_phaseId: { toolId: tool.id, phaseId: phase.id } },
+                            update: {},
+                            create: { toolId: tool.id, phaseId: phase.id }
+                        });
+                    }
+                }
+            }
+        }
     }
 
     console.log("\n✅ SEEDING COMPLETE");

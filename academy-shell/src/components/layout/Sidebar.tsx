@@ -58,7 +58,7 @@ export function Sidebar({ userRole }: { userRole: string }) {
                 <div className="flex items-center gap-3 px-3 py-2 bg-surface rounded-lg">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
                         {userRole[0]}
-          }</div>
+                    </div>
                     <div className="flex-1 overflow-hidden">
                         <p className="text-xs font-bold truncate">Nexus Academic</p>
                         <p className="text-[10px] text-muted truncate">{userRole} Account</p>
