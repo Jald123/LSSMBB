@@ -23,7 +23,7 @@ interface Column {
     tasks: Task[];
 }
 
-export function SprintBoard({ columns }: { columns: Column[] }) {
+export function SprintBoard({ columns, onToolClick }: { columns: Column[], onToolClick: (task: Task) => void }) {
     return (
         <div className="flex gap-6 overflow-x-auto pb-8 h-full min-h-[600px] scroll-smooth custom-scrollbar">
             {columns.map((column) => (
@@ -44,7 +44,7 @@ export function SprintBoard({ columns }: { columns: Column[] }) {
 
                     <div className="flex-1 space-y-3 bg-surface/50 rounded-2xl p-3 border border-border/10">
                         {column.tasks.map((task) => (
-                            <ProjectCard key={task.id} task={task} />
+                            <ProjectCard key={task.id} task={task} onClick={() => onToolClick(task)} />
                         ))}
 
                         <button className="w-full py-3 border border-dashed border-border rounded-xl text-[9px] font-black text-muted hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2 group">
@@ -58,7 +58,7 @@ export function SprintBoard({ columns }: { columns: Column[] }) {
     );
 }
 
-function ProjectCard({ task }: { task: Task }) {
+function ProjectCard({ task, onClick }: { task: Task, onClick: () => void }) {
     const getStatusInfo = (status: Task['status']) => {
         switch (status) {
             case 'COMPLETE': return { color: 'text-green-500', bg: 'bg-green-500/10', icon: CheckCircle2, label: 'COMPLETED' };
@@ -72,7 +72,8 @@ function ProjectCard({ task }: { task: Task }) {
     return (
         <motion.div
             whileHover={{ y: -2, scale: 1.01 }}
-            className="kanban-card group"
+            onClick={onClick}
+            className="kanban-card group cursor-pointer"
         >
             <div className="flex justify-between items-start mb-3">
                 <div className={cn("px-2 py-0.5 rounded-md text-[8px] font-black tracking-widest uppercase", info.bg, info.color)}>

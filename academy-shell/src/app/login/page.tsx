@@ -9,13 +9,31 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [error, setError] = useState("");
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        // Simulate auth
-        setTimeout(() => {
+        setError("");
+
+        try {
+            const res = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || "Login failed");
+            }
+
             window.location.href = "/";
-        }, 1500);
+        } catch (err: any) {
+            setError(err.message);
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -39,6 +57,12 @@ export default function LoginPage() {
                     <h1 className="text-3xl font-display font-black tracking-tight uppercase leading-none">NEXUS ACADEMY</h1>
                     <p className="text-muted text-sm uppercase tracking-widest font-black">Authentication Protocol v.2.4</p>
                 </div>
+
+                {error && (
+                    <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-[10px] font-black text-red-500 uppercase tracking-widest text-center">
+                        {error}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">

@@ -12,31 +12,53 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
-export function ToolRunner({ toolName, projectTitle }: { toolName: string, projectTitle: string }) {
+export function ToolRunner({ toolId, toolName, projectTitle, onBack }: { toolId: string, toolName: string, projectTitle: string, onBack: () => void }) {
     const [data, setData] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
+    useEffect(() => {
+        // Fetch initial deliverable data
+        fetch(`/api/deliverables/${toolId}`)
+            .then(res => res.json())
+            .then(d => {
+                if (d.deliverable?.content) {
+                    setData(JSON.parse(d.deliverable.content).text || "");
+                }
+            });
+    }, [toolId]);
+
     // Simulated Autosave
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const timer = setTimeout(async () => {
             if (data) {
                 setIsSaving(true);
-                setTimeout(() => {
-                    setIsSaving(false);
+                try {
+                    await fetch(`/api/deliverables/${toolId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ content: JSON.stringify({ text: data }) })
+                    });
                     setLastSaved(new Date());
-                }, 800);
+                } catch (e) {
+                    console.error(e);
+                } finally {
+                    setIsSaving(false);
+                }
             }
         }, 2000);
         return () => clearTimeout(timer);
-    }, [data]);
+    }, [data, toolId]);
 
     return (
         <div className="flex h-full bg-background relative">
             {/* 📜 Story Panel (Left) */}
             <aside className="w-80 border-r border-border p-8 bg-card flex flex-col gap-8">
                 <div className="space-y-2">
-                    <button className="text-[9px] font-black tracking-widest text-muted hover:text-foreground flex items-center gap-2 mb-6 uppercase">
+                    <button
+                        onClick={onBack}
+                        className="text-[9px] font-black tracking-widest text-muted hover:text-foreground flex items-center gap-2 mb-6 uppercase"
+                    >
                         <ChevronLeft className="w-3 h-3" /> Back to Board
                     </button>
                     <h2 className="text-2xl font-black uppercase tracking-tight leading-none">{projectTitle}</h2>

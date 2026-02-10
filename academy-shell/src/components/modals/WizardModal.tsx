@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X, HeartPulse, ShoppingBag, TrendingUp, Sparkles, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const CATEGORIES = [
     { id: 'MEDICAL', name: 'MEDICAL SURGERY', icon: HeartPulse, count: 5, color: 'text-rose-500', bg: 'bg-rose-500/10' },
@@ -14,6 +14,44 @@ const CATEGORIES = [
 export function WizardModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
     const [step, setStep] = useState(1);
     const [selection, setSelection] = useState<any>(null);
+    const [cases, setCases] = useState<any[]>([]);
+    const [frameworks, setFrameworks] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            fetch("/api/projects")
+                .then(res => res.json())
+                .then(data => {
+                    setCases(data.cases);
+                    setFrameworks(data.frameworks);
+                });
+        }
+    }, [isOpen]);
+
+    const handleStartMission = async (caseId?: string) => {
+        setIsLoading(true);
+        try {
+            const selectedCase = cases.find(c => c.id === caseId);
+            const res = await fetch("/api/projects", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    title: selectedCase ? selectedCase.title : "Custom Project",
+                    caseStudyId: caseId,
+                    frameworkName: "DMAIC" // Default for now
+                }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                window.location.href = `/workspace?projectId=${data.project.id}`;
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     if (!isOpen) return null;
 
@@ -88,11 +126,16 @@ export function WizardModal({ isOpen, onClose }: { isOpen: boolean, onClose: () 
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {[1, 2, 3, 4, 5].map(i => (
-                                        <button key={i} className="flex items-center gap-6 p-6 rounded-3xl bg-surface/50 border border-border hover:border-primary/50 transition-all text-left">
-                                            <div className="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center text-xl font-black">0{i}</div>
+                                    {cases.filter(c => c.category === selection.id).map(c => (
+                                        <button
+                                            key={c.id}
+                                            onClick={() => handleStartMission(c.id)}
+                                            disabled={isLoading}
+                                            className="flex items-center gap-6 p-6 rounded-3xl bg-surface/50 border border-border hover:border-primary/50 transition-all text-left disabled:opacity-50"
+                                        >
+                                            <div className="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center text-xl font-black">{c.difficulty}★</div>
                                             <div className="flex-1">
-                                                <h4 className="font-black text-lg uppercase tracking-tight">Mission Example {i}</h4>
+                                                <h4 className="font-black text-lg uppercase tracking-tight">{c.title}</h4>
                                                 <p className="text-xs text-muted">A deep dive into cross-functional optimization.</p>
                                             </div>
                                             <ChevronRight className="w-4 h-4 text-muted" />
