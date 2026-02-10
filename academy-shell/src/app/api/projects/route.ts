@@ -19,9 +19,20 @@ export async function POST(request: Request) {
 
         const { title, caseStudyId, frameworkName } = await request.json();
 
+        // 1. Fetch the selected framework with all phases AND tool mappings
         const framework = await prisma.framework.findUnique({
             where: { name: frameworkName },
-            include: { steps: { include: { mappings: { include: { tool: true } } } } }
+            include: {
+                steps: {
+                    include: {
+                        mappings: {
+                            include: {
+                                tool: true
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         if (!framework) {
@@ -30,7 +41,7 @@ export async function POST(request: Request) {
 
         const userId = (session as any).id;
 
-        // 1. Create Project
+        // 2. Create the Project
         const project = await prisma.project.create({
             data: {
                 title,
@@ -40,8 +51,10 @@ export async function POST(request: Request) {
             }
         });
 
-        // 2. Create Deliverables based on Framework Tools
+        // 3. Create Deliverables
+        // We loop through EVERY phase in the framework
         for (const phase of framework.steps) {
+            // And EVERY tool mapped to that phase
             for (const mapping of phase.mappings) {
                 await prisma.deliverable.create({
                     data: {
@@ -53,12 +66,12 @@ export async function POST(request: Request) {
             }
         }
 
-        // 3. Initialize Progress
-        const totalSteps = framework.steps.length;
+        // 4. Initialize Progress tracking
         await prisma.progress.create({
             data: {
                 projectId: project.id,
-                totalSteps,
+                totalSteps: framework.steps.length,
+                currentStep: 0
             }
         });
 
