@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@layer base {
+    :root {
+        /* 🍎 Light Mode: Apple Minimal */
+        --background: #ffffff;
+        --foreground: #1d1d1f;
+        --surface: #f5f5f7;
+        --border: #e5e5e7;
+        --primary: #0071e3;
+        --primary-foreground: #ffffff;
+        --secondary: #f5f5f7;
+        --secondary-foreground: #1d1d1f;
+        --muted: #86868b;
+        --muted-foreground: #1d1d1f;
+        --accent: #0071e3;
+        --accent-foreground: #ffffff;
+        --card: #ffffff;
+        --card-foreground: #1d1d1f;
+        --radius: 12px;
+    }
+
+    .dark {
+        /* ⌨️ Dark Mode: Linear/Notion Style */
+        --background: #0d0d0d;
+        /* Deep neutral gray */
+        --foreground: #ededed;
+        --surface: #1a1a1a;
+        --border: #262626;
+        --primary: #3b82f6;
+        /* Modern Blue */
+        --primary-foreground: #ffffff;
+        --secondary: #1a1a1a;
+        --secondary-foreground: #ededed;
+        --muted: #a1a1aa;
+        --muted-foreground: #ededed;
+        --accent: #3b82f6;
+        --accent-foreground: #ffffff;
+        --card: #111111;
+        --card-foreground: #ededed;
+        --radius: 8px;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border outline-none;
+    }
+
+    body {
+        @apply bg-background text-foreground font-interface antialiased;
+    }
+}
+
+/* Custom Utilities */
+.glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+}
+
+.dark .glass {
+    @apply bg-black/50 backdrop-blur-md border border-white/10;
+}
+
+/* Kanban Styles */
+.kanban-column {
+    @apply flex flex-col gap-4 min-w-[320px] max-w-[320px] h-full;
+}
+
+.kanban-card {
+    @apply bg-card border border-border p-4 rounded-lg shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full hover:bg-muted/50 transition-colors;
+}

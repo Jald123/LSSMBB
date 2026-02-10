@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String?
+  role          String    @default("STUDENT") // ADMIN, STUDENT, TRIAL
+  status        String    @default("ACTIVE")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  projects      Project[]
+  badgeAwards   BadgeAward[]
+  certAwards    CertificateAward[]
+}
+
+model Framework {
+  id          String   @id @default(cuid())
+  name        String   @unique // DMAIC, DMADV, KAIZEN, PDCA, FOCUS-PDCA
+  description String?
+  steps       Phase[]
+  projects    Project[]
+}
+
+model Phase {
+  id          String   @id @default(cuid())
+  name        String
+  order       Int
+  frameworkId String
+  framework   Framework @relation(fields: [frameworkId], references: [id])
+  mappings    ToolStepMapping[]
+}
+
+model Tool {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  category    String? // Define, Measure, etc.
+  mappings    ToolStepMapping[]
+}
+
+model ToolStepMapping {
+  id      String @id @default(cuid())
+  toolId  String
+  phaseId String
+  tool    Tool   @relation(fields: [toolId], references: [id])
+  phase   Phase  @relation(fields: [phaseId], references: [id])
+
+  @@unique([toolId, phaseId])
+}
+
+model CaseStudy {
+  id            String   @id @default(cuid())
+  title         String
+  category      String   // MEDICAL, DAILY_LIFE, INVESTMENT
+  difficulty    Int      // 1-5
+  estimatedTime String?
+  story         String?
+  objectives    String?  // JSON stringified array
+  datasets      String?  // References to pack components
+  projects      Project[]
+}
+
+model Project {
+  id            String   @id @default(cuid())
+  userId        String
+  frameworkId   String
+  caseStudyId   String?  // Null if custom
+  title         String
+  status        String   @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User       @relation(fields: [userId], references: [id])
+  framework     Framework  @relation(fields: [frameworkId], references: [id])
+  caseStudy     CaseStudy? @relation(fields: [caseStudyId], references: [id])
+  deliverables  Deliverable[]
+  progress      Progress?
+  intake        ProjectIntake?
+}
+
+model ProjectIntake {
+  id               String  @id @default(cuid())
+  projectId        String  @unique
+  problemStatement String?
+  businessCase     String?
+  goal             String?
+  scopeIn          String?
+  scopeOut         String?
+  stakeholders     String?
+  baselineMetric   String?
+  constraints      String?
+  timeline         String?
+  project          Project @relation(fields: [projectId], references: [id])
+}
+
+model Deliverable {
+  id          String   @id @default(cuid())
+  projectId   String
+  toolId      String
+  status      String   @default("NOT_STARTED") // NOT_STARTED, IN_PROGRESS, COMPLETE
+  content     String?  // JSON storage for tool data
+  version     Int      @default(1)
+  updatedAt   DateTime @updatedAt
+  
+  project     Project  @relation(fields: [projectId], references: [id])
+}
+
+model Progress {
+  id              String  @id @default(cuid())
+  projectId       String  @unique
+  completedSteps  Int     @default(0)
+  totalSteps      Int
+  project         Project @relation(fields: [projectId], references: [id])
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  name        String
+  icon        String?
+  type        String   // TOOL, PHASE, FRAMEWORK
+  awards      BadgeAward[]
+}
+
+model BadgeAward {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeId   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  badge     Badge    @relation(fields: [badgeId], references: [id])
+}
+
+model CertificateAward {
+  id             String   @id @default(cuid())
+  userId         String
+  projectId      String
+  verificationId String   @unique
+  issuedAt       DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id])
+}
