@@ -14,7 +14,7 @@ const ArmoryHub = () => {
             desc: 'Define project scope, objectives, and team boundaries.',
             img: '/04-STATISTICS-TOOLS/images/armory/station_charter.png',
             glow: 'rgba(59, 130, 246, 0.5)',
-            path: '/workspace/charter'
+            path: '/armory/mission/charter'
         },
         {
             id: 'sipoc',
@@ -23,7 +23,7 @@ const ArmoryHub = () => {
             desc: 'Map high-level process flow: Suppliers to Customers.',
             img: '/04-STATISTICS-TOOLS/images/armory/station_sipoc.png',
             glow: 'rgba(16, 185, 129, 0.5)',
-            path: '/workspace/sipoc'
+            path: '/armory/mission/sipoc'
         },
         {
             id: 'msa',
@@ -32,7 +32,7 @@ const ArmoryHub = () => {
             desc: 'Validate measurement precision and gauge reliability.',
             img: '/04-STATISTICS-TOOLS/images/armory/station_msa.png',
             glow: 'rgba(245, 158, 11, 0.5)',
-            path: '/workspace/msa'
+            path: '/armory/mission/msa'
         },
         {
             id: 'stats',
@@ -41,7 +41,7 @@ const ArmoryHub = () => {
             desc: 'Optimize Cp and Cpk to dock the cargo drone safely through the tunnel.',
             img: '/04-STATISTICS-TOOLS/images/armory/station_docking.png',
             glow: 'rgba(6, 182, 212, 0.5)',
-            path: '/armory/docking-game'
+            path: '/armory/mission/stats'
         },
         {
             id: 'pareto',
@@ -50,7 +50,7 @@ const ArmoryHub = () => {
             desc: 'Identify the vital few issues causing 80% of pain.',
             img: '/04-STATISTICS-TOOLS/images/armory/station_pareto.png',
             glow: 'rgba(168, 85, 247, 0.5)',
-            path: '/workspace/pareto'
+            path: '/armory/mission/pareto'
         },
         {
             id: 'fishbone',
@@ -59,7 +59,7 @@ const ArmoryHub = () => {
             desc: 'Trace potential root causes across the 6M categories.',
             img: '/04-STATISTICS-TOOLS/images/armory/station_fishbone.png',
             glow: 'rgba(225, 29, 72, 0.5)',
-            path: '/workspace/fishbone'
+            path: '/armory/mission/fishbone'
         }
     ];
 
