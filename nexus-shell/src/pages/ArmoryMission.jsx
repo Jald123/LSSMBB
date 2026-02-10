@@ -624,9 +624,7 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText
         }
     };
 
-    const generateBellPath = (visualSteering, visualPrecision) => {
-        const w = 400; // Fixed visual container width
-        const h = 180; // Fixed visual container height
+    const generateBellPathUnified = (visualSteering, visualPrecision, w = 600, h = 240) => {
         const sigma = visualPrecision;
         const mean = visualSteering;
 
@@ -649,69 +647,91 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText
                 MISSION: {scenario.name}
             </div>
 
-            {/* 🛰️ Dual Interactive Graphs */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-6xl mb-12">
-
-                {/* 🎯 Graph 1: Potential (Cp) */}
-                <div
-                    onMouseEnter={() => setHoverText("POTENTIAL (Cp): This shows the theoretical best. It assumes perfect centering. Shrink this curve to fit the specs.")}
-                    onMouseLeave={() => setHoverText(null)}
-                    className="space-y-4"
-                >
-                    <div className="flex justify-between items-center px-4">
-                        <span className="text-[10px] font-black font-orbitron text-cyan-400 tracking-[0.2em] uppercase">Visualizer 01: Potential</span>
-                        <div className="bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full text-[9px] font-black font-orbitron text-cyan-400">Cp: {cp.toFixed(2)}</div>
-                    </div>
-                    <div className="relative h-[240px] bg-slate-900/40 rounded-[2rem] border border-white/5 flex items-center justify-center overflow-hidden shadow-inner">
-                        <div className="absolute inset-0 flex flex-col justify-center">
-                            <div style={{ height: (usl - lsl) * 1.5 }} className="w-full bg-cyan-500/5 border-y border-white/10" />
+            {/* 🛰️ Unified Interactive Graph */}
+            <div
+                onMouseEnter={() => setHoverText("UNIFIED CAPABILITY VIEW: The dashed cyan curve shows your Potential (Cp) if perfectly centered. The solid curve shows your Reality (Cpk).")}
+                onMouseLeave={() => setHoverText(null)}
+                className="w-full max-w-5xl mb-12 space-y-4"
+            >
+                <div className="flex justify-between items-center px-6">
+                    <div className="flex gap-6">
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-0.5 bg-cyan-400 border border-cyan-400 border-dashed" />
+                            <span className="text-[10px] font-black font-orbitron text-cyan-400 tracking-[0.2em] uppercase">Potential (Cp: {cp.toFixed(2)})</span>
                         </div>
-                        <div className="relative w-[400px] h-[180px]">
-                            <svg viewBox="0 0 400 180" className="w-full h-full overflow-visible">
-                                <path
-                                    d={generateBellPath(80, precision)}
-                                    fill="rgba(34, 211, 238, 0.1)"
-                                    stroke="#22d3ee"
-                                    strokeWidth="2"
-                                    strokeDasharray="4 4"
-                                />
-                                <line x1="200" y1="0" x2="200" y2="180" stroke="#22d3ee" strokeWidth="1" opacity="0.2" />
-                            </svg>
-                        </div>
-                        <div className="absolute bottom-4 left-0 right-0 text-center">
-                            <span className="text-[8px] font-black font-orbitron text-slate-600 uppercase tracking-widest">Calculated assuming mean = 80</span>
+                        <div className="flex items-center gap-2">
+                            <div className={`w-3 h-0.5 ${cpk >= 1.33 ? 'bg-green-500' : 'bg-red-500'}`} />
+                            <span className={`text-[10px] font-black font-orbitron tracking-[0.2em] uppercase ${cpk >= 1.33 ? 'text-green-500' : 'text-red-500'}`}>Reality (Cpk: {cpk.toFixed(2)})</span>
                         </div>
                     </div>
+                    <span className="text-[10px] font-black font-orbitron text-slate-500 tracking-[0.2em] uppercase">Unified Process Analysis</span>
                 </div>
 
-                {/* 🛰️ Graph 2: Reality (Cpk) */}
-                <div
-                    onMouseEnter={() => setHoverText("REALITY (Cpk): This is your actual performance. It accounts for your steering (offset). Center the curve to maximize Cpk.")}
-                    onMouseLeave={() => setHoverText(null)}
-                    className="space-y-4"
-                >
-                    <div className="flex justify-between items-center px-4">
-                        <span className="text-[10px] font-black font-orbitron text-nexus-purple tracking-[0.2em] uppercase">Visualizer 02: Reality</span>
-                        <div className={`border px-3 py-1 rounded-full text-[9px] font-black font-orbitron transition-colors ${cpk >= 1.33 ? 'bg-green-500/10 border-green-500/20 text-green-400' : 'bg-red-500/10 border-red-500/20 text-red-500'}`}>Cpk: {cpk.toFixed(2)}</div>
+                <div className="relative h-[320px] bg-slate-900/40 rounded-[3rem] border border-white/5 flex items-center justify-center overflow-hidden shadow-[inset_0_0_60px_rgba(0,0,0,0.6)]">
+                    {/* 🧱 Spec Walls */}
+                    <div className="absolute inset-0 flex flex-col justify-center">
+                        <div style={{ height: (usl - lsl) * 1.5 }} className="w-full bg-cyan-500/5 border-y border-white/10" />
                     </div>
-                    <div className="relative h-[240px] bg-slate-900/40 rounded-[2rem] border border-white/5 flex items-center justify-center overflow-hidden shadow-[inset_0_0_40px_rgba(0,0,0,0.5)]">
-                        <div className="absolute inset-0 flex flex-col justify-center">
-                            <div style={{ height: (usl - lsl) * 1.5 }} className="w-full bg-nexus-purple/5 border-y border-white/10" />
+
+                    {/* 📏 Spec Labels */}
+                    <div className="absolute inset-x-10 h-full pointer-events-none flex flex-col justify-center">
+                        <div style={{ transform: `translateY(${-((usl - lsl) * 0.75)}px)` }} className="flex justify-between">
+                            <span className="text-[8px] font-black font-orbitron text-orange-400/40 uppercase">LSL: {lsl}</span>
+                            <div className="h-px bg-orange-400/10 flex-1 mx-4 self-center" />
                         </div>
-                        <div className="relative w-[400px] h-[180px]">
-                            <svg viewBox="0 0 400 180" className="w-full h-full overflow-visible">
-                                <path
-                                    d={generateBellPath(steering, precision)}
-                                    fill={cpk >= 1.33 ? "rgba(34, 197, 94, 0.15)" : "rgba(239, 68, 68, 0.1)"}
-                                    stroke={cpk >= 1.33 ? "#22c55e" : "#ef4444"}
-                                    strokeWidth="3"
-                                />
-                                <line x1={steering * (400 / 160)} y1="0" x2={steering * (400 / 160)} y2="180" stroke="#fff" strokeWidth="1" strokeDasharray="4 4" opacity="0.3" />
-                            </svg>
+                        <div style={{ transform: `translateY(${((usl - lsl) * 0.75)}px)` }} className="flex justify-between">
+                            <span className="text-[8px] font-black font-orbitron text-orange-400/40 uppercase">USL: {usl}</span>
+                            <div className="h-px bg-orange-400/10 flex-1 mx-4 self-center" />
                         </div>
-                        <div className="absolute bottom-4 left-0 right-0 text-center">
-                            <span className="text-[8px] font-black font-orbitron text-slate-600 uppercase tracking-widest">Actual Process State</span>
-                        </div>
+                    </div>
+
+                    {/* 🎞️ Dual Bell Curves */}
+                    <div className="relative w-[600px] h-[240px]">
+                        <svg viewBox="0 0 600 240" className="w-full h-full overflow-visible">
+                            <defs>
+                                <linearGradient id="potentialGlow" x1="0" y1="0" x2="0" y2="100%">
+                                    <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.1" />
+                                    <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
+                                </linearGradient>
+                                <linearGradient id="realityGlow" x1="0" y1="0" x2="0" y2="100%">
+                                    <stop offset="0%" stopColor={cpk >= 1.33 ? "#22c55e" : "#ef4444"} stopOpacity="0.2" />
+                                    <stop offset="100%" stopColor={cpk >= 1.33 ? "#22c55e" : "#ef4444"} stopOpacity="0" />
+                                </linearGradient>
+                            </defs>
+
+                            {/* Center Line (Target) */}
+                            <line x1="300" y1="0" x2="300" y2="240" stroke="rgba(34, 211, 238, 0.2)" strokeWidth="1" strokeDasharray="4 4" />
+
+                            {/* Curve 1: Potential (Cp) - Dashed Cyan, Fixed at 80 (center) */}
+                            <path
+                                d={generateBellPathUnified(80, precision, 600, 240)}
+                                fill="url(#potentialGlow)"
+                                stroke="#22d3ee"
+                                strokeWidth="2"
+                                strokeDasharray="6 4"
+                                className="opacity-40 transition-all duration-500"
+                            />
+
+                            {/* Curve 2: Reality (Cpk) - Solid Green/Red, follows Steering */}
+                            <path
+                                d={generateBellPathUnified(steering, precision, 600, 240)}
+                                fill="url(#realityGlow)"
+                                stroke={cpk >= 1.33 ? "#22c55e" : "#ef4444"}
+                                strokeWidth="4"
+                                className="transition-all duration-300"
+                                style={{ filter: `drop-shadow(0 0 10px ${cpk >= 1.33 ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.2)'})` }}
+                            />
+
+                            {/* Real-time Mean line */}
+                            <line
+                                x1={steering * (600 / 160)} y1="0"
+                                x2={steering * (600 / 160)} y2="240"
+                                stroke={cpk >= 1.33 ? "#22c55e" : "#ef4444"}
+                                strokeWidth="1"
+                                strokeDasharray="2 2"
+                                opacity="0.5"
+                            />
+                        </svg>
                     </div>
                 </div>
             </div>
