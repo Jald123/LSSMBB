@@ -9,6 +9,8 @@ const ArmoryMission = () => {
     const [score, setScore] = useState(0);
     const [round, setRound] = useState(1);
     const [isComplete, setIsComplete] = useState(false);
+    const [showHelp, setShowHelp] = useState(false);
+    const [hoverText, setHoverText] = useState(null);
 
     // Mission Details
     const missionData = {
@@ -46,9 +48,16 @@ const ArmoryMission = () => {
             title: "THE ANATOMY (FISHBONE)",
             subtitle: "Trace potential root causes across the 6M categories: Man, Machine, Material, Method, Mother Nature, Measurement.",
             goal: "TRACE ROOT CAUSES.",
+            help: "The Fishbone (Ishikawa) diagram is used to brainstorm all possible sources of variation. In this challenge, look for the 'Vital Clue' and categorize it correctly under the primary source (6M).",
             type: 'detective_board'
         }
     };
+
+    missionData.charter.help = "A Project Charter must be objective. Subjective noise like 'I feel' or 'People are lazy' are bias-Solution jumps. Your goal is to only capture hard facts and measurable data points.";
+    missionData.sipoc.help = "SIPOC stands for Supplier, Input, Process, Output, Customer. Drag specific items to their logical category. Suppliers provide Inputs, the Process transforms them into Outputs for the Customer.";
+    missionData.msa.help = "Measurement System Analysis (MSA) ensures that the variation we see comes from the process, not the gauge. Use the slider to 'tighten the sensor' and eliminate measurement variation.";
+    missionData.stats.help = "Capability analysis (Cp/Cpk) measures how well your process fits within customer limits. Use PRECISION to shrink the spread (Cp) and STEERING to align the center (Cpk). Aim for > 1.33.";
+    missionData.pareto.help = "The Pareto principle states that 80% of consequences come from 20% of causes. Identify the 'Vital Few' bars that represent the majority of the problem value.";
 
     const currentMission = missionData[missionId];
 
@@ -90,8 +99,29 @@ const ArmoryMission = () => {
                     </div>
                     <div className="text-right">
                         <div className="text-nexus-cyan font-black font-orbitron text-3xl tracking-tighter">SCORE: {score}</div>
-                        <button className="bg-cyan-500/20 border border-cyan-500/40 px-3 py-1 rounded-md text-[9px] font-black font-orbitron text-cyan-400 mt-2 uppercase">Mission Help</button>
+                        <button
+                            onClick={() => setShowHelp(true)}
+                            className="bg-cyan-500/20 border border-cyan-500/40 px-3 py-1 rounded-md text-[9px] font-black font-orbitron text-cyan-400 mt-2 uppercase hover:bg-cyan-400 hover:text-black transition-all"
+                        >
+                            Mission Help
+                        </button>
                     </div>
+                </div>
+
+                {/* 🏷️ Tooltip Hud */}
+                <div className="h-6 bg-cyan-500/5 border-b border-cyan-500/10 flex items-center px-10 gap-2 overflow-hidden shrink-0">
+                    <div className="w-1 h-1 rounded-full bg-cyan-400 animate-pulse" />
+                    <AnimatePresence mode="wait">
+                        <motion.span
+                            key={hoverText}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="text-[8px] font-black font-orbitron text-cyan-400/60 uppercase tracking-[0.2em]"
+                        >
+                            {hoverText || "Ready for Calibration..."}
+                        </motion.span>
+                    </AnimatePresence>
                 </div>
 
                 {/* 🕹️ Game Surface */}
@@ -109,6 +139,7 @@ const ArmoryMission = () => {
                         setRound={setRound}
                         setScore={setScore}
                         setIsComplete={setIsComplete}
+                        setHoverText={setHoverText}
                     />
 
                     {/* Completion Screen */}
@@ -130,6 +161,41 @@ const ArmoryMission = () => {
                                 >
                                     Return to Command Center
                                 </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Mission Help Modal */}
+                    <AnimatePresence>
+                        {showHelp && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-10"
+                            >
+                                <motion.div
+                                    initial={{ scale: 0.9, y: 20 }}
+                                    animate={{ scale: 1, y: 0 }}
+                                    className="bg-slate-900 border border-cyan-500/40 p-10 rounded-[2rem] max-w-xl shadow-2xl relative"
+                                >
+                                    <button
+                                        onClick={() => setShowHelp(false)}
+                                        className="absolute top-6 right-6 text-slate-500 hover:text-white"
+                                    >
+                                        <X className="w-6 h-6" />
+                                    </button>
+                                    <h4 className="text-cyan-400 font-black font-orbitron text-xl mb-4 tracking-widest">MISSION BRIEFING</h4>
+                                    <p className="text-slate-300 text-sm leading-relaxed mb-8 font-medium">
+                                        {currentMission.help}
+                                    </p>
+                                    <button
+                                        onClick={() => setShowHelp(false)}
+                                        className="w-full py-4 bg-cyan-500 text-black font-black font-orbitron text-xs tracking-[0.2em] rounded-xl uppercase hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                    >
+                                        Understood
+                                    </button>
+                                </motion.div>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -159,14 +225,14 @@ const ArmoryMission = () => {
 // GAME RENDERER DISPATCHER
 // ----------------------------------------------------------------------------
 
-const GameRenderer = ({ type, round, setRound, setScore, setIsComplete }) => {
+const GameRenderer = ({ type, round, setRound, setScore, setIsComplete, setHoverText }) => {
     switch (type) {
-        case 'scope_creep': return <CharterGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} />;
-        case 'sipoc_drag': return <SipocGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} />;
-        case 'sniper_cal': return <MsaGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} />;
-        case 'docking_sim': return <CapabilityGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} />;
-        case 'triage_shot': return <ParetoGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} />;
-        case 'detective_board': return <FishboneGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} />;
+        case 'scope_creep': return <CharterGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} setHoverText={setHoverText} />;
+        case 'sipoc_drag': return <SipocGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} setHoverText={setHoverText} />;
+        case 'sniper_cal': return <MsaGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} setHoverText={setHoverText} />;
+        case 'docking_sim': return <CapabilityGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} setHoverText={setHoverText} />;
+        case 'triage_shot': return <ParetoGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} setHoverText={setHoverText} />;
+        case 'detective_board': return <FishboneGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} setHoverText={setHoverText} />;
         default: return <div className="text-slate-700 font-black font-orbitron">SYSTEM INITIALIZING...</div>;
     }
 };
@@ -203,8 +269,10 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete }) => {
         if (w.v) {
             setScore(s => s + 20);
             setCaptured(c => c + 1);
+            setHoverText("PRIMARY DATA CAPTURED (+20)");
         } else {
             setScore(s => Math.max(0, s - 15));
+            setHoverText("WARNING: SUBJECTIVE BIAS DETECTED (-15)");
         }
     };
 
@@ -236,7 +304,13 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete }) => {
                     className="w-full h-full relative"
                 >
                     {words.map((w, i) => (
-                        <Bubble key={i} word={w} onClick={() => handleWordClick(w)} />
+                        <Bubble
+                            key={i}
+                            word={w}
+                            onClick={() => handleWordClick(w)}
+                            onMouseEnter={() => setHoverText(w.v ? "Objective Signal: Hard Fact" : "Subjective Noise: Logical Fallacy")}
+                            onMouseLeave={() => setHoverText(null)}
+                        />
                     ))}
                 </motion.div>
             </AnimatePresence>
@@ -244,7 +318,7 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete }) => {
     );
 };
 
-const Bubble = ({ word, onClick }) => {
+const Bubble = ({ word, onClick, onMouseEnter, onMouseLeave }) => {
     const [isHit, setIsHit] = useState(false);
     const [pos] = useState({
         top: Math.random() * 65 + 15 + '%',
@@ -258,6 +332,8 @@ const Bubble = ({ word, onClick }) => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             whileHover={{ scale: 1.1 }}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
             onClick={() => {
                 setIsHit(true);
                 onClick();
@@ -294,6 +370,7 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete }) => {
     const handleDrop = (bucket, item) => {
         if (currentScenario.mapping[item] === bucket) {
             setScore(s => s + 25);
+            setHoverText(`VALID MAPPING: ${item} is a ${bucket}`);
             const newPlaced = { ...placed, [bucket]: item };
             setPlaced(newPlaced);
             setItems(it => it.filter(i => i !== item));
@@ -304,6 +381,7 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete }) => {
                         setRound(r => r + 1);
                         setPlaced({});
                         setItems(Object.keys(scenarios[round].mapping));
+                        setHoverText(null);
                     }, 1000);
                 } else {
                     setTimeout(() => setIsComplete(true), 1000);
@@ -311,6 +389,7 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete }) => {
             }
         } else {
             setScore(s => Math.max(0, s - 10));
+            setHoverText(`CONFLICT: ${item} does not belong in ${bucket}`);
         }
     };
 
@@ -322,7 +401,12 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete }) => {
 
             <div className="flex flex-wrap justify-center gap-4 min-h-[60px]">
                 {items.map(item => (
-                    <DraggableItem key={item} name={item} />
+                    <DraggableItem
+                        key={item}
+                        name={item}
+                        onMouseEnter={() => setHoverText(`ORBITING OBJECT: ${item}`)}
+                        onMouseLeave={() => setHoverText(null)}
+                    />
                 ))}
             </div>
 
@@ -340,11 +424,13 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete }) => {
     );
 };
 
-const DraggableItem = ({ name }) => {
+const DraggableItem = ({ name, onMouseEnter, onMouseLeave }) => {
     return (
         <div
             draggable
             onDragStart={(e) => e.dataTransfer.setData("text", name)}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
             className="px-6 py-3 bg-white border border-white/20 rounded-xl text-nexus-navy font-black font-orbitron text-[10px] tracking-widest cursor-grab active:cursor-grabbing shadow-xl"
         >
             {name}
@@ -375,41 +461,54 @@ const Bucket = ({ label, content, onDrop }) => {
 // 3. MSA GAME (THE TRUST)
 // ----------------------------------------------------------------------------
 
-const MsaGame = ({ round, setRound, setScore, setIsComplete }) => {
+const MsaGame = ({ round, setRound, setScore, setIsComplete, setHoverText }) => {
     const scenarios = [
-        { scenario: "Coffee Bean Weight", target: "18.0g" },
-        { scenario: "Steel Bolt Diameter", target: "10.0mm" },
-        { scenario: "Syringe Dosage", target: "5.0ml" },
-        { scenario: "Wafer Thickness", target: "0.2mm" },
-        { scenario: "Fuel Pressure", target: "42 PSI" }
+        { scenario: "Coffee Bean Weight", target: "18.0g", prompt: "Variation in weight is causing bad brews. Minimize the drift." },
+        { scenario: "Steel Bolt Diameter", target: "10.0mm", prompt: "The thread counts are off. Tighten the calibration ring." },
+        { scenario: "Syringe Dosage", target: "5.0ml", prompt: "Dosage precision is life-critical. Stabilize the sensor." },
+        { scenario: "Wafer Thickness", target: "0.2mm", prompt: "Nanometer variance is causing shorts. Lock the focal lens." },
+        { scenario: "Fuel Pressure", target: "42 PSI", prompt: "Engine sputter detected. Calibrate the pressure gauge." }
     ];
 
     const [variation, setVariation] = useState(50);
+    const [sliderVal, setSliderVal] = useState(0);
     const [wobble, setWobble] = useState({ x: 0, y: 0 });
+    const [isStabilized, setIsStabilized] = useState(false);
     const currentScenario = scenarios[round - 1];
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setWobble({
-                x: (Math.random() - 0.5) * variation,
-                y: (Math.random() - 0.5) * variation
-            });
+            if (!isStabilized) {
+                setWobble({
+                    x: (Math.random() - 0.5) * variation,
+                    y: (Math.random() - 0.5) * variation
+                });
+            }
         }, 50);
         return () => clearInterval(interval);
-    }, [variation]);
+    }, [variation, isStabilized]);
 
     const handleCalibrate = (val) => {
+        setSliderVal(val);
         setVariation(50 - (val / 2));
         if (val >= 98) {
-            setScore(s => s + 30);
-            if (round < 5) {
-                setTimeout(() => {
-                    setRound(r => r + 1);
-                    setVariation(50);
-                }, 1000);
-            } else {
-                setIsComplete(true);
-            }
+            setIsStabilized(true);
+            setHoverText("SYSTEM STABILIZED. ROUND COMPLETE.");
+        } else {
+            setHoverText("ADJUSTING CALIBRATION...");
+        }
+    };
+
+    const nextRound = () => {
+        setScore(s => s + 30);
+        if (round < 5) {
+            setRound(r => r + 1);
+            setVariation(50);
+            setSliderVal(0);
+            setIsStabilized(false);
+            setHoverText(null);
+        } else {
+            setIsComplete(true);
         }
     };
 
@@ -419,19 +518,27 @@ const MsaGame = ({ round, setRound, setScore, setIsComplete }) => {
                 SCENARIO: {currentScenario.scenario}
             </div>
 
-            <div className="w-64 h-64 rounded-full border-4 border-white/10 relative overflow-hidden bg-radial-at-center from-cyan-950/20 to-black shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+            <div
+                onMouseEnter={() => setHoverText(currentScenario.prompt)}
+                onMouseLeave={() => setHoverText(null)}
+                className="w-64 h-64 rounded-full border-4 border-white/10 relative overflow-hidden bg-radial-at-center from-cyan-950/20 to-black shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+            >
                 <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                    <div className="w-full h-px bg-red-500/50" />
-                    <div className="h-full w-px bg-red-500/50 absolute" />
+                    <div className="w-full h-px bg-cyan-500/50" />
+                    <div className="h-full w-px bg-cyan-500/50 absolute" />
                 </div>
+
+                <div className="absolute inset-0 border-[20px] border-cyan-500/5 rounded-full" />
 
                 <motion.div
                     animate={{
-                        x: wobble.x,
-                        y: wobble.y
+                        x: isStabilized ? 0 : wobble.x,
+                        y: isStabilized ? 0 : wobble.y,
+                        scale: isStabilized ? [1, 1.5, 1] : 1
                     }}
-                    transition={{ type: "spring", damping: 10, stiffness: 100 }}
-                    className="w-4 h-4 rounded-full bg-cyan-400 absolute top-1/2 left-1/2 -ml-2 -mt-2 shadow-[0_0_20px_#22d3ee]"
+                    className={`w-4 h-4 rounded-full absolute top-1/2 left-1/2 -ml-2 -mt-2 shadow-[0_0_20px_#22d3ee]
+                        ${isStabilized ? 'bg-green-400' : 'bg-cyan-400'}
+                    `}
                 />
             </div>
 
@@ -443,11 +550,27 @@ const MsaGame = ({ round, setRound, setScore, setIsComplete }) => {
                 <input
                     type="range"
                     min="0" max="100"
+                    value={sliderVal}
+                    disabled={isStabilized}
                     className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan-500"
                     onChange={(e) => handleCalibrate(parseInt(e.target.value))}
                 />
-                <div className="text-center italic text-slate-600 text-[10px] font-orbitron font-bold tracking-tighter uppercase pt-2">
-                    {variation > 5 ? 'System Unstable: Calibration Required' : 'System Stable: Gage R&R Verified'}
+
+                <div className="h-10 flex items-center justify-center">
+                    {isStabilized ? (
+                        <motion.button
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            onClick={nextRound}
+                            className="bg-cyan-500 text-black px-8 py-2 rounded-lg font-black font-orbitron text-[10px] tracking-widest uppercase"
+                        >
+                            Next Calibration Item
+                        </motion.button>
+                    ) : (
+                        <div className="text-center italic text-slate-600 text-[10px] font-orbitron font-bold tracking-tighter uppercase">
+                            {variation > 5 ? 'System Unstable: Calibration Required' : 'System Stable: Gage R&R Verified'}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -458,18 +581,19 @@ const MsaGame = ({ round, setRound, setScore, setIsComplete }) => {
 // 4. CAPABILITY GAME (THE DOCKING SEQUENCE)
 // ----------------------------------------------------------------------------
 
-const CapabilityGame = ({ round, setRound, setScore, setIsComplete }) => {
+const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText }) => {
     const scenarios = [
-        { name: "The Garage", usl: 130, lsl: 20 },
-        { name: "MRI Window", usl: 140, lsl: 10 },
-        { name: "The Commute", usl: 120, lsl: 30 },
-        { name: "Cargo Container", usl: 110, lsl: 40 },
-        { name: "Alpha Gate", usl: 105, lsl: 45 }
+        { name: "The Garage", usl: 130, lsl: 20, desc: "Process Mean must be 75. Variation must be < 15." },
+        { name: "MRI Window", usl: 140, lsl: 10, desc: "Wide specs but shifting mean. Align the scanner center." },
+        { name: "The Commute", usl: 120, lsl: 30, desc: "Narrow tunnel detected. Drastic variance reduction required." },
+        { name: "Cargo Box", usl: 110, lsl: 40, desc: "High precision required. The drone is barely smaller than the gate." },
+        { name: "Alpha Gate", usl: 105, lsl: 45, desc: "The Ultimate Test. 6 Sigma precision required (Cpk > 2.0)." }
     ];
 
     const scenario = scenarios[round - 1];
     const [precision, setPrecision] = useState(25);
     const [steering, setSteering] = useState(80);
+    const [isDocked, setIsDocked] = useState(false);
 
     const usl = scenario.usl;
     const lsl = scenario.lsl;
@@ -480,85 +604,176 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete }) => {
 
     const handleDock = () => {
         if (cpk >= 1.33) {
-            setScore(s => s + 100);
-            if (round < 5) {
-                setRound(r => r + 1);
-            } else {
-                setIsComplete(true);
-            }
+            setIsDocked(true);
+            setHoverText("STABLE DOCKING ACHIEVED.");
+        } else {
+            setHoverText("CRASH IMMINENT: RE-CALIBRATE STEERING.");
         }
     };
 
+    const nextMission = () => {
+        setScore(s => s + 100);
+        if (round < 5) {
+            setRound(r => r + 1);
+            setPrecision(25);
+            setSteering(80);
+            setIsDocked(false);
+            setHoverText(null);
+        } else {
+            setIsComplete(true);
+        }
+    };
+
+    const generateBellPath = () => {
+        const w = 400; // Fixed visual container width
+        const h = 180; // Fixed visual container height
+        const sigma = precision;
+        const mean = steering;
+
+        // Scale for visualization
+        // 0-160 represents the range 0-w
+        const scaleX = w / 160;
+
+        let path = "M ";
+        for (let i = 0; i < w; i++) {
+            const xVal = i / scaleX;
+            const y = Math.exp(-0.5 * Math.pow((xVal - mean) / sigma, 2));
+            const xPos = i;
+            const yPos = h - (y * h);
+            path += `${xPos},${yPos} `;
+        }
+        return path;
+    };
+
     return (
-        <div className="w-full h-full flex flex-col items-center">
-            <div className="text-center font-black font-orbitron text-[10px] text-slate-500 tracking-[0.3em] uppercase mb-8">
+        <div className="w-full flex flex-col items-center">
+            <div className="text-center font-black font-orbitron text-[10px] text-slate-500 tracking-[0.3em] uppercase mb-6">
                 MISSION: {scenario.name}
             </div>
 
-            <div className="relative w-full max-w-2xl h-64 bg-slate-950/50 rounded-3xl border border-white/5 overflow-hidden">
-                {/* Specs */}
-                <div className="absolute top-4 right-10 text-[10px] font-black font-orbitron text-orange-500 uppercase tracking-widest">USL: {usl}</div>
-                <div className="absolute bottom-4 right-10 text-[10px] font-black font-orbitron text-orange-500 uppercase tracking-widest">LSL: {lsl}</div>
+            {/* 🛰️ The Docking Bay */}
+            <div
+                onMouseEnter={() => setHoverText(scenario.desc)}
+                onMouseLeave={() => setHoverText(null)}
+                className="relative w-[500px] h-[240px] bg-slate-900/40 rounded-[2rem] border border-white/5 flex items-center justify-center overflow-hidden mb-6"
+            >
+                {/* 🧱 Spec Walls */}
+                <div className="absolute inset-0 flex flex-col justify-center">
+                    {/* Tunnel Path */}
+                    <div
+                        style={{ height: (usl - lsl) * 1.5 }}
+                        className="w-full bg-cyan-500/5 border-y border-white/10"
+                    />
+                </div>
 
-                {/* Tunnel */}
-                <div
-                    style={{ height: (usl - lsl) * 1.5, top: '50%', transform: 'translateY(-50%)' }}
-                    className="absolute left-0 right-0 border-y-2 border-slate-700 bg-slate-800/20"
-                />
+                {/* 📏 Spec Labels */}
+                <div className="absolute inset-0 flex flex-col justify-center pointer-events-none">
+                    <div style={{ transform: `translateY(${-((usl - lsl) * 0.75)}px)` }} className="px-6 flex justify-between">
+                        <span className="text-[8px] font-black font-orbitron text-orange-400 opacity-50">LOWER SPEC (LSL: {lsl})</span>
+                        <div className="h-px bg-orange-400/20 flex-1 mx-4 self-center" />
+                    </div>
+                    <div style={{ transform: `translateY(${((usl - lsl) * 0.75)}px)` }} className="px-6 flex justify-between">
+                        <span className="text-[8px] font-black font-orbitron text-orange-400 opacity-50">UPPER SPEC (USL: {usl})</span>
+                        <div className="h-px bg-orange-400/20 flex-1 mx-4 self-center" />
+                    </div>
+                </div>
 
-                {/* Drone / Bell Curve */}
-                <motion.div
-                    animate={{ x: (steering - 80) * 2.5 }}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-40"
-                    style={{ width: (6 * precision) * 2.5 }}
-                >
-                    <svg className="w-full h-full" preserveAspectRatio="none">
+                {/* 🎞️ Bell Curve (Voice of Process) */}
+                <div className="relative w-[400px] h-[180px]">
+                    <svg viewBox="0 0 400 180" className="w-full h-full overflow-visible">
+                        <defs>
+                            <linearGradient id="bellGlow" x1="0" y1="0" x2="0" y2="100%">
+                                <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.4" />
+                                <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
+                            </linearGradient>
+                        </defs>
                         <path
-                            d={`M 0,160 Q ${(3 * precision * 2.5)},0 ${(6 * precision * 2.5)},160`}
-                            fill="rgba(34, 211, 238, 0.2)"
-                            stroke="#22d3ee"
-                            strokeWidth="2"
+                            d={generateBellPath()}
+                            fill="url(#bellGlow)"
+                            stroke={cpk < 1.33 ? "#ef4444" : "#22d3ee"}
+                            strokeWidth="3"
+                            className="transition-all duration-300"
+                        />
+                        {/* Mean Line */}
+                        <line
+                            x1={steering * (400 / 160)} y1="0"
+                            x2={steering * (400 / 160)} y2="180"
+                            stroke="#fff" strokeWidth="1" strokeDasharray="4 4" opacity="0.5"
                         />
                     </svg>
-                </motion.div>
-            </div>
-
-            <div className="flex gap-10 w-full max-w-2xl mt-8">
-                <div className="bg-black/40 p-4 rounded-xl border border-white/5 flex-1 text-center">
-                    <div className="text-[9px] font-black text-slate-500 font-orbitron mb-1 uppercase tracking-widest">Cp (Potential)</div>
-                    <div className="text-xl font-black text-white font-orbitron tracking-tight">{cp.toFixed(2)}</div>
-                </div>
-                <div className="bg-black/40 p-4 rounded-xl border border-white/5 flex-1 text-center">
-                    <div className="text-[9px] font-black text-slate-500 font-orbitron mb-1 uppercase tracking-widest">Cpk (Reality)</div>
-                    <div className={`text-xl font-black font-orbitron tracking-tight ${cpk >= 1.33 ? 'text-green-500' : 'text-red-500'}`}>{cpk.toFixed(2)}</div>
                 </div>
             </div>
 
-            <div className="w-full max-w-md mt-10 space-y-8">
-                <div className="space-y-3">
-                    <div className="flex justify-between text-[10px] font-black font-orbitron text-slate-500 uppercase tracking-widest">
-                        <span>Precision (Variation)</span>
-                        <span className="text-cyan-400">±3 Sigma</span>
+            {/* 📊 Scoreboard */}
+            <div className="grid grid-cols-2 gap-6 w-full max-w-lg mb-8">
+                <div
+                    onMouseEnter={() => setHoverText("POTENTIAL: How thin your process spread is. Target > 1.33")}
+                    onMouseLeave={() => setHoverText(null)}
+                    className="bg-black/40 p-6 rounded-2xl border border-white/5 text-center group"
+                >
+                    <div className="text-[9px] font-black text-slate-500 font-orbitron mb-2 uppercase tracking-widest group-hover:text-cyan-400 transition-colors">Cp (Potential)</div>
+                    <div className="text-3xl font-black text-white font-orbitron tracking-tight">{cp.toFixed(2)}</div>
+                </div>
+                <div
+                    onMouseEnter={() => setHoverText("REALITY: How centered your process is within limits. Target > 1.33")}
+                    onMouseLeave={() => setHoverText(null)}
+                    className="bg-black/40 p-6 rounded-2xl border border-white/5 text-center group"
+                >
+                    <div className="text-[9px] font-black text-slate-500 font-orbitron mb-2 uppercase tracking-widest group-hover:text-cyan-400 transition-colors">Cpk (Reality)</div>
+                    <div className={`text-3xl font-black font-orbitron tracking-tight transition-colors ${cpk >= 1.33 ? 'text-green-500' : 'text-red-500'}`}>{cpk.toFixed(2)}</div>
+                </div>
+            </div>
+
+            {/* ⌨️ Controls */}
+            <div className="w-full max-w-lg space-y-6">
+                <div className="space-y-2">
+                    <div className="flex justify-between text-[9px] font-black font-orbitron text-slate-500 uppercase tracking-widest px-1">
+                        <span>Precision (Variation Control)</span>
+                        <span className="text-cyan-400">Sigma Scale: ±{precision.toFixed(1)}</span>
                     </div>
-                    <input type="range" min="5" max="40" step="0.5" value={precision} onChange={(e) => setPrecision(parseFloat(e.target.value))} className="w-full accent-cyan-500 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer" />
+                    <input
+                        type="range" min="5" max="40" step="0.5"
+                        value={precision}
+                        disabled={isDocked}
+                        onChange={(e) => setPrecision(parseFloat(e.target.value))}
+                        className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                    />
                 </div>
-                <div className="space-y-3">
-                    <div className="flex justify-between text-[10px] font-black font-orbitron text-slate-500 uppercase tracking-widest">
-                        <span>Steering (Center)</span>
-                        <span className="text-cyan-400">Process Mean</span>
+                <div className="space-y-2">
+                    <div className="flex justify-between text-[9px] font-black font-orbitron text-slate-500 uppercase tracking-widest px-1">
+                        <span>Steering (Align Mean)</span>
+                        <span className="text-cyan-400">Center: {steering}</span>
                     </div>
-                    <input type="range" min="0" max="160" step="1" value={steering} onChange={(e) => setSteering(parseInt(e.target.value))} className="w-full accent-cyan-500 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer" />
+                    <input
+                        type="range" min="0" max="160" step="1"
+                        value={steering}
+                        disabled={isDocked}
+                        onChange={(e) => setSteering(parseInt(e.target.value))}
+                        className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                    />
                 </div>
             </div>
 
-            <button
-                onClick={handleDock}
-                className={`mt-12 px-16 py-4 rounded-xl font-black font-orbitron text-[11px] tracking-[0.2em] transition-all uppercase
-                    ${cpk >= 1.33 ? 'bg-cyan-500 text-black shadow-[0_0_30px_rgba(34,211,238,0.4)] hover:scale-105 active:scale-95' : 'bg-slate-800 text-slate-600 cursor-not-allowed'}
-                `}
-            >
-                Initiate Docking Sequence
-            </button>
+            <div className="h-16 flex items-center justify-center mt-6">
+                {isDocked ? (
+                    <motion.button
+                        initial={{ scale: 0 }} animate={{ scale: 1 }}
+                        onClick={nextMission}
+                        className="bg-green-500 text-black px-16 py-4 rounded-xl font-black font-orbitron text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(34,197,94,0.3)]"
+                    >
+                        Success: Procedural Handoff
+                    </motion.button>
+                ) : (
+                    <button
+                        onClick={handleDock}
+                        className={`px-16 py-4 rounded-xl font-black font-orbitron text-[11px] tracking-[0.2em] transition-all uppercase
+                            ${cpk >= 1.33 ? 'bg-cyan-500 text-black shadow-[0_0_30px_rgba(34,211,238,0.4)] hover:scale-105 active:scale-95' : 'bg-slate-800 text-slate-600 border border-white/5'}
+                        `}
+                    >
+                        Initiate Docking Sequence
+                    </button>
+                )}
+            </div>
         </div>
     );
 };
@@ -582,8 +797,10 @@ const ParetoGame = ({ round, setRound, setScore, setIsComplete }) => {
         if (bars[i].vital) {
             setScore(s => s + 50);
             setSelected([...selected, i]);
+            setHoverText(`VITAL FEW TARGET LOCKED: ${bars[i].label}`);
         } else {
             setScore(s => Math.max(0, s - 10));
+            setHoverText(`TRIVIAL MANY DETECTED: Resource reallocation required.`);
         }
     };
 
@@ -638,6 +855,7 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete }) => {
     const handleCategory = (cat) => {
         if (cat === currentClue.c) {
             setScore(s => s + 25);
+            setHoverText("ROOT CAUSE IDENTIFIED.");
             if (round < 4) {
                 setRound(r => r + 1);
             } else {
@@ -645,6 +863,7 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete }) => {
             }
         } else {
             setScore(s => Math.max(0, s - 10));
+            setHoverText("CATEGORY MISMATCH: Evidence does not fit this classification.");
         }
     };
 
