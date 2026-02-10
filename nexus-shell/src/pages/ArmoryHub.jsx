@@ -66,7 +66,7 @@ const ArmoryHub = () => {
     return (
         <div className="max-w-7xl mx-auto px-6 py-8">
             {/* 🛡️ Modal-Style Frame */}
-            <div className="bg-[#0f172a]/95 border border-cyan-500/30 rounded-[2.5rem] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+            <div className="bg-[#0f172a]/95 border border-cyan-500/30 rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8),0_0_40px_rgba(34,211,238,0.1)]">
 
                 {/* 🏷️ Header Bar */}
                 <div className="bg-black/40 border-b border-cyan-500/20 px-8 py-4 flex items-center justify-between">
@@ -155,6 +155,22 @@ const ArmoryHub = () => {
                                 </div>
                             </motion.div>
                         ))}
+                    </div>
+
+                    {/* 🛠️ Footer Bar */}
+                    <div className="bg-black/40 border-t border-cyan-500/20 px-8 py-3 flex items-center justify-between shrink-0">
+                        <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" />
+                            <span className="text-[10px] font-black font-orbitron text-cyan-400/60 uppercase tracking-widest">Mission Status: Optimal</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-1">
+                                {[...Array(3)].map((_, i) => (
+                                    <div key={i} className="w-4 h-1 bg-cyan-500/20 rounded-full" />
+                                ))}
+                            </div>
+                            <span className="text-[9px] font-black font-orbitron text-slate-600 uppercase tracking-widest">Nexus OS / Armory v2.1</span>
+                        </div>
                     </div>
                 </div>
             </div>
