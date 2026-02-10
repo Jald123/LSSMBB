@@ -64,7 +64,7 @@ const ArmoryMission = () => {
     if (!currentMission) return <div className="p-20 text-white font-orbitron">SYSTEM ERROR: MISSION NOT FOUND</div>;
 
     return (
-        <div className="max-w-7xl mx-auto px-6 py-8 h-[calc(100vh-100px)]">
+        <div className="max-w-7xl mx-auto px-6 py-8 min-h-[calc(100vh-100px)]">
             <div className="bg-[#0f172a]/95 border border-cyan-500/30 rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8),0_0_40px_rgba(34,211,238,0.1)] h-full flex flex-col">
 
                 {/* 🏷️ Header Bar */}
@@ -125,7 +125,7 @@ const ArmoryMission = () => {
                 </div>
 
                 {/* 🕹️ Game Surface */}
-                <div className="flex-1 relative overflow-hidden flex flex-col items-center justify-center p-10">
+                <div className="flex-1 relative overflow-y-auto custom-scrollbar flex flex-col items-center p-10 pt-24">
                     {!isComplete && (
                         <div className="absolute top-8 text-center z-10">
                             <div className="text-cyan-400 font-black font-orbitron text-sm tracking-widest mb-1">ROUND {round} OF {currentMission.type === 'triage_shot' ? 1 : (currentMission.type === 'detective_board' ? 4 : 5)}</div>
@@ -605,9 +605,9 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText
     const handleDock = () => {
         if (cpk >= 1.33) {
             setIsDocked(true);
-            setHoverText("STABLE DOCKING ACHIEVED.");
+            setHoverText("STABLE DOCKING ACHIEVED. READY FOR NEXT MISSION.");
         } else {
-            setHoverText("CRASH IMMINENT: RE-CALIBRATE STEERING.");
+            setHoverText("CRASH IMMINENT: Cpk IS BELOW THRESHOLD. CENTER THE MEAN.");
         }
     };
 
@@ -624,14 +624,12 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText
         }
     };
 
-    const generateBellPath = () => {
+    const generateBellPath = (visualSteering, visualPrecision) => {
         const w = 400; // Fixed visual container width
         const h = 180; // Fixed visual container height
-        const sigma = precision;
-        const mean = steering;
+        const sigma = visualPrecision;
+        const mean = visualSteering;
 
-        // Scale for visualization
-        // 0-160 represents the range 0-w
         const scaleX = w / 160;
 
         let path = "M ";
@@ -647,132 +645,155 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText
 
     return (
         <div className="w-full flex flex-col items-center">
-            <div className="text-center font-black font-orbitron text-[10px] text-slate-500 tracking-[0.3em] uppercase mb-6">
+            <div className="text-center font-black font-orbitron text-[10px] text-slate-500 tracking-[0.3em] uppercase mb-8">
                 MISSION: {scenario.name}
             </div>
 
-            {/* 🛰️ The Docking Bay */}
-            <div
-                onMouseEnter={() => setHoverText(scenario.desc)}
-                onMouseLeave={() => setHoverText(null)}
-                className="relative w-[500px] h-[240px] bg-slate-900/40 rounded-[2rem] border border-white/5 flex items-center justify-center overflow-hidden mb-6"
-            >
-                {/* 🧱 Spec Walls */}
-                <div className="absolute inset-0 flex flex-col justify-center">
-                    {/* Tunnel Path */}
-                    <div
-                        style={{ height: (usl - lsl) * 1.5 }}
-                        className="w-full bg-cyan-500/5 border-y border-white/10"
-                    />
-                </div>
+            {/* 🛰️ Dual Interactive Graphs */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-6xl mb-12">
 
-                {/* 📏 Spec Labels */}
-                <div className="absolute inset-0 flex flex-col justify-center pointer-events-none">
-                    <div style={{ transform: `translateY(${-((usl - lsl) * 0.75)}px)` }} className="px-6 flex justify-between">
-                        <span className="text-[8px] font-black font-orbitron text-orange-400 opacity-50">LOWER SPEC (LSL: {lsl})</span>
-                        <div className="h-px bg-orange-400/20 flex-1 mx-4 self-center" />
-                    </div>
-                    <div style={{ transform: `translateY(${((usl - lsl) * 0.75)}px)` }} className="px-6 flex justify-between">
-                        <span className="text-[8px] font-black font-orbitron text-orange-400 opacity-50">UPPER SPEC (USL: {usl})</span>
-                        <div className="h-px bg-orange-400/20 flex-1 mx-4 self-center" />
-                    </div>
-                </div>
-
-                {/* 🎞️ Bell Curve (Voice of Process) */}
-                <div className="relative w-[400px] h-[180px]">
-                    <svg viewBox="0 0 400 180" className="w-full h-full overflow-visible">
-                        <defs>
-                            <linearGradient id="bellGlow" x1="0" y1="0" x2="0" y2="100%">
-                                <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.4" />
-                                <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
-                            </linearGradient>
-                        </defs>
-                        <path
-                            d={generateBellPath()}
-                            fill="url(#bellGlow)"
-                            stroke={cpk < 1.33 ? "#ef4444" : "#22d3ee"}
-                            strokeWidth="3"
-                            className="transition-all duration-300"
-                        />
-                        {/* Mean Line */}
-                        <line
-                            x1={steering * (400 / 160)} y1="0"
-                            x2={steering * (400 / 160)} y2="180"
-                            stroke="#fff" strokeWidth="1" strokeDasharray="4 4" opacity="0.5"
-                        />
-                    </svg>
-                </div>
-            </div>
-
-            {/* 📊 Scoreboard */}
-            <div className="grid grid-cols-2 gap-6 w-full max-w-lg mb-8">
+                {/* 🎯 Graph 1: Potential (Cp) */}
                 <div
-                    onMouseEnter={() => setHoverText("POTENTIAL: How thin your process spread is. Target > 1.33")}
+                    onMouseEnter={() => setHoverText("POTENTIAL (Cp): This shows the theoretical best. It assumes perfect centering. Shrink this curve to fit the specs.")}
                     onMouseLeave={() => setHoverText(null)}
-                    className="bg-black/40 p-6 rounded-2xl border border-white/5 text-center group"
+                    className="space-y-4"
                 >
-                    <div className="text-[9px] font-black text-slate-500 font-orbitron mb-2 uppercase tracking-widest group-hover:text-cyan-400 transition-colors">Cp (Potential)</div>
-                    <div className="text-3xl font-black text-white font-orbitron tracking-tight">{cp.toFixed(2)}</div>
+                    <div className="flex justify-between items-center px-4">
+                        <span className="text-[10px] font-black font-orbitron text-cyan-400 tracking-[0.2em] uppercase">Visualizer 01: Potential</span>
+                        <div className="bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full text-[9px] font-black font-orbitron text-cyan-400">Cp: {cp.toFixed(2)}</div>
+                    </div>
+                    <div className="relative h-[240px] bg-slate-900/40 rounded-[2rem] border border-white/5 flex items-center justify-center overflow-hidden shadow-inner">
+                        <div className="absolute inset-0 flex flex-col justify-center">
+                            <div style={{ height: (usl - lsl) * 1.5 }} className="w-full bg-cyan-500/5 border-y border-white/10" />
+                        </div>
+                        <div className="relative w-[400px] h-[180px]">
+                            <svg viewBox="0 0 400 180" className="w-full h-full overflow-visible">
+                                <path
+                                    d={generateBellPath(80, precision)}
+                                    fill="rgba(34, 211, 238, 0.1)"
+                                    stroke="#22d3ee"
+                                    strokeWidth="2"
+                                    strokeDasharray="4 4"
+                                />
+                                <line x1="200" y1="0" x2="200" y2="180" stroke="#22d3ee" strokeWidth="1" opacity="0.2" />
+                            </svg>
+                        </div>
+                        <div className="absolute bottom-4 left-0 right-0 text-center">
+                            <span className="text-[8px] font-black font-orbitron text-slate-600 uppercase tracking-widest">Calculated assuming mean = 80</span>
+                        </div>
+                    </div>
                 </div>
+
+                {/* 🛰️ Graph 2: Reality (Cpk) */}
                 <div
-                    onMouseEnter={() => setHoverText("REALITY: How centered your process is within limits. Target > 1.33")}
+                    onMouseEnter={() => setHoverText("REALITY (Cpk): This is your actual performance. It accounts for your steering (offset). Center the curve to maximize Cpk.")}
                     onMouseLeave={() => setHoverText(null)}
-                    className="bg-black/40 p-6 rounded-2xl border border-white/5 text-center group"
+                    className="space-y-4"
                 >
-                    <div className="text-[9px] font-black text-slate-500 font-orbitron mb-2 uppercase tracking-widest group-hover:text-cyan-400 transition-colors">Cpk (Reality)</div>
-                    <div className={`text-3xl font-black font-orbitron tracking-tight transition-colors ${cpk >= 1.33 ? 'text-green-500' : 'text-red-500'}`}>{cpk.toFixed(2)}</div>
+                    <div className="flex justify-between items-center px-4">
+                        <span className="text-[10px] font-black font-orbitron text-nexus-purple tracking-[0.2em] uppercase">Visualizer 02: Reality</span>
+                        <div className={`border px-3 py-1 rounded-full text-[9px] font-black font-orbitron transition-colors ${cpk >= 1.33 ? 'bg-green-500/10 border-green-500/20 text-green-400' : 'bg-red-500/10 border-red-500/20 text-red-500'}`}>Cpk: {cpk.toFixed(2)}</div>
+                    </div>
+                    <div className="relative h-[240px] bg-slate-900/40 rounded-[2rem] border border-white/5 flex items-center justify-center overflow-hidden shadow-[inset_0_0_40px_rgba(0,0,0,0.5)]">
+                        <div className="absolute inset-0 flex flex-col justify-center">
+                            <div style={{ height: (usl - lsl) * 1.5 }} className="w-full bg-nexus-purple/5 border-y border-white/10" />
+                        </div>
+                        <div className="relative w-[400px] h-[180px]">
+                            <svg viewBox="0 0 400 180" className="w-full h-full overflow-visible">
+                                <path
+                                    d={generateBellPath(steering, precision)}
+                                    fill={cpk >= 1.33 ? "rgba(34, 197, 94, 0.15)" : "rgba(239, 68, 68, 0.1)"}
+                                    stroke={cpk >= 1.33 ? "#22c55e" : "#ef4444"}
+                                    strokeWidth="3"
+                                />
+                                <line x1={steering * (400 / 160)} y1="0" x2={steering * (400 / 160)} y2="180" stroke="#fff" strokeWidth="1" strokeDasharray="4 4" opacity="0.3" />
+                            </svg>
+                        </div>
+                        <div className="absolute bottom-4 left-0 right-0 text-center">
+                            <span className="text-[8px] font-black font-orbitron text-slate-600 uppercase tracking-widest">Actual Process State</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* ⌨️ Controls */}
-            <div className="w-full max-w-lg space-y-6">
-                <div className="space-y-2">
-                    <div className="flex justify-between text-[9px] font-black font-orbitron text-slate-500 uppercase tracking-widest px-1">
-                        <span>Precision (Variation Control)</span>
-                        <span className="text-cyan-400">Sigma Scale: ±{precision.toFixed(1)}</span>
+            {/* ⌨️ Control Interface */}
+            <div className="w-full max-w-4xl bg-black/20 p-10 rounded-[2.5rem] border border-white/5 space-y-10 mb-12 shadow-2xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div className="space-y-4">
+                        <div className="flex justify-between text-[10px] font-black font-orbitron text-slate-500 uppercase tracking-widest">
+                            <span>Precision (Variation)</span>
+                            <span className="text-cyan-400">Sigma Scale: ±{precision.toFixed(1)}</span>
+                        </div>
+                        <input
+                            type="range" min="5" max="40" step="0.5"
+                            value={precision} disabled={isDocked}
+                            onMouseEnter={() => setHoverText("PRECISION CONTROL: Shrink the spread (standard deviation). A tighter curve increases both Cp and Cpk.")}
+                            onMouseLeave={() => setHoverText(null)}
+                            onChange={(e) => setPrecision(parseFloat(e.target.value))}
+                            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                        />
+                        <p className="text-[8px] text-slate-600 font-bold uppercase tracking-tighter">Affects Cp and Cpk equally.</p>
                     </div>
-                    <input
-                        type="range" min="5" max="40" step="0.5"
-                        value={precision}
-                        disabled={isDocked}
-                        onChange={(e) => setPrecision(parseFloat(e.target.value))}
-                        className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                    />
+                    <div className="space-y-4">
+                        <div className="flex justify-between text-[10px] font-black font-orbitron text-slate-500 uppercase tracking-widest">
+                            <span>Steering (Mean)</span>
+                            <span className="text-nexus-purple">Position: {steering}</span>
+                        </div>
+                        <input
+                            type="range" min="0" max="160" step="1"
+                            value={steering} disabled={isDocked}
+                            onMouseEnter={() => setHoverText("STEERING CONTROL: Align the process mean with the center. Vital for Cpk (Reality) but has zero effect on Cp (Potential).")}
+                            onMouseLeave={() => setHoverText(null)}
+                            onChange={(e) => setSteering(parseInt(e.target.value))}
+                            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-nexus-purple"
+                        />
+                        <p className="text-[8px] text-slate-600 font-bold uppercase tracking-tighter">Only affects Cpk (Reality).</p>
+                    </div>
                 </div>
-                <div className="space-y-2">
-                    <div className="flex justify-between text-[9px] font-black font-orbitron text-slate-500 uppercase tracking-widest px-1">
-                        <span>Steering (Align Mean)</span>
-                        <span className="text-cyan-400">Center: {steering}</span>
+
+                <div className="pt-6 border-t border-white/5 flex flex-col items-center gap-6">
+                    <div className="flex gap-4">
+                        <div className={`px-4 py-2 rounded-lg border flex items-center gap-3 ${cp >= 1.33 ? 'border-cyan-500/40 bg-cyan-500/5 text-cyan-400' : 'border-slate-800 bg-slate-900 text-slate-600'}`}>
+                            <div className={`w-1.5 h-1.5 rounded-full ${cp >= 1.33 ? 'bg-cyan-400 shadow-[0_0_8px_#22d3ee]' : 'bg-slate-700'}`} />
+                            <span className="text-[9px] font-black font-orbitron uppercase tracking-widest">Potential Locked</span>
+                        </div>
+                        <div className={`px-4 py-2 rounded-lg border flex items-center gap-3 ${cpk >= 1.33 ? 'border-green-500/40 bg-green-500/5 text-green-400' : 'border-slate-800 bg-slate-900 text-slate-600'}`}>
+                            <div className={`w-1.5 h-1.5 rounded-full ${cpk >= 1.33 ? 'bg-green-400 shadow-[0_0_8px_#4ade80]' : 'bg-slate-700'}`} />
+                            <span className="text-[9px] font-black font-orbitron uppercase tracking-widest">Reality Aligned</span>
+                        </div>
                     </div>
-                    <input
-                        type="range" min="0" max="160" step="1"
-                        value={steering}
-                        disabled={isDocked}
-                        onChange={(e) => setSteering(parseInt(e.target.value))}
-                        className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                    />
+
+                    <div className="w-full max-w-sm">
+                        {isDocked ? (
+                            <motion.button
+                                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                                onClick={nextMission}
+                                onMouseEnter={() => setHoverText("MISSION PARAMETERS MET: Handoff data to the next simulation phase.")}
+                                onMouseLeave={() => setHoverText(null)}
+                                className="w-full bg-green-500 text-black py-4 rounded-xl font-black font-orbitron text-xs tracking-widest uppercase shadow-[0_0_40px_rgba(34,197,94,0.4)] hover:brightness-110 transition-all"
+                            >
+                                Initiate Handoff Proceed
+                            </motion.button>
+                        ) : (
+                            <button
+                                onClick={handleDock}
+                                onMouseEnter={() => setHoverText("VALIDATE VECTOR: Attempt to lock the current process parameters against customer limits.")}
+                                onMouseLeave={() => setHoverText(null)}
+                                className={`w-full py-4 rounded-xl font-black font-orbitron text-[10px] tracking-[0.2em] transition-all uppercase
+                                    ${cpk >= 1.33 ? 'bg-cyan-500 text-black shadow-[0_0_30px_rgba(34,211,238,0.4)] hover:scale-[1.02] active:scale-[0.98]' : 'bg-slate-800 text-slate-600 border border-white/5'}
+                                `}
+                            >
+                                Validate Docking Vector
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            <div className="h-16 flex items-center justify-center mt-6">
-                {isDocked ? (
-                    <motion.button
-                        initial={{ scale: 0 }} animate={{ scale: 1 }}
-                        onClick={nextMission}
-                        className="bg-green-500 text-black px-16 py-4 rounded-xl font-black font-orbitron text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(34,197,94,0.3)]"
-                    >
-                        Success: Procedural Handoff
-                    </motion.button>
-                ) : (
-                    <button
-                        onClick={handleDock}
-                        className={`px-16 py-4 rounded-xl font-black font-orbitron text-[11px] tracking-[0.2em] transition-all uppercase
-                            ${cpk >= 1.33 ? 'bg-cyan-500 text-black shadow-[0_0_30px_rgba(34,211,238,0.4)] hover:scale-105 active:scale-95' : 'bg-slate-800 text-slate-600 border border-white/5'}
-                        `}
-                    >
-                        Initiate Docking Sequence
-                    </button>
-                )}
+            {/* 🖱️ Indicator for scrollability */}
+            <div className="flex flex-col items-center gap-2 opacity-30">
+                <div className="w-px h-10 bg-gradient-to-b from-white to-transparent" />
+                <span className="text-[8px] font-black font-orbitron text-white uppercase tracking-widest">Vertical Alignment HUD</span>
             </div>
         </div>
     );
