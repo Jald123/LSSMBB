@@ -57,9 +57,7 @@ const ToolWorkspace = () => {
     // --- ESCAPE KEY HANDLER ---
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'Escape') {
-                setActiveAssistantTool(null);
-            }
+            if (e.key === 'Escape') setActiveAssistantTool(null);
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
@@ -138,9 +136,7 @@ const ToolWorkspace = () => {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
     const handleMouseMoveGlobal = (e) => {
-        if (activeAssistantTool === 'sniper' || activeAssistantTool === 'draw') {
-            setMousePos({ x: e.clientX, y: e.clientY });
-        }
+        setMousePos({ x: e.clientX, y: e.clientY });
     };
 
     const handleWheelGlobal = (e) => {
@@ -152,9 +148,28 @@ const ToolWorkspace = () => {
     useEffect(() => {
         window.addEventListener('mousemove', handleMouseMoveGlobal);
         window.addEventListener('wheel', handleWheelGlobal, { passive: false });
+        // Handle global mouse events for drawing when start from Shell area
+        const handleGlobalMouseDown = (e) => {
+            if (activeAssistantTool === 'draw' && e.target.closest('.shell-interactive') === null) {
+                // Start drawing if click is on workspace, and not UI
+                startDrawing(e);
+            }
+        };
+        const handleGlobalMouseUp = () => stopDrawing();
+        const handleGlobalMouseMove = (e) => {
+            if (activeAssistantTool === 'draw') drawAction(e);
+        };
+
+        window.addEventListener('mousedown', handleGlobalMouseDown);
+        window.addEventListener('mouseup', handleGlobalMouseUp);
+        window.addEventListener('mousemove', handleGlobalMouseMove);
+
         return () => {
             window.removeEventListener('mousemove', handleMouseMoveGlobal);
             window.removeEventListener('wheel', handleWheelGlobal);
+            window.removeEventListener('mousedown', handleGlobalMouseDown);
+            window.removeEventListener('mouseup', handleGlobalMouseUp);
+            window.removeEventListener('mousemove', handleGlobalMouseMove);
         };
     }, [activeAssistantTool]);
 
@@ -163,8 +178,8 @@ const ToolWorkspace = () => {
     const [isDrawing, setIsDrawing] = useState(false);
     const [drawMode, setDrawMode] = useState('pen');
     const [drawColor, setDrawColor] = useState("#fbbf24");
-    const [drawWidth, setDrawWidth] = useState(25);
-    const [drawOpacity, setDrawOpacity] = useState(0.4);
+    const [drawWidth, setDrawWidth] = useState(30);
+    const [drawOpacity, setDrawOpacity] = useState(0.05);
 
     useEffect(() => {
         if (activeAssistantTool === 'draw' && canvasRef.current) {
@@ -196,7 +211,7 @@ const ToolWorkspace = () => {
 
         if (drawMode === 'highlighter') {
             ctx.globalAlpha = drawOpacity;
-            ctx.lineCap = 'butt'; // Rectangular highlighter tip
+            ctx.lineCap = 'butt';
             ctx.lineJoin = 'bevel';
         } else {
             ctx.globalAlpha = drawMode === 'pencil' ? 0.6 : 1.0;
@@ -251,26 +266,27 @@ const ToolWorkspace = () => {
             style.textContent = cssRules;
             doc.head.appendChild(style);
 
-            // Proxy mouse events from iframe back to parent for Sniper/Lens
+            // Proxy events from iframe for seamless drawing/sniping across boundaries
             doc.addEventListener('mousemove', (me) => {
                 const rect = iframe.getBoundingClientRect();
-                handleMouseMoveGlobal({
-                    clientX: me.clientX + rect.left,
-                    clientY: me.clientY + rect.top
-                });
+                handleMouseMoveGlobal({ clientX: me.clientX + rect.left, clientY: me.clientY + rect.top });
+                if (activeAssistantTool === 'draw' && isDrawing) {
+                    drawAction({ clientX: me.clientX + rect.left, clientY: me.clientY + rect.top });
+                }
             });
-            doc.addEventListener('wheel', (we) => handleWheelGlobal(we), { passive: false });
-
-            // Proxy draw events
             doc.addEventListener('mousedown', (me) => {
-                if (activeAssistantTool === 'draw') startDrawing({ clientX: me.clientX + iframe.getBoundingClientRect().left, clientY: me.clientY + iframe.getBoundingClientRect().top });
+                if (activeAssistantTool === 'draw') {
+                    const rect = iframe.getBoundingClientRect();
+                    startDrawing({ clientX: me.clientX + rect.left, clientY: me.clientY + rect.top });
+                }
             });
-            doc.addEventListener('mousemove', (me) => {
-                if (activeAssistantTool === 'draw') drawAction({ clientX: me.clientX + iframe.getBoundingClientRect().left, clientY: me.clientY + iframe.getBoundingClientRect().top });
-            });
-            doc.addEventListener('mouseup', () => {
-                if (activeAssistantTool === 'draw') stopDrawing();
-            });
+            doc.addEventListener('mouseup', () => stopDrawing());
+            doc.addEventListener('wheel', (we) => {
+                if (activeAssistantTool === 'sniper') {
+                    we.preventDefault();
+                    handleWheelGlobal(we);
+                }
+            }, { passive: false });
 
         } catch (err) { console.warn("Iframe access restricted:", err); }
     };
@@ -278,8 +294,8 @@ const ToolWorkspace = () => {
     return (
         <div className={`h-screen w-full flex flex-col overflow-hidden relative ${theme === 'light' ? 'bg-slate-50' : 'bg-black'}`}>
 
-            {/* 🔝 HEADER BAR */}
-            <div className="h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[900] bg-black/40 backdrop-blur-3xl absolute top-0 left-0 right-0">
+            {/* 🔝 HEADER BAR (UI elements are marked as shell-interactive to prevent drawing starting on them) */}
+            <div className="h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[900] bg-black/40 backdrop-blur-3xl absolute top-0 left-0 right-0 shell-interactive">
                 <div className="flex items-center gap-6 w-1/4">
                     <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
                         <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
@@ -320,15 +336,9 @@ const ToolWorkspace = () => {
             {/* 🚀 MAIN CONTENT */}
             <div className="flex-1 flex overflow-hidden relative pt-16">
 
-                {/* 🥷 TRANSPARENT PASS-THROUGH LAYER (Acts as the interaction surface) */}
+                {/* 🥷 TRANSPARENT PASS-THROUGH LAYER (Used for capture when interaction is on) */}
                 {(activeAssistantTool === 'draw' || activeAssistantTool === 'sniper') && (
-                    <div
-                        onMouseDown={activeAssistantTool === 'draw' ? startDrawing : null}
-                        onMouseMove={activeAssistantTool === 'draw' ? drawAction : handleMouseMoveGlobal}
-                        onMouseUp={activeAssistantTool === 'draw' ? stopDrawing : null}
-                        onWheel={handleWheelGlobal}
-                        className="fixed inset-0 z-[1200] bg-transparent cursor-none pointer-events-auto"
-                    />
+                    <div className="fixed inset-0 z-[1200] bg-transparent pointer-events-none" />
                 )}
 
                 <div className="w-full h-full pb-14 overflow-hidden">
@@ -337,7 +347,7 @@ const ToolWorkspace = () => {
 
                 <AnimatePresence>
                     {activeAssistantTool === 'notes' && (
-                        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} className="fixed top-20 right-8 w-[450px] z-[1300] drop-shadow-2xl">
+                        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} className="fixed top-20 right-8 w-[450px] z-[1300] drop-shadow-2xl shell-interactive">
                             <div className="bg-[#1e293b] rounded-2xl overflow-hidden flex flex-col h-[550px] border border-white/5 shadow-2xl">
                                 <div className="flex h-3 w-full border-b border-black/10">
                                     {noteColors.map((c, i) => (
@@ -367,7 +377,7 @@ const ToolWorkspace = () => {
                     )}
 
                     {activeAssistantTool === 'calculator' && (
-                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="fixed top-24 left-1/2 -translate-x-1/2 z-[1300] w-72 bg-black border border-white/10 rounded-[2.5rem] p-6 shadow-2xl">
+                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="fixed top-24 left-1/2 -translate-x-1/2 z-[1300] w-72 bg-black border border-white/10 rounded-[2.5rem] p-6 shadow-2xl shell-interactive">
                             <div className="flex justify-end mb-2"><button onClick={() => setActiveAssistantTool(null)} className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all"><X className="w-3 h-3" /></button></div>
                             <div className="text-right mb-6 px-2 overflow-hidden"><div className="text-slate-500 text-xs font-mono mb-1 h-4">{calcExpr}</div><div className="text-white text-5xl font-light font-sans truncate">{calcDisplay}</div></div>
                             <div className="grid grid-cols-4 gap-3">
@@ -380,24 +390,39 @@ const ToolWorkspace = () => {
 
                     {activeAssistantTool === 'draw' && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[1500] pointer-events-none">
+                            {/* Pointing Area Preview (Custom Cursor) */}
+                            <div
+                                className="fixed pointer-events-none rounded-full border border-black/30 z-[2000] flex items-center justify-center overflow-hidden"
+                                style={{
+                                    left: mousePos.x, top: mousePos.y,
+                                    width: drawWidth, height: drawWidth,
+                                    transform: 'translate(-50%, -50%)',
+                                    backgroundColor: `${drawColor}${Math.round(drawOpacity * 255).toString(16).padStart(2, '0')}`,
+                                    boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+                                }}
+                            >
+                                <div className="absolute w-1/2 h-px bg-black/20" />
+                                <div className="absolute h-1/2 w-px bg-black/20" />
+                            </div>
+
                             <canvas
                                 ref={canvasRef}
                                 className="w-full h-full"
                                 style={{ mixBlendMode: drawMode === 'highlighter' ? 'multiply' : 'normal' }}
                             />
 
-                            <motion.div initial={{ y: -50, x: '-50%' }} animate={{ y: 0, x: '-50%' }} className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-[#0f172a]/95 rounded-2xl border border-white/10 flex items-center gap-6 pointer-events-auto shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] min-w-[780px]">
+                            <motion.div initial={{ y: -50, x: '-50%' }} animate={{ y: 0, x: '-50%' }} className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-[#0f172a]/95 rounded-2xl border border-white/10 flex items-center gap-6 pointer-events-auto shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] min-w-[500px] shell-interactive">
                                 {/* Tool Toggles (Ico-btns) */}
                                 <div className="flex items-center gap-1.5 pr-5 border-r border-white/10">
                                     <button onClick={() => setDrawMode('pen')} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pen' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pen className="w-6 h-6" /></button>
-                                    <button onClick={() => { setDrawMode('highlighter'); setDrawWidth(25); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'highlighter' ? 'bg-[#dcfce7] text-[#166534] shadow-lg border border-[#166534]/20' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><HighlighterIcon className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('highlighter'); setDrawWidth(30); setDrawOpacity(0.1); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'highlighter' ? 'bg-[#dcfce7] text-[#166534] shadow-lg border border-[#166534]/20' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><HighlighterIcon className="w-6 h-6" /></button>
                                     <button onClick={() => setDrawMode('pencil')} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
                                 </div>
 
-                                {/* Transparency Presets (Modern Pill Style) */}
+                                {/* Transparency Presets (Modern Pill Style) - Removed > 10% */}
                                 <div className="flex items-center gap-2 pr-5 border-r border-white/10">
                                     <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter">OPAQUE</span>
-                                    {[0.02, 0.05, 0.1, 0.2, 0.4, 0.7].map(op => (
+                                    {[0.02, 0.05, 0.1].map(op => (
                                         <button key={op} onClick={() => setDrawOpacity(op)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${drawOpacity === op ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>{Math.round(op * 100)}%</button>
                                     ))}
                                 </div>
@@ -407,12 +432,6 @@ const ToolWorkspace = () => {
                                     {['#000000', '#ef4444', '#3b82f6', '#10b981', '#f97316', '#fbbf24', '#dcfce7', '#dbeafe', '#f3e8ff', '#ffffff'].map(c => (
                                         <button key={c} onClick={() => setDrawColor(c)} className={`w-4 h-4 rounded-sm border transition-all ${drawColor === c ? 'scale-125 border-white shadow-sm ring-1 ring-blue-500' : 'border-white/10 hover:scale-110'}`} style={{ backgroundColor: c }} />
                                     ))}
-                                </div>
-
-                                {/* Thickness Control */}
-                                <div className="flex flex-col gap-1 pr-5 border-r border-white/10 min-w-[120px]">
-                                    <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter">THICKNESS</span>
-                                    <input type="range" min="2" max="60" value={drawWidth} onChange={(e) => setDrawWidth(parseInt(e.target.value))} className="w-full h-1 bg-white/10 rounded-full appearance-none accent-blue-500 cursor-pointer" />
                                 </div>
 
                                 {/* Final Actions */}
@@ -426,7 +445,7 @@ const ToolWorkspace = () => {
 
                     {activeAssistantTool === 'sniper' && (
                         <>
-                            <motion.div initial={{ opacity: 0, y: -20, x: '-50%' }} animate={{ opacity: 1, y: 0, x: '-50%' }} exit={{ opacity: 0, y: -20, x: '-50%' }} className="fixed top-24 left-1/2 -translate-x-1/2 z-[1400] h-12 glass-panel bg-[#0f172a]/95 rounded-full border border-white/10 px-6 flex items-center gap-6 shadow-2xl">
+                            <motion.div initial={{ opacity: 0, y: -20, x: '-50%' }} animate={{ opacity: 1, y: 0, x: '-50%' }} exit={{ opacity: 0, y: -20, x: '-50%' }} className="fixed top-24 left-1/2 -translate-x-1/2 z-[1400] h-12 glass-panel bg-[#0f172a]/95 rounded-full border border-white/10 px-6 flex items-center gap-6 shadow-2xl shell-interactive">
                                 <span className="text-[10px] font-black font-orbitron text-slate-500 tracking-widest uppercase">ZOOM MODE:</span>
                                 <div className="flex bg-black/40 p-1 rounded-full gap-2">
                                     <button onClick={() => setSniperMode('lens')} className={`px-4 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-black font-orbitron transition-all ${sniperMode === 'lens' ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'text-slate-500 hover:text-white'}`}><div className="w-2 h-2 rounded-full bg-white shadow-sm" /> Lens</button>
@@ -456,13 +475,21 @@ const ToolWorkspace = () => {
             </div>
 
             {/* 🎮 MISSION CONTROL FOOTER */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full bg-[#0f172a] border border-slate-600/50 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full bg-[#0f172a] border border-slate-600/50 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shell-interactive">
                 <button onClick={() => navigate('/')} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><Home className="w-3.5 h-3.5" /></button>
                 <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) navigate(`/workspace/${prevTool.id}`); else navigate('/journey'); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ChevronLeft className="w-4 h-4" /></button>
                 <button onClick={() => markToolComplete(toolId)} className={`relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 active:scale-95 ${isCompleted ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-800 border-slate-600 text-slate-200'}`}>{isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}{isCompleted ? 'SECURED' : 'MARK DONE'}</button>
                 <button onClick={handleNextStation} className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all"><span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span><ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" /></button>
                 <button onClick={() => { if (activeIframe?.contentWindow) activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ArrowUp className="w-3.5 h-3.5" /></button>
             </div>
+            {/* Global Cursor Injects for Drawing Mode */}
+            {activeAssistantTool === 'draw' && (
+                <style dangerouslySetInnerHTML={{
+                    __html: `
+                    * { cursor: none !important; }
+                    .shell-interactive, .shell-interactive * { cursor: auto !important; }
+                `}} />
+            )}
         </div>
     );
 };
