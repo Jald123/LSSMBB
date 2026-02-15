@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -24,7 +24,16 @@ import {
     Search,
     Minus,
     Plus,
-    RotateCcw
+    RotateCcw,
+    Trash2,
+    PlusCircle,
+    Type,
+    Bold,
+    Italic,
+    Underline,
+    Eraser,
+    Crosshair,
+    ZoomIn
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
 import { methodologyData } from '../data/journeyData';
@@ -39,12 +48,108 @@ const ToolWorkspace = () => {
     const [zoomLevel, setZoomLevel] = useState(1);
     const [activeAssistantTool, setActiveAssistantTool] = useState(null); // 'notes', 'calculator', 'draw', 'search'
 
-    const toggleAssistantTool = (toolName) => {
-        setActiveAssistantTool(prev => prev === toolName ? null : toolName);
-    };
-
     const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
     const tool = toolRegistry[toolId];
+
+    // --- STICKY NOTES STATE ---
+    const [notes, setNotes] = useState(() => {
+        const saved = localStorage.getItem('nexus_notes');
+        return saved ? JSON.parse(saved) : [{ id: 1, content: "Capture your tactical analysis here...", color: "#fef3c7" }];
+    });
+    const [activeNoteIndex, setActiveNoteIndex] = useState(0);
+
+    const saveNotes = (updated) => {
+        setNotes(updated);
+        localStorage.setItem('nexus_notes', JSON.stringify(updated));
+    };
+
+    const addNote = () => {
+        const newNote = { id: Date.now(), content: "New tactical note...", color: "#fef3c7" };
+        const updated = [...notes, newNote];
+        saveNotes(updated);
+        setActiveNoteIndex(updated.length - 1);
+    };
+
+    const deleteNote = (index) => {
+        if (notes.length === 1) return;
+        const updated = notes.filter((_, i) => i !== index);
+        saveNotes(updated);
+        setActiveNoteIndex(Math.max(0, index - 1));
+    };
+
+    // --- CALCULATOR STATE ---
+    const [calcDisplay, setCalcDisplay] = useState("0");
+    const [calcExpr, setCalcExpr] = useState("");
+
+    const handleCalcInput = (val) => {
+        if (val === 'C') {
+            setCalcDisplay("0");
+            setCalcExpr("");
+        } else if (val === '=') {
+            try {
+                // eslint-disable-next-line no-eval
+                const result = eval(calcExpr || calcDisplay);
+                setCalcDisplay(String(result));
+                setCalcExpr("");
+            } catch (e) {
+                setCalcDisplay("Error");
+            }
+        } else {
+            const nextDisplay = calcDisplay === "0" || calcDisplay === "Error" ? val : calcDisplay + val;
+            setCalcDisplay(nextDisplay);
+            setCalcExpr(calcExpr + (val === '×' ? '*' : val === '÷' ? '/' : val));
+        }
+    };
+
+    // --- DRAWING CANVAS LOGIC ---
+    const canvasRef = useRef(null);
+    const [isDrawing, setIsDrawing] = useState(false);
+    const [drawColor, setDrawColor] = useState("#fbbf24");
+    const [drawWidth, setDrawWidth] = useState(5);
+
+    useEffect(() => {
+        if (activeAssistantTool === 'draw' && canvasRef.current) {
+            const canvas = canvasRef.current;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+    }, [activeAssistantTool]);
+
+    const startDrawing = (e) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.getBoundingClientRect();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        setIsDrawing(true);
+    };
+
+    const draw = (e) => {
+        if (!isDrawing) return;
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.getBoundingClientRect();
+        ctx.strokeStyle = drawColor;
+        ctx.lineWidth = drawWidth;
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+    };
+
+    const stopDrawing = () => {
+        setIsDrawing(false);
+    };
+
+    const clearCanvas = () => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    };
 
     // Identify Next Station Logic
     const activeMethodology = methodology?.split(' ')[0].toUpperCase() || 'DMAIC';
@@ -83,8 +188,6 @@ const ToolWorkspace = () => {
             try {
                 activeIframe.style.transform = `scale(${zoomLevel})`;
                 activeIframe.style.transformOrigin = 'top center';
-                // Adjust container height or width if necessary, but iframe scale usually needs layout compensation
-                // For simplicity in this 'expert' fix, we scale the element.
             } catch (e) {
                 console.warn("Zoom error", e);
             }
@@ -92,7 +195,6 @@ const ToolWorkspace = () => {
     }, [zoomLevel, activeIframe]);
 
 
-    // --- Fallback Error State ---
     if (!tool) {
         return (
             <motion.div
@@ -108,46 +210,24 @@ const ToolWorkspace = () => {
                         The requested module identifier <code className="text-nexus-error font-mono px-2 py-0.5 bg-black/40 rounded">{toolId}</code> has not been registered in the Nexus database.
                     </p>
                     <div className="flex flex-col gap-3">
-                        <button
-                            onClick={() => navigate('/')}
-                            className="w-full bg-white text-nexus-navy py-4 rounded-xl font-orbitron font-black text-xs hover:scale-105 transition-all"
-                        >
-                            RETURN TO HANGAR
-                        </button>
-                        <button
-                            onClick={() => navigate('/journey')}
-                            className="w-full bg-white/5 border border-white/10 py-4 rounded-xl font-orbitron font-black text-xs text-slate-400 hover:text-white transition-all"
-                        >
-                            VIEW MISSION MAP
-                        </button>
+                        <button onClick={() => navigate('/')} className="w-full bg-white text-nexus-navy py-4 rounded-xl font-orbitron font-black text-xs hover:scale-105 transition-all">RETURN TO HANGAR</button>
+                        <button onClick={() => navigate('/journey')} className="w-full bg-white/5 border border-white/10 py-4 rounded-xl font-orbitron font-black text-xs text-slate-400 hover:text-white transition-all">VIEW MISSION MAP</button>
                     </div>
                 </div>
             </motion.div>
         );
     }
 
-    // --- Iframe Injection to Hide Legacy Navs ---
     const handleIframeLoad = (e) => {
         try {
             const iframe = e.target;
             setActiveIframe(iframe);
             const doc = iframe.contentWindow.document;
             const style = doc.createElement('style');
-            let cssRules = `
-                /* Layout Reset */
-                body { padding-top: 0 !important; margin: 0 !important; width: 100vw; height: 100vh; overflow-x: hidden; }
-            `;
-
+            let cssRules = `body { padding-top: 0 !important; margin: 0 !important; width: 100vw; height: 100vh; overflow-x: hidden; }`;
             if (toolId !== 'hoshin') {
-                // For all tools EXCEPT Hoshin: Hide ONLY the legacy bottom navigation/footer
-                // We keep the top headers visible as requested.
-                cssRules += `
-                    footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer, .tool-nav-bottom, .navigation-bottom, .universal-nav-bar { display: none !important; }
-                `;
+                cssRules += `footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer, .tool-nav-bottom, .navigation-bottom, .universal-nav-bar { display: none !important; }`;
             }
-            // For Hoshin (toolId === 'hoshin'), we add NO extra hiding rules, 
-            // so both its Header and Bottom Nav remain visible.
-
             style.textContent = cssRules;
             doc.head.appendChild(style);
         } catch (err) {
@@ -158,16 +238,10 @@ const ToolWorkspace = () => {
     return (
         <div className={`h-screen w-full flex flex-col overflow-hidden relative ${theme === 'light' ? 'bg-slate-50' : 'bg-black'}`}>
 
-            {/* 🔝 ENHANCED HEADER BAR */}
+            {/* 🔝 HEADER BAR */}
             <div className="h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[900] bg-black/40 backdrop-blur-3xl absolute top-0 left-0 right-0">
-
-                {/* LEFT: Back & Title */}
                 <div className="flex items-center gap-6 w-1/4">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center text-slate-400 hover:bg-white/5 hover:text-white transition-all group"
-                        title="Back to Journey"
-                    >
+                    <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
                         <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
                     </button>
                     <div className="w-px h-6 bg-nexus-border" />
@@ -177,92 +251,48 @@ const ToolWorkspace = () => {
                     </div>
                 </div>
 
-                {/* CENTER: Assistant Tools (Integrated) */}
                 <div className="flex-1 flex justify-center items-center gap-6">
-
-                    {/* Tools Group */}
                     <div className="flex items-center gap-1">
                         <button
-                            onClick={() => toggleAssistantTool('notes')}
+                            onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')}
                             className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
-                            title="Notes"
                         >
-                            <FileText className="w-4 h-4 transition-colors" />
+                            <FileText className="w-4 h-4" />
                         </button>
                         <button
-                            onClick={() => toggleAssistantTool('calculator')}
+                            onClick={() => setActiveAssistantTool(activeAssistantTool === 'calculator' ? null : 'calculator')}
                             className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 text-cyan-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
-                            title="Calculator"
                         >
-                            <Calculator className="w-4 h-4 transition-colors" />
+                            <Calculator className="w-4 h-4" />
                         </button>
                         <button
-                            onClick={() => toggleAssistantTool('draw')}
+                            onClick={() => setActiveAssistantTool(activeAssistantTool === 'draw' ? null : 'draw')}
                             className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-lime-500/20 text-lime-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
-                            title="Draw"
                         >
-                            <PenTool className="w-4 h-4 transition-colors" />
+                            <PenTool className="w-4 h-4" />
                         </button>
                         <button
-                            onClick={() => toggleAssistantTool('search')}
+                            onClick={() => setActiveAssistantTool(activeAssistantTool === 'search' ? null : 'search')}
                             className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'search' ? 'bg-violet-500/20 text-violet-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
-                            title="Search"
                         >
-                            <Search className="w-4 h-4 transition-colors" />
+                            <Search className="w-4 h-4" />
                         </button>
                     </div>
-
                     <div className="w-px h-8 bg-nexus-border/50 mx-2" />
-
-                    {/* Zoom Group */}
                     <div className="flex items-center gap-1">
-                        <button onClick={() => handleZoom(-0.1)} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-indigo-400 flex items-center justify-center transition-all">
-                            <Minus className="w-4 h-4" />
-                        </button>
-                        <button onClick={resetZoom} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-orange-400 flex items-center justify-center transition-all">
-                            <Home className="w-3.5 h-3.5" />
-                        </button>
-                        <button onClick={() => handleZoom(0.1)} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-emerald-400 flex items-center justify-center transition-all">
-                            <Plus className="w-4 h-4" />
-                        </button>
+                        <button onClick={() => handleZoom(-0.1)} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-indigo-400 flex items-center justify-center transition-all"><Minus className="w-4 h-4" /></button>
+                        <button onClick={resetZoom} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-orange-400 flex items-center justify-center transition-all"><Home className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => handleZoom(0.1)} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-emerald-400 flex items-center justify-center transition-all"><Plus className="w-4 h-4" /></button>
                     </div>
-
                     <div className="w-px h-8 bg-nexus-border/50 mx-2" />
-
-                    {/* Theme Toggle (Integrated) */}
-                    <button
-                        onClick={toggleTheme}
-                        className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group"
-                        title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                    >
-                        {theme === 'dark' ? (
-                            <Sun className="w-4 h-4 group-hover:text-yellow-400 transition-colors" />
-                        ) : (
-                            <Moon className="w-4 h-4 group-hover:text-sky-400 transition-colors" />
-                        )}
+                    <button onClick={toggleTheme} className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group">
+                        {theme === 'dark' ? <Sun className="w-4 h-4 group-hover:text-yellow-400" /> : <Moon className="w-4 h-4 group-hover:text-sky-400" />}
                     </button>
                 </div>
 
-                {/* RIGHT: View Mode Switcher */}
                 <div className="bg-black/60 p-1 rounded-full border border-white/5 flex shadow-inner w-1/4 justify-end">
-                    <button
-                        onClick={() => setViewMode('do')}
-                        className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'do'
-                            ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)]'
-                            : 'text-slate-500 hover:text-slate-300'
-                            }`}
-                    >
-                        <Terminal className="w-3 h-3" /> DO
-                    </button>
-                    <button
-                        onClick={() => setViewMode('learn')}
-                        className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'learn'
-                            ? 'bg-nexus-purple text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                            : 'text-slate-500 hover:text-slate-300'
-                            }`}
-                    >
-                        <FileText className="w-3 h-3" /> LEARN
-                    </button>
+                    <button onClick={() => setViewMode('do')} className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'do' ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}><Terminal className="w-3 h-3" /> DO</button>
+                    <button onClick={() => setViewMode('learn')} className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'learn' ? 'bg-nexus-purple text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}><FileText className="w-3 h-3" /> LEARN</button>
                 </div>
             </div>
 
@@ -270,41 +300,14 @@ const ToolWorkspace = () => {
             <div className="flex-1 flex overflow-hidden relative pt-16">
                 <AnimatePresence mode="wait">
                     {viewMode === 'do' ? (
-                        <motion.div
-                            key="do"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.4 }}
-                            className="w-full h-full pb-14" // Minimizing space to fit just the navigator
-                        >
-                            <iframe
-                                src={tool.src}
-                                onLoad={handleIframeLoad}
-                                title={`Nexus Workspace - ${tool.name}`}
-                                className="w-full h-full border-none bg-slate-900 origin-top"
-                                loading="lazy"
-                                sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals"
-                            />
+                        <motion.div key="do" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full pb-14">
+                            <iframe src={tool.src} onLoad={handleIframeLoad} title={`Nexus Workspace - ${tool.name}`} className="w-full h-full border-none bg-slate-900 origin-top" loading="lazy" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals" />
                         </motion.div>
                     ) : (
-                        <motion.div
-                            key="learn"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.4 }}
-                            className="w-full h-full bg-[#0a0f1c] flex flex-col items-center justify-center p-20 text-center pb-32"
-                        >
-                            <div className="w-24 h-24 rounded-3xl bg-nexus-purple/10 border border-nexus-purple/30 flex items-center justify-center mb-8">
-                                <FileText className="w-12 h-12 text-nexus-purple" />
-                            </div>
+                        <motion.div key="learn" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full bg-[#0a0f1c] flex flex-col items-center justify-center p-20 text-center pb-32">
+                            <div className="w-24 h-24 rounded-3xl bg-nexus-purple/10 border border-nexus-purple/30 flex items-center justify-center mb-8"><FileText className="w-12 h-12 text-nexus-purple" /></div>
                             <h2 className="text-4xl font-black font-orbitron mb-4">Educational Rationale</h2>
-                            <p className="text-slate-400 max-w-xl mx-auto leading-relaxed mb-10 italic">
-                                "Knowledge is the precursor to precision." <br />
-                                This module contains the academic foundation, JCI compliance standards,
-                                and benchmarking data for the {tool.name}.
-                            </p>
+                            <p className="text-slate-400 max-w-xl mx-auto leading-relaxed mb-10 italic">"Knowledge is the precursor to precision." <br /> This module contains the academic foundation, JCI compliance standards, and benchmarking data for the {tool.name}.</p>
                             <div className="grid grid-cols-2 gap-6 w-full max-w-2xl">
                                 <div className="p-8 glass-panel border-nexus-purple/20 text-left">
                                     <div className="text-nexus-purple font-black font-orbitron text-[10px] tracking-widest mb-2 uppercase">Background</div>
@@ -321,174 +324,157 @@ const ToolWorkspace = () => {
                     )}
                 </AnimatePresence>
 
-                {/* 🛠️ ASSISTANT TOOLS OVERLAYS */}
+                {/* 🛠️ ASSISTANT OVERLAYS */}
                 <AnimatePresence>
-                    {activeAssistantTool && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: -20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                            className="absolute top-2 left-1/2 -translate-x-1/2 w-full max-w-4xl z-[1100] p-4"
-                        >
-                            <div className="glass-panel bg-black/80 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden">
-                                {/* Tool Header */}
-                                <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                    {activeAssistantTool === 'notes' && (
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="fixed top-20 right-8 w-96 z-[1000] drop-shadow-2xl">
+                            <div className="glass-panel bg-[#1e293b] border border-white/10 rounded-3xl overflow-hidden flex flex-col h-[500px]">
+                                <div className="p-4 bg-black/40 border-b border-white/5 flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center border
-                                            ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 border-pink-500/30 text-pink-400' :
-                                                activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 border-cyan-500/30 text-cyan-400' :
-                                                    activeAssistantTool === 'draw' ? 'bg-lime-500/20 border-lime-500/30 text-lime-400' :
-                                                        'bg-violet-500/20 border-violet-500/30 text-violet-400'}`}
-                                        >
-                                            {activeAssistantTool === 'notes' && <FileText className="w-5 h-5" />}
-                                            {activeAssistantTool === 'calculator' && <Calculator className="w-5 h-5" />}
-                                            {activeAssistantTool === 'draw' && <PenTool className="w-5 h-5" />}
-                                            {activeAssistantTool === 'search' && <Search className="w-5 h-5" />}
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-black font-orbitron text-white uppercase tracking-widest">
-                                                {activeAssistantTool}
-                                            </h3>
-                                            <span className="text-[10px] text-slate-500 font-mono">NEXUS ASSISTANT MODULE</span>
-                                        </div>
+                                        <div className="p-2 bg-pink-500/20 rounded-lg text-pink-400"><FileText className="w-4 h-4" /></div>
+                                        <span className="font-orbitron font-black text-xs tracking-widest text-white">TACTICAL NOTES</span>
                                     </div>
-                                    <button
-                                        onClick={() => setActiveAssistantTool(null)}
-                                        className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-slate-400 transition-colors"
-                                    >
-                                        <RotateCcw className="w-5 h-5" />
-                                    </button>
+                                    <div className="flex items-center gap-2">
+                                        <button onClick={addNote} className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white"><PlusCircle className="w-4 h-4" /></button>
+                                        <button onClick={() => setActiveAssistantTool(null)} className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white"><RotateCcw className="w-4 h-4" /></button>
+                                    </div>
                                 </div>
-
-                                {/* Space for Tool Content */}
-                                <div className="p-8 min-h-[300px] flex items-center justify-center">
-                                    {activeAssistantTool === 'notes' && (
-                                        <div className="w-full flex flex-col gap-4">
-                                            <textarea
-                                                className="w-full h-48 bg-white/5 border border-white/10 rounded-2xl p-6 text-white text-sm focus:outline-none focus:border-pink-500/50 transition-all placeholder:text-slate-600"
-                                                placeholder="Capture your tactical analysis here..."
+                                <div className="flex-1 overflow-y-auto p-6">
+                                    <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                                        {notes.map((note, idx) => (
+                                            <button
+                                                key={note.id}
+                                                onClick={() => setActiveNoteIndex(idx)}
+                                                className={`flex-shrink-0 w-8 h-8 rounded-full border-2 transition-all ${activeNoteIndex === idx ? 'border-pink-500 scale-110 shadow-lg' : 'border-transparent opacity-50'}`}
+                                                style={{ backgroundColor: note.color || '#fef3c7' }}
                                             />
-                                            <div className="flex justify-end">
-                                                <button className="px-6 py-2 bg-pink-500 text-white rounded-full font-black font-orbitron text-[10px] tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg">
-                                                    SAVE ENCRYPTED
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {activeAssistantTool === 'calculator' && (
-                                        <div className="grid grid-cols-4 gap-3 w-64">
-                                            {[7, 8, 9, '/', 4, 5, 6, '*', 1, 2, 3, '-', 'C', 0, '=', '+'].map((btn) => (
-                                                <button
-                                                    key={btn}
-                                                    className={`h-12 rounded-xl font-bold transition-all active:scale-90 
-                                                        ${typeof btn === 'number' ? 'bg-white/5 text-white hover:bg-white/10' :
-                                                            btn === '=' ? 'bg-cyan-500 text-black col-span-1' :
-                                                                'bg-white/10 text-cyan-400 hover:bg-white/20'}`}
-                                                >
-                                                    {btn}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                    {activeAssistantTool === 'draw' && (
-                                        <div className="w-full h-64 border-2 border-dashed border-white/5 rounded-3xl flex flex-col items-center justify-center text-slate-500 gap-4">
-                                            <PenTool className="w-12 h-12 opacity-20" />
-                                            <p className="font-orbitron font-black text-xs tracking-widest">INITIALIZING CANVAS PROTOCOL...</p>
-                                        </div>
-                                    )}
-                                    {activeAssistantTool === 'search' && (
-                                        <div className="w-full space-y-4">
-                                            <div className="relative">
-                                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                                                <input
-                                                    type="text"
-                                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-6 text-white text-sm focus:outline-none focus:border-violet-500/50 transition-all"
-                                                    placeholder="Search methodologies, tools, or archives..."
-                                                    autoFocus
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-1 gap-2 pt-4">
-                                                {['Glossary', 'Industry Standards', 'ROI Calculator', 'Team Resources'].map(item => (
-                                                    <button key={item} className="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 transition-colors group">
-                                                        <span className="text-sm text-slate-400 group-hover:text-white transition-colors capitalize">{item}</span>
-                                                        <ExternalLink className="w-4 h-4 text-slate-600 opacity-0 group-hover:opacity-100 transition-all" />
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
+                                        ))}
+                                    </div>
+                                    <div
+                                        contentEditable
+                                        className="w-full h-[300px] bg-white/5 border border-white/10 rounded-2xl p-6 text-white text-sm focus:outline-none focus:border-pink-500/50 transition-all font-sans leading-relaxed"
+                                        onBlur={(e) => {
+                                            const updated = [...notes];
+                                            updated[activeNoteIndex].content = e.target.innerHTML;
+                                            saveNotes(updated);
+                                        }}
+                                        dangerouslySetInnerHTML={{ __html: notes[activeNoteIndex].content }}
+                                    />
                                 </div>
+                                <div className="p-4 bg-black/40 border-t border-white/5 flex items-center justify-between">
+                                    <div className="flex gap-1">
+                                        {['#fef3c7', '#dbeafe', '#dcfce7', '#f3e8ff', '#fce7f3'].map(c => (
+                                            <button
+                                                key={c}
+                                                onClick={() => {
+                                                    const updated = [...notes];
+                                                    updated[activeNoteIndex].color = c;
+                                                    saveNotes(updated);
+                                                }}
+                                                className="w-5 h-5 rounded-sm border border-black/20"
+                                                style={{ backgroundColor: c }}
+                                            />
+                                        ))}
+                                    </div>
+                                    <button onClick={() => deleteNote(activeNoteIndex)} className="text-pink-500/60 hover:text-pink-500 transition-colors p-2"><Trash2 className="w-4 h-4" /></button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeAssistantTool === 'calculator' && (
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="fixed top-20 right-8 w-72 z-[1000] drop-shadow-2xl">
+                            <div className="glass-panel bg-black/90 border border-white/10 rounded-[2.5rem] overflow-hidden p-6">
+                                <div className="text-right mb-6">
+                                    <div className="text-slate-500 text-xs font-mono mb-1 h-4">{calcExpr}</div>
+                                    <div className="text-white text-4xl font-light font-sans truncate">{calcDisplay}</div>
+                                </div>
+                                <div className="grid grid-cols-4 gap-3">
+                                    {['C', '±', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '='].map((btn) => (
+                                        <button
+                                            key={btn}
+                                            onClick={() => handleCalcInput(btn)}
+                                            className={`h-12 rounded-full font-medium transition-all active:scale-95 flex items-center justify-center
+                                                ${btn === '=' ? 'bg-orange-500 text-white col-span-1' :
+                                                    ['C', '±', '%'].includes(btn) ? 'bg-slate-400 text-black' :
+                                                        ['÷', '×', '-', '+'].includes(btn) ? 'bg-orange-500 text-white' :
+                                                            btn === '0' ? 'bg-slate-700 text-white col-span-1' :
+                                                                'bg-slate-700 text-white'}`}
+                                        >
+                                            {btn}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeAssistantTool === 'draw' && (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[1500] pointer-events-none">
+                            <canvas
+                                ref={canvasRef}
+                                onMouseDown={startDrawing}
+                                onMouseMove={draw}
+                                onMouseUp={stopDrawing}
+                                onMouseLeave={stopDrawing}
+                                className="w-full h-full pointer-events-auto cursor-crosshair"
+                            />
+                            <div className="absolute top-20 left-1/2 -translate-x-1/2 p-2 glass-panel bg-white/90 rounded-2xl border border-nexus-border flex items-center gap-4 pointer-events-auto shadow-2xl">
+                                <div className="flex gap-2 pl-2">
+                                    {['#000000', '#ef4444', '#3b82f6', '#10b981', '#fbbf24'].map(c => (
+                                        <button
+                                            key={c}
+                                            onClick={() => setDrawColor(c)}
+                                            className={`w-6 h-6 rounded-full border-2 transition-all ${drawColor === c ? 'border-indigo-500 scale-110' : 'border-transparent'}`}
+                                            style={{ backgroundColor: c }}
+                                        />
+                                    ))}
+                                </div>
+                                <div className="w-px h-6 bg-slate-300" />
+                                <div className="flex items-center gap-3">
+                                    <PenTool className="w-4 h-4 text-slate-600" />
+                                    <input type="range" min="1" max="20" value={drawWidth} onChange={(e) => setDrawWidth(parseInt(e.target.value))} className="w-24 accent-indigo-500" />
+                                </div>
+                                <div className="w-px h-6 bg-slate-300" />
+                                <button onClick={clearCanvas} className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors" title="Clear Canvas"><Eraser className="w-4 h-4" /></button>
+                                <button onClick={() => setActiveAssistantTool(null)} className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"><RotateCcw className="w-4 h-4" /></button>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeAssistantTool === 'search' && (
+                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 z-[1500] pointer-events-none flex items-center justify-center">
+                            {/* Sniper Zoom Overlay Logic */}
+                            <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] pointer-events-auto" onClick={() => setActiveAssistantTool(null)} />
+                            <div className="w-[300px] h-[300px] rounded-full border-[3px] border-nexus-cyan/50 shadow-[0_0_100px_rgba(34,211,238,0.3),inset_0_0_50px_rgba(0,0,0,0.8)] relative z-10 pointer-events-none overflow-hidden bg-transparent backdrop-contrast-150 backdrop-brightness-125 backdrop-saturate-150">
+                                <div className="absolute top-1/2 left-0 w-full h-[1px] bg-nexus-cyan/30" />
+                                <div className="absolute top-0 left-1/2 w-[1px] h-full bg-nexus-cyan/30" />
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full border border-nexus-cyan/20" />
+                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black font-orbitron text-nexus-cyan tracking-[0.3em] uppercase opacity-60">SNIPER LENS</div>
+                            </div>
+                            <div className="absolute top-24 left-1/2 -translate-x-1/2 px-6 py-3 glass-panel bg-black/80 rounded-full border border-nexus-cyan/30 flex items-center gap-4 text-white z-20 pointer-events-auto font-orbitron text-[10px] tracking-widest font-black uppercase">
+                                <Crosshair className="w-4 h-4 text-nexus-cyan animate-pulse" />
+                                ACTIVATE PRECISION SCAN
+                                <div className="w-px h-4 bg-white/20" />
+                                <button onClick={() => setActiveAssistantTool(null)} className="text-slate-400 hover:text-white transition-colors">EXIT</button>
                             </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
             </div>
 
-            {/* 🎮 MISSION CONTROL FOOTER (Floating - High Visibility) */}
+            {/* 🎮 FOOTER NAVIGATOR */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full bg-[#0f172a] border border-slate-600/50 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-                {/* Home Button */}
-                <button
-                    onClick={() => navigate('/')}
-                    className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all shadow-sm active:scale-95 group"
-                    title="Return to Home"
-                >
-                    <Home className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-                </button>
-
-                {/* Previous Component */}
-                <button
-                    onClick={() => {
-                        const prevTool = allTools[currentIndex - 1];
-                        if (prevTool) navigate(`/workspace/${prevTool.id}`);
-                        else navigate('/journey');
-                    }}
-                    className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all shadow-sm active:scale-95 group"
-                    title="Previous Station"
-                >
-                    <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-                </button>
-
-                {/* Central Command - Compacted & High Contrast */}
-                <button
-                    onClick={() => markToolComplete(toolId)}
-                    className={`
-                        relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 shadow-lg active:scale-95
-                        ${isCompleted
-                            ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white'
-                            : 'bg-slate-800 border-slate-600 text-slate-200 hover:bg-slate-700 hover:border-nexus-cyan/50'
-                        }
-                    `}
-                >
+                <button onClick={() => navigate('/')} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all active:scale-95 group" title="Home"><Home className="w-3.5 h-3.5" /></button>
+                <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) navigate(`/workspace/${prevTool.id}`); else navigate('/journey'); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all active:scale-95 group" title="Previous"><ChevronLeft className="w-4 h-4" /></button>
+                <button onClick={() => markToolComplete(toolId)} className={`relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 shadow-lg active:scale-95 ${isCompleted ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white' : 'bg-slate-800 border-slate-600 text-slate-200 hover:bg-slate-700'}`}>
                     {isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}
                     {isCompleted ? 'SECURED' : 'MARK DONE'}
-
-                    {/* Completion Particle Effect */}
                     {isCompleted && <motion.div layoutId="glow" className="absolute inset-0 bg-white/20 blur-xl rounded-full" />}
                 </button>
-
-                {/* Next Component */}
-                <button
-                    onClick={handleNextStation}
-                    className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 hover:border-nexus-cyan/50 transition-all shadow-sm active:scale-95"
-                >
-                    <span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" />
-                </button>
-
-                {/* Page Up Button */}
-                <button
-                    onClick={() => {
-                        if (activeIframe?.contentWindow) {
-                            activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
-                        }
-                    }}
-                    className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all shadow-sm active:scale-95 group"
-                    title="Scroll to Top"
-                >
-                    <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-1 transition-transform" />
-                </button>
+                <button onClick={handleNextStation} className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all active:scale-95"><span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span><ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" /></button>
+                <button onClick={() => { if (activeIframe?.contentWindow) activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all active:scale-95 group" title="Scroll Top"><ArrowUp className="w-3.5 h-3.5" /></button>
             </div>
-
         </div>
     );
 };
