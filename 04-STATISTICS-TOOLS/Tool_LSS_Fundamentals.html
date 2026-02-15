@@ -3019,6 +3019,7 @@
                 baseStd: 0.15,
                 costPerDefect: 5.0,
                 itemIcon: "☕",
+                simpleDesc: "Pouring the perfect cup of coffee. If you overfill or underfill, the customer is unhappy.",
                 colors: ["#ef4444", "#f59e0b", "#10b981", "#6366f1"],
                 chaos: [
                     { id: 'hand', name: "Shaky Hand", impact: 0.2, desc: "Manual pouring inconsistency." },
@@ -3037,6 +3038,7 @@
                 baseStd: 0.08,
                 costPerDefect: 25000.0,
                 itemIcon: "💊",
+                simpleDesc: "Ensuring life-saving medicine is dosed with precision. Precision here saves lives.",
                 colors: ["#ef4444", "#f59e0b", "#10b981", "#6366f1"],
                 chaos: [
                     { id: 'fatigue', name: "Fatigued Nurse", impact: 0.15, desc: "Human error due to 12hr shifts." },
@@ -3056,6 +3058,7 @@
                 costPerDefect: 500.0,
                 itemIcon: "🏥",
                 oneSided: true,
+                simpleDesc: "How long patients wait for help. Too long is dangerous; too short might mean overstaffing.",
                 colors: ["#ef4444", "#f59e0b", "#10b981", "#6366f1"],
                 chaos: [
                     { id: 'flu', name: "Flu Season Surge", impact: 15, desc: "Unpredictable patient volume." },
@@ -3074,6 +3077,7 @@
                 baseStd: 0.002,
                 costPerDefect: 100000.0,
                 itemIcon: "✂️",
+                simpleDesc: "Cleanliness of tools used in surgery. Anything less than 100% is catastrophic failure.",
                 colors: ["#ef4444", "#f59e0b", "#10b981", "#c084fc"],
                 chaos: [
                     { id: 'autoclave', name: "Broken Autoclave", impact: 0.05, desc: "Major sterilization failure." },
@@ -3093,6 +3097,7 @@
                 costPerDefect: 25.0,
                 itemIcon: "🍕",
                 oneSided: true,
+                simpleDesc: "Delivering hot pizza on time. Slow delivery means free pizza and loss of profit.",
                 colors: ["#ef4444", "#f59e0b", "#10b981", "#3b82f6"],
                 chaos: [
                     { id: 'traffic', name: "Traffic Jam", impact: 10, desc: "Major urban bottleneck." },
@@ -3143,6 +3148,65 @@
             switchScenario('coffee');
             setupDrag();
             initSigmaExplorer();
+
+            // Attach hovers for metric calculations
+            const metricBoxes = document.querySelectorAll('.metric-box');
+            const metricHovers = {
+                'Operational Quality': `
+                    <div style="font-weight:700; color:#818cf8; margin-bottom:5px;">HOW TO CALCULATE SIGMA</div>
+                    <div style="font-size:11px; line-height:1.4;">
+                        <strong>Process Sigma</strong> represents how many standard deviations fit between the mean and your limits (<span style="color:#ef4444">LSL/USL</span>).<br><br>
+                        <strong>Process:</strong><br>
+                        1. Count defects during production.<br>
+                        2. Convert yield % to a Z-score.<br>
+                        3. Add +1.5σ (Industry standard shift for long-term drift).<br><br>
+                        <strong>Reference:</strong><br>
+                        3σ = 6.6% defects<br>
+                        4σ = 0.6% defects<br>
+                        6σ = 3.4 defects per million
+                    </div>
+                `,
+                'Yield Accuracy': `
+                    <div style="font-weight:700; color:#10b981; margin-bottom:5px;">YIELD CALCULATION</div>
+                    <div style="font-size:11px; line-height:1.4;">
+                        The percentage of items produced that meet quality standards.<br><br>
+                        <strong>Formula:</strong><br>
+                        (Good Units / Total Units) × 100<br><br>
+                        <strong>Example:</strong><br>
+                        If 95 items out of 100 are good, your yield is 95%.
+                    </div>
+                `,
+                'Defects (DPMO)': `
+                    <div style="font-weight:700; color:#ef4444; margin-bottom:5px;">DPMO CALCULATION</div>
+                    <div style="font-size:11px; line-height:1.4;">
+                        <strong>Defects Per Million Opportunities.</strong> A standard metric to compare quality across different processes.<br><br>
+                        <strong>Formula:</strong><br>
+                        (Defects / Total Units) × 1,000,000<br><br>
+                        <strong>Target:</strong><br>
+                        6-Sigma quality requires less than 3.4 DPMO.
+                    </div>
+                `,
+                'Cost of Poor Quality (COPQ)': `
+                    <div style="font-weight:700; color:#facc15; margin-bottom:5px;">COPQ CALCULATION</div>
+                    <div style="font-size:11px; line-height:1.4;">
+                        The financial loss incurred by creating defective products.<br><br>
+                        <strong>Formula:</strong><br>
+                        (DPMO / 1,000) × Cost Per Defect Event<br><br>
+                        <strong>Includes:</strong><br>
+                        Scrap, rework, warranty claims, and loss of customer trust.
+                    </div>
+                `
+            };
+
+            metricBoxes.forEach(box => {
+                const label = box.querySelector('.metric-label').innerText;
+                if (metricHovers[label]) {
+                    box.onmouseenter = (e) => showLabTooltip(e, metricHovers[label]);
+                    box.onmousemove = (e) => moveLabTooltip(e);
+                    box.onmouseleave = () => hideLabTooltip();
+                    box.style.cursor = 'help';
+                }
+            });
         }
 
         function renderScenarios() {
@@ -3155,11 +3219,13 @@
                 div.innerHTML = `<span style="font-size:18px;">${s.icon}</span> <span>${s.title}</span>`;
                 div.onclick = () => switchScenario(id);
 
-                // Added hover details for "attached cases"
+                // Added hover details for "attached cases" with simple description
                 div.onmouseenter = (e) => {
                     const details = `
                         <div style="font-weight:700; color:#818cf8; margin-bottom:5px;">CASE DETAILS</div>
-                        <div style="font-size:13px; font-weight:900; margin-bottom:8px;">${s.icon} ${s.title}</div>
+                        <div style="font-size:13px; font-weight:900; margin-bottom:4px;">${s.icon} ${s.title}</div>
+                        <div style="font-style:italic; color:#94a3b8; font-size:11px; margin-bottom:12px; line-height:1.4;">"${s.simpleDesc}"</div>
+                        
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:8px;">
                             <div>
                                 <div style="color:#94a3b8; font-size:9px; text-transform:uppercase;">System Target</div>
