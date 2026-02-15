@@ -29,7 +29,12 @@ import {
     Type,
     Eraser,
     Crosshair,
-    Maximize2
+    Maximize2,
+    Pen,
+    Highlighter as HighlighterIcon,
+    Pencil,
+    Ruler,
+    RefreshCw
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
 import { methodologyData } from '../data/journeyData';
@@ -49,7 +54,7 @@ const ToolWorkspace = () => {
 
     // --- STICKY NOTES STATE ---
     const [notes, setNotes] = useState(() => {
-        const saved = localStorage.getItem('nexus_notes_v2');
+        const saved = localStorage.getItem('nexus_notes_v3');
         return saved ? JSON.parse(saved) : [{ id: 1, content: "Capture your tactical analysis here...", color: "#fef3c7" }];
     });
     const [activeNoteIndex, setActiveNoteIndex] = useState(0);
@@ -68,7 +73,7 @@ const ToolWorkspace = () => {
 
     const saveNotes = (updated) => {
         setNotes(updated);
-        localStorage.setItem('nexus_notes_v2', JSON.stringify(updated));
+        localStorage.setItem('nexus_notes_v3', JSON.stringify(updated));
     };
 
     const addNote = () => {
@@ -129,34 +134,42 @@ const ToolWorkspace = () => {
     const [lensScale, setLensScale] = useState(2);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-    useEffect(() => {
-        const handleWheel = (e) => {
-            if (activeAssistantTool === 'sniper') {
-                e.preventDefault();
-                setLensScale(prev => Math.min(Math.max(1.2, prev + (e.deltaY > 0 ? -0.1 : 0.1)), 5));
-            }
-        };
-        const handleMouseMove = (e) => {
-            if (activeAssistantTool === 'sniper') {
+    const handleMouseMove = (e, fromIframe = false) => {
+        if (activeAssistantTool === 'sniper') {
+            if (fromIframe && activeIframe) {
+                const rect = activeIframe.getBoundingClientRect();
+                setMousePos({ x: e.clientX + rect.left, y: e.clientY + rect.top });
+            } else {
                 setMousePos({ x: e.clientX, y: e.clientY });
             }
-        };
+        }
+    };
 
+    const handleWheel = (e) => {
         if (activeAssistantTool === 'sniper') {
-            window.addEventListener('wheel', handleWheel, { passive: false });
+            e.preventDefault();
+            setLensScale(prev => Math.min(Math.max(1.2, prev + (e.deltaY > 0 ? -0.1 : 0.1)), 5));
+        }
+    };
+
+    useEffect(() => {
+        if (activeAssistantTool === 'sniper') {
             window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('wheel', handleWheel, { passive: false });
         }
         return () => {
-            window.removeEventListener('wheel', handleWheel);
             window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('wheel', handleWheel);
         };
     }, [activeAssistantTool]);
 
     // --- DRAWING CANVAS LOGIC ---
     const canvasRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
-    const [drawColor, setDrawColor] = useState("#fbbf24");
+    const [drawMode, setDrawMode] = useState('pen'); // 'pen', 'highlighter', 'pencil', 'lasso'
+    const [drawColor, setDrawColor] = useState("#000000");
     const [drawWidth, setDrawWidth] = useState(5);
+    const [inkToShape, setInkToShape] = useState(false);
 
     useEffect(() => {
         if (activeAssistantTool === 'draw' && canvasRef.current) {
@@ -169,25 +182,58 @@ const ToolWorkspace = () => {
         }
     }, [activeAssistantTool]);
 
-    const startDrawing = (e) => {
+    const startDrawing = (e, fromIframe = false) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         const rect = canvas.getBoundingClientRect();
+
+        let x, y;
+        if (fromIframe && activeIframe) {
+            const ifRect = activeIframe.getBoundingClientRect();
+            x = e.clientX + ifRect.left;
+            y = e.clientY + ifRect.top;
+        } else {
+            x = e.clientX;
+            y = e.clientY;
+        }
+
         ctx.beginPath();
-        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.moveTo(x - rect.left, y - rect.top);
         setIsDrawing(true);
     };
 
-    const draw = (e) => {
+    const drawAction = (e, fromIframe = false) => {
         if (!isDrawing) return;
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         const rect = canvas.getBoundingClientRect();
+
+        let x, y;
+        if (fromIframe && activeIframe) {
+            const ifRect = activeIframe.getBoundingClientRect();
+            x = e.clientX + ifRect.left;
+            y = e.clientY + ifRect.top;
+        } else {
+            x = e.clientX;
+            y = e.clientY;
+        }
+
         ctx.strokeStyle = drawColor;
         ctx.lineWidth = drawWidth;
-        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+
+        // Mode variations
+        if (drawMode === 'highlighter') {
+            ctx.globalAlpha = 0.4;
+            ctx.lineCap = 'butt';
+        } else {
+            ctx.globalAlpha = drawMode === 'pencil' ? 0.6 : 1.0;
+            ctx.lineCap = 'round';
+        }
+
+        ctx.lineTo(x - rect.left, y - rect.top);
         ctx.stroke();
+        ctx.globalAlpha = 1.0;
     };
 
     const stopDrawing = () => setIsDrawing(false);
@@ -231,32 +277,38 @@ const ToolWorkspace = () => {
         }
     }, [zoomLevel, activeIframe]);
 
-    if (!tool) {
-        return (
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="h-screen pt-16 flex items-center justify-center p-10">
-                <div className="max-w-md w-full glass-panel bg-nexus-error/10 border-nexus-error/30 p-12 rounded-[3rem] text-center shadow-2xl relative overflow-hidden">
-                    <AlertTriangle className="w-16 h-16 text-nexus-error mx-auto mb-6" />
-                    <h2 className="text-3xl font-black font-orbitron text-white mb-4 uppercase tracking-tighter">Station Offline</h2>
-                    <p className="text-slate-400 text-sm mb-8">Identifier <code className="text-nexus-error font-mono px-2 py-0.5 bg-black/40 rounded">{toolId}</code> not registered.</p>
-                    <div className="flex flex-col gap-3">
-                        <button onClick={() => navigate('/')} className="w-full bg-white text-nexus-navy py-4 rounded-xl font-orbitron font-black text-xs hover:scale-105 transition-all">RETURN TO HANGAR</button>
-                    </div>
-                </div>
-            </motion.div>
-        );
-    }
-
     const handleIframeLoad = (e) => {
         try {
             const iframe = e.target;
             setActiveIframe(iframe);
             const doc = iframe.contentWindow.document;
+
+            // Proxy Events for Tools to work inside Iframe
+            doc.addEventListener('mousemove', (me) => handleMouseMove(me, true));
+            doc.addEventListener('wheel', (we) => {
+                if (activeAssistantTool === 'sniper') {
+                    // we.preventDefault(); // Might not work across origin
+                    handleWheel(we);
+                }
+            }, { passive: false });
+
+            // Draw proxy
+            doc.addEventListener('mousedown', (me) => {
+                if (activeAssistantTool === 'draw') startDrawing(me, true);
+            });
+            doc.addEventListener('mousemove', (me) => {
+                if (activeAssistantTool === 'draw') drawAction(me, true);
+            });
+            doc.addEventListener('mouseup', () => {
+                if (activeAssistantTool === 'draw') stopDrawing();
+            });
+
             const style = doc.createElement('style');
             let cssRules = `body { padding-top: 0 !important; margin: 0 !important; width: 100vw; height: 100vh; overflow-x: hidden; }`;
             if (toolId !== 'hoshin') cssRules += `footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer, .universal-nav-bar { display: none !important; }`;
             style.textContent = cssRules;
             doc.head.appendChild(style);
-        } catch (err) { console.warn("Iframe injection error:", err); }
+        } catch (err) { console.warn("Iframe injection error (possibly cross-origin):", err); }
     };
 
     return (
@@ -312,22 +364,11 @@ const ToolWorkspace = () => {
                     {activeAssistantTool === 'notes' && (
                         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} className="fixed top-20 right-8 w-[450px] z-[1200] drop-shadow-[0_25px_50px_rgba(0,0,0,0.6)]">
                             <div className="bg-[#1e293b] rounded-2xl overflow-hidden flex flex-col h-[550px] border border-white/5 shadow-2xl">
-                                {/* Color Preset Bar */}
                                 <div className="flex h-3 w-full border-b border-black/10">
                                     {noteColors.map((c, i) => (
-                                        <div
-                                            key={i}
-                                            onClick={() => {
-                                                const updated = [...notes];
-                                                updated[activeNoteIndex].color = c.bg;
-                                                saveNotes(updated);
-                                            }}
-                                            className={`flex-1 cursor-pointer transition-all hover:brightness-110 ${notes[activeNoteIndex].color === c.bg ? 'brightness-105 shadow-[inset_0_-3px_0_rgba(59,130,246,0.6)]' : ''}`}
-                                            style={{ backgroundColor: c.bg }}
-                                        />
+                                        <div key={i} onClick={() => { const updated = [...notes]; updated[activeNoteIndex].color = c.bg; saveNotes(updated); }} className={`flex-1 cursor-pointer transition-all hover:brightness-110 ${notes[activeNoteIndex].color === c.bg ? 'brightness-105 shadow-[inset_0_-3px_0_rgba(59,130,246,0.6)]' : ''}`} style={{ backgroundColor: c.bg }} />
                                     ))}
                                 </div>
-                                {/* Header */}
                                 <div className="p-4 flex items-center justify-between border-b border-white/5" style={{ backgroundColor: notes[activeNoteIndex].color }}>
                                     <div className="flex items-center gap-3">
                                         <button onClick={() => setShowNotesMenu(!showNotesMenu)} className="p-1 hover:bg-black/5 rounded"><Menu className="w-4 h-4 text-black/60" /></button>
@@ -339,36 +380,20 @@ const ToolWorkspace = () => {
                                         <button onClick={() => setActiveAssistantTool(null)} className="p-1 hover:bg-black/5 rounded text-black/60"><X className="w-4 h-4" /></button>
                                     </div>
                                 </div>
-                                {/* Editor */}
                                 <div className="flex-1 relative flex flex-col" style={{ backgroundColor: notes[activeNoteIndex].color }}>
                                     {showNotesMenu && (
                                         <div className="absolute inset-x-0 top-0 bottom-0 bg-[#0a0f1a] z-50 overflow-y-auto p-4 scrollbar-hide">
                                             <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">All Notes</div>
                                             {notes.map((n, i) => (
-                                                <button
-                                                    key={n.id}
-                                                    onClick={() => { setActiveNoteIndex(i); setShowNotesMenu(false); }}
-                                                    className={`w-full text-left p-4 rounded-xl mb-2 flex items-center gap-3 transition-colors ${i === activeNoteIndex ? 'bg-white/10 border border-white/10' : 'hover:bg-white/5'}`}
-                                                >
+                                                <button key={n.id} onClick={() => { setActiveNoteIndex(i); setShowNotesMenu(false); }} className={`w-full text-left p-4 rounded-xl mb-2 flex items-center gap-3 transition-colors ${i === activeNoteIndex ? 'bg-white/10 border border-white/10' : 'hover:bg-white/5'}`}>
                                                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: n.color }} />
                                                     <span className="text-xs text-slate-300 truncate">{n.content.replace(/<[^>]*>/g, '') || '(Empty Note)'}</span>
                                                 </button>
                                             ))}
                                         </div>
                                     )}
-                                    <div
-                                        ref={editorRef}
-                                        contentEditable
-                                        className="flex-1 w-full p-8 text-black/80 text-sm focus:outline-none font-sans leading-relaxed selection:bg-black/10 overflow-y-auto scrollbar-hide"
-                                        onBlur={() => {
-                                            const updated = [...notes];
-                                            updated[activeNoteIndex].content = editorRef.current.innerHTML;
-                                            saveNotes(updated);
-                                        }}
-                                        dangerouslySetInnerHTML={{ __html: notes[activeNoteIndex].content }}
-                                    />
+                                    <div ref={editorRef} contentEditable className="flex-1 w-full p-8 text-black/80 text-sm focus:outline-none font-sans leading-relaxed selection:bg-black/10 overflow-y-auto scrollbar-hide" onBlur={() => { const updated = [...notes]; updated[activeNoteIndex].content = editorRef.current.innerHTML; saveNotes(updated); }} dangerouslySetInnerHTML={{ __html: notes[activeNoteIndex].content }} />
                                 </div>
-                                {/* Footer Actions */}
                                 <div className="p-3 bg-[#0a0f1a] border-t border-white/5 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <button onClick={() => execCommand('bold')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 group"><BoldIcon className="w-3.5 h-3.5" /></button>
@@ -377,10 +402,7 @@ const ToolWorkspace = () => {
                                         <button onClick={() => execCommand('strikeThrough')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 group"><Strikethrough className="w-3.5 h-3.5" /></button>
                                         <button onClick={() => execCommand('insertUnorderedList')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 group"><List className="w-3.5 h-3.5" /></button>
                                         <div className="w-px h-5 bg-white/10 mx-1" />
-                                        <button className="w-12 h-8 rounded bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center text-slate-300 group">
-                                            <span className="text-[10px] font-bold">A —</span>
-                                            <div className="w-3 h-[2px] bg-blue-500 rounded-sm mt-0.5" />
-                                        </button>
+                                        <button className="w-12 h-8 rounded bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center text-slate-300 group"><span className="text-[10px] font-bold">A —</span><div className="w-3 h-[2px] bg-blue-500 rounded-sm mt-0.5" /></button>
                                         <div className="w-px h-5 bg-white/10 mx-1" />
                                         <div className="flex items-center gap-1">
                                             <button onClick={() => execCommand('fontSize', '2')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 text-[10px] font-bold">A-</button>
@@ -404,11 +426,7 @@ const ToolWorkspace = () => {
                             </div>
                             <div className="grid grid-cols-4 gap-3">
                                 {['C', '±', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '='].map((btn) => (
-                                    <button
-                                        key={btn} onClick={() => handleCalcInput(btn)}
-                                        className={`h-12 rounded-full font-medium transition-all active:scale-90 flex items-center justify-center text-lg
-                                            ${btn === '=' ? 'bg-orange-500 text-white' : ['C', '±', '%'].includes(btn) ? 'bg-slate-400 text-black' : ['÷', '×', '-', '+'].includes(btn) ? 'bg-orange-500 text-white' : btn === '0' ? 'col-span-1 bg-slate-800 text-white' : 'bg-slate-800 text-white'}`}
-                                    >{btn}</button>
+                                    <button key={btn} onClick={() => handleCalcInput(btn)} className={`h-12 rounded-full font-medium transition-all active:scale-90 flex items-center justify-center text-lg ${btn === '=' ? 'bg-orange-500 text-white' : ['C', '±', '%'].includes(btn) ? 'bg-slate-400 text-black' : ['÷', '×', '-', '+'].includes(btn) ? 'bg-orange-500 text-white' : btn === '0' ? 'col-span-1 bg-slate-800 text-white' : 'bg-slate-800 text-white'}`}>{btn}</button>
                                 ))}
                             </div>
                         </motion.div>
@@ -416,49 +434,106 @@ const ToolWorkspace = () => {
 
                     {activeAssistantTool === 'draw' && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[1500] pointer-events-none">
-                            <canvas ref={canvasRef} onMouseDown={startDrawing} onMouseMove={draw} onMouseUp={stopDrawing} onMouseLeave={stopDrawing} className="w-full h-full pointer-events-auto cursor-crosshair" />
-                            <div className="absolute top-24 left-1/2 -translate-x-1/2 p-2 glass-panel bg-white/95 rounded-2xl border border-nexus-border flex items-center gap-4 pointer-events-auto shadow-2xl">
-                                <div className="flex gap-2 pl-2">
-                                    {['#000000', '#ef4444', '#3b82f6', '#10b981', '#fbbf24'].map(c => (
-                                        <button key={c} onClick={() => setDrawColor(c)} className={`w-7 h-7 rounded-full border-2 transition-all ${drawColor === c ? 'border-indigo-500 scale-110' : 'border-transparent'}`} style={{ backgroundColor: c }} />
+                            <canvas ref={canvasRef} onMouseDown={startDrawing} onMouseMove={drawAction} onMouseUp={stopDrawing} onMouseLeave={stopDrawing} className="w-full h-full pointer-events-auto cursor-crosshair" />
+
+                            {/* Improved Highlighter Toolbar UI */}
+                            <motion.div
+                                initial={{ y: -50, x: '-50%' }}
+                                animate={{ y: 0, x: '-50%' }}
+                                className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-white/95 rounded-2xl border border-nexus-border flex items-center gap-6 pointer-events-auto shadow-2xl min-w-[650px]"
+                            >
+                                {/* Tool Icons Group */}
+                                <div className="flex items-center gap-2 pr-4 border-r border-slate-200">
+                                    <button
+                                        onClick={() => setDrawMode('pen')}
+                                        className={`p-2 rounded-xl transition-all ${drawMode === 'pen' ? 'bg-white shadow-[0_4px_12px_rgba(59,130,246,0.2)] border border-blue-500' : 'hover:bg-slate-100'}`}
+                                        title="Pen"
+                                    >
+                                        <Pen className={`w-6 h-6 ${drawMode === 'pen' ? 'text-indigo-600' : 'text-slate-500'}`} />
+                                    </button>
+                                    <button
+                                        onClick={() => setDrawMode('highlighter')}
+                                        className={`p-2 rounded-xl transition-all ${drawMode === 'highlighter' ? 'bg-white shadow-[0_4px_12px_rgba(59,130,246,0.2)] border border-blue-500' : 'hover:bg-slate-100'}`}
+                                        title="Highlighter"
+                                    >
+                                        <HighlighterIcon className={`w-6 h-6 ${drawMode === 'highlighter' ? 'text-green-600' : 'text-slate-500'}`} />
+                                    </button>
+                                    <button
+                                        onClick={() => setDrawMode('pencil')}
+                                        className={`p-2 rounded-xl transition-all ${drawMode === 'pencil' ? 'bg-white shadow-[0_4px_12px_rgba(59,130,246,0.2)] border border-blue-500' : 'hover:bg-slate-100'}`}
+                                        title="Pencil"
+                                    >
+                                        <Pencil className={`w-6 h-6 ${drawMode === 'pencil' ? 'text-orange-500' : 'text-slate-500'}`} />
+                                    </button>
+                                    <button
+                                        onClick={() => setDrawMode('lasso')}
+                                        className={`p-2 rounded-xl transition-all ${drawMode === 'lasso' ? 'bg-white shadow-[0_4px_12px_rgba(59,130,246,0.2)] border border-blue-500' : 'hover:bg-slate-100'}`}
+                                        title="Lasso Select"
+                                    >
+                                        <RefreshCw className={`w-6 h-6 ${drawMode === 'lasso' ? 'text-purple-600' : 'text-slate-500'}`} />
+                                    </button>
+                                </div>
+
+                                {/* Color Palette Grid (2x5) */}
+                                <div className="grid grid-cols-5 gap-1 pr-4 border-r border-slate-200">
+                                    {['#000000', '#ef4444', '#3b82f6', '#10b981', '#f97316', '#fbbf24', '#dcfce7', '#dbeafe', '#f3e8ff', '#ffffff'].map(c => (
+                                        <button
+                                            key={c}
+                                            onClick={() => setDrawColor(c)}
+                                            className={`w-4 h-4 rounded-sm border transition-all ${drawColor === c ? 'border-indigo-500 scale-110 shadow-sm' : 'border-black/10'}`}
+                                            style={{ backgroundColor: c }}
+                                        />
                                     ))}
                                 </div>
-                                <div className="w-px h-6 bg-slate-300" />
-                                <div className="flex items-center gap-3">
-                                    <PenTool className="w-4 h-4 text-slate-600" />
-                                    <input type="range" min="1" max="25" value={drawWidth} onChange={(e) => setDrawWidth(parseInt(e.target.value))} className="w-32 accent-indigo-500" />
+
+                                {/* Thickness Control */}
+                                <div className="flex flex-col gap-1 pr-4 border-r border-slate-200 min-w-[120px]">
+                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">THICKNESS</span>
+                                    <div className="flex items-center gap-3">
+                                        <input
+                                            type="range"
+                                            min="1" max="50"
+                                            value={drawWidth}
+                                            onChange={(e) => setDrawWidth(parseInt(e.target.value))}
+                                            className="w-full h-1 bg-slate-200 rounded-full appearance-none cursor-pointer accent-blue-600"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="w-px h-6 bg-slate-300" />
-                                <button onClick={clearCanvas} className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"><Eraser className="w-4 h-4" /></button>
-                                <button onClick={() => setActiveAssistantTool(null)} className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"><RotateCcw className="w-4 h-4" /></button>
-                            </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={clearCanvas}
+                                        className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
+                                    >
+                                        <Eraser className="w-4 h-4 text-orange-500" />
+                                        <span className="text-xs font-bold text-slate-600">Clear</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setInkToShape(!inkToShape)}
+                                        className={`p-2 rounded-xl transition-all ${inkToShape ? 'bg-indigo-50 border border-indigo-200 text-indigo-600 shadow-inner' : 'text-slate-400 hover:bg-slate-100'}`}
+                                        title="Ink to Shape"
+                                    >
+                                        <Ruler className="w-5 h-5" />
+                                    </button>
+                                    <button onClick={() => setActiveAssistantTool(null)} className="p-2 hover:bg-slate-100 rounded-xl text-slate-400 transition-colors ml-2"><X className="w-5 h-5" /></button>
+                                </div>
+                            </motion.div>
                         </motion.div>
                     )}
 
                     {activeAssistantTool === 'sniper' && (
                         <>
-                            {/* Sniper Control Bar */}
                             <motion.div initial={{ opacity: 0, y: -20, x: '-50%' }} animate={{ opacity: 1, y: 0, x: '-50%' }} exit={{ opacity: 0, y: -20, x: '-50%' }} className="fixed top-24 left-1/2 -translate-x-1/2 z-[1400] h-12 glass-panel bg-[#0f172a]/95 rounded-full border border-white/10 px-6 flex items-center gap-6 shadow-2xl">
                                 <div className="text-[10px] font-black font-orbitron text-slate-500 tracking-widest uppercase">ZOOM MODE:</div>
                                 <div className="flex bg-black/40 p-1 rounded-full gap-2">
-                                    <button
-                                        onClick={() => setSniperMode('lens')}
-                                        className={`px-4 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-black font-orbitron transition-all ${sniperMode === 'lens' ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}
-                                    >
-                                        <div className="w-2 h-2 rounded-full bg-white shadow-sm" /> Lens
-                                    </button>
-                                    <button
-                                        onClick={() => setSniperMode('sniper')}
-                                        className={`px-4 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-black font-orbitron transition-all ${sniperMode === 'sniper' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}
-                                    >
-                                        <Crosshair className="w-3 h-3" /> Sniper
-                                    </button>
+                                    <button onClick={() => setSniperMode('lens')} className={`px-4 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-black font-orbitron transition-all ${sniperMode === 'lens' ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}><div className="w-2 h-2 rounded-full bg-white shadow-sm" /> Lens</button>
+                                    <button onClick={() => setSniperMode('sniper')} className={`px-4 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-black font-orbitron transition-all ${sniperMode === 'sniper' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}><Crosshair className="w-3 h-3" /> Sniper</button>
                                 </div>
                                 <div className="w-px h-6 bg-white/10" />
                                 <div className="text-[10px] text-slate-500 font-orbitron font-black uppercase tracking-widest">Scroll to Zoom</div>
                             </motion.div>
 
-                            {/* Lens / Sniper Overlay */}
                             <div className="fixed inset-0 z-[1300] pointer-events-none overflow-hidden cursor-none">
                                 <motion.div
                                     className={`absolute pointer-events-none transition-transform duration-75 shadow-[0_0_0_9999px_rgba(0,0,0,0.5),0_0_30px_rgba(0,0,0,0.5)_inset] ${sniperMode === 'lens' ? 'rounded-full border-[3px] border-white' : 'rounded-lg border-[2px] border-red-500'}`}
@@ -471,13 +546,7 @@ const ToolWorkspace = () => {
                                         backdropFilter: 'contrast(1.2) brightness(1.1) saturate(1.2)'
                                     }}
                                 >
-                                    {sniperMode === 'sniper' && (
-                                        <>
-                                            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-red-500/50" />
-                                            <div className="absolute top-0 left-1/2 w-[1px] h-full bg-red-500/50" />
-                                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full border border-red-500/50" />
-                                        </>
-                                    )}
+                                    {sniperMode === 'sniper' && (<><div className="absolute top-1/2 left-0 w-full h-[1px] bg-red-500/50" /><div className="absolute top-0 left-1/2 w-[1px] h-full bg-red-500/50" /><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full border border-red-500/50" /></>)}
                                 </motion.div>
                             </div>
                         </>
