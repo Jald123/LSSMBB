@@ -330,7 +330,7 @@ const ToolWorkspace = () => {
                 </div>
 
                 <div className="flex-1 flex justify-center items-center gap-6">
-                    <div className="flex items-center gap-1 hidden">
+                    <div className="flex items-center gap-1">
                         <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold shadow-[0_0_10px_rgba(236,72,153,0.3)]' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><FileText className="w-4 h-4" /></button>
                         <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'calculator' ? null : 'calculator')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 text-cyan-400 font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)]' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><Calculator className="w-4 h-4" /></button>
                         <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'draw' ? null : 'draw')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-lime-500/20 text-lime-400 font-bold shadow-[0_0_10px_rgba(132,204,22,0.3)]' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><PenTool className="w-4 h-4" /></button>
@@ -440,9 +440,9 @@ const ToolWorkspace = () => {
                             <motion.div initial={{ y: -50, x: '-50%' }} animate={{ y: 0, x: '-50%' }} className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-[#0f172a]/95 rounded-2xl border border-white/10 flex items-center gap-6 pointer-events-auto shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] min-w-[500px] shell-interactive">
                                 {/* Tool Toggles (Ico-btns) */}
                                 <div className="flex items-center gap-1.5 pr-5 border-r border-white/10">
-                                    <button onClick={() => { setDrawMode('pen'); setDrawOpacity(1.0); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pen' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pen className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('pen'); setDrawOpacity(1.0); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center hidden ${drawMode === 'pen' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pen className="w-6 h-6" /></button>
                                     <button onClick={() => { setDrawMode('highlighter'); setDrawWidth(40); setDrawOpacity(0.05); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'highlighter' ? 'bg-[#ffff00] text-black shadow-lg border border-yellow-400' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><HighlighterIcon className="w-6 h-6" /></button>
-                                    <button onClick={() => { setDrawMode('pencil'); setDrawOpacity(0.6); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('pencil'); setDrawOpacity(0.6); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center hidden ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
                                 </div>
 
                                 {/* Size and Opacity Sliders */}
