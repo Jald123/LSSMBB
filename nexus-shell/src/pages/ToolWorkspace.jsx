@@ -406,7 +406,7 @@ const ToolWorkspace = () => {
                     )}
 
                     {activeAssistantTool === 'draw' && (
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[1500] pointer-events-none">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[1500] pointer-events-auto cursor-none">
                             {/* Pointing Area Preview */}
                             <div
                                 className="fixed pointer-events-none z-[2000] flex items-center justify-center overflow-hidden"
@@ -426,7 +426,14 @@ const ToolWorkspace = () => {
 
                             <canvas
                                 ref={canvasRef}
-                                className="w-full h-full"
+                                className="w-full h-full cursor-none touch-none"
+                                onMouseDown={startDrawing}
+                                onMouseMove={(e) => {
+                                    handleMouseMoveGlobal(e);
+                                    drawAction(e);
+                                }}
+                                onMouseUp={stopDrawing}
+                                onMouseLeave={stopDrawing}
                                 style={{ mixBlendMode: drawMode === 'highlighter' ? (theme === 'light' ? 'multiply' : 'screen') : 'normal' }}
                             />
 
