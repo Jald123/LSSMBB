@@ -10,6 +10,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
+    port: 8080,
     fs: {
       // Allow serving files from one level up to access 04-STATISTICS-TOOLS and 02-TEMPLATES
       allow: ['..'],

@@ -172,56 +172,54 @@ const ToolWorkspace = () => {
                     </div>
                 </div>
 
-                {/* CENTER: Assistant Tools (Replicating User Request) */}
-                <div className="flex-1 flex justify-center">
-                    <div className="h-12 bg-[#0F172A] rounded-full px-2 flex items-center gap-4 border border-slate-700/50 shadow-xl">
+                {/* CENTER: Assistant Tools (Integrated) */}
+                <div className="flex-1 flex justify-center items-center gap-6">
 
-                        {/* Tools Group */}
-                        <div className="flex items-center gap-2">
-                            <button className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all" title="Notes">
-                                <FileText className="w-4 h-4 text-pink-400" />
-                            </button>
-                            <button className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all" title="Calculator">
-                                <Calculator className="w-4 h-4 text-cyan-400" />
-                            </button>
-                            <button className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all" title="Draw">
-                                <PenTool className="w-4 h-4 text-lime-400" />
-                            </button>
-                            <button className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all" title="Search">
-                                <Search className="w-4 h-4 text-violet-400" />
-                            </button>
-                        </div>
-
-                        <div className="w-px h-6 bg-slate-700" />
-
-                        {/* Zoom Group */}
-                        <div className="flex items-center bg-[#1E293B] rounded-full p-1 border border-slate-700">
-                            <button onClick={() => handleZoom(-0.1)} className="w-7 h-7 rounded-full hover:bg-slate-600 text-slate-400 hover:text-white flex items-center justify-center transition-all">
-                                <Minus className="w-3.5 h-3.5 text-indigo-400" />
-                            </button>
-                            <button onClick={resetZoom} className="w-7 h-7 rounded-full hover:bg-slate-600 text-slate-400 hover:text-white flex items-center justify-center transition-all mx-1">
-                                <Home className="w-3.5 h-3.5 text-orange-400" />
-                            </button>
-                            <button onClick={() => handleZoom(0.1)} className="w-7 h-7 rounded-full hover:bg-slate-600 text-slate-400 hover:text-white flex items-center justify-center transition-all">
-                                <Plus className="w-3.5 h-3.5 text-emerald-400" />
-                            </button>
-                        </div>
-
-                        <div className="w-px h-6 bg-slate-700" />
-
-                        {/* Theme Toggle (Moved to Header) */}
-                        <button
-                            onClick={toggleTheme}
-                            className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all border border-slate-700"
-                            title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                        >
-                            {theme === 'dark' ? (
-                                <Sun className="w-4 h-4 text-yellow-400" />
-                            ) : (
-                                <Moon className="w-4 h-4 text-sky-400" />
-                            )}
+                    {/* Tools Group */}
+                    <div className="flex items-center gap-1">
+                        <button className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group" title="Notes">
+                            <FileText className="w-4 h-4 group-hover:text-pink-400 transition-colors" />
+                        </button>
+                        <button className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group" title="Calculator">
+                            <Calculator className="w-4 h-4 group-hover:text-cyan-400 transition-colors" />
+                        </button>
+                        <button className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group" title="Draw">
+                            <PenTool className="w-4 h-4 group-hover:text-lime-400 transition-colors" />
+                        </button>
+                        <button className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group" title="Search">
+                            <Search className="w-4 h-4 group-hover:text-violet-400 transition-colors" />
                         </button>
                     </div>
+
+                    <div className="w-px h-8 bg-nexus-border/50 mx-2" />
+
+                    {/* Zoom Group */}
+                    <div className="flex items-center gap-1">
+                        <button onClick={() => handleZoom(-0.1)} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-indigo-400 flex items-center justify-center transition-all">
+                            <Minus className="w-4 h-4" />
+                        </button>
+                        <button onClick={resetZoom} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-orange-400 flex items-center justify-center transition-all">
+                            <Home className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={() => handleZoom(0.1)} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-emerald-400 flex items-center justify-center transition-all">
+                            <Plus className="w-4 h-4" />
+                        </button>
+                    </div>
+
+                    <div className="w-px h-8 bg-nexus-border/50 mx-2" />
+
+                    {/* Theme Toggle (Integrated) */}
+                    <button
+                        onClick={toggleTheme}
+                        className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group"
+                        title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                    >
+                        {theme === 'dark' ? (
+                            <Sun className="w-4 h-4 group-hover:text-yellow-400 transition-colors" />
+                        ) : (
+                            <Moon className="w-4 h-4 group-hover:text-sky-400 transition-colors" />
+                        )}
+                    </button>
                 </div>
 
                 {/* RIGHT: View Mode Switcher */}
