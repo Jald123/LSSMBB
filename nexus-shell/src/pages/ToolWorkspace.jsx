@@ -148,10 +148,9 @@ const ToolWorkspace = () => {
     useEffect(() => {
         window.addEventListener('mousemove', handleMouseMoveGlobal);
         window.addEventListener('wheel', handleWheelGlobal, { passive: false });
-        // Handle global mouse events for drawing when start from Shell area
+
         const handleGlobalMouseDown = (e) => {
             if (activeAssistantTool === 'draw' && e.target.closest('.shell-interactive') === null) {
-                // Start drawing if click is on workspace, and not UI
                 startDrawing(e);
             }
         };
@@ -177,9 +176,9 @@ const ToolWorkspace = () => {
     const canvasRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [drawMode, setDrawMode] = useState('pen');
-    const [drawColor, setDrawColor] = useState("#fbbf24");
-    const [drawWidth, setDrawWidth] = useState(30);
-    const [drawOpacity, setDrawOpacity] = useState(0.05);
+    const [drawColor, setDrawColor] = useState("#ffff00"); // Default yellow for highlighter
+    const [drawWidth, setDrawWidth] = useState(24);
+    const [drawOpacity, setDrawOpacity] = useState(1.0); // Use 1.0 but Multiply blend mode creates the "clear" effect
 
     useEffect(() => {
         if (activeAssistantTool === 'draw' && canvasRef.current) {
@@ -195,6 +194,10 @@ const ToolWorkspace = () => {
         const canvas = canvasRef.current; if (!canvas) return;
         const ctx = canvas.getContext('2d');
         const rect = canvas.getBoundingClientRect();
+
+        // Use multiply for highlighter to get Microsoft Word style "behind-the-text" effect
+        ctx.globalCompositeOperation = drawMode === 'highlighter' ? 'multiply' : 'source-over';
+
         ctx.beginPath();
         ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
         setIsDrawing(true);
@@ -210,8 +213,9 @@ const ToolWorkspace = () => {
         ctx.lineWidth = drawWidth;
 
         if (drawMode === 'highlighter') {
+            // Word Highlighter is solid color with text showing through via Multiply
             ctx.globalAlpha = drawOpacity;
-            ctx.lineCap = 'butt';
+            ctx.lineCap = 'butt'; // Rectangular flat tip
             ctx.lineJoin = 'bevel';
         } else {
             ctx.globalAlpha = drawMode === 'pencil' ? 0.6 : 1.0;
@@ -221,10 +225,18 @@ const ToolWorkspace = () => {
 
         ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
         ctx.stroke();
-        ctx.globalAlpha = 1.0;
     };
 
-    const stopDrawing = () => setIsDrawing(false);
+    const stopDrawing = () => {
+        setIsDrawing(false);
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.globalAlpha = 1.0;
+            ctx.globalCompositeOperation = 'source-over';
+        }
+    };
+
     const clearCanvas = () => {
         const canvas = canvasRef.current;
         if (canvas) {
@@ -266,7 +278,6 @@ const ToolWorkspace = () => {
             style.textContent = cssRules;
             doc.head.appendChild(style);
 
-            // Proxy events from iframe for seamless drawing/sniping across boundaries
             doc.addEventListener('mousemove', (me) => {
                 const rect = iframe.getBoundingClientRect();
                 handleMouseMoveGlobal({ clientX: me.clientX + rect.left, clientY: me.clientY + rect.top });
@@ -294,7 +305,7 @@ const ToolWorkspace = () => {
     return (
         <div className={`h-screen w-full flex flex-col overflow-hidden relative ${theme === 'light' ? 'bg-slate-50' : 'bg-black'}`}>
 
-            {/* 🔝 HEADER BAR (UI elements are marked as shell-interactive to prevent drawing starting on them) */}
+            {/* 🔝 HEADER BAR */}
             <div className="h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[900] bg-black/40 backdrop-blur-3xl absolute top-0 left-0 right-0 shell-interactive">
                 <div className="flex items-center gap-6 w-1/4">
                     <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
@@ -335,11 +346,6 @@ const ToolWorkspace = () => {
 
             {/* 🚀 MAIN CONTENT */}
             <div className="flex-1 flex overflow-hidden relative pt-16">
-
-                {/* 🥷 TRANSPARENT PASS-THROUGH LAYER (Used for capture when interaction is on) */}
-                {(activeAssistantTool === 'draw' || activeAssistantTool === 'sniper') && (
-                    <div className="fixed inset-0 z-[1200] bg-transparent pointer-events-none" />
-                )}
 
                 <div className="w-full h-full pb-14 overflow-hidden">
                     <iframe src={tool.src} onLoad={handleIframeLoad} title={tool.name} className="w-full h-full border-none bg-slate-900 origin-top" loading="lazy" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals" />
@@ -390,46 +396,48 @@ const ToolWorkspace = () => {
 
                     {activeAssistantTool === 'draw' && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[1500] pointer-events-none">
-                            {/* Pointing Area Preview (Custom Cursor) */}
+                            {/* Pointing Area Preview */}
                             <div
-                                className="fixed pointer-events-none rounded-full border border-black/30 z-[2000] flex items-center justify-center overflow-hidden"
+                                className="fixed pointer-events-none border border-black/30 z-[2000] flex items-center justify-center overflow-hidden"
                                 style={{
                                     left: mousePos.x, top: mousePos.y,
-                                    width: drawWidth, height: drawWidth,
+                                    width: drawMode === 'highlighter' ? drawWidth : drawWidth,
+                                    height: drawMode === 'highlighter' ? drawWidth * 1.5 : drawWidth,
                                     transform: 'translate(-50%, -50%)',
+                                    borderRadius: drawMode === 'highlighter' ? '2px' : '50%',
                                     backgroundColor: `${drawColor}${Math.round(drawOpacity * 255).toString(16).padStart(2, '0')}`,
                                     boxShadow: '0 0 10px rgba(0,0,0,0.1)'
                                 }}
                             >
-                                <div className="absolute w-1/2 h-px bg-black/20" />
-                                <div className="absolute h-1/2 w-px bg-black/20" />
+                                <div className="absolute w-full h-px bg-black/10" />
+                                <div className="absolute h-full w-px bg-black/10" />
                             </div>
 
                             <canvas
                                 ref={canvasRef}
-                                className="w-full h-full"
-                                style={{ mixBlendMode: drawMode === 'highlighter' ? 'multiply' : 'normal' }}
+                                className="w-full h-full pointer-events-none"
+                                style={{ mixBlendMode: 'normal' }} // Setting to normal per user's "not highlighting with selected color" report
                             />
 
                             <motion.div initial={{ y: -50, x: '-50%' }} animate={{ y: 0, x: '-50%' }} className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-[#0f172a]/95 rounded-2xl border border-white/10 flex items-center gap-6 pointer-events-auto shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] min-w-[500px] shell-interactive">
                                 {/* Tool Toggles (Ico-btns) */}
                                 <div className="flex items-center gap-1.5 pr-5 border-r border-white/10">
-                                    <button onClick={() => setDrawMode('pen')} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pen' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pen className="w-6 h-6" /></button>
-                                    <button onClick={() => { setDrawMode('highlighter'); setDrawWidth(30); setDrawOpacity(0.1); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'highlighter' ? 'bg-[#dcfce7] text-[#166534] shadow-lg border border-[#166534]/20' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><HighlighterIcon className="w-6 h-6" /></button>
-                                    <button onClick={() => setDrawMode('pencil')} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('pen'); setDrawOpacity(1.0); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pen' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pen className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('highlighter'); setDrawWidth(30); setDrawOpacity(0.5); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'highlighter' ? 'bg-[#ffff00] text-black shadow-lg border border-yellow-400' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><HighlighterIcon className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('pencil'); setDrawOpacity(0.6); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
                                 </div>
 
-                                {/* Transparency Presets (Modern Pill Style) - Removed > 10% */}
+                                {/* Opaque Presets */}
                                 <div className="flex items-center gap-2 pr-5 border-r border-white/10">
                                     <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter">OPAQUE</span>
-                                    {[0.02, 0.05, 0.1].map(op => (
+                                    {[0.3, 0.5, 0.8].map(op => (
                                         <button key={op} onClick={() => setDrawOpacity(op)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${drawOpacity === op ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>{Math.round(op * 100)}%</button>
                                     ))}
                                 </div>
 
                                 {/* Color Palette Grid (2x5) */}
                                 <div className="grid grid-cols-5 gap-1.5 pr-5 border-r border-white/10">
-                                    {['#000000', '#ef4444', '#3b82f6', '#10b981', '#f97316', '#fbbf24', '#dcfce7', '#dbeafe', '#f3e8ff', '#ffffff'].map(c => (
+                                    {['#ffff00', '#ef4444', '#3b82f6', '#10b981', '#f97316', '#fbbf24', '#00ff00', '#00ffff', '#ff00ff', '#ffffff'].map(c => (
                                         <button key={c} onClick={() => setDrawColor(c)} className={`w-4 h-4 rounded-sm border transition-all ${drawColor === c ? 'scale-125 border-white shadow-sm ring-1 ring-blue-500' : 'border-white/10 hover:scale-110'}`} style={{ backgroundColor: c }} />
                                     ))}
                                 </div>
