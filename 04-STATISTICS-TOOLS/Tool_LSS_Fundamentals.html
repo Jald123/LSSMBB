@@ -3199,12 +3199,27 @@
             };
 
             metricBoxes.forEach(box => {
-                const label = box.querySelector('.metric-label').innerText;
-                if (metricHovers[label]) {
-                    box.onmouseenter = (e) => showLabTooltip(e, metricHovers[label]);
+                const labelEl = box.querySelector('.metric-label');
+                if (!labelEl) return;
+
+                const labelText = labelEl.innerText.trim();
+                if (metricHovers[labelText]) {
+                    // Add a small info icon to show it's hoverable
+                    labelEl.innerHTML += ' <span style="opacity:0.5; font-size:10px;">ⓘ</span>';
+
+                    box.onmouseenter = (e) => showLabTooltip(e, metricHovers[labelText]);
                     box.onmousemove = (e) => moveLabTooltip(e);
                     box.onmouseleave = () => hideLabTooltip();
                     box.style.cursor = 'help';
+                    box.style.transition = 'background 0.2s';
+
+                    // Subtle highlight on hover
+                    box.addEventListener('mouseenter', () => {
+                        box.style.background = 'rgba(255,255,255,0.05)';
+                    });
+                    box.addEventListener('mouseleave', () => {
+                        box.style.background = 'transparent';
+                    });
                 }
             });
         }
