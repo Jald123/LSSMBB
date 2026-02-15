@@ -189,7 +189,7 @@ const Header = ({ onMenuClick }) => {
     const location = useLocation();
 
     // Normalize methodology key (e.g., FOCUS PDCA -> FOCUS)
-    const activeMethodologyKey = methodology?.split(' ')[0].toUpperCase() || 'DMAIC';
+    const activeMethodologyKey = methodology ? methodology.split(' ')[0].toUpperCase() : null;
 
     const currentPath = location.pathname.split('/').pop(); // e.g., 'define' based on /journey/define
     const activePhase = Object.keys(methodologyData[activeMethodologyKey] || {}).includes(currentPath) ? currentPath : 'define';

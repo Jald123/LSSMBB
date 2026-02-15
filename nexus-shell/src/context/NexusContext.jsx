@@ -20,7 +20,7 @@ export const NexusProvider = ({ children }) => {
             completedTools: [],
             completedPhases: [],
             industry: 'healthcare',
-            methodology: 'DMAIC',
+            methodology: null,
             isSidebarCollapsed: false,
             isRightPanelOpen: true,
             hasSeenOnboarding: false,
