@@ -50,6 +50,11 @@ const ToolWorkspace = () => {
     const [activeIframe, setActiveIframe] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(1);
     const [activeAssistantTool, setActiveAssistantTool] = useState(null);
+    const activeToolRef = useRef(activeAssistantTool);
+
+    useEffect(() => {
+        activeToolRef.current = activeAssistantTool;
+    }, [activeAssistantTool]);
 
     const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
     const tool = toolRegistry[toolId];
@@ -140,7 +145,7 @@ const ToolWorkspace = () => {
     };
 
     const handleWheelGlobal = (e) => {
-        if (activeAssistantTool === 'sniper') {
+        if (activeToolRef.current === 'sniper') {
             setLensScale(prev => Math.min(Math.max(1.2, prev + (e.deltaY > 0 ? -0.1 : 0.1)), 5));
         }
     };
@@ -304,7 +309,7 @@ const ToolWorkspace = () => {
             });
             doc.addEventListener('mouseup', () => stopDrawing());
             doc.addEventListener('wheel', (we) => {
-                if (activeAssistantTool === 'sniper') {
+                if (activeToolRef.current === 'sniper') {
                     we.preventDefault();
                     handleWheelGlobal(we);
                 }
@@ -440,9 +445,9 @@ const ToolWorkspace = () => {
                             <motion.div initial={{ y: -50, x: '-50%' }} animate={{ y: 0, x: '-50%' }} className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-[#0f172a]/95 rounded-2xl border border-white/10 flex items-center gap-6 pointer-events-auto shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] min-w-[500px] shell-interactive">
                                 {/* Tool Toggles (Ico-btns) */}
                                 <div className="flex items-center gap-1.5 pr-5 border-r border-white/10">
-                                    <button onClick={() => { setDrawMode('pen'); setDrawOpacity(1.0); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center hidden ${drawMode === 'pen' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pen className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('pen'); setDrawOpacity(1.0); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pen' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pen className="w-6 h-6" /></button>
                                     <button onClick={() => { setDrawMode('highlighter'); setDrawWidth(40); setDrawOpacity(0.05); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'highlighter' ? 'bg-[#ffff00] text-black shadow-lg border border-yellow-400' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><HighlighterIcon className="w-6 h-6" /></button>
-                                    <button onClick={() => { setDrawMode('pencil'); setDrawOpacity(0.6); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center hidden ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('pencil'); setDrawOpacity(0.6); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
                                 </div>
 
                                 {/* Size and Opacity Sliders */}
