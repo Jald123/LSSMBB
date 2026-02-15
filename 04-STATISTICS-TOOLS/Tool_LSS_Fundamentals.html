@@ -2885,26 +2885,26 @@
 
             <!-- PANEL C: SIX SIGMA SCORECARD -->
             <div class="lab-scorecard" id="lab-scorecard">
-                <div class="metric-box">
+                <div class="metric-box" data-metric="quality">
                     <div class="metric-label">Operational Quality <span>▼</span></div>
                     <div class="sigma-display-glow" id="sigma-display">0.0σ</div>
                     <div style="text-align:center; font-size:12px; color:#94a3b8;" id="sigma-status">CHAOS</div>
                     <div class="metric-details"></div>
                 </div>
 
-                <div class="metric-box">
+                <div class="metric-box" data-metric="yield">
                     <div class="metric-label">Yield Accuracy <span>▼</span></div>
                     <div class="metric-value" id="yield-display">0.00%</div>
                     <div class="metric-details"></div>
                 </div>
 
-                <div class="metric-box">
+                <div class="metric-box" data-metric="dpmo">
                     <div class="metric-label">Defects (DPMO) <span>▼</span></div>
                     <div class="metric-value" style="color:#ef4444;" id="dpmo-display">0</div>
                     <div class="metric-details"></div>
                 </div>
 
-                <div class="metric-box">
+                <div class="metric-box" data-metric="copq">
                     <div class="metric-label">Cost of Poor Quality (COPQ) <span>▼</span></div>
                     <div class="metric-value" style="color:#facc15;" id="cost-display">$0.00</div>
                     <div style="font-size:10px; color:#94a3b8; margin-top:5px;">Weighted loss per defect event.</div>
@@ -3197,9 +3197,9 @@
             initSigmaExplorer();
 
             // Attach hovers for metric calculations
-            const metricBoxes = document.querySelectorAll('.metric-box');
+            // Robust metric handling using data attributes
             const metricHovers = {
-                'Operational Quality': `
+                'quality': `
                     <div style="font-weight:700; color:#818cf8; margin-bottom:5px;">HOW TO CALCULATE SIGMA</div>
                     <div style="font-size:11px; line-height:1.4;">
                         <strong>Process Sigma</strong> represents how many standard deviations fit between the mean and your limits (<span style="color:#ef4444">LSL/USL</span>).<br><br>
@@ -3213,7 +3213,7 @@
                         6σ = 3.4 defects per million
                     </div>
                 `,
-                'Yield Accuracy': `
+                'yield': `
                     <div style="font-weight:700; color:#10b981; margin-bottom:5px;">YIELD CALCULATION</div>
                     <div style="font-size:11px; line-height:1.4;">
                         The percentage of items produced that meet quality standards.<br><br>
@@ -3223,7 +3223,7 @@
                         If 95 items out of 100 are good, your yield is 95%.
                     </div>
                 `,
-                'Defects (DPMO)': `
+                'dpmo': `
                     <div style="font-weight:700; color:#ef4444; margin-bottom:5px;">DPMO CALCULATION</div>
                     <div style="font-size:11px; line-height:1.4;">
                         <strong>Defects Per Million Opportunities.</strong> A standard metric to compare quality across different processes.<br><br>
@@ -3233,7 +3233,7 @@
                         6-Sigma quality requires less than 3.4 DPMO.
                     </div>
                 `,
-                'Cost of Poor Quality (COPQ)': `
+                'copq': `
                     <div style="font-weight:700; color:#facc15; margin-bottom:5px;">COPQ CALCULATION</div>
                     <div style="font-size:11px; line-height:1.4;">
                         The financial loss incurred by creating defective products.<br><br>
@@ -3245,27 +3245,22 @@
                 `
             };
 
+            const metricBoxes = document.querySelectorAll('.metric-box');
             metricBoxes.forEach(box => {
-                const labelEl = box.querySelector('.metric-label');
+                const metricKey = box.dataset.metric;
                 const detailsEl = box.querySelector('.metric-details');
-                if (!labelEl || !detailsEl) return;
 
-                // Case-insensitive match for robust logic
-                const labelText = labelEl.innerText.replace('▼', '').trim().toUpperCase();
-
-                // Find a key that matches (case-insensitive)
-                const matchingKey = Object.keys(metricHovers).find(
-                    k => k.toUpperCase() === labelText
-                );
-
-                if (matchingKey) {
-                    detailsEl.innerHTML = metricHovers[matchingKey];
+                if (metricKey && metricHovers[metricKey] && detailsEl) {
+                    detailsEl.innerHTML = metricHovers[metricKey];
+                    // Force cursor pointer
+                    box.style.cursor = 'pointer';
 
                     box.onclick = (e) => {
                         e.stopPropagation();
-                        const isActive = box.classList.contains('active');
-                        // Close all others first
-                        metricBoxes.forEach(b => { if (b !== box) b.classList.remove('active'); });
+                        // Close all others
+                        metricBoxes.forEach(b => {
+                            if (b !== box) b.classList.remove('active');
+                        });
                         // Toggle current
                         box.classList.toggle('active');
                     };
