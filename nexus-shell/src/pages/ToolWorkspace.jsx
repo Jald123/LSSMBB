@@ -35,7 +35,8 @@ import {
     Pencil,
     Ruler,
     RefreshCw,
-    Layers
+    Layers,
+    Type as FontIcon
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
 import { methodologyData } from '../data/journeyData';
@@ -66,7 +67,7 @@ const ToolWorkspace = () => {
 
     // --- STICKY NOTES STATE ---
     const [notes, setNotes] = useState(() => {
-        const saved = localStorage.getItem('nexus_notes_v4');
+        const saved = localStorage.getItem('nexus_notes_v5');
         return saved ? JSON.parse(saved) : [{ id: 1, content: "Capture your tactical analysis here...", color: "#fef3c7" }];
     });
     const [activeNoteIndex, setActiveNoteIndex] = useState(0);
@@ -82,7 +83,7 @@ const ToolWorkspace = () => {
 
     const saveNotes = (updated) => {
         setNotes(updated);
-        localStorage.setItem('nexus_notes_v4', JSON.stringify(updated));
+        localStorage.setItem('nexus_notes_v5', JSON.stringify(updated));
     };
 
     const addNote = () => {
@@ -120,6 +121,7 @@ const ToolWorkspace = () => {
         if (val === 'C') { setCalcDisplay("0"); setCalcExpr(""); }
         else if (val === '=') {
             try {
+                // eslint-disable-next-line no-eval
                 const result = eval(calcExpr || calcDisplay);
                 setCalcDisplay(String(result)); setCalcExpr("");
             } catch (e) { setCalcDisplay("Error"); }
@@ -135,25 +137,34 @@ const ToolWorkspace = () => {
     const [lensScale, setLensScale] = useState(2);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-    const handleMouseMove = (e) => {
+    const handleMouseMoveGlobal = (e) => {
         if (activeAssistantTool === 'sniper' || activeAssistantTool === 'draw') {
             setMousePos({ x: e.clientX, y: e.clientY });
         }
     };
 
-    const handleWheel = (e) => {
+    const handleWheelGlobal = (e) => {
         if (activeAssistantTool === 'sniper') {
             setLensScale(prev => Math.min(Math.max(1.2, prev + (e.deltaY > 0 ? -0.1 : 0.1)), 5));
         }
     };
 
+    useEffect(() => {
+        window.addEventListener('mousemove', handleMouseMoveGlobal);
+        window.addEventListener('wheel', handleWheelGlobal, { passive: false });
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMoveGlobal);
+            window.removeEventListener('wheel', handleWheelGlobal);
+        };
+    }, [activeAssistantTool]);
+
     // --- DRAWING CANVAS LOGIC ---
     const canvasRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [drawMode, setDrawMode] = useState('pen');
-    const [drawColor, setDrawColor] = useState("#000000");
-    const [drawWidth, setDrawWidth] = useState(5);
-    const [drawOpacity, setDrawOpacity] = useState(1.0);
+    const [drawColor, setDrawColor] = useState("#fbbf24");
+    const [drawWidth, setDrawWidth] = useState(25);
+    const [drawOpacity, setDrawOpacity] = useState(0.4);
 
     useEffect(() => {
         if (activeAssistantTool === 'draw' && canvasRef.current) {
@@ -185,10 +196,12 @@ const ToolWorkspace = () => {
 
         if (drawMode === 'highlighter') {
             ctx.globalAlpha = drawOpacity;
-            ctx.lineCap = 'butt';
+            ctx.lineCap = 'butt'; // Rectangular highlighter tip
+            ctx.lineJoin = 'bevel';
         } else {
             ctx.globalAlpha = drawMode === 'pencil' ? 0.6 : 1.0;
             ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
         }
 
         ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
@@ -228,15 +241,38 @@ const ToolWorkspace = () => {
     }, [zoomLevel, activeIframe]);
 
     const handleIframeLoad = (e) => {
-        setActiveIframe(e.target);
+        const iframe = e.target;
+        setActiveIframe(iframe);
         try {
-            const doc = e.target.contentWindow.document;
+            const doc = iframe.contentWindow.document;
             const style = doc.createElement('style');
             let cssRules = `body { padding-top: 0 !important; margin: 0 !important; width: 100vw; height: 100vh; overflow-x: hidden; }`;
             if (toolId !== 'hoshin') cssRules += `footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer, .universal-nav-bar { display: none !important; }`;
             style.textContent = cssRules;
             doc.head.appendChild(style);
-        } catch (err) { console.warn("Iframe style injection error:", err); }
+
+            // Proxy mouse events from iframe back to parent for Sniper/Lens
+            doc.addEventListener('mousemove', (me) => {
+                const rect = iframe.getBoundingClientRect();
+                handleMouseMoveGlobal({
+                    clientX: me.clientX + rect.left,
+                    clientY: me.clientY + rect.top
+                });
+            });
+            doc.addEventListener('wheel', (we) => handleWheelGlobal(we), { passive: false });
+
+            // Proxy draw events
+            doc.addEventListener('mousedown', (me) => {
+                if (activeAssistantTool === 'draw') startDrawing({ clientX: me.clientX + iframe.getBoundingClientRect().left, clientY: me.clientY + iframe.getBoundingClientRect().top });
+            });
+            doc.addEventListener('mousemove', (me) => {
+                if (activeAssistantTool === 'draw') drawAction({ clientX: me.clientX + iframe.getBoundingClientRect().left, clientY: me.clientY + iframe.getBoundingClientRect().top });
+            });
+            doc.addEventListener('mouseup', () => {
+                if (activeAssistantTool === 'draw') stopDrawing();
+            });
+
+        } catch (err) { console.warn("Iframe access restricted:", err); }
     };
 
     return (
@@ -284,15 +320,14 @@ const ToolWorkspace = () => {
             {/* 🚀 MAIN CONTENT */}
             <div className="flex-1 flex overflow-hidden relative pt-16">
 
-                {/* 🥷 TRANSPARENT EVENT CAPTURE LAYER */}
-                {(activeAssistantTool === 'sniper' || activeAssistantTool === 'draw') && (
+                {/* 🥷 TRANSPARENT PASS-THROUGH LAYER (Acts as the interaction surface) */}
+                {(activeAssistantTool === 'draw' || activeAssistantTool === 'sniper') && (
                     <div
-                        onMouseMove={handleMouseMove}
-                        onWheel={handleWheel}
                         onMouseDown={activeAssistantTool === 'draw' ? startDrawing : null}
-                        onMouseMoveCapture={activeAssistantTool === 'draw' ? drawAction : null}
+                        onMouseMove={activeAssistantTool === 'draw' ? drawAction : handleMouseMoveGlobal}
                         onMouseUp={activeAssistantTool === 'draw' ? stopDrawing : null}
-                        className="fixed inset-0 z-[1200] bg-transparent cursor-none"
+                        onWheel={handleWheelGlobal}
+                        className="fixed inset-0 z-[1200] bg-transparent cursor-none pointer-events-auto"
                     />
                 )}
 
@@ -300,7 +335,6 @@ const ToolWorkspace = () => {
                     <iframe src={tool.src} onLoad={handleIframeLoad} title={tool.name} className="w-full h-full border-none bg-slate-900 origin-top" loading="lazy" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals" />
                 </div>
 
-                {/* 🛠️ ASSISTANT OVERLAYS */}
                 <AnimatePresence>
                     {activeAssistantTool === 'notes' && (
                         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} className="fixed top-20 right-8 w-[450px] z-[1300] drop-shadow-2xl">
@@ -312,7 +346,7 @@ const ToolWorkspace = () => {
                                 </div>
                                 <div className="p-4 flex items-center justify-between border-b border-white/5" style={{ backgroundColor: notes[activeNoteIndex].color }}>
                                     <div className="flex items-center gap-3"><button onClick={() => setShowNotesMenu(!showNotesMenu)} className="p-1 hover:bg-black/5 rounded"><Menu className="w-4 h-4 text-black/60" /></button><span className="font-orbitron font-black text-xs tracking-[0.2em] text-black/60">NOTES</span></div>
-                                    <div className="flex items-center gap-3"><button onClick={() => setActiveAssistantTool(null)} className="p-1 hover:bg-black/5 rounded text-black/40"><Minus className="w-4 h-4" /></button><button onClick={deleteNote} className="p-1 hover:bg-black/5 rounded text-black/40"><Trash2 className="w-4 h-4" /></button><button onClick={() => setActiveAssistantTool(null)} title="Close (Esc)" className="p-1 hover:bg-black/5 rounded text-black/60 transition-transform hover:rotate-90"><X className="w-4 h-4" /></button></div>
+                                    <div className="flex items-center gap-3"><button onClick={() => setActiveAssistantTool(null)} className="p-1 hover:bg-black/5 rounded text-black/40"><Minus className="w-4 h-4" /></button><button onClick={deleteNote} className="p-1 hover:bg-black/5 rounded text-black/40"><Trash2 className="w-4 h-4" /></button><button onClick={() => setActiveAssistantTool(null)} className="p-1 hover:bg-black/5 rounded text-black/60"><X className="w-4 h-4" /></button></div>
                                 </div>
                                 <div className="flex-1 relative flex flex-col" style={{ backgroundColor: notes[activeNoteIndex].color }}>
                                     {showNotesMenu && (
@@ -325,20 +359,8 @@ const ToolWorkspace = () => {
                                     <div ref={editorRef} contentEditable className="flex-1 w-full p-8 text-black/80 text-sm focus:outline-none font-sans leading-relaxed selection:bg-black/10 overflow-y-auto scrollbar-hide" onBlur={() => { const updated = [...notes]; updated[activeNoteIndex].content = editorRef.current.innerHTML; saveNotes(updated); }} dangerouslySetInnerHTML={{ __html: notes[activeNoteIndex].content }} />
                                 </div>
                                 <div className="p-3 bg-[#0a0f1a] border-t border-white/5 flex items-center justify-between">
-                                    <div className="flex items-center gap-1.5">
-                                        <button onClick={() => execCommand('bold')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400"><BoldIcon className="w-3.5 h-3.5" /></button>
-                                        <button onClick={() => execCommand('italic')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400"><ItalicIcon className="w-3.5 h-3.5" /></button>
-                                        <button onClick={() => execCommand('underline')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400"><UnderlineIcon className="w-3.5 h-3.5" /></button>
-                                        <div className="w-px h-5 bg-white/10 mx-1" />
-                                        <button className="w-10 h-8 rounded bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center text-slate-300"><span className="text-[10px] font-bold">A—</span><div className="w-3 h-[2px] bg-blue-500 rounded-sm" /></button>
-                                        <div className="w-px h-5 bg-white/10 mx-1" />
-                                        <button onClick={() => execCommand('fontSize', '2')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 text-[10px] font-bold">A-</button>
-                                        <button onClick={() => execCommand('fontSize', '4')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 text-[11px] font-bold">A+</button>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <button onClick={addNote} className="text-blue-500 text-2xl font-light">+</button>
-                                        <div className="bg-white/5 px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-500 font-orbitron">{activeNoteIndex + 1}/{notes.length}</div>
-                                    </div>
+                                    <div className="flex items-center gap-1.5"><button onClick={() => execCommand('bold')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400"><BoldIcon className="w-3.5 h-3.5" /></button><button onClick={() => execCommand('italic')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400"><ItalicIcon className="w-3.5 h-3.5" /></button><button onClick={() => execCommand('underline')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400"><UnderlineIcon className="w-3.5 h-3.5" /></button><div className="w-px h-5 bg-white/10 mx-1" /><button className="w-10 h-8 rounded bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center text-slate-300"><span className="text-[10px] font-bold">A—</span><div className="w-3 h-[2px] bg-blue-500 rounded-sm" /></button><div className="w-px h-5 bg-white/10 mx-1" /><button onClick={() => execCommand('fontSize', '2')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 text-[10px] font-bold">A-</button><button onClick={() => execCommand('fontSize', '4')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 text-[11px] font-bold">A+</button></div>
+                                    <div className="flex items-center gap-4"><button onClick={addNote} className="text-blue-500 text-2xl font-light">+</button><div className="bg-white/5 px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-500 font-orbitron">{activeNoteIndex + 1}/{notes.length}</div></div>
                                 </div>
                             </div>
                         </motion.div>
@@ -346,9 +368,7 @@ const ToolWorkspace = () => {
 
                     {activeAssistantTool === 'calculator' && (
                         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="fixed top-24 left-1/2 -translate-x-1/2 z-[1300] w-72 bg-black border border-white/10 rounded-[2.5rem] p-6 shadow-2xl">
-                            <div className="flex justify-end mb-2">
-                                <button onClick={() => setActiveAssistantTool(null)} title="Close (Esc)" className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"><X className="w-3 h-3" /></button>
-                            </div>
+                            <div className="flex justify-end mb-2"><button onClick={() => setActiveAssistantTool(null)} className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all"><X className="w-3 h-3" /></button></div>
                             <div className="text-right mb-6 px-2 overflow-hidden"><div className="text-slate-500 text-xs font-mono mb-1 h-4">{calcExpr}</div><div className="text-white text-5xl font-light font-sans truncate">{calcDisplay}</div></div>
                             <div className="grid grid-cols-4 gap-3">
                                 {['C', '±', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '='].map((btn) => (
@@ -360,35 +380,45 @@ const ToolWorkspace = () => {
 
                     {activeAssistantTool === 'draw' && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[1500] pointer-events-none">
-                            <canvas ref={canvasRef} className="w-full h-full" />
+                            <canvas
+                                ref={canvasRef}
+                                className="w-full h-full"
+                                style={{ mixBlendMode: drawMode === 'highlighter' ? 'multiply' : 'normal' }}
+                            />
 
-                            <motion.div initial={{ y: -50, x: '-50%' }} animate={{ y: 0, x: '-50%' }} className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-white/95 rounded-2xl border border-nexus-border flex items-center gap-6 pointer-events-auto shadow-2xl min-w-[750px]">
-                                <div className="flex items-center gap-1 pr-4 border-r border-slate-200">
-                                    <button onClick={() => setDrawMode('pen')} className={`p-2 rounded-xl transition-all ${drawMode === 'pen' ? 'bg-indigo-50 border border-indigo-200' : 'hover:bg-slate-50'}`}><Pen className={`w-6 h-6 ${drawMode === 'pen' ? 'text-indigo-600' : 'text-slate-400'}`} /></button>
-                                    <button onClick={() => { setDrawMode('highlighter'); setDrawOpacity(0.4); }} className={`p-2 rounded-xl transition-all ${drawMode === 'highlighter' ? 'bg-green-50 border border-green-200' : 'hover:bg-slate-50'}`}><HighlighterIcon className={`w-6 h-6 ${drawMode === 'highlighter' ? 'text-green-600' : 'text-slate-400'}`} /></button>
-                                    <button onClick={() => setDrawMode('pencil')} className={`p-2 rounded-xl transition-all ${drawMode === 'pencil' ? 'bg-orange border border-orange-200' : 'hover:bg-slate-50'}`}><Pencil className={`w-6 h-6 ${drawMode === 'pencil' ? 'text-orange-500' : 'text-slate-400'}`} /></button>
+                            <motion.div initial={{ y: -50, x: '-50%' }} animate={{ y: 0, x: '-50%' }} className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-[#0f172a]/95 rounded-2xl border border-white/10 flex items-center gap-6 pointer-events-auto shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] min-w-[780px]">
+                                {/* Tool Toggles (Ico-btns) */}
+                                <div className="flex items-center gap-1.5 pr-5 border-r border-white/10">
+                                    <button onClick={() => setDrawMode('pen')} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pen' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pen className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('highlighter'); setDrawWidth(25); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'highlighter' ? 'bg-[#dcfce7] text-[#166534] shadow-lg border border-[#166534]/20' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><HighlighterIcon className="w-6 h-6" /></button>
+                                    <button onClick={() => setDrawMode('pencil')} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
                                 </div>
 
-                                {drawMode === 'highlighter' && (
-                                    <div className="flex items-center gap-2 pr-4 border-r border-slate-200">
-                                        <span className="text-[9px] font-bold text-slate-400 uppercase">OPAQUE</span>
-                                        {[0.2, 0.4, 0.7].map(op => (
-                                            <button key={op} onClick={() => setDrawOpacity(op)} className={`w-8 h-8 rounded-lg border transition-all flex items-center justify-center text-[10px] font-black ${drawOpacity === op ? 'bg-blue-600 text-white border-blue-700 shadow-lg' : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200'}`}>{Math.round(op * 100)}%</button>
-                                        ))}
-                                    </div>
-                                )}
-
-                                <div className="grid grid-cols-5 gap-1 pr-4 border-r border-slate-200">
-                                    {['#000000', '#ef4444', '#3b82f6', '#10b981', '#f97316', '#fbbf24', '#dcfce7', '#dbeafe', '#f3e8ff', '#ffffff'].map(c => (
-                                        <button key={c} onClick={() => setDrawColor(c)} className={`w-4 h-4 rounded-sm border ${drawColor === c ? 'border-indigo-600 scale-110 shadow-sm' : 'border-slate-300'}`} style={{ backgroundColor: c }} />
+                                {/* Transparency Presets (Modern Pill Style) */}
+                                <div className="flex items-center gap-2 pr-5 border-r border-white/10">
+                                    <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter">OPAQUE</span>
+                                    {[0.2, 0.4, 0.7].map(op => (
+                                        <button key={op} onClick={() => setDrawOpacity(op)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${drawOpacity === op ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>{Math.round(op * 100)}%</button>
                                     ))}
                                 </div>
 
-                                <div className="flex flex-col gap-1 pr-4 border-r border-slate-200 min-w-[100px]"><span className="text-[9px] font-bold text-slate-400">THICKNESS</span><input type="range" min="1" max="50" value={drawWidth} onChange={(e) => setDrawWidth(parseInt(e.target.value))} className="w-full h-1 bg-slate-200 rounded-full appearance-none accent-blue-600" /></div>
+                                {/* Color Palette Grid (2x5) */}
+                                <div className="grid grid-cols-5 gap-1.5 pr-5 border-r border-white/10">
+                                    {['#000000', '#ef4444', '#3b82f6', '#10b981', '#f97316', '#fbbf24', '#dcfce7', '#dbeafe', '#f3e8ff', '#ffffff'].map(c => (
+                                        <button key={c} onClick={() => setDrawColor(c)} className={`w-4 h-4 rounded-sm border transition-all ${drawColor === c ? 'scale-125 border-white shadow-sm ring-1 ring-blue-500' : 'border-white/10 hover:scale-110'}`} style={{ backgroundColor: c }} />
+                                    ))}
+                                </div>
 
+                                {/* Thickness Control */}
+                                <div className="flex flex-col gap-1 pr-5 border-r border-white/10 min-w-[120px]">
+                                    <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter">THICKNESS</span>
+                                    <input type="range" min="2" max="60" value={drawWidth} onChange={(e) => setDrawWidth(parseInt(e.target.value))} className="w-full h-1 bg-white/10 rounded-full appearance-none accent-blue-500 cursor-pointer" />
+                                </div>
+
+                                {/* Final Actions */}
                                 <div className="flex items-center gap-3">
-                                    <button onClick={clearCanvas} className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-all group outline-none"><Eraser className="w-4 h-4 text-orange-500 group-hover:rotate-12 transition-transform" /><span className="text-xs font-bold text-slate-600">Clear</span></button>
-                                    <button onClick={() => setActiveAssistantTool(null)} title="Close (Esc)" className="p-2 hover:bg-slate-100 rounded-xl text-slate-400 transition-all hover:rotate-90"><X className="w-5 h-5" /></button>
+                                    <button onClick={clearCanvas} className="bg-white text-slate-900 px-4 py-2 rounded-xl flex items-center gap-2 text-xs font-black hover:bg-slate-200 transition-all shadow-lg active:scale-95"><Eraser className="w-4 h-4 text-orange-500" /> Clear</button>
+                                    <button onClick={() => setActiveAssistantTool(null)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-red-500/20 hover:text-red-400 transition-all"><X className="w-5 h-5" /></button>
                                 </div>
                             </motion.div>
                         </motion.div>
@@ -397,28 +427,27 @@ const ToolWorkspace = () => {
                     {activeAssistantTool === 'sniper' && (
                         <>
                             <motion.div initial={{ opacity: 0, y: -20, x: '-50%' }} animate={{ opacity: 1, y: 0, x: '-50%' }} exit={{ opacity: 0, y: -20, x: '-50%' }} className="fixed top-24 left-1/2 -translate-x-1/2 z-[1400] h-12 glass-panel bg-[#0f172a]/95 rounded-full border border-white/10 px-6 flex items-center gap-6 shadow-2xl">
-                                <span className="text-[10px] font-black font-orbitron text-slate-500 tracking-widest">ZOOM MODE:</span>
+                                <span className="text-[10px] font-black font-orbitron text-slate-500 tracking-widest uppercase">ZOOM MODE:</span>
                                 <div className="flex bg-black/40 p-1 rounded-full gap-2">
                                     <button onClick={() => setSniperMode('lens')} className={`px-4 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-black font-orbitron transition-all ${sniperMode === 'lens' ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'text-slate-500 hover:text-white'}`}><div className="w-2 h-2 rounded-full bg-white shadow-sm" /> Lens</button>
                                     <button onClick={() => setSniperMode('sniper')} className={`px-4 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-black font-orbitron transition-all ${sniperMode === 'sniper' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-white'}`}><Crosshair className="w-3 h-3" /> Sniper</button>
                                 </div>
                                 <div className="w-px h-6 bg-white/10" />
-                                <span className="text-[10px] text-slate-500 font-orbitron font-black tracking-widest uppercase">Scroll to Zoom</span>
+                                <span className="text-[10px] text-slate-500 font-orbitron font-black uppercase tracking-widest">Scroll to Zoom</span>
                                 <div className="w-px h-6 bg-white/10" />
-                                <button onClick={() => setActiveAssistantTool(null)} title="Close (Esc)" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all hover:rotate-90"><X className="w-3.5 h-3.5" /></button>
+                                <button onClick={() => setActiveAssistantTool(null)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-white/10 transition-all"><X className="w-3.5 h-3.5" /></button>
                             </motion.div>
-
                             <div className="fixed inset-0 z-[1300] pointer-events-none overflow-hidden cursor-none">
                                 <motion.div
-                                    className={`absolute transition-transform duration-75 shadow-[0_0_0_9999px_rgba(0,0,0,0.5),0_0_30px_rgba(0,0,0,0.5)_inset] ${sniperMode === 'lens' ? 'rounded-full border-[4px] border-white' : 'rounded-lg border-[2px] border-red-500'}`}
+                                    className={`absolute pointer-events-none transition-transform duration-75 shadow-[0_0_0_9999px_rgba(0,0,0,0.5),0_0_40px_rgba(0,0,0,0.5)_inset] ${sniperMode === 'lens' ? 'rounded-full border-[4px] border-white' : 'rounded-lg border-[2px] border-red-500'}`}
                                     style={{
                                         left: mousePos.x, top: mousePos.y,
-                                        width: 320, height: 320,
+                                        width: 350, height: 350,
                                         transform: `translate(-50%, -50%) scale(${lensScale / 2})`,
-                                        backdropFilter: 'contrast(1.3) brightness(1.2) saturate(1.4)'
+                                        backdropFilter: 'contrast(1.2) brightness(1.1) saturate(1.2)'
                                     }}
                                 >
-                                    {sniperMode === 'sniper' && (<><div className="absolute top-1/2 left-0 w-full h-[1px] bg-red-500/50" /><div className="absolute top-0 left-1/2 w-[1px] h-full bg-red-500/50" /><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.4)]" /></>)}
+                                    {sniperMode === 'sniper' && (<><div className="absolute top-1/2 left-0 w-full h-[1px] bg-red-500/50" /><div className="absolute top-0 left-1/2 w-[1px] h-full bg-red-500/50" /><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full border border-red-500/50" /></>)}
                                 </motion.div>
                             </div>
                         </>
@@ -428,11 +457,11 @@ const ToolWorkspace = () => {
 
             {/* 🎮 MISSION CONTROL FOOTER */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full bg-[#0f172a] border border-slate-600/50 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-                <button onClick={() => navigate('/')} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition-all"><Home className="w-3.5 h-3.5" /></button>
-                <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) navigate(`/workspace/${prevTool.id}`); else navigate('/journey'); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition-all"><ChevronLeft className="w-4 h-4" /></button>
-                <button onClick={() => markToolComplete(toolId)} className={`relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 active:scale-95 ${isCompleted ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white border shadow-lg' : 'bg-slate-800 border-slate-600 text-slate-200'}`}>{isCompleted ? <CheckCircle2 className="w-3 h-3 text-white" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}{isCompleted ? 'SECURED' : 'MARK DONE'}</button>
-                <button onClick={handleNextStation} className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all active:scale-95"><span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span><ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" /></button>
-                <button onClick={() => { if (activeIframe?.contentWindow) activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition-all"><ArrowUp className="w-3.5 h-3.5" /></button>
+                <button onClick={() => navigate('/')} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><Home className="w-3.5 h-3.5" /></button>
+                <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) navigate(`/workspace/${prevTool.id}`); else navigate('/journey'); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ChevronLeft className="w-4 h-4" /></button>
+                <button onClick={() => markToolComplete(toolId)} className={`relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 active:scale-95 ${isCompleted ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-800 border-slate-600 text-slate-200'}`}>{isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}{isCompleted ? 'SECURED' : 'MARK DONE'}</button>
+                <button onClick={handleNextStation} className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all"><span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span><ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" /></button>
+                <button onClick={() => { if (activeIframe?.contentWindow) activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ArrowUp className="w-3.5 h-3.5" /></button>
             </div>
         </div>
     );
