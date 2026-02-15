@@ -40,36 +40,38 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
         ${isActive ? 'bg-nexus-cyan/10 text-nexus-cyan' : 'text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5'}
       `}
         >
-            <div className="flex-shrink-0">
-                <item.icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110`} />
-            </div>
+            {({ isActive }) => (
+                <>
+                    <div className="flex-shrink-0">
+                        <item.icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110`} />
+                    </div>
 
-            {!isCollapsed && (
-                <motion.span
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="text-[10px] font-black font-orbitron tracking-widest whitespace-nowrap"
-                >
-                    {item.label.toUpperCase()}
-                </motion.span>
+                    {!isCollapsed && (
+                        <motion.span
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="text-[10px] font-black font-orbitron tracking-widest whitespace-nowrap"
+                        >
+                            {item.label.toUpperCase()}
+                        </motion.span>
+                    )}
+
+                    {/* Tooltip for collapsed mode */}
+                    {isCollapsed && (
+                        <div className="absolute left-full ml-4 px-3 py-1 bg-nexus-surface border border-nexus-border rounded-md text-[10px] font-black font-orbitron text-nexus-text-primary opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-xl ring-1 ring-nexus-border">
+                            {item.label.toUpperCase()}
+                        </div>
+                    )}
+
+                    {/* Active Indicator */}
+                    {isActive && (
+                        <motion.div
+                            layoutId="active-nav"
+                            className="absolute left-0 w-1 h-6 bg-nexus-cyan rounded-full shadow-[0_0_10px_#22d3ee]"
+                        />
+                    )}
+                </>
             )}
-
-            {/* Tooltip for collapsed mode */}
-            {isCollapsed && (
-                <div className="absolute left-full ml-4 px-3 py-1 bg-nexus-surface border border-nexus-border rounded-md text-[10px] font-black font-orbitron text-nexus-text-primary opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-xl ring-1 ring-nexus-border">
-                    {item.label.toUpperCase()}
-                </div>
-            )}
-
-            {/* Active Indicator */}
-            <NavLink to={item.to}>
-                {({ isActive }) => isActive && (
-                    <motion.div
-                        layoutId="active-nav"
-                        className="absolute left-0 w-1 h-6 bg-nexus-cyan rounded-full shadow-[0_0_10px_#22d3ee]"
-                    />
-                )}
-            </NavLink>
         </NavLink>
     );
 
