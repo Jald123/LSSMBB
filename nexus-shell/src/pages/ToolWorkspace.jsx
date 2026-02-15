@@ -18,7 +18,13 @@ import {
     Home,
     ArrowUp,
     Sun,
-    Moon
+    Moon,
+    Calculator,
+    PenTool,
+    Search,
+    Minus,
+    Plus,
+    RotateCcw
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
 import { methodologyData } from '../data/journeyData';
@@ -30,6 +36,7 @@ const ToolWorkspace = () => {
     const location = useLocation();
     const [viewMode, setViewMode] = useState(location.state?.mode || 'do');
     const [activeIframe, setActiveIframe] = useState(null);
+    const [zoomLevel, setZoomLevel] = useState(1);
 
     const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
     const tool = toolRegistry[toolId];
@@ -52,12 +59,33 @@ const ToolWorkspace = () => {
     };
     const isCompleted = completedTools.includes(toolId);
 
+    // Zoom Handling
+    const handleZoom = (delta) => {
+        setZoomLevel(prev => Math.min(Math.max(0.5, prev + delta), 2));
+    };
+    const resetZoom = () => setZoomLevel(1);
+
     // Update last visited tool in persistent state
     useEffect(() => {
         if (toolId) {
             updateProgress('lastToolId', toolId);
         }
     }, [toolId]);
+
+    // Apply Zoom to Iframe
+    useEffect(() => {
+        if (activeIframe) {
+            try {
+                activeIframe.style.transform = `scale(${zoomLevel})`;
+                activeIframe.style.transformOrigin = 'top center';
+                // Adjust container height or width if necessary, but iframe scale usually needs layout compensation
+                // For simplicity in this 'expert' fix, we scale the element.
+            } catch (e) {
+                console.warn("Zoom error", e);
+            }
+        }
+    }, [zoomLevel, activeIframe]);
+
 
     // --- Fallback Error State ---
     if (!tool) {
@@ -125,9 +153,11 @@ const ToolWorkspace = () => {
     return (
         <div className="h-screen w-full flex flex-col bg-nexus-navy overflow-hidden relative">
 
-            {/* 🔝 MINIMAL TOP BAR */}
+            {/* 🔝 ENHANCED HEADER BAR */}
             <div className="h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[900] bg-black/40 backdrop-blur-3xl absolute top-0 left-0 right-0">
-                <div className="flex items-center gap-6">
+
+                {/* LEFT: Back & Title */}
+                <div className="flex items-center gap-6 w-1/4">
                     <button
                         onClick={() => navigate(-1)}
                         className="w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center text-slate-400 hover:bg-white/5 hover:text-white transition-all group"
@@ -138,15 +168,67 @@ const ToolWorkspace = () => {
                     <div className="w-px h-6 bg-nexus-border" />
                     <div>
                         <span className="text-[10px] font-black font-orbitron text-nexus-cyan tracking-widest uppercase block mb-0.5">{tool.phase} Phase</span>
-                        <h1 className="text-lg font-black text-white font-orbitron tracking-tight truncate max-w-[300px]">{tool.name}</h1>
+                        <h1 className="text-lg font-black text-white font-orbitron tracking-tight truncate max-w-[200px]">{tool.name}</h1>
                     </div>
                 </div>
 
-                {/* Mode Switcher */}
-                <div className="bg-black/60 p-1 rounded-full border border-white/5 flex shadow-inner">
+                {/* CENTER: Assistant Tools (Replicating User Request) */}
+                <div className="flex-1 flex justify-center">
+                    <div className="h-12 bg-[#0F172A] rounded-full px-2 flex items-center gap-4 border border-slate-700/50 shadow-xl">
+
+                        {/* Tools Group */}
+                        <div className="flex items-center gap-2">
+                            <button className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all" title="Notes">
+                                <FileText className="w-4 h-4 text-pink-400" />
+                            </button>
+                            <button className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all" title="Calculator">
+                                <Calculator className="w-4 h-4 text-cyan-400" />
+                            </button>
+                            <button className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all" title="Draw">
+                                <PenTool className="w-4 h-4 text-lime-400" />
+                            </button>
+                            <button className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all" title="Search">
+                                <Search className="w-4 h-4 text-violet-400" />
+                            </button>
+                        </div>
+
+                        <div className="w-px h-6 bg-slate-700" />
+
+                        {/* Zoom Group */}
+                        <div className="flex items-center bg-[#1E293B] rounded-full p-1 border border-slate-700">
+                            <button onClick={() => handleZoom(-0.1)} className="w-7 h-7 rounded-full hover:bg-slate-600 text-slate-400 hover:text-white flex items-center justify-center transition-all">
+                                <Minus className="w-3.5 h-3.5 text-indigo-400" />
+                            </button>
+                            <button onClick={resetZoom} className="w-7 h-7 rounded-full hover:bg-slate-600 text-slate-400 hover:text-white flex items-center justify-center transition-all mx-1">
+                                <Home className="w-3.5 h-3.5 text-orange-400" />
+                            </button>
+                            <button onClick={() => handleZoom(0.1)} className="w-7 h-7 rounded-full hover:bg-slate-600 text-slate-400 hover:text-white flex items-center justify-center transition-all">
+                                <Plus className="w-3.5 h-3.5 text-emerald-400" />
+                            </button>
+                        </div>
+
+                        <div className="w-px h-6 bg-slate-700" />
+
+                        {/* Theme Toggle (Moved to Header) */}
+                        <button
+                            onClick={toggleTheme}
+                            className="w-9 h-9 rounded-full bg-[#1E293B] hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-all border border-slate-700"
+                            title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                        >
+                            {theme === 'dark' ? (
+                                <Sun className="w-4 h-4 text-yellow-400" />
+                            ) : (
+                                <Moon className="w-4 h-4 text-sky-400" />
+                            )}
+                        </button>
+                    </div>
+                </div>
+
+                {/* RIGHT: View Mode Switcher */}
+                <div className="bg-black/60 p-1 rounded-full border border-white/5 flex shadow-inner w-1/4 justify-end">
                     <button
                         onClick={() => setViewMode('do')}
-                        className={`px-6 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'do'
+                        className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'do'
                             ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)]'
                             : 'text-slate-500 hover:text-slate-300'
                             }`}
@@ -155,25 +237,13 @@ const ToolWorkspace = () => {
                     </button>
                     <button
                         onClick={() => setViewMode('learn')}
-                        className={`px-6 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'learn'
+                        className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'learn'
                             ? 'bg-nexus-purple text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]'
                             : 'text-slate-500 hover:text-slate-300'
                             }`}
                     >
                         <FileText className="w-3 h-3" /> LEARN
                     </button>
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <a
-                        href={tool.src}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2.5 text-slate-500 hover:text-white hover:bg-white/5 rounded-lg transition-all"
-                        title="Open in new window"
-                    >
-                        <ExternalLink className="w-4 h-4" />
-                    </a>
                 </div>
             </div>
 
@@ -193,7 +263,7 @@ const ToolWorkspace = () => {
                                 src={tool.src}
                                 onLoad={handleIframeLoad}
                                 title={`Nexus Workspace - ${tool.name}`}
-                                className="w-full h-full border-none bg-slate-900"
+                                className="w-full h-full border-none bg-slate-900 origin-top"
                                 loading="lazy"
                                 sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals"
                             />
@@ -233,12 +303,12 @@ const ToolWorkspace = () => {
                 </AnimatePresence>
             </div>
 
-            {/* 🎮 MISSION CONTROL FOOTER (Floating) */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2">
+            {/* 🎮 MISSION CONTROL FOOTER (Floating - High Visibility) */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full bg-[#0f172a] border border-slate-600/50 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                 {/* Home Button */}
                 <button
                     onClick={() => navigate('/')}
-                    className="w-9 h-9 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
+                    className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all shadow-sm active:scale-95 group"
                     title="Return to Home"
                 >
                     <Home className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
@@ -251,24 +321,24 @@ const ToolWorkspace = () => {
                         if (prevTool) navigate(`/workspace/${prevTool.id}`);
                         else navigate('/journey');
                     }}
-                    className="w-9 h-9 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
+                    className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all shadow-sm active:scale-95 group"
                     title="Previous Station"
                 >
                     <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
                 </button>
 
-                {/* Central Command - Compacted */}
+                {/* Central Command - Compacted & High Contrast */}
                 <button
                     onClick={() => markToolComplete(toolId)}
                     className={`
-                        relative flex items-center justify-center gap-2 px-5 h-9 rounded-full glass-panel border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 shadow-lg active:scale-95
+                        relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 shadow-lg active:scale-95
                         ${isCompleted
                             ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white'
-                            : 'border-nexus-border text-nexus-text-primary hover:bg-nexus-text-primary/5 hover:border-nexus-cyan/30'
+                            : 'bg-slate-800 border-slate-600 text-slate-200 hover:bg-slate-700 hover:border-nexus-cyan/50'
                         }
                     `}
                 >
-                    {isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-500" />}
+                    {isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}
                     {isCompleted ? 'SECURED' : 'MARK DONE'}
 
                     {/* Completion Particle Effect */}
@@ -278,7 +348,7 @@ const ToolWorkspace = () => {
                 {/* Next Component */}
                 <button
                     onClick={handleNextStation}
-                    className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full glass-panel border border-nexus-border text-nexus-text-primary hover:bg-nexus-cyan/10 hover:border-nexus-cyan/30 transition-all shadow-lg active:scale-95"
+                    className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 hover:border-nexus-cyan/50 transition-all shadow-sm active:scale-95"
                 >
                     <span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span>
                     <ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" />
@@ -291,23 +361,10 @@ const ToolWorkspace = () => {
                             activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
                         }
                     }}
-                    className="w-9 h-9 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
+                    className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all shadow-sm active:scale-95 group"
                     title="Scroll to Top"
                 >
                     <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-1 transition-transform" />
-                </button>
-
-                {/* Theme Toggle Button */}
-                <button
-                    onClick={toggleTheme}
-                    className="w-9 h-9 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
-                    title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                >
-                    {theme === 'dark' ? (
-                        <Sun className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-                    ) : (
-                        <Moon className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-                    )}
                 </button>
             </div>
 
