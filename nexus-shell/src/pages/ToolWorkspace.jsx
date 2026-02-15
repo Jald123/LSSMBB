@@ -397,7 +397,7 @@ const ToolWorkspace = () => {
                                 {/* Transparency Presets (Modern Pill Style) */}
                                 <div className="flex items-center gap-2 pr-5 border-r border-white/10">
                                     <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter">OPAQUE</span>
-                                    {[0.2, 0.4, 0.7].map(op => (
+                                    {[0.02, 0.05, 0.1, 0.2, 0.4, 0.7].map(op => (
                                         <button key={op} onClick={() => setDrawOpacity(op)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${drawOpacity === op ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>{Math.round(op * 100)}%</button>
                                     ))}
                                 </div>
