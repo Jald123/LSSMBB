@@ -16,7 +16,9 @@ import {
     Rocket,
     CheckCircle2,
     Home,
-    ArrowUp
+    ArrowUp,
+    Sun,
+    Moon
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
 import { methodologyData } from '../data/journeyData';
@@ -29,7 +31,7 @@ const ToolWorkspace = () => {
     const [viewMode, setViewMode] = useState(location.state?.mode || 'do');
     const [activeIframe, setActiveIframe] = useState(null);
 
-    const { markToolComplete, completedTools, updateProgress, methodology } = useNexus();
+    const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
     const tool = toolRegistry[toolId];
 
     // Identify Next Station Logic
@@ -293,6 +295,19 @@ const ToolWorkspace = () => {
                     title="Scroll to Top"
                 >
                     <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-1 transition-transform" />
+                </button>
+
+                {/* Theme Toggle Button */}
+                <button
+                    onClick={toggleTheme}
+                    className="w-9 h-9 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
+                    title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                >
+                    {theme === 'dark' ? (
+                        <Sun className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                    ) : (
+                        <Moon className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                    )}
                 </button>
             </div>
 
