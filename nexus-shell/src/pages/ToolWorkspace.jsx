@@ -232,14 +232,14 @@ const ToolWorkspace = () => {
             </div>
 
             {/* 🎮 MISSION CONTROL FOOTER (Floating) */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2">
                 {/* Home Button */}
                 <button
                     onClick={() => navigate('/')}
-                    className="w-10 h-10 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
+                    className="w-9 h-9 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
                     title="Return to Home"
                 >
-                    <Home className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    <Home className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
                 </button>
 
                 {/* Previous Component */}
@@ -249,41 +249,37 @@ const ToolWorkspace = () => {
                         if (prevTool) navigate(`/workspace/${prevTool.id}`);
                         else navigate('/journey');
                     }}
-                    className="w-10 h-10 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
+                    className="w-9 h-9 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
                     title="Previous Station"
                 >
-                    <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+                    <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
                 </button>
 
-                {/* Central Command */}
-                <motion.div
-                    className="glass-panel border border-nexus-border/50 bg-nexus-surface/80 backdrop-blur-xl rounded-full px-1.5 py-1.5 flex items-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]"
+                {/* Central Command - Compacted */}
+                <button
+                    onClick={() => markToolComplete(toolId)}
+                    className={`
+                        relative flex items-center justify-center gap-2 px-5 h-9 rounded-full glass-panel border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 shadow-lg active:scale-95
+                        ${isCompleted
+                            ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white'
+                            : 'border-nexus-border text-nexus-text-primary hover:bg-nexus-text-primary/5 hover:border-nexus-cyan/30'
+                        }
+                    `}
                 >
-                    <button
-                        onClick={() => markToolComplete(toolId)}
-                        className={`
-                            relative flex items-center justify-center gap-2 px-6 py-2 rounded-full font-black font-orbitron text-[10px] tracking-widest transition-all duration-500
-                            ${isCompleted
-                                ? 'bg-gradient-to-r from-nexus-success to-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]'
-                                : 'bg-nexus-text-primary/5 hover:bg-nexus-text-primary/10 text-nexus-text-primary border border-nexus-border hover:border-nexus-cyan/30'
-                            }
-                        `}
-                    >
-                        {isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-500" />}
-                        {isCompleted ? 'COMPONENT SECURED' : 'MARK AS DONE'}
+                    {isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-500" />}
+                    {isCompleted ? 'SECURED' : 'MARK DONE'}
 
-                        {/* Completion Particle Effect (Hidden by default, could be added) */}
-                        {isCompleted && <motion.div layoutId="glow" className="absolute inset-0 bg-white/20 blur-xl rounded-full" />}
-                    </button>
-                </motion.div>
+                    {/* Completion Particle Effect */}
+                    {isCompleted && <motion.div layoutId="glow" className="absolute inset-0 bg-white/20 blur-xl rounded-full" />}
+                </button>
 
                 {/* Next Component */}
                 <button
                     onClick={handleNextStation}
-                    className="group flex items-center gap-2 pl-4 pr-3 py-2 h-10 rounded-full glass-panel border border-nexus-border text-nexus-text-primary hover:bg-nexus-cyan/10 hover:border-nexus-cyan/30 transition-all shadow-lg active:scale-95"
+                    className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full glass-panel border border-nexus-border text-nexus-text-primary hover:bg-nexus-cyan/10 hover:border-nexus-cyan/30 transition-all shadow-lg active:scale-95"
                 >
-                    <span className="text-[10px] font-black font-orbitron tracking-widest">NEXT STATION</span>
-                    <ChevronRight className="w-4 h-4 text-nexus-cyan group-hover:translate-x-1 transition-transform" />
+                    <span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" />
                 </button>
 
                 {/* Page Up Button */}
@@ -293,10 +289,10 @@ const ToolWorkspace = () => {
                             activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' });
                         }
                     }}
-                    className="w-10 h-10 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
+                    className="w-9 h-9 rounded-full glass-panel border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-text-primary/5 transition-all shadow-lg active:scale-95 group"
                     title="Scroll to Top"
                 >
-                    <ArrowUp className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
+                    <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-1 transition-transform" />
                 </button>
             </div>
 
