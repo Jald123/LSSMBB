@@ -1,15 +1,46 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
+import { CASE_STUDIES } from "@/config/caseStudies";
 
-export async function GET() {
-    const cases = await prisma.caseStudy.findMany();
-    const frameworks = await prisma.framework.findMany({
-        include: { steps: true }
-    });
-    return NextResponse.json({ cases, frameworks });
+// GET /api/projects - List all projects for authenticated student
+export async function GET(request: Request) {
+    try {
+        const session = await getSession();
+        if (!session || typeof session === 'string') {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const { searchParams } = new URL(request.url);
+        const status = searchParams.get('status');
+
+        const userId = (session as any).id;
+
+        const projects = await prisma.doProject.findMany({
+            where: {
+                studentId: userId,
+                ...(status ? { status } : {})
+            },
+            select: {
+                id: true,
+                title: true,
+                caseId: true,
+                framework: true,
+                status: true,
+                currentPhase: true,
+                progressPercentage: true,
+                updatedAt: true
+            },
+            orderBy: { updatedAt: 'desc' }
+        });
+
+        return NextResponse.json({ projects });
+    } catch (error) {
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
 }
 
+// POST /api/projects - Create a new project
 export async function POST(request: Request) {
     try {
         const session = await getSession();
@@ -17,62 +48,57 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { title, caseStudyId, frameworkName } = await request.json();
-
-        // 1. Fetch the selected framework with all phases AND tool mappings
-        const framework = await prisma.framework.findUnique({
-            where: { name: frameworkName },
-            include: {
-                steps: {
-                    include: {
-                        mappings: {
-                            include: {
-                                tool: true
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        if (!framework) {
-            return NextResponse.json({ error: "Framework not found" }, { status: 400 });
-        }
-
+        const { caseId, framework, title } = await request.json();
         const userId = (session as any).id;
 
-        // 2. Create the Project
-        const project = await prisma.project.create({
+        // Find case study details from config
+        const caseStudy = CASE_STUDIES.find(c => c.id === caseId);
+        if (!caseStudy) {
+            return NextResponse.json({ error: "Case study not found" }, { status: 400 });
+        }
+
+        const projectTitle = title || caseStudy.title;
+
+        // 1. Create the project
+        const project = await prisma.doProject.create({
             data: {
-                title,
-                userId,
-                frameworkId: framework.id,
-                caseStudyId: caseStudyId || null,
+                studentId: userId,
+                caseId,
+                framework,
+                title: projectTitle,
+                status: "active",
+                currentPhase: caseStudy.phases[0]?.name || "Define",
+                progressPercentage: 0
             }
         });
 
-        // 3. Create Deliverables
-        // We loop through EVERY phase in the framework
-        for (const phase of framework.steps) {
-            // And EVERY tool mapped to that phase
-            for (const mapping of phase.mappings) {
-                await prisma.deliverable.create({
-                    data: {
-                        projectId: project.id,
-                        toolId: mapping.toolId,
-                        status: "NOT_STARTED",
-                    }
+        // 2. Generate auto-records for deliverables
+        const deliverablesData = [];
+        for (const phase of caseStudy.phases) {
+            for (const tool of phase.tools) {
+                deliverablesData.push({
+                    projectId: project.id,
+                    toolId: tool.toolId,
+                    phase: phase.name,
+                    status: "not-started",
+                    priority: tool.priority
                 });
             }
         }
 
-        // 4. Initialize Progress tracking
-        await prisma.progress.create({
-            data: {
-                projectId: project.id,
-                totalSteps: framework.steps.length,
-                completedSteps: 0
-            }
+        await prisma.doDeliverable.createMany({
+            data: deliverablesData
+        });
+
+        // 3. Initialize Phase Gates
+        const gateData = caseStudy.phases.map((phase, index) => ({
+            projectId: project.id,
+            phase: phase.name,
+            status: index === 0 ? "unlocked" : "locked"
+        }));
+
+        await prisma.projectPhaseGate.createMany({
+            data: gateData
         });
 
         return NextResponse.json({ project });

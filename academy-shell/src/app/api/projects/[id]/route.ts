@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 
+// GET /api/projects/{projectId}
 export async function GET(
     request: Request,
     { params }: { params: { id: string } }
@@ -13,49 +14,22 @@ export async function GET(
         }
 
         const { id } = await params;
+        const userId = (session as any).id;
 
-        const project = await prisma.project.findUnique({
+        const project = await prisma.doProject.findUnique({
             where: { id },
             include: {
-                framework: {
-                    include: {
-                        steps: {
-                            orderBy: { order: 'asc' },
-                            include: {
-                                mappings: {
-                                    include: { tool: true }
-                                }
-                            }
-                        }
-                    }
-                },
                 deliverables: true,
-                progress: true,
+                phaseGates: true
             }
         });
 
-        if (!project) {
+        if (!project || project.studentId !== userId) {
             return NextResponse.json({ error: "Project not found" }, { status: 404 });
         }
 
-        // Map to Kanban format
-        const columns = project.framework.steps.map(step => ({
-            id: step.id,
-            name: step.name,
-            tasks: step.mappings.map(mapping => {
-                const deliverable = project.deliverables.find(d => d.toolId === mapping.toolId);
-                return {
-                    id: deliverable?.id || Math.random().toString(),
-                    name: mapping.tool.name,
-                    status: deliverable?.status || 'NOT_STARTED',
-                    toolId: mapping.toolId
-                };
-            })
-        }));
-
-        return NextResponse.json({ project, columns });
+        return NextResponse.json({ project });
     } catch (error) {
-        console.error("Fetch project error:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

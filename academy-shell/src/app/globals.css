@@ -16,6 +16,15 @@
     --color-card: var(--card);
     --color-card-foreground: var(--card-foreground);
 
+    --color-do-primary: var(--do-primary);
+    --color-do-canvas: var(--do-canvas);
+    --color-do-surface: var(--do-surface);
+    --color-do-success: var(--do-success);
+    --color-do-highlight: var(--do-highlight);
+    --color-do-text-primary: var(--do-text-primary);
+    --color-do-text-secondary: var(--do-text-secondary);
+    --color-do-border: var(--do-border);
+
     --radius-xl: calc(var(--radius) + 4px);
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -45,6 +54,18 @@
         --card: #ffffff;
         --card-foreground: #1d1d1f;
         --radius: 12px;
+
+        /* 🎯 DO Mode Design Tokens */
+        --do-primary: #ff1e00;
+        --do-canvas: #e8f9fd;
+        --do-surface: #ffffff;
+        --do-success: #59ce8f;
+        --do-highlight: #fbe3e8;
+        --do-text-primary: #1a1a2e;
+        --do-text-secondary: #4b5563;
+        --do-border: #e5e7eb;
+        --do-primary-hover: #e01a00;
+        --do-focus-ring: 0 0 0 3px rgba(255, 30, 0, 0.3);
     }
 
     .dark {
@@ -107,4 +128,31 @@
 
 ::-webkit-scrollbar-thumb {
     @apply bg-border rounded-full hover:bg-muted/50 transition-colors;
+}
+
+/* DO Mode Utilities */
+.do-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.do-focus-ring:focus-visible {
+    outline: none;
+    box-shadow: var(--do-focus-ring);
+    border-color: var(--do-primary);
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f4f8 25%, #e2e8f0 50%, #f0f4f8 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }

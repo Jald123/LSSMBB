@@ -25,6 +25,47 @@ export interface CaseStudy {
     phases: Phase[];
 }
 
+const DMAIC_PHASES: Phase[] = [
+    {
+        name: "Define",
+        tools: [
+            { toolId: "charter", toolName: "Project Charter", priority: "essential", htmlFile: "Tool_ProjectCharter.html" },
+            { toolId: "sipoc", toolName: "SIPOC Map", priority: "essential", htmlFile: "Tool_SIPOC.html" },
+            { toolId: "voc", toolName: "VOC Analysis", priority: "recommended", htmlFile: "Tool_VOC.html" }
+        ]
+    },
+    {
+        name: "Measure",
+        tools: [
+            { toolId: "data-collection", toolName: "Data Collection Plan", priority: "essential", htmlFile: "Tool_DataCollection.html" },
+            { toolId: "capability", toolName: "Process Capability", priority: "essential", htmlFile: "Tool_Capability.html" },
+            { toolId: "msa", toolName: "Gage R&R (MSA)", priority: "recommended", htmlFile: "Tool_MSA.html" }
+        ]
+    },
+    {
+        name: "Analyze",
+        tools: [
+            { toolId: "fishbone", toolName: "Fishbone Diagram", priority: "essential", htmlFile: "Tool_Fishbone.html" },
+            { toolId: "pareto", toolName: "Pareto Analysis", priority: "essential", htmlFile: "Tool_Pareto.html" },
+            { toolId: "five-whys", toolName: "5 Whys Root Cause", priority: "recommended", htmlFile: "Tool_5Whys.html" }
+        ]
+    },
+    {
+        name: "Improve",
+        tools: [
+            { toolId: "fmea", toolName: "FMEA Analysis", priority: "essential", htmlFile: "Tool_FMEA.html" },
+            { toolId: "kaizen-event", toolName: "Kaizen Blitz Plan", priority: "recommended", htmlFile: "Tool_Kaizen.html" }
+        ]
+    },
+    {
+        name: "Control",
+        tools: [
+            { toolId: "control-plan", toolName: "Control Plan", priority: "essential", htmlFile: "Tool_ControlPlan.html" },
+            { toolId: "spc", toolName: "SPC Charts", priority: "essential", htmlFile: "Tool_SPC.html" }
+        ]
+    }
+];
+
 export const CASE_STUDIES: CaseStudy[] = [
     {
         id: "er-wait-times",
@@ -34,9 +75,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 4,
         estimatedHours: 12,
         framework: "DMAIC",
-        phases: [
-            { name: "Define", tools: [{ toolId: "charter", toolName: "Project Charter", priority: "essential", htmlFile: "Tool_ProjectCharter.html" }] }
-        ]
+        phases: DMAIC_PHASES
     },
     {
         id: "medication-errors",
@@ -46,7 +85,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 5,
         estimatedHours: 15,
         framework: "DMAIC",
-        phases: []
+        phases: DMAIC_PHASES
     },
     {
         id: "patient-transfer",
@@ -56,7 +95,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 3,
         estimatedHours: 8,
         framework: "DMAIC",
-        phases: []
+        phases: DMAIC_PHASES
     },
     {
         id: "surgical-optimization",
@@ -66,7 +105,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 4,
         estimatedHours: 10,
         framework: "DMAIC",
-        phases: []
+        phases: DMAIC_PHASES
     },
     {
         id: "lab-tat",
@@ -76,7 +115,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 3,
         estimatedHours: 7,
         framework: "DMAIC",
-        phases: []
+        phases: DMAIC_PHASES
     },
     {
         id: "smart-grocery",
@@ -86,7 +125,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 1,
         estimatedHours: 3,
         framework: "DMAIC",
-        phases: []
+        phases: DMAIC_PHASES
     },
     {
         id: "morning-routine",
@@ -96,7 +135,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 2,
         estimatedHours: 4,
         framework: "DMAIC",
-        phases: []
+        phases: DMAIC_PHASES
     },
     {
         id: "portfolio-rebalance",
@@ -106,7 +145,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 4,
         estimatedHours: 9,
         framework: "DMAIC",
-        phases: []
+        phases: DMAIC_PHASES
     },
     {
         id: "risk-mitigation",
@@ -116,7 +155,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 5,
         estimatedHours: 14,
         framework: "DMADV",
-        phases: []
+        phases: DMAIC_PHASES // Placeholder: DMADV has different phases but for now we follow the pattern
     },
     {
         id: "property-yield",
@@ -126,6 +165,6 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 4,
         estimatedHours: 11,
         framework: "DMAIC",
-        phases: []
+        phases: DMAIC_PHASES
     }
 ];

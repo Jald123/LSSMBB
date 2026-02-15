@@ -18,6 +18,7 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   projects      Project[]
+  doProjects    DoProject[]
   badgeAwards   BadgeAward[]
   certAwards    CertificateAward[]
 }
@@ -146,4 +147,55 @@ model CertificateAward {
   verificationId String   @unique
   issuedAt       DateTime @default(now())
   user           User     @relation(fields: [userId], references: [id])
+}
+
+// --- NEW DO MODE MODELS ---
+
+model DoProject {
+  id                 String    @id @default(uuid())
+  studentId          String    @map("student_id")
+  caseId             String    @map("case_id")
+  framework          String    // DMAIC, DMADV
+  title              String
+  status             String    @default("active") // active, completed, archived
+  currentPhase       String    @map("current_phase")
+  progressPercentage Int       @default(0) @map("progress_percentage")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  user               User      @relation(fields: [studentId], references: [id])
+  deliverables       DoDeliverable[]
+  phaseGates         ProjectPhaseGate[]
+
+  @@map("projects")
+}
+
+model DoDeliverable {
+  id           String    @id @default(uuid())
+  projectId    String    @map("project_id")
+  toolId       String    @map("tool_id")
+  phase        String
+  status       String    @default("not-started") // not-started, in-progress, complete
+  priority     String    // essential, recommended, optional
+  formData     Json?     @map("form_data")
+  completedAt  DateTime? @map("completed_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  project      DoProject @relation(fields: [projectId], references: [id])
+
+  @@map("deliverables")
+}
+
+model ProjectPhaseGate {
+  id           String    @id @default(uuid())
+  projectId    String    @map("project_id")
+  phase        String
+  status       String    @default("locked") // locked, unlocked, completed
+  unlockedAt   DateTime? @map("unlocked_at")
+  completedAt  DateTime? @map("completed_at")
+
+  project      DoProject @relation(fields: [projectId], references: [id])
+
+  @@map("project_phase_gates")
 }

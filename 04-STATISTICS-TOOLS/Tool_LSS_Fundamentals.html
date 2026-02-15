@@ -1423,6 +1423,26 @@
             flex-direction: column;
             gap: 20px;
             backdrop-filter: blur(10px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(99, 102, 241, 0.5) transparent;
+        }
+
+        .lab-sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .lab-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .lab-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 10px;
+        }
+
+        .lab-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
         }
 
         .lab-stage {
@@ -1439,6 +1459,26 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(99, 102, 241, 0.5) transparent;
+        }
+
+        .lab-scorecard::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .lab-scorecard::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .lab-scorecard::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 10px;
+        }
+
+        .lab-scorecard::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
         }
 
         /* Center Stage Elements */
@@ -3324,9 +3364,59 @@
             document.addEventListener('touchmove', dragExplorer, { passive: false });
             document.addEventListener('touchend', stopExplorerDrag);
 
+            // Mouse Wheel support for fine adjustment
+            explorer.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const step = 5; // Pixels to move
+                const direction = e.deltaY > 0 ? -1 : 1;
+
+                const stage = document.querySelector('.curve-stage-container');
+                if (!stage) return;
+
+                const stageRect = stage.getBoundingClientRect();
+                const currentX = explorer.offsetLeft;
+                let newX = currentX + (direction * step);
+
+                // Constrain X
+                newX = Math.max(60, Math.min(stageRect.width - 60, newX));
+
+                // Update position (X and Y based on curve)
+                updateExplorerPosition(newX, stageRect);
+            }, { passive: false });
+
             // Initial update
             updateExplorerData(3);
             renderExplorerCurve(3);
+        }
+
+        function updateExplorerPosition(x, stageRect) {
+            const explorer = document.getElementById('sigma-explorer');
+            if (!explorer || !stageRect) return;
+
+            // Calculate sigma level and curve alignment based on X position
+            const centerX = stageRect.width / 2;
+            const sigmaWidth = stageRect.width / 12;
+            const zScoreSigned = (x - centerX) / sigmaWidth;
+
+            // Follow the bell curve line vertically
+            const baselineY = stageRect.height * (450 / 500);
+            const peakHeight = stageRect.height * (350 / 500);
+            let y = baselineY - (Math.exp(-0.5 * zScoreSigned * zScoreSigned) * peakHeight);
+
+            y = Math.max(80, Math.min(stageRect.height - 80, y));
+
+            explorer.style.left = x + 'px';
+            explorer.style.top = y + 'px';
+            explorer.style.transform = 'translate(-50%, -50%)';
+
+            const zScore = Math.abs(zScoreSigned);
+            const sigmaLevel = Math.min(6, Math.max(1, Math.ceil(zScore)));
+
+            if (sigmaLevel !== explorerState.currentSigma) {
+                explorerState.currentSigma = sigmaLevel;
+                updateExplorerData(sigmaLevel);
+                renderExplorerCurve(sigmaLevel);
+            }
         }
 
         function startExplorerDrag(e) {
@@ -3348,13 +3438,11 @@
             if (!explorerState.isDragging) return;
             e.preventDefault();
 
-            const explorer = document.getElementById('sigma-explorer');
             const stage = document.querySelector('.curve-stage-container');
             if (!stage) return;
 
             const stageRect = stage.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
             // Calculate position relative to stage
             let x = clientX - stageRect.left - explorerState.offsetX;
@@ -3362,32 +3450,7 @@
             // Constrain X to stage bounds
             x = Math.max(60, Math.min(stageRect.width - 60, x));
 
-            // Calculate sigma level and curve alignment based on X position
-            const centerX = stageRect.width / 2;
-            const sigmaWidth = stageRect.width / 12; // Each sigma covers ~1/12 of width
-            const zScoreSigned = (x - centerX) / sigmaWidth;
-
-            // Force Y to follow the bell curve line vertically
-            // Mapped SVG coordinates: centerY = 450, curveScale = 350, totalHeight = 500
-            const baselineY = stageRect.height * (450 / 500);
-            const peakHeight = stageRect.height * (350 / 500);
-            let y = baselineY - (Math.exp(-0.5 * zScoreSigned * zScoreSigned) * peakHeight);
-
-            // Additional vertical constraint to avoid clipping high peaks
-            y = Math.max(80, Math.min(stageRect.height - 80, y));
-
-            explorer.style.left = x + 'px';
-            explorer.style.top = y + 'px';
-            explorer.style.transform = 'translate(-50%, -50%)';
-
-            const zScore = Math.abs(zScoreSigned);
-            const sigmaLevel = Math.min(6, Math.max(1, Math.ceil(zScore)));
-
-            if (sigmaLevel !== explorerState.currentSigma) {
-                explorerState.currentSigma = sigmaLevel;
-                updateExplorerData(sigmaLevel);
-                renderExplorerCurve(sigmaLevel);
-            }
+            updateExplorerPosition(x, stageRect);
         }
 
         function stopExplorerDrag() {
