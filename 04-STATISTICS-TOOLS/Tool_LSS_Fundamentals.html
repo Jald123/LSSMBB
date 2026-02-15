@@ -3250,18 +3250,24 @@
                 const detailsEl = box.querySelector('.metric-details');
                 if (!labelEl || !detailsEl) return;
 
-                // Get the base text without the arrow/info span
-                const labelText = labelEl.innerText.replace('▼', '').trim();
+                // Case-insensitive match for robust logic
+                const labelText = labelEl.innerText.replace('▼', '').trim().toUpperCase();
 
-                if (metricHovers[labelText]) {
-                    detailsEl.innerHTML = metricHovers[labelText];
+                // Find a key that matches (case-insensitive)
+                const matchingKey = Object.keys(metricHovers).find(
+                    k => k.toUpperCase() === labelText
+                );
 
-                    box.onclick = () => {
+                if (matchingKey) {
+                    detailsEl.innerHTML = metricHovers[matchingKey];
+
+                    box.onclick = (e) => {
+                        e.stopPropagation();
                         const isActive = box.classList.contains('active');
-                        // Close others
-                        metricBoxes.forEach(b => b.classList.remove('active'));
+                        // Close all others first
+                        metricBoxes.forEach(b => { if (b !== box) b.classList.remove('active'); });
                         // Toggle current
-                        if (!isActive) box.classList.add('active');
+                        box.classList.toggle('active');
                     };
                 }
             });
