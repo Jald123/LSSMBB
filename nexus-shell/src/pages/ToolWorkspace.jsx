@@ -53,6 +53,17 @@ const ToolWorkspace = () => {
     const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
     const tool = toolRegistry[toolId];
 
+    // --- ESCAPE KEY HANDLER ---
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                setActiveAssistantTool(null);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     // --- STICKY NOTES STATE ---
     const [notes, setNotes] = useState(() => {
         const saved = localStorage.getItem('nexus_notes_v4');
@@ -142,7 +153,7 @@ const ToolWorkspace = () => {
     const [drawMode, setDrawMode] = useState('pen');
     const [drawColor, setDrawColor] = useState("#000000");
     const [drawWidth, setDrawWidth] = useState(5);
-    const [drawOpacity, setDrawOpacity] = useState(1.0); // Highlighter transparencies
+    const [drawOpacity, setDrawOpacity] = useState(1.0);
 
     useEffect(() => {
         if (activeAssistantTool === 'draw' && canvasRef.current) {
@@ -273,7 +284,7 @@ const ToolWorkspace = () => {
             {/* 🚀 MAIN CONTENT */}
             <div className="flex-1 flex overflow-hidden relative pt-16">
 
-                {/* 🥷 TRANSPARENT EVENT CAPTURE LAYER (The Fix for Iframe trapping) */}
+                {/* 🥷 TRANSPARENT EVENT CAPTURE LAYER */}
                 {(activeAssistantTool === 'sniper' || activeAssistantTool === 'draw') && (
                     <div
                         onMouseMove={handleMouseMove}
@@ -301,7 +312,7 @@ const ToolWorkspace = () => {
                                 </div>
                                 <div className="p-4 flex items-center justify-between border-b border-white/5" style={{ backgroundColor: notes[activeNoteIndex].color }}>
                                     <div className="flex items-center gap-3"><button onClick={() => setShowNotesMenu(!showNotesMenu)} className="p-1 hover:bg-black/5 rounded"><Menu className="w-4 h-4 text-black/60" /></button><span className="font-orbitron font-black text-xs tracking-[0.2em] text-black/60">NOTES</span></div>
-                                    <div className="flex items-center gap-3"><button onClick={() => setActiveAssistantTool(null)} className="p-1 hover:bg-black/5 rounded text-black/40"><Minus className="w-4 h-4" /></button><button onClick={deleteNote} className="p-1 hover:bg-black/5 rounded text-black/40"><Trash2 className="w-4 h-4" /></button><button onClick={() => setActiveAssistantTool(null)} className="p-1 hover:bg-black/5 rounded text-black/60"><X className="w-4 h-4" /></button></div>
+                                    <div className="flex items-center gap-3"><button onClick={() => setActiveAssistantTool(null)} className="p-1 hover:bg-black/5 rounded text-black/40"><Minus className="w-4 h-4" /></button><button onClick={deleteNote} className="p-1 hover:bg-black/5 rounded text-black/40"><Trash2 className="w-4 h-4" /></button><button onClick={() => setActiveAssistantTool(null)} title="Close (Esc)" className="p-1 hover:bg-black/5 rounded text-black/60 transition-transform hover:rotate-90"><X className="w-4 h-4" /></button></div>
                                 </div>
                                 <div className="flex-1 relative flex flex-col" style={{ backgroundColor: notes[activeNoteIndex].color }}>
                                     {showNotesMenu && (
@@ -335,6 +346,9 @@ const ToolWorkspace = () => {
 
                     {activeAssistantTool === 'calculator' && (
                         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="fixed top-24 left-1/2 -translate-x-1/2 z-[1300] w-72 bg-black border border-white/10 rounded-[2.5rem] p-6 shadow-2xl">
+                            <div className="flex justify-end mb-2">
+                                <button onClick={() => setActiveAssistantTool(null)} title="Close (Esc)" className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"><X className="w-3 h-3" /></button>
+                            </div>
                             <div className="text-right mb-6 px-2 overflow-hidden"><div className="text-slate-500 text-xs font-mono mb-1 h-4">{calcExpr}</div><div className="text-white text-5xl font-light font-sans truncate">{calcDisplay}</div></div>
                             <div className="grid grid-cols-4 gap-3">
                                 {['C', '±', '%', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '='].map((btn) => (
@@ -349,49 +363,32 @@ const ToolWorkspace = () => {
                             <canvas ref={canvasRef} className="w-full h-full" />
 
                             <motion.div initial={{ y: -50, x: '-50%' }} animate={{ y: 0, x: '-50%' }} className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-white/95 rounded-2xl border border-nexus-border flex items-center gap-6 pointer-events-auto shadow-2xl min-w-[750px]">
-                                {/* Tool Selection */}
                                 <div className="flex items-center gap-1 pr-4 border-r border-slate-200">
                                     <button onClick={() => setDrawMode('pen')} className={`p-2 rounded-xl transition-all ${drawMode === 'pen' ? 'bg-indigo-50 border border-indigo-200' : 'hover:bg-slate-50'}`}><Pen className={`w-6 h-6 ${drawMode === 'pen' ? 'text-indigo-600' : 'text-slate-400'}`} /></button>
                                     <button onClick={() => { setDrawMode('highlighter'); setDrawOpacity(0.4); }} className={`p-2 rounded-xl transition-all ${drawMode === 'highlighter' ? 'bg-green-50 border border-green-200' : 'hover:bg-slate-50'}`}><HighlighterIcon className={`w-6 h-6 ${drawMode === 'highlighter' ? 'text-green-600' : 'text-slate-400'}`} /></button>
-                                    <button onClick={() => setDrawMode('pencil')} className={`p-2 rounded-xl transition-all ${drawMode === 'pencil' ? 'bg-orange-50 border border-orange-200' : 'hover:bg-slate-50'}`}><Pencil className={`w-6 h-6 ${drawMode === 'pencil' ? 'text-orange-500' : 'text-slate-400'}`} /></button>
+                                    <button onClick={() => setDrawMode('pencil')} className={`p-2 rounded-xl transition-all ${drawMode === 'pencil' ? 'bg-orange border border-orange-200' : 'hover:bg-slate-50'}`}><Pencil className={`w-6 h-6 ${drawMode === 'pencil' ? 'text-orange-500' : 'text-slate-400'}`} /></button>
                                 </div>
 
-                                {/* Common Highlighter Transparencies (The New Request) */}
                                 {drawMode === 'highlighter' && (
                                     <div className="flex items-center gap-2 pr-4 border-r border-slate-200">
                                         <span className="text-[9px] font-bold text-slate-400 uppercase">OPAQUE</span>
                                         {[0.2, 0.4, 0.7].map(op => (
-                                            <button
-                                                key={op}
-                                                onClick={() => setDrawOpacity(op)}
-                                                className={`w-8 h-8 rounded-lg border transition-all flex items-center justify-center text-[10px] font-black ${drawOpacity === op ? 'bg-blue-600 text-white border-blue-700 shadow-lg' : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200'}`}
-                                            >
-                                                {Math.round(op * 100)}%
-                                            </button>
+                                            <button key={op} onClick={() => setDrawOpacity(op)} className={`w-8 h-8 rounded-lg border transition-all flex items-center justify-center text-[10px] font-black ${drawOpacity === op ? 'bg-blue-600 text-white border-blue-700 shadow-lg' : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200'}`}>{Math.round(op * 100)}%</button>
                                         ))}
                                     </div>
                                 )}
 
-                                {/* Color Grids */}
                                 <div className="grid grid-cols-5 gap-1 pr-4 border-r border-slate-200">
                                     {['#000000', '#ef4444', '#3b82f6', '#10b981', '#f97316', '#fbbf24', '#dcfce7', '#dbeafe', '#f3e8ff', '#ffffff'].map(c => (
                                         <button key={c} onClick={() => setDrawColor(c)} className={`w-4 h-4 rounded-sm border ${drawColor === c ? 'border-indigo-600 scale-110 shadow-sm' : 'border-slate-300'}`} style={{ backgroundColor: c }} />
                                     ))}
                                 </div>
 
-                                {/* Slider for Width */}
-                                <div className="flex flex-col gap-1 pr-4 border-r border-slate-200 min-w-[100px]">
-                                    <span className="text-[9px] font-bold text-slate-400">THICKNESS</span>
-                                    <input type="range" min="1" max="50" value={drawWidth} onChange={(e) => setDrawWidth(parseInt(e.target.value))} className="w-full h-1 bg-slate-200 rounded-full appearance-none accent-blue-600" />
-                                </div>
+                                <div className="flex flex-col gap-1 pr-4 border-r border-slate-200 min-w-[100px]"><span className="text-[9px] font-bold text-slate-400">THICKNESS</span><input type="range" min="1" max="50" value={drawWidth} onChange={(e) => setDrawWidth(parseInt(e.target.value))} className="w-full h-1 bg-slate-200 rounded-full appearance-none accent-blue-600" /></div>
 
-                                {/* Global Actions */}
                                 <div className="flex items-center gap-3">
-                                    <button onClick={clearCanvas} className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-all group outline-none">
-                                        <Eraser className="w-4 h-4 text-orange-500 group-hover:rotate-12 transition-transform" />
-                                        <span className="text-xs font-bold text-slate-600">Clear</span>
-                                    </button>
-                                    <button onClick={() => setActiveAssistantTool(null)} className="p-2 hover:bg-slate-100 rounded-xl text-slate-400"><X className="w-5 h-5" /></button>
+                                    <button onClick={clearCanvas} className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-all group outline-none"><Eraser className="w-4 h-4 text-orange-500 group-hover:rotate-12 transition-transform" /><span className="text-xs font-bold text-slate-600">Clear</span></button>
+                                    <button onClick={() => setActiveAssistantTool(null)} title="Close (Esc)" className="p-2 hover:bg-slate-100 rounded-xl text-slate-400 transition-all hover:rotate-90"><X className="w-5 h-5" /></button>
                                 </div>
                             </motion.div>
                         </motion.div>
@@ -399,7 +396,6 @@ const ToolWorkspace = () => {
 
                     {activeAssistantTool === 'sniper' && (
                         <>
-                            {/* Sniper Shell */}
                             <motion.div initial={{ opacity: 0, y: -20, x: '-50%' }} animate={{ opacity: 1, y: 0, x: '-50%' }} exit={{ opacity: 0, y: -20, x: '-50%' }} className="fixed top-24 left-1/2 -translate-x-1/2 z-[1400] h-12 glass-panel bg-[#0f172a]/95 rounded-full border border-white/10 px-6 flex items-center gap-6 shadow-2xl">
                                 <span className="text-[10px] font-black font-orbitron text-slate-500 tracking-widest">ZOOM MODE:</span>
                                 <div className="flex bg-black/40 p-1 rounded-full gap-2">
@@ -407,7 +403,9 @@ const ToolWorkspace = () => {
                                     <button onClick={() => setSniperMode('sniper')} className={`px-4 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-black font-orbitron transition-all ${sniperMode === 'sniper' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-white'}`}><Crosshair className="w-3 h-3" /> Sniper</button>
                                 </div>
                                 <div className="w-px h-6 bg-white/10" />
-                                <span className="text-[10px] text-slate-500 font-orbitron font-black tracking-widest">SCROLL TO ZOOM</span>
+                                <span className="text-[10px] text-slate-500 font-orbitron font-black tracking-widest uppercase">Scroll to Zoom</span>
+                                <div className="w-px h-6 bg-white/10" />
+                                <button onClick={() => setActiveAssistantTool(null)} title="Close (Esc)" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all hover:rotate-90"><X className="w-3.5 h-3.5" /></button>
                             </motion.div>
 
                             <div className="fixed inset-0 z-[1300] pointer-events-none overflow-hidden cursor-none">
