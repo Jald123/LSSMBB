@@ -195,6 +195,7 @@ const ToolWorkspace = () => {
         const ctx = canvas.getContext('2d');
         const rect = canvas.getBoundingClientRect();
 
+        ctx.globalCompositeOperation = 'source-over';
         ctx.beginPath();
         ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
         setIsDrawing(true);
@@ -210,14 +211,10 @@ const ToolWorkspace = () => {
         ctx.lineWidth = drawWidth;
 
         if (drawMode === 'highlighter') {
-            // Word Highlighter implementation
-            // In light mode we use multiply, in dark mode we use lighter to ensure visibility
-            ctx.globalCompositeOperation = theme === 'light' ? 'multiply' : 'screen';
-            ctx.globalAlpha = drawOpacity;
             ctx.lineCap = 'butt';
             ctx.lineJoin = 'miter';
+            ctx.globalAlpha = drawOpacity;
         } else {
-            ctx.globalCompositeOperation = 'source-over';
             ctx.globalAlpha = drawMode === 'pencil' ? 0.6 : 1.0;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
@@ -231,7 +228,6 @@ const ToolWorkspace = () => {
         setIsDrawing(false);
         if (canvasRef.current) {
             const ctx = canvasRef.current.getContext('2d');
-            ctx.globalCompositeOperation = 'source-over';
             ctx.globalAlpha = 1.0;
         }
     };
@@ -431,6 +427,7 @@ const ToolWorkspace = () => {
                             <canvas
                                 ref={canvasRef}
                                 className="w-full h-full"
+                                style={{ mixBlendMode: drawMode === 'highlighter' ? (theme === 'light' ? 'multiply' : 'screen') : 'normal' }}
                             />
 
                             <motion.div initial={{ y: -50, x: '-50%' }} animate={{ y: 0, x: '-50%' }} className="absolute top-24 left-1/2 -translate-x-1/2 p-4 glass-panel bg-[#0f172a]/95 rounded-2xl border border-white/10 flex items-center gap-6 pointer-events-auto shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] min-w-[500px] shell-interactive">
