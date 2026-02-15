@@ -37,6 +37,11 @@ const ToolWorkspace = () => {
     const [viewMode, setViewMode] = useState(location.state?.mode || 'do');
     const [activeIframe, setActiveIframe] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(1);
+    const [activeAssistantTool, setActiveAssistantTool] = useState(null); // 'notes', 'calculator', 'draw', 'search'
+
+    const toggleAssistantTool = (toolName) => {
+        setActiveAssistantTool(prev => prev === toolName ? null : toolName);
+    };
 
     const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
     const tool = toolRegistry[toolId];
@@ -151,7 +156,7 @@ const ToolWorkspace = () => {
     };
 
     return (
-        <div className="h-screen w-full flex flex-col bg-nexus-navy overflow-hidden relative">
+        <div className={`h-screen w-full flex flex-col overflow-hidden relative ${theme === 'light' ? 'bg-slate-50' : 'bg-black'}`}>
 
             {/* 🔝 ENHANCED HEADER BAR */}
             <div className="h-16 glass-panel border-b border-nexus-border flex items-center justify-between px-6 z-[900] bg-black/40 backdrop-blur-3xl absolute top-0 left-0 right-0">
@@ -177,17 +182,33 @@ const ToolWorkspace = () => {
 
                     {/* Tools Group */}
                     <div className="flex items-center gap-1">
-                        <button className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group" title="Notes">
-                            <FileText className="w-4 h-4 group-hover:text-pink-400 transition-colors" />
+                        <button
+                            onClick={() => toggleAssistantTool('notes')}
+                            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
+                            title="Notes"
+                        >
+                            <FileText className="w-4 h-4 transition-colors" />
                         </button>
-                        <button className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group" title="Calculator">
-                            <Calculator className="w-4 h-4 group-hover:text-cyan-400 transition-colors" />
+                        <button
+                            onClick={() => toggleAssistantTool('calculator')}
+                            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 text-cyan-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
+                            title="Calculator"
+                        >
+                            <Calculator className="w-4 h-4 transition-colors" />
                         </button>
-                        <button className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group" title="Draw">
-                            <PenTool className="w-4 h-4 group-hover:text-lime-400 transition-colors" />
+                        <button
+                            onClick={() => toggleAssistantTool('draw')}
+                            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-lime-500/20 text-lime-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
+                            title="Draw"
+                        >
+                            <PenTool className="w-4 h-4 transition-colors" />
                         </button>
-                        <button className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group" title="Search">
-                            <Search className="w-4 h-4 group-hover:text-violet-400 transition-colors" />
+                        <button
+                            onClick={() => toggleAssistantTool('search')}
+                            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'search' ? 'bg-violet-500/20 text-violet-400' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}
+                            title="Search"
+                        >
+                            <Search className="w-4 h-4 transition-colors" />
                         </button>
                     </div>
 
@@ -294,6 +315,108 @@ const ToolWorkspace = () => {
                                     <div className="text-nexus-purple font-black font-orbitron text-[10px] tracking-widest mb-2 uppercase">Compliance</div>
                                     <h4 className="text-white font-bold mb-2">Standards & JCI</h4>
                                     <p className="text-[11px] text-slate-500 leading-relaxed">How this tool satisfies international healthcare quality requirements.</p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* 🛠️ ASSISTANT TOOLS OVERLAYS */}
+                <AnimatePresence>
+                    {activeAssistantTool && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                            className="absolute top-2 left-1/2 -translate-x-1/2 w-full max-w-4xl z-[1100] p-4"
+                        >
+                            <div className="glass-panel bg-black/80 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden">
+                                {/* Tool Header */}
+                                <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center border
+                                            ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 border-pink-500/30 text-pink-400' :
+                                                activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 border-cyan-500/30 text-cyan-400' :
+                                                    activeAssistantTool === 'draw' ? 'bg-lime-500/20 border-lime-500/30 text-lime-400' :
+                                                        'bg-violet-500/20 border-violet-500/30 text-violet-400'}`}
+                                        >
+                                            {activeAssistantTool === 'notes' && <FileText className="w-5 h-5" />}
+                                            {activeAssistantTool === 'calculator' && <Calculator className="w-5 h-5" />}
+                                            {activeAssistantTool === 'draw' && <PenTool className="w-5 h-5" />}
+                                            {activeAssistantTool === 'search' && <Search className="w-5 h-5" />}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-black font-orbitron text-white uppercase tracking-widest">
+                                                {activeAssistantTool}
+                                            </h3>
+                                            <span className="text-[10px] text-slate-500 font-mono">NEXUS ASSISTANT MODULE</span>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setActiveAssistantTool(null)}
+                                        className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center text-slate-400 transition-colors"
+                                    >
+                                        <RotateCcw className="w-5 h-5" />
+                                    </button>
+                                </div>
+
+                                {/* Space for Tool Content */}
+                                <div className="p-8 min-h-[300px] flex items-center justify-center">
+                                    {activeAssistantTool === 'notes' && (
+                                        <div className="w-full flex flex-col gap-4">
+                                            <textarea
+                                                className="w-full h-48 bg-white/5 border border-white/10 rounded-2xl p-6 text-white text-sm focus:outline-none focus:border-pink-500/50 transition-all placeholder:text-slate-600"
+                                                placeholder="Capture your tactical analysis here..."
+                                            />
+                                            <div className="flex justify-end">
+                                                <button className="px-6 py-2 bg-pink-500 text-white rounded-full font-black font-orbitron text-[10px] tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg">
+                                                    SAVE ENCRYPTED
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {activeAssistantTool === 'calculator' && (
+                                        <div className="grid grid-cols-4 gap-3 w-64">
+                                            {[7, 8, 9, '/', 4, 5, 6, '*', 1, 2, 3, '-', 'C', 0, '=', '+'].map((btn) => (
+                                                <button
+                                                    key={btn}
+                                                    className={`h-12 rounded-xl font-bold transition-all active:scale-90 
+                                                        ${typeof btn === 'number' ? 'bg-white/5 text-white hover:bg-white/10' :
+                                                            btn === '=' ? 'bg-cyan-500 text-black col-span-1' :
+                                                                'bg-white/10 text-cyan-400 hover:bg-white/20'}`}
+                                                >
+                                                    {btn}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {activeAssistantTool === 'draw' && (
+                                        <div className="w-full h-64 border-2 border-dashed border-white/5 rounded-3xl flex flex-col items-center justify-center text-slate-500 gap-4">
+                                            <PenTool className="w-12 h-12 opacity-20" />
+                                            <p className="font-orbitron font-black text-xs tracking-widest">INITIALIZING CANVAS PROTOCOL...</p>
+                                        </div>
+                                    )}
+                                    {activeAssistantTool === 'search' && (
+                                        <div className="w-full space-y-4">
+                                            <div className="relative">
+                                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                                                <input
+                                                    type="text"
+                                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-6 text-white text-sm focus:outline-none focus:border-violet-500/50 transition-all"
+                                                    placeholder="Search methodologies, tools, or archives..."
+                                                    autoFocus
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-1 gap-2 pt-4">
+                                                {['Glossary', 'Industry Standards', 'ROI Calculator', 'Team Resources'].map(item => (
+                                                    <button key={item} className="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 transition-colors group">
+                                                        <span className="text-sm text-slate-400 group-hover:text-white transition-colors capitalize">{item}</span>
+                                                        <ExternalLink className="w-4 h-4 text-slate-600 opacity-0 group-hover:opacity-100 transition-all" />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
