@@ -441,14 +441,14 @@ const ToolWorkspace = () => {
                                 {/* Tool Toggles (Ico-btns) */}
                                 <div className="flex items-center gap-1.5 pr-5 border-r border-white/10">
                                     <button onClick={() => { setDrawMode('pen'); setDrawOpacity(1.0); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pen' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pen className="w-6 h-6" /></button>
-                                    <button onClick={() => { setDrawMode('highlighter'); setDrawWidth(40); setDrawOpacity(0.5); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'highlighter' ? 'bg-[#ffff00] text-black shadow-lg border border-yellow-400' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><HighlighterIcon className="w-6 h-6" /></button>
+                                    <button onClick={() => { setDrawMode('highlighter'); setDrawWidth(40); setDrawOpacity(0.05); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'highlighter' ? 'bg-[#ffff00] text-black shadow-lg border border-yellow-400' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><HighlighterIcon className="w-6 h-6" /></button>
                                     <button onClick={() => { setDrawMode('pencil'); setDrawOpacity(0.6); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
                                 </div>
 
                                 {/* Opaque Presets */}
                                 <div className="flex items-center gap-2 pr-5 border-r border-white/10">
                                     <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter">OPAQUE</span>
-                                    {[0.3, 0.5, 0.8].map(op => (
+                                    {[0.02, 0.05, 0.10].map(op => (
                                         <button key={op} onClick={() => setDrawOpacity(op)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${drawOpacity === op ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>{Math.round(op * 100)}%</button>
                                     ))}
                                 </div>
