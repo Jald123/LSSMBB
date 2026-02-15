@@ -16,7 +16,9 @@ import {
     Target,
     BarChart2,
     Sliders,
-    ShieldCheck
+    ShieldCheck,
+    Sun,
+    Moon
 } from 'lucide-react';
 import { toolRegistry } from '../data/toolRegistry';
 import { methodologyData } from '../data/journeyData';
@@ -183,7 +185,7 @@ const GlobalSearch = () => {
 
 const Header = ({ onMenuClick }) => {
     // Phase Tracker Logic
-    const { methodology } = useNexus();
+    const { methodology, theme, toggleTheme } = useNexus();
     const location = useLocation();
 
     // Normalize methodology key (e.g., FOCUS PDCA -> FOCUS)
@@ -256,6 +258,17 @@ const Header = ({ onMenuClick }) => {
                 <GlobalSearch />
 
                 <div className="flex items-center gap-1 border-r border-nexus-border pr-3">
+                    <button
+                        onClick={toggleTheme}
+                        className="p-2 text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-surface/50 rounded-lg transition-all"
+                        title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                    >
+                        {theme === 'dark' ? (
+                            <Sun className="w-5 h-5 text-yellow-400" />
+                        ) : (
+                            <Moon className="w-5 h-5 text-sky-400" />
+                        )}
+                    </button>
                     <button className="p-2 text-nexus-text-secondary hover:text-nexus-text-primary hover:bg-nexus-surface/50 rounded-lg transition-all" title="Help">
                         <HelpCircle className="w-5 h-5" />
                     </button>

@@ -26,7 +26,7 @@ export const NexusProvider = ({ children }) => {
             hasSeenOnboarding: false,
             currentMission: 'ER Wait Time Reduction',
             xp: 1240,
-            theme: 'dark'
+            theme: 'light'
         };
     });
 
