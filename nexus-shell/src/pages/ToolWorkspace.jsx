@@ -445,12 +445,35 @@ const ToolWorkspace = () => {
                                     <button onClick={() => { setDrawMode('pencil'); setDrawOpacity(0.6); }} className={`w-12 h-12 rounded-xl transition-all flex items-center justify-center ${drawMode === 'pencil' ? 'bg-white text-slate-900 shadow-lg' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}><Pencil className="w-6 h-6" /></button>
                                 </div>
 
-                                {/* Opaque Presets */}
-                                <div className="flex items-center gap-2 pr-5 border-r border-white/10">
-                                    <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter">OPAQUE</span>
-                                    {[0.02, 0.05, 0.10].map(op => (
-                                        <button key={op} onClick={() => setDrawOpacity(op)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${drawOpacity === op ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>{Math.round(op * 100)}%</button>
-                                    ))}
+                                {/* Size and Opacity Sliders */}
+                                <div className="flex flex-col justify-center gap-2 pr-5 border-r border-white/10 min-w-[140px]">
+                                    {/* Thickness */}
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter w-12">SIZE</span>
+                                        <input
+                                            type="range"
+                                            min="5"
+                                            max="80"
+                                            value={drawWidth}
+                                            onChange={(e) => setDrawWidth(parseInt(e.target.value))}
+                                            className="w-20 h-1 bg-white/10 rounded-full appearance-none accent-blue-500 cursor-pointer"
+                                        />
+                                        <span className="text-[9px] text-white/50 w-6 text-right">{drawWidth}px</span>
+                                    </div>
+
+                                    {/* Opacity */}
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[9px] font-black text-white/30 uppercase tracking-tighter w-12">FLOW</span>
+                                        <input
+                                            type="range"
+                                            min="2"
+                                            max="20"
+                                            value={Math.round(drawOpacity * 100)}
+                                            onChange={(e) => setDrawOpacity(parseInt(e.target.value) / 100)}
+                                            className="w-20 h-1 bg-white/10 rounded-full appearance-none accent-blue-500 cursor-pointer"
+                                        />
+                                        <span className="text-[9px] text-white/50 w-6 text-right">{Math.round(drawOpacity * 100)}%</span>
+                                    </div>
                                 </div>
 
                                 {/* Color Palette Grid (2x5) */}
