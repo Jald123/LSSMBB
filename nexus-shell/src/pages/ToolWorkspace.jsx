@@ -146,7 +146,8 @@ const ToolWorkspace = () => {
 
     const handleWheelGlobal = (e) => {
         if (activeToolRef.current === 'sniper') {
-            setLensScale(prev => Math.min(Math.max(1.2, prev + (e.deltaY > 0 ? -0.1 : 0.1)), 5));
+            // Extended zoom range: 0.5x to 8.0x with 0.25 increments
+            setLensScale(prev => Math.min(Math.max(0.5, prev + (e.deltaY > 0 ? -0.25 : 0.25)), 8));
         }
     };
 
