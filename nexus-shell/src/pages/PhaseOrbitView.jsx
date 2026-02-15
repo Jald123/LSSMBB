@@ -33,7 +33,7 @@ const PhaseOrbitView = () => {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
-            transition: { staggerChildren: 0.1 }
+            transition: { staggerChildren: 0.05 }
         }
     };
 
@@ -43,12 +43,13 @@ const PhaseOrbitView = () => {
             opacity: 1,
             y: 0,
             scale: 1,
-            transition: { type: 'spring', stiffness: 60, damping: 12 }
+            transition: { type: 'spring', stiffness: 60, damping: 20 }
         }
     };
 
     return (
         <motion.div
+            key={phaseId}
             variants={containerVariants}
             initial="hidden"
             animate="visible"

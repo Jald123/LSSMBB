@@ -42,7 +42,7 @@ const ToolWorkspace = () => {
     const tool = toolRegistry[toolId];
 
     // Identify Next Station Logic
-    const activeMethodology = methodology ? methodology.split(' ')[0].toUpperCase() : 'DMAIC';
+    const activeMethodology = methodology.split(' ')[0].toUpperCase();
     const activePhases = methodologyData[activeMethodology] || methodologyData['DMAIC'];
 
     // Flatten tools list for navigation
