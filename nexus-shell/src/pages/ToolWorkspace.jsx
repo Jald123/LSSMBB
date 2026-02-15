@@ -185,7 +185,7 @@ const ToolWorkspace = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.4 }}
-                            className="w-full h-full pb-24" // Added padding-bottom for footer space
+                            className="w-full h-full pb-14" // Minimizing space to fit just the navigator
                         >
                             <iframe
                                 src={tool.src}
