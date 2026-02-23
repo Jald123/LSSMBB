@@ -150,9 +150,7 @@
             flex: 1;
             background: #334155;
             overflow: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            /* align-items: center;  -- Removed to fix top clipping issue */
             padding: 50px;
             position: relative;
         }
@@ -165,6 +163,8 @@
             min-width: 1250px;
             position: relative;
             transform-origin: top center;
+            margin: 0 auto;
+            /* Centering the pool surface without flex to prevent top clipping */
         }
 
         .lane-divider {
@@ -1390,6 +1390,7 @@
 
         window.onclick = () => { CTX.style.display = 'none'; ECTX.style.display = 'none'; selectNode(null); };
     </script>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>

@@ -11,6 +11,31 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* MODERN MASTER ARCHITECT LAYOUT */
+        .grid-measure {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .tool-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .input-grid-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1000px) {
+            .input-grid-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* PRINT LAYOUT */
         @media print {
             @page {
@@ -31,7 +56,9 @@
             .btn,
             input,
             button,
-            select {
+            select,
+            .workspace-footer,
+            .zoom-controls {
                 display: none !important;
             }
 
@@ -53,99 +80,121 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .print-header {
-            border-bottom: 2px solid #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+        /* ... remaining styles ... */
+        .zoom-controls {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        .print-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .print-meta {
-            text-align: right;
-            font-size: 10px;
-            color: #7f8c8d;
-        }
-
-        .print-section {
-            margin-bottom: 20px;
-            border: 1px solid #eee;
-            padding: 15px;
-            border-radius: 5px;
-            page-break-inside: avoid;
-        }
-
-        .print-sec-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #e67e22;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .print-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 11px;
-        }
-
-        .print-table th {
-            background: #f8f9fa;
-            border-bottom: 2px solid #ddd;
-            padding: 5px;
-            text-align: left;
-        }
-
-        .print-table td {
-            border-bottom: 1px solid #eee;
-            padding: 5px;
-        }
-
-        /* PROGRESS BAR */
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background: #334155;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            transition: width 0.5s ease;
-        }
-
-        .scenario-select {
-            width: 100%;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
             padding: 8px;
-            background: #1e293b;
-            color: white;
-            border: 1px solid #3b82f6;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            cursor: pointer;
+            gap: 12px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
-        /* Report Section Styles */
-        .report-box {
-            background: linear-gradient(135deg, #1e3a5f, #0f172a);
-            border: 1px solid #334155;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
+        .zoom-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 18px;
+        }
+
+        .zoom-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: black;
+        }
+
+        .zoom-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            min-width: 45px;
+            text-align: center;
+        }
+
+        /* MODERN STANDARDIZED FOOTER */
+        .workspace-footer {
+            margin-top: 50px;
+            padding: 30px;
+            background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5));
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-save:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-print:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
         }
     </style>
     <style>
@@ -526,8 +575,7 @@
             </div> <!-- Close guide-column -->
 
             <div class="tool-column">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-
+                <div class="input-grid-wrapper">
                     <!-- INPUT CARD -->
                     <div class="card">
                         <div class="flex-between">
@@ -535,8 +583,7 @@
                             <button class="btn btn-sm" onclick="addMetric()">+ Add Metric</button>
                         </div>
                         <p style="font-size:12px; color:#aaa; margin-bottom:5px;">Score from 1 (Worst) to 10 (Best in
-                            Class).
-                        </p>
+                            Class).</p>
 
                         <select class="scenario-select" onchange="loadScenario(this.value)">
                             <option value="">-- Load Example Scenario --</option>
@@ -567,15 +614,14 @@
                         </table>
 
                         <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="updateChart()">🔄
-                            Update
-                            Radar Chart</button>
+                            Update Radar Chart</button>
                     </div>
 
                     <!-- VISUALIZATION CARD -->
                     <div class="card"
                         style="display:flex; flex-direction:column; align-items:center; justify-content:center; background: #fff; color:#333;">
                         <h3 style="color:#333; align-self:flex-start;">Radar Visualization</h3>
-                        <div style="position: relative; height:400px; width:100%;">
+                        <div style="position: relative; height:400px; width:100%;" id="zoomContainer">
                             <canvas id="radarChart"></canvas>
                         </div>
                         <div id="gapAnalysis" onclick="showRadarGuide()"
@@ -587,42 +633,32 @@
                         <span style="font-size:10px; color:#94a3b8; margin-top:5px; font-style:italic;">⚡ Click alert
                             for Visual Interpretation Guide</span>
                     </div>
-
-                    <!-- REPORT & EXPORT SECTION -->
-                    <div class="card report-box" style="grid-column: 1 / -1;">
-                        <h3 style="margin-top:0; color:#60a5fa;">📑 Report & Export</h3>
-
-                        <div style="display: flex; gap: 20px; align-items: flex-end;">
-                            <div style="flex: 1;">
-                                <label
-                                    style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 5px;">Analyst
-                                    / Created By:</label>
-                                <input type="text" id="analystName" placeholder="Enter your name..."
-                                    oninput="updateProgress()"
-                                    style="width: 100%; padding: 10px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: white; font-size: 13px;">
-                            </div>
-                            <div style="flex: 1;">
-                                <div
-                                    style="display:flex; justify-content:space-between; font-size:11px; color:#94a3b8; margin-bottom:5px;">
-                                    <span>Analysis Progress</span>
-                                    <span id="progressText">0% Complete</span>
-                                </div>
-                                <div class="progress-container">
-                                    <div class="progress-bar" id="progressBar"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; gap: 10px; margin-top: 20px;">
-                            <button class="btn" style="flex: 1; background: #ea580c; border:none; color:white;"
-                                onclick="saveEvaluate()">💾 Save & Evaluate</button>
-                            <button class="btn"
-                                style="flex: 1; background: #334155; border:1px solid #475569; color:white;"
-                                onclick="printReport()">🖨️ Print PDF</button>
-                        </div>
-                    </div>
                 </div>
+
+                <!-- STANDARDIZED FOOTER -->
+                <div class="workspace-footer no-print">
+                    <div class="footer-input-group">
+                        <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+                        <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                            oninput="document.getElementById('analystName').value = this.value; updateProgress();">
+                    </div>
+                    <button class="action-btn btn-save" onclick="saveEvaluate()">
+                        <i class="fas fa-save"></i> Save & Evaluate
+                    </button>
+                    <button class="action-btn btn-print" onclick="printReport()">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                </div>
+
             </div> <!-- Close tool-column -->
+
+            <!-- ZOOM TOOLS -->
+            <div class="zoom-controls no-print">
+                <button class="zoom-btn" onclick="adjustZoom(-0.1)">-</button>
+                <div class="zoom-value" id="zoomVal">1:1</div>
+                <button class="zoom-btn" onclick="adjustZoom(0.1)">+</button>
+                <button class="zoom-btn" onclick="resetZoom()" style="font-size:12px;">1:1</button>
+            </div>
         </div> <!-- Close grid-measure -->
 
         <!-- GUIDE BUTTON & MODAL -->
@@ -1021,10 +1057,36 @@
             document.getElementById('progressText').innerText = pct + "% Complete";
         }
 
+        // --- ZOOM SYSTEM ---
+        let currentZoom = 1.0;
+        function adjustZoom(delta) {
+            currentZoom += delta;
+            currentZoom = Math.min(Math.max(0.5, currentZoom), 2.0);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            currentZoom = 1.0;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const workspace = document.getElementById('zoomContainer') || document.body;
+            workspace.style.zoom = currentZoom;
+            document.getElementById('zoomVal').innerText = (currentZoom === 1 ? '1:1' : Math.round(currentZoom * 100) + '%');
+        }
+
         function saveEvaluate() {
-            updateProgress();
-            const pct = document.getElementById('progressText').innerText;
-            alert(`💾 Evaluation Saved!\nProgress: ${pct}\n\nMetrics have been stored locally.`);
+            const name = document.getElementById('userNameFooter').value || document.getElementById('analystName').value;
+            if (!name) {
+                alert("Please enter your name for the report.");
+                return;
+            }
+            alert(`Saving Benchmarking Data for ${name}...\n\n(Logic hook for evaluation system standby)`);
+            localStorage.setItem(`lss_pref_benchmarking`, JSON.stringify({
+                name: name,
+                timestamp: new Date().toISOString()
+            }));
         }
 
         function printReport() {
@@ -1078,6 +1140,7 @@
         // Run
         init();
     </script>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>

@@ -464,6 +464,123 @@
         .info-icon:hover {
             color: #60a5fa;
         }
+
+        /* ZOOM CONTROLS */
+        .zoom-controls {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 8px;
+            gap: 12px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .zoom-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 18px;
+        }
+
+        .zoom-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: black;
+        }
+
+        .zoom-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            min-width: 45px;
+            text-align: center;
+        }
+
+        /* MODERN STANDARDIZED FOOTER */
+        .workspace-footer {
+            margin-top: 50px;
+            padding: 30px;
+            background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5));
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-save:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-print:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
     </style>
 </head>
 
@@ -681,6 +798,28 @@
         </div>
     </div>
 
+    <!-- STANDARDIZED FOOTER -->
+    <div class="workspace-footer no-print">
+        <div class="footer-input-group">
+            <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+            <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name">
+        </div>
+        <button class="action-btn btn-save" onclick="saveAndEvaluate()">
+            <i class="fas fa-save"></i> Save & Evaluate
+        </button>
+        <button class="action-btn btn-print" onclick="preparePrint()">
+            <i class="fas fa-print"></i> Print Report
+        </button>
+    </div>
+
+    <!-- ZOOM TOOLS -->
+    <div class="zoom-controls no-print">
+        <button class="zoom-btn" onclick="adjustZoom(-0.1)">-</button>
+        <div class="zoom-value" id="zoomVal">1:1</div>
+        <button class="zoom-btn" onclick="adjustZoom(0.1)">+</button>
+        <button class="zoom-btn" onclick="resetZoom()" style="font-size:12px;">1:1</button>
+    </div>
+
     <!-- INFO MODAL -->
     <div id="infoModal" class="info-overlay">
         <div class="info-box-premium">
@@ -881,21 +1020,59 @@
             // Populate print header metadata
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-            document.getElementById('printDate').innerText = 'Generated: ' + dateStr;
+            if (document.getElementById('printDate')) document.getElementById('printDate').innerText = 'Generated: ' + dateStr;
 
             const officer = document.getElementById('analystName').value || 'Not Specified';
-            document.getElementById('printOfficer').innerText = officer;
+            if (document.getElementById('printOfficer')) document.getElementById('printOfficer').innerText = officer;
 
             const riskCount = document.querySelectorAll('.risk-row').length;
-            document.getElementById('printCount').innerText = riskCount;
+            if (document.getElementById('printCount')) document.getElementById('printCount').innerText = riskCount;
 
             const avgScore = document.getElementById('avgScore').innerText;
-            document.getElementById('printAvg').innerText = avgScore;
+            if (document.getElementById('printAvg')) document.getElementById('printAvg').innerText = avgScore;
 
             // Trigger print dialog
             window.print();
         }
+
+        // --- ZOOM SYSTEM ---
+        let currentZoom = 1.0;
+        function adjustZoom(delta) {
+            currentZoom += delta;
+            currentZoom = Math.min(Math.max(0.5, currentZoom), 2.0);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            currentZoom = 1.0;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const workspace = document.querySelector('.main-workspace') || document.body;
+            workspace.style.zoom = currentZoom;
+            document.getElementById('zoomVal').innerText = (currentZoom === 1 ? '1:1' : Math.round(currentZoom * 100) + '%');
+        }
+
+        function preparePrint() {
+            exportPDF();
+        }
+
+        // --- SAVE & EVALUATE PLACEHOLDER ---
+        function saveAndEvaluate() {
+            const name = document.getElementById('userNameFooter').value;
+            if (!name) {
+                alert("Please enter your name for the report.");
+                return;
+            }
+            alert(`Saving Risk Registrar for ${name}...\n\n(Logic hook for evaluation system standby)`);
+            localStorage.setItem(`lss_pref_risk`, JSON.stringify({
+                name: name,
+                timestamp: new Date().toISOString()
+            }));
+        }
     </script>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>

@@ -224,6 +224,143 @@
             height: 4px;
             background: #333;
         }
+
+        /* ZOOM CONTROLS */
+        .zoom-controls {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 8px;
+            gap: 12px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .zoom-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 18px;
+        }
+
+        .zoom-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: black;
+        }
+
+        .zoom-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            min-width: 45px;
+            text-align: center;
+        }
+
+        /* MODERN STANDARDIZED FOOTER */
+        .workspace-footer {
+            margin-top: 50px;
+            padding: 30px;
+            background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5));
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-save:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-print:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* TOP-BOTTOM LAYOUT FOR SPECIFIC TOOLS */
+        .layout-stack {
+            grid-template-columns: 1fr !important;
+        }
+
+        .layout-stack .input-card-wrapper {
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .layout-stack .input-card-wrapper .card {
+            width: 100%;
+            max-width: none;
+        }
+
+        .layout-stack #visualCanvas {
+            min-height: 600px;
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -320,42 +457,56 @@
                 </div>
 
                 <!-- MAIN WORK GRID -->
-                <div style="display: grid; grid-template-columns: 350px 1fr; gap: 20px;">
+                <div id="workspaceGrid" style="display: grid; grid-template-columns: 350px 1fr; gap: 20px;">
 
                     <!-- INPUT CARD -->
-                    <div class="card">
-                        <div class="flex-between">
-                            <h3>1. Input Data</h3>
-                            <span style="font-size:10px; color:var(--text-secondary); cursor:pointer;"
-                                onclick="showHelpModal()">? Help</span>
-                        </div>
+                    <div class="input-card-wrapper">
+                        <div class="card">
+                            <div class="flex-between"
+                                style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 20px;">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <i class="fas fa-edit" style="color:var(--accent);"></i>
+                                    <h3 style="margin:0; font-family:'Orbitron'; font-size:16px;">1. INPUT DATA</h3>
+                                </div>
+                                <span
+                                    style="font-size:10px; color:var(--text-secondary); cursor:pointer; background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:15px;"
+                                    onclick="showHelpModal()">? Help Guide</span>
+                            </div>
 
-                        <label class="info-title" style="display:block; margin-top:10px;">Select Example
-                            Scenario:</label>
-                        <select id="scenarioSelector" class="scenario-select" onchange="applyScenario()">
-                            <option value="custom">-- Custom Input --</option>
-                            <option value="ex1">Example: Manufacturing</option>
-                            <option value="ex2">Example: Service/Office</option>
-                        </select>
+                            <label class="info-title" style="display:block; margin-top:10px;">Select Example
+                                Scenario:</label>
+                            <select id="scenarioSelector" class="scenario-select" onchange="applyScenario()">
+                                <option value="custom">-- Custom Input --</option>
+                                <option value="ex1">Example: Manufacturing</option>
+                                <option value="ex2">Example: Service/Office</option>
+                            </select>
 
-                        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 15px 0;">
+                            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 15px 0;">
 
-                        <div id="inputFormContainer">
-                            <!-- Dynamic Inputs -->
-                        </div>
+                            <div id="inputFormContainer">
+                                <!-- Dynamic Inputs -->
+                            </div>
 
-                        <div style="margin-top: 20px; display: flex; gap: 10px;">
-                            <button class="btn btn-primary" style="flex:1;" onclick="updateVisual()"> Render /
-                                Update</button>
-                            <button class="btn btn-ghost" style="flex:1;" onclick="askAIData()">? AI Auto-Fill</button>
+                            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-primary" style="flex:1;" onclick="updateVisual()"> Render /
+                                        Update</button>
+                                    <button class="btn btn-ghost" style="flex:1;" onclick="askAIData()">? AI
+                                        Auto-Fill</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                                    <input type="checkbox" id="pref-save"
+                                        style="width:14px; height:14px; cursor:pointer;">
+                                    <label for="pref-save" style="font-size:11px; color:#94a3b8; cursor:pointer;">Save
+                                        as Student Preference</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- VISUAL OUTPUT CARD -->
-                    <div>
-                        <!-- OLD INFO GRID REMOVED - CONTENT MOVED TO HEADER -->
-
-                        <!-- VISUAL CANVAS -->
+                    <div class="visual-card-wrapper">
+                        <!-- THE RENDER AREA CONTAINER -->
                         <div class="card" style="min-height: 500px; position: relative;">
                             <div class="flex-between" style="margin-bottom: 15px;">
                                 <h3>2. Visual Template</h3>
@@ -364,12 +515,34 @@
 
                             <!-- THE RENDER AREA -->
                             <div id="visualCanvas"
-                                style="overflow-x: auto; background: #fff; color: #333; padding: 20px; border-radius: 4px;">
+                                style="overflow-x: auto; background: #fff; color: #333; padding: 20px; border-radius: 4px; transition: transform 0.2s;">
                                 <!-- VISUALS GO HERE -->
                             </div>
                         </div>
                     </div>
 
+                </div>
+
+                <!-- STANDARDIZED FOOTER -->
+                <div class="workspace-footer">
+                    <div class="footer-input-group">
+                        <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+                        <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name">
+                    </div>
+                    <button class="action-btn btn-save" onclick="saveAndEvaluate()">
+                        <i class="fas fa-save"></i> Save & Evaluate
+                    </button>
+                    <button class="action-btn btn-print" onclick="preparePrint()">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                </div>
+
+                <!-- ZOOM TOOLS -->
+                <div class="zoom-controls">
+                    <button class="zoom-btn" onclick="adjustZoom(-0.1)">-</button>
+                    <div class="zoom-value" id="zoomVal">1:1</div>
+                    <button class="zoom-btn" onclick="adjustZoom(0.1)">+</button>
+                    <button class="zoom-btn" onclick="resetZoom()" style="font-size:12px;">1:1</button>
                 </div>
             </div>
         </div>
@@ -7203,7 +7376,18 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
 
             // 1. Sidebar Active State
             document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + toolId).classList.add('active');
+            if (document.getElementById('btn-' + toolId)) {
+                document.getElementById('btn-' + toolId).classList.add('active');
+            }
+
+            // 1b. Layout Management for Specific Tools
+            const stackTools = ['sipoc', 'affinity', 'ctq', 'spaghetti', 'fishbone', 'brainstorm', 'swot', 'ce_matrix', 'a3'];
+            const grid = document.getElementById('workspaceGrid');
+            if (stackTools.includes(toolId)) {
+                grid.classList.add('layout-stack');
+            } else {
+                grid.classList.remove('layout-stack');
+            }
 
             // 2. Header & History
             document.getElementById('toolHeader').innerHTML = `
@@ -7274,10 +7458,27 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
             // 4. Build Input Form with Tooltips
             const formDiv = document.getElementById('inputFormContainer');
             formDiv.innerHTML = '';
+
+            // Apply grid layout for stack tools to optimize space
+            const isStack = document.getElementById('workspaceGrid').classList.contains('layout-stack');
+            if (isStack) {
+                formDiv.style.display = 'grid';
+                formDiv.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
+                formDiv.style.gap = '20px';
+                formDiv.style.alignItems = 'start';
+            } else {
+                formDiv.style.display = 'block';
+            }
+
             let afterRenderScripts = [];
             tool.inputs.forEach(f => {
                 const wrap = document.createElement('div');
-                wrap.style.marginBottom = '15px';
+                wrap.style.marginBottom = isStack ? '0' : '15px';
+
+                // Ensure tables span full width in grid mode
+                if (isStack && (f.type === 'table' || f.type === 'textarea')) {
+                    wrap.style.gridColumn = '1 / -1';
+                }
 
                 const tipHtml = f.tip ? `<span class="input-tooltip" data-tip="${f.tip.replace(/\"/g, "'")}">?</span>` : '';
                 wrap.innerHTML = `<label style="color:var(--text-secondary); font-size:12px; font-weight:bold; display:block; margin-bottom:5px;">${f.label} ${tipHtml}</label>`;
@@ -7714,6 +7915,49 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
 
         function preparePrint() {
             window.print();
+        }
+
+        // --- ZOOM SYSTEM ---
+        let currentZoom = 1.0;
+        function adjustZoom(delta) {
+            currentZoom += delta;
+            currentZoom = Math.min(Math.max(0.5, currentZoom), 2.0);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            currentZoom = 1.0;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const canvas = document.getElementById('visualCanvas');
+            canvas.style.transform = `scale(${currentZoom})`;
+            canvas.style.transformOrigin = 'top center';
+            document.getElementById('zoomVal').innerText = (currentZoom === 1 ? '1:1' : Math.round(currentZoom * 100) + '%');
+        }
+
+        // --- SAVE & EVALUATE PLACEHOLDER ---
+        function saveAndEvaluate() {
+            const name = document.getElementById('userNameFooter').value;
+            const prefSave = document.getElementById('pref-save').checked;
+
+            if (!name) {
+                alert("Please enter your name for the report.");
+                return;
+            }
+
+            let msg = `Saving work for ${name}...`;
+            if (prefSave) msg += "\nStudent preferences updated.";
+
+            alert(msg + "\n\n(Logic hook for evaluation system standby)");
+
+            // Here we would normally trigger a post to an endpoint or save to localStorage
+            localStorage.setItem(`lss_pref_${currentToolId}`, JSON.stringify({
+                name: name,
+                is_preference: prefSave,
+                timestamp: new Date().toISOString()
+            }));
         }
 
         window.onload = () => {

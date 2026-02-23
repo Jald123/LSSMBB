@@ -291,6 +291,7 @@ const ToolWorkspace = () => {
             const doc = iframe.contentWindow.document;
             const style = doc.createElement('style');
             let cssRules = `body { padding-top: 0 !important; margin: 0 !important; width: 100vw; height: 100vh; overflow-x: hidden; }`;
+            cssRules += ` .app-nav-bar, .bottom-nav, .nav-btn-back, .back-btn, .btn-back, .back-button, .sticky-export, #assistant-dock, .assistant-window, .explainer-section, .guide-column, .chart-controls, .toolbar-top, .toolbar-bottom, .mission-nav-bar, #mission-nav, .nav-control-group, .sticky-audit-trigger, .nav-item .nav-tooltip, .intro-card-phase, .phase-glow, div[style*="font-size:9px"][style*="color:#555"], div[style*="font-size:11px"][style*="color:var(--accent)"][style*="font-weight:bold"] { display: none !important; } `;
             if (toolId !== 'hoshin') cssRules += `footer, .footer, .bottom-bar, .bottom-nav, #footer, .site-footer, .universal-nav-bar { display: none !important; }`;
             style.textContent = cssRules;
             doc.head.appendChild(style);

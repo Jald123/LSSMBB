@@ -26,7 +26,7 @@
         /* MODERN SUITE LAYOUT */
         .app-container {
             display: grid;
-            grid-template-columns: 280px 1fr 340px;
+            grid-template-columns: 280px 1fr;
             height: 100vh;
             overflow: hidden;
             background: radial-gradient(circle at center, #1e293b 0%, #080c14 100%);
@@ -50,14 +50,7 @@
         }
 
         .report-sidebar {
-            background: rgba(10, 10, 20, 0.6);
-            backdrop-filter: blur(15px);
-            border-left: 1px solid rgba(59, 130, 246, 0.1);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            overflow-y: auto;
+            display: none !important;
         }
 
         .sidebar-title {
@@ -475,6 +468,38 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             padding: 10px;
+        }
+
+        .temp-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            color: #cbd5e1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .temp-card:hover {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(16, 185, 129, 0.1);
+            color: white;
+        }
+
+        .temp-card i {
+            font-size: 20px;
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 10px;
+            border-radius: 10px;
         }
 
         /* ULTRA MODERN GUIDE CSS */
@@ -931,6 +956,123 @@
             letter-spacing: 1px;
             font-weight: 600;
         }
+
+        /* ZOOM CONTROLS */
+        .zoom-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 5px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .zoom-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 18px;
+        }
+
+        .zoom-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: black;
+        }
+
+        .zoom-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            min-width: 45px;
+            text-align: center;
+        }
+
+        /* MODERN STANDARDIZED FOOTER */
+        .workspace-footer {
+            margin-top: 50px;
+            padding: 30px;
+            background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5));
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-save:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-print:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
     </style>
 </head>
 
@@ -1154,10 +1296,13 @@
             </header>
 
             <div class="card" style="border-left:5px solid var(--accent);">
-                <div class="flex-between">
-                    <h2 style="margin:0;">1. Strategic Intent</h2>
+                <div class="flex-between"
+                    style="background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent); padding: 15px 25px; margin: -30px -30px 25px -30px; border-bottom: 1px solid rgba(59, 130, 246, 0.1);">
+                    <h2 style="margin:0; font-size: 18px;"><i class="fas fa-bullseye"
+                            style="color:var(--accent); margin-right: 10px;"></i> 1. Strategic Intent & Executive
+                        Summary</h2>
                     <div
-                        style="font-size:10px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px;">
+                        style="font-size:10px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px; background: rgba(59, 130, 246, 0.1); padding: 4px 10px; border-radius: 4px;">
                         <i class="fas fa-shield-alt"></i> MASTER ARCHITECT MODE
                     </div>
                 </div>
@@ -1214,29 +1359,79 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h2>2. Execution Scope</h2>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <div class="card" style="border-top: 1px solid rgba(255,255,255,0.05);">
+                <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:30px; align-items: start;">
                     <div>
-                        <span class="sidebar-label">In-Scope (Focus Areas)</span>
-                        <textarea id="inScope" class="premium-textarea" rows="4"></textarea>
+                        <h2 style="display:flex; align-items:center; gap:10px;">
+                            <i class="fas fa-microscope" style="color:var(--accent);"></i> 2. Execution Scope
+                        </h2>
+                        <p style="color:#aaa; font-size:12px; margin-bottom:20px;">Protect the project from scope creep
+                            by defining strict boundaries.</p>
+
+                        <div style="display:grid; gap:20px;">
+                            <div>
+                                <span class="sidebar-label">In-Scope (Focus Areas)</span>
+                                <textarea id="inScope" class="premium-textarea" rows="4"
+                                    placeholder="Processes, specific departments, or machines to be optimized..."></textarea>
+                            </div>
+                            <div>
+                                <span class="sidebar-label">Out-of-Scope (Boundaries)</span>
+                                <textarea id="outScope" class="premium-textarea" rows="4"
+                                    placeholder="Exclusions to prevent resource dilution..."></textarea>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <span class="sidebar-label">Out-of-Scope (Boundaries)</span>
-                        <textarea id="outScope" class="premium-textarea" rows="4"></textarea>
+
+                    <!-- MASTER ARCHITECT: SIPOC / VISUAL ARCHITECTURE -->
+                    <div
+                        style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 25px;">
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                            <h4 style="margin:0; font-family:'Orbitron'; color:var(--accent); font-size:14px;">VISUAL
+                                ARCHITECTURE</h4>
+                            <span class="badge"
+                                style="background:rgba(59,130,246,0.1); color:var(--accent); font-size:10px;">SIPOC
+                                LITE</span>
+                        </div>
+                        <div
+                            style="background: white; border-radius: 12px; padding: 10px; min-height: 250px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                            <img src="charter_philosophy_infographic.png" alt="Project Architecture SIPOC"
+                                style="width: 100%; height: auto; border-radius: 8px;">
+                            <div
+                                style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 12px; border-radius: 6px; font-size: 10px;">
+                                ARCHITECT VIEW
+                            </div>
+                        </div>
+                        <p style="color:#888; font-size:11px; margin-top:15px; font-style:italic;">
+                            *This diagram visualizes the high-level SIPOC (Supplier, Input, Process, Output, Customer)
+                            logic for your project.
+                        </p>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>3. Governance Team</h2>
-                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;">
-                    <div><span class="sidebar-label">Executive Sponsor</span><input type="text" id="sponsor"
-                            class="premium-input"></div>
-                    <div><span class="sidebar-label">Process Owner</span><input type="text" id="processOwner"
-                            class="premium-input"></div>
-                    <div><span class="sidebar-label">Lead Belt</span><input type="text" id="beltName"
-                            class="premium-input"></div>
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:40px; align-items: center;">
+                    <div>
+                        <h2 style="display:flex; align-items:center; gap:10px;">
+                            <i class="fas fa-users-cog" style="color:var(--accent);"></i> 3. Governance Team
+                        </h2>
+                        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:15px; margin-top:20px;">
+                            <div><span class="sidebar-label">Executive Sponsor</span><input type="text" id="sponsor"
+                                    class="premium-input"></div>
+                            <div><span class="sidebar-label">Process Owner</span><input type="text" id="processOwner"
+                                    class="premium-input"></div>
+                            <div><span class="sidebar-label">Lead Belt</span><input type="text" id="beltName"
+                                    class="premium-input"></div>
+                        </div>
+                    </div>
+                    <div
+                        style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+                        <img src="stakeholder_influence_logic.png" alt="Stakeholder Influence Matrix"
+                            style="width: 100%; height: auto; border-radius: 6px; cursor: pointer;"
+                            onclick="explain('governance')">
+                        <div style="font-size: 9px; color: #666; margin-top: 5px;">STAKEHOLDER LOGIC</div>
+                    </div>
                 </div>
             </div>
 
@@ -1278,11 +1473,44 @@
                 </div>
             </div>
 
-            <!-- CARD 5: EXECUTIVE PROJECT AUDIT (Consolidated) -->
-            <div class="card" style="border-top:5px solid #0f172a; background:rgba(255,255,255,0.02);">
+            <!-- CARD 5: TIMELINE MILESTONES -->
+            <div class="card" style="border-left:5px solid var(--warning);">
+                <div class="flex-between">
+                    <h2>5. Project Control & Timeline</h2>
+                    <div style="font-size:10px; color:var(--warning); font-weight:700; text-transform:uppercase;">
+                        <i class="fas fa-calendar-check"></i> MILESTONE TRACKING
+                    </div>
+                </div>
+                <div style="margin-top:20px; display:grid; grid-template-columns: repeat(5, 1fr); gap:15px;">
+                    <div>
+                        <span class="sidebar-label">Define Phase</span>
+                        <input type="date" id="date-define" class="premium-input" style="font-size:11px;">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Measure Phase</span>
+                        <input type="date" id="date-measure" class="premium-input" style="font-size:11px;">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Analyze Phase</span>
+                        <input type="date" id="date-analyze" class="premium-input" style="font-size:11px;">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Improve Phase</span>
+                        <input type="date" id="date-improve" class="premium-input" style="font-size:11px;">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Control Phase</span>
+                        <input type="date" id="date-control" class="premium-input" style="font-size:11px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 6: EXECUTIVE PROJECT AUDIT (Renumbered) -->
+            <div class="card"
+                style="border-top:5px solid #0f172a; background:rgba(255,255,255,0.02); margin-bottom: 80px;">
                 <div class="flex-between"
                     style="border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:15px; margin-bottom:20px;">
-                    <h2 style="margin:0;"><i class="fas fa-shield-check"></i> 5. Executive Project Audit</h2>
+                    <h2 style="margin:0;"><i class="fas fa-shield-check"></i> 6. Executive Project Audit</h2>
                     <div style="font-family:'Orbitron'; font-size:10px; color:#64748b;">VERSION 2.4 | LSS-CHARTER-2026
                     </div>
                 </div>
@@ -1319,45 +1547,41 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- REPORT SIDEBAR (RIGHT) -->
-        <div class="report-sidebar">
-            <h2 class="sidebar-title">Project Control</h2>
+            <!-- BOTTOM ACTION BAR -->
+            <!-- Hiding per user request to use the workspace-footer instead -->
+            <div class="bottom-action-bar no-print"
+                style="display: none; gap: 20px; padding: 20px; background: rgba(8, 12, 20, 0.8); border-top: 1px solid rgba(59, 130, 246, 0.2); backdrop-filter: blur(10px); position: sticky; bottom: 0; margin: 0 -40px -40px -40px; z-index: 100; justify-content: center;">
+                <button class="btn btn-primary" onclick="checkProgress()" style="min-width: 200px;"><i
+                        class="fas fa-save"></i> Save Charter</button>
+                <button class="btn btn-ghost" onclick="window.print()"
+                    style="min-width: 200px; border-color: rgba(255,255,255,0.2);"><i class="fas fa-file-pdf"></i>
+                    Export Charter Report</button>
+            </div>
 
-            <div class="card" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05);">
-                <span class="sidebar-label">Timeline Milestones</span>
-                <div style="margin-top:10px; display:flex; flex-direction:column; gap:12px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-                        <span>Define</span><input type="date"
-                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-                        <span>Measure</span><input type="date"
-                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-                        <span>Analyze</span><input type="date"
-                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-                        <span>Improve</span><input type="date"
-                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-                        <span>Control</span><input type="date"
-                            style="background:#111; border:1px solid #333; color:white; font-size:10px; padding:3px;">
-                    </div>
+            <!-- STANDARDIZED FOOTER (Moved here from outside app-container to be non-floating) -->
+            <div class="workspace-footer no-print" style="margin-top: 80px; position: static;">
+                <div class="footer-input-group">
+                    <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+                    <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name">
                 </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns:1fr; gap:12px; margin-top:20px;">
-                <button class="btn btn-primary" onclick="checkProgress()"><i class="fas fa-save"></i> Save
-                    Charter</button>
-                <button class="btn btn-ghost" onclick="window.print()"><i class="fas fa-file-pdf"></i> Export
-                    Report</button>
+                <button class="action-btn btn-save" onclick="saveAndEvaluate()">
+                    <i class="fas fa-save"></i> Save & Evaluate
+                </button>
+                <button class="action-btn btn-print" onclick="preparePrint()">
+                    <i class="fas fa-print"></i> Print Report
+                </button>
             </div>
         </div>
+    </div>
+
+
+    <!-- ZOOM TOOLS -->
+    <div class="zoom-controls no-print">
+        <button class="zoom-btn" onclick="adjustZoom(-0.1)">-</button>
+        <div class="zoom-value" id="zoomVal">1:1</div>
+        <button class="zoom-btn" onclick="adjustZoom(0.1)">+</button>
+        <button class="zoom-btn" onclick="resetZoom()" style="font-size:12px;">1:1</button>
     </div>
 
     <!-- STRATEGIC INFO POPUP -->
@@ -1491,10 +1715,15 @@
                     <p style="color:#94a3b8; font-size:15px; line-height:1.7;">A Project Charter is not just a document;
                         it is a <b>governance contract</b>. It establishes the authority to occupy resources and the
                         commitment to hit financial targets.</p>
-                    <div
-                        style="margin-top:25px; border-radius:15px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-                        <img src="charter_hobby_v_liability.png" alt="Charter Philosophy: Hobby vs Liability"
-                            style="width:100%; display:block;">
+                    <div style="margin-top:25px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                        <div style="border-radius:15px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+                            <img src="charter_hobby_v_liability.png" alt="Charter Philosophy: Hobby vs Liability"
+                                style="width:100%; display:block;">
+                        </div>
+                        <div style="border-radius:15px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+                            <img src="charter_philosophy_infographic.png" alt="Master Architect Philosophy"
+                                style="width:100%; display:block;">
+                        </div>
                     </div>
                 </div>
 
@@ -1729,9 +1958,18 @@
 
                 <!-- 4. SMART GOAL -->
                 <div id="super_goal" class="guide-detail-card">
-                    <h2 style="color:var(--accent); display:flex; align-items:center; gap:12px; margin-bottom:25px;">
-                        <i class="fas fa-bullseye"></i> 4. SMART Goal
-                    </h2>
+                    <div class="flex-between"
+                        style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; margin-bottom: 25px;">
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <i class="fas fa-bullseye" style="color:var(--accent); font-size: 24px;"></i>
+                            <div>
+                                <h2 style="margin:0; font-family:'Orbitron';">4. SMART Goal</h2>
+                                <div
+                                    style="font-size:11px; color:var(--accent); text-transform:uppercase; margin-top:4px; letter-spacing:1px; font-weight:800;">
+                                    Define Success</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="challenge-container" style="margin-top:0; margin-bottom:30px; border-color: #10b981;">
                         <h4
@@ -1915,6 +2153,21 @@
                                 specific area.</span>
                         </div>
                     </div>
+
+                    <div
+                        style="margin-top:25px; border-radius:15px; border:1px solid rgba(255,255,255,0.1); overflow:hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                        <div
+                            style="background: rgba(99, 102, 241, 0.1); padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+                            <span
+                                style="font-family:'Orbitron'; font-size:10px; color:#818cf8; font-weight:800;">STAKEHOLDER
+                                INFLUENCE MATRIX</span>
+                            <span class="badge"
+                                style="background:rgba(99, 102, 241, 0.2); color:#818cf8; font-size:9px;">ARCHITECT
+                                VIEW</span>
+                        </div>
+                        <img src="stakeholder_influence_logic.png" alt="Stakeholder Influence Matrix"
+                            style="width:100%; display:block;">
+                    </div>
                 </div>
 
                 <!-- 7. COPQ & SAVINGS -->
@@ -1986,16 +2239,14 @@
                             <i class="fas fa-hammer"></i> MASTER ARCHITECT CHALLENGE: CHRONOLOGY
                         </h4>
                         <div class="challenge-options">
-                            <div class="challenge-options">
-                                <div class="challenge-option"
-                                    onclick="submitChallenge(this, 'wrong', 'WRONG: You can\'t implement before Root Cause Analysis.', 'feedback_mile')">
-                                    <i class="fas fa-circle-question"></i> "Kickoff -> Implementation -> Analyze ->
-                                    Control"
-                                </div>
-                                <div class="challenge-option"
-                                    onclick="submitChallenge(this, 'correct', 'DMAIC FLOW: Define -> Measure -> Analyze -> Improve -> Control.', 'feedback_mile')">
-                                    <i class="fas fa-circle-question"></i> "Charter -> Baseline -> Root Cause -> Pilot"
-                                </div>
+                            <div class="challenge-option"
+                                onclick="submitChallenge(this, 'wrong', 'WRONG: You can\'t implement before Root Cause Analysis.', 'feedback_mile')">
+                                <i class="fas fa-circle-question"></i> "Kickoff -> Implementation -> Analyze ->
+                                Control"
+                            </div>
+                            <div class="challenge-option"
+                                onclick="submitChallenge(this, 'correct', 'DMAIC FLOW: Define -> Measure -> Analyze -> Improve -> Control.', 'feedback_mile')">
+                                <i class="fas fa-circle-question"></i> "Charter -> Baseline -> Root Cause -> Pilot"
                             </div>
                         </div>
                         <div id="feedback_mile" class="challenge-feedback"></div>
@@ -2845,8 +3096,46 @@
 
         // Initialize calculation on load
         calcSavings();
+
+        // --- ZOOM SYSTEM ---
+        let currentZoom = 1.0;
+        function adjustZoom(delta) {
+            currentZoom += delta;
+            currentZoom = Math.min(Math.max(0.5, currentZoom), 2.0);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            currentZoom = 1.0;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const workspace = document.querySelector('.main-workspace') || document.body;
+            workspace.style.zoom = currentZoom;
+            document.getElementById('zoomVal').innerText = (currentZoom === 1 ? '1:1' : Math.round(currentZoom * 100) + '%');
+        }
+
+        function preparePrint() {
+            window.print();
+        }
+
+        // --- SAVE & EVALUATE PLACEHOLDER ---
+        function saveAndEvaluate() {
+            const name = document.getElementById('userNameFooter').value;
+            if (!name) {
+                alert("Please enter your name for the report.");
+                return;
+            }
+            alert(`Saving work for ${name}...\n\n(Logic hook for evaluation system standby)`);
+            localStorage.setItem(`lss_pref_charter`, JSON.stringify({
+                name: name,
+                timestamp: new Date().toISOString()
+            }));
+        }
     </script>
 
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>

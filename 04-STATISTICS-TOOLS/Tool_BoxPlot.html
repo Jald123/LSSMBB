@@ -257,12 +257,12 @@
     </div> <!-- Close guide-column -->
 
     <div class="tool-column">
-        <div class="grid-2">
+        <div class="input-grid-wrapper">
             <div class="card">
                 <h3>Input Data Groups</h3>
                 <p style="font-size:12px; color:var(--text-secondary);">One group per line. Comma separated values.</p>
                 <textarea id="dataInput" rows="10" placeholder="Group A: 10, 12, 15...&#10;Group B: 8, 9, 11..."
-                    style="width:100%; background:var(--surface-1); color:white; padding:10px;"></textarea>
+                    style="width:100%; background:var(--surface-1); color:white; padding:10px; border-radius:8px; border:1px solid #334155;"></textarea>
                 <button class="btn btn-primary" onclick="drawBoxPlot()" style="width:100%; margin-top:10px;">Draw
                     Plot</button>
                 <div style="display:flex; gap:10px; margin-top:5px;">
@@ -278,115 +278,42 @@
                         Findings</h4>
                     <p id="caseText" style="margin:0; font-size:13px; line-height:1.5; color:#e2e8f0;"></p>
                 </div>
-                <!-- <button class="btn btn-secondary-card" onclick="validateJSON()" style="width:100%; margin-top:5px;">Validate / Load JSON Template</button> -->
             </div>
             <div class="card">
                 <div class="chart-controls">
                     <div class="control-btn" onclick="downloadChart()">⬇️</div>
                 </div>
-                <div class="chart-container"
+                <div class="chart-container" id="zoomContainer"
                     style="background: white; border-radius: 8px; position:relative; height:450px;">
-                    <!-- ANATOMY OVERLAY (Optional/Toggle) -->
-                    <div id="anatomyOverlay"
-                        style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); padding:10px; border-radius:8px; border:1px solid #ccc; display:none; width:220px;">
-                        <h5 style="margin:0; color:#333;">📊 Legend</h5>
-                        <ul style="font-size:11px; color:#555; padding-left:15px; margin:5px 0;">
-                            <li><strong>Blue Box:</strong> Middle 50%</li>
-                            <li><strong>Yellow Line:</strong> Median</li>
-                            <li><strong>T-Bars:</strong> Range (excl outliers)</li>
-                            <li><strong>Red Dots:</strong> Outliers</li>
-                        </ul>
-                    </div>
                     <canvas id="boxChart"></canvas>
                 </div>
                 <!-- STATS TABLE (Visible on Screen) -->
                 <div id="statsTableContainer" style="margin-top:20px; overflow-x:auto;"></div>
             </div>
-
-            <!-- PRINT REPORT CONTAINER (Hidden on Screen, Visible on Print) -->
-            <div id="print-view" style="display:none;">
-                <div class="print-header"
-                    style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #334155; padding-bottom:10px; margin-bottom:20px;">
-                    <div>
-                        <h1 style="font-size:24px; color:#0f172a; margin:0;">Box & Whisker Analysis</h1>
-                        <p style="margin:5px 0 0 0; color:#64748b; font-size:12px;">Lean Six Sigma Interactive Platform
-                        </p>
-                    </div>
-                    <div style="text-align:right;">
-                        <div id="print-analyst" style="font-weight:bold; font-size:14px; color:#0f172a;">Analyst: -
-                        </div>
-                        <div id="print-date" style="font-size:12px; color:#64748b;">Date: -</div>
-                    </div>
-                </div>
-
-                <div class="print-grid"
-                    style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:start;">
-                    <!-- Left: Chart -->
-                    <div class="print-chart-section">
-                        <img id="print-chart-img" style="width:100%; border:1px solid #e2e8f0; border-radius:8px;">
-                    </div>
-
-                    <!-- Right: Stats & Interpretation -->
-                    <div class="print-info-section">
-                        <div
-                            style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:20px;">
-                            <h3 style="margin:0 0 10px 0; font-size:14px; text-transform:uppercase; color:#3b82f6;">
-                                Statistical Summary</h3>
-                            <div id="print-stats-table"></div>
-                        </div>
-
-                        <div style="border-left:4px solid #f97316; padding-left:15px;">
-                            <h3 style="margin:0 0 5px 0; font-size:14px; text-transform:uppercase; color:#f97316;">
-                                Interpretation</h3>
-                            <div id="print-interpretation" style="font-size:12px; line-height:1.6; color:#334155;">
-                                No automated interpretation available. Please review outliers manually.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="print-footer"
-                    style="margin-top:40px; border-top:1px solid #e2e8f0; padding-top:10px; display:flex; justify-content:space-between; font-size:10px; color:#94a3b8;">
-                    <span>Generated by Black Belt Studio</span>
-                    <span>Professional Report</span>
-                </div>
-            </div>
-
-            <!-- REPORT & EXPORT SECTION (Full Width Spanning) -->
-            <div class="card" style="grid-column: 1 / -1; margin-top:20px; border-top:4px solid #f97316;">
-                <h3 style="color:#f97316; margin-bottom:15px;">Report & Export</h3>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="flex:1; margin-right:30px;">
-                        <label style="color:#cbd5e1; font-size:14px; display:block; margin-bottom:5px;">Analyst /
-                            Created By:</label>
-                        <input type="text" id="analystName" placeholder="Enter your name..." oninput="updateProgress()"
-                            style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:white;">
-                        <!-- Progress Bar -->
-                        <div style="width:100%; height:8px; background:#334155; border-radius:4px; margin-top:10px;">
-                            <div id="progressBar"
-                                style="width:0%; height:100%; background:#f97316; border-radius:4px; transition:width 0.3s;">
-                            </div>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; margin-top:5px;">
-                            <span style="font-size:11px; color:#64748b;">Progress tracks data entry and analysis.</span>
-                            <span id="progressText" style="font-size:11px; color:#f97316; font-weight:bold;">0%
-                                Complete</span>
-                        </div>
-                    </div>
-                    <div style="display:flex; gap:15px;">
-                        <button class="btn btn-primary" onclick="alert('Analysis Saved!')"
-                            style="background:#ea580c; display:flex; align-items:center; gap:8px;">
-                            💾 Save & Evaluate
-                        </button>
-                        <button class="btn btn-secondary-card" onclick="preparePrint()"
-                            style="display:flex; align-items:center; gap:8px;">
-                            📷 Print PDF
-                        </button>
-                    </div>
-                </div>
-
-            </div>
         </div>
+
+        <!-- STANDARDIZED FOOTER -->
+        <div class="workspace-footer no-print">
+            <div class="footer-input-group">
+                <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+                <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                    oninput="document.getElementById('analystName').value = this.value; updateProgress();">
+            </div>
+            <button class="action-btn btn-save" onclick="saveAndEvaluate()">
+                <i class="fas fa-save"></i> Save & Evaluate
+            </button>
+            <button class="action-btn btn-print" onclick="preparePrint()">
+                <i class="fas fa-print"></i> Print Report
+            </button>
+        </div>
+    </div> <!-- Close tool-column -->
+
+    <!-- ZOOM TOOLS -->
+    <div class="zoom-controls no-print">
+        <button class="zoom-btn" onclick="adjustZoom(-0.1)">-</button>
+        <div class="zoom-value" id="zoomVal">1:1</div>
+        <button class="zoom-btn" onclick="adjustZoom(0.1)">+</button>
+        <button class="zoom-btn" onclick="resetZoom()" style="font-size:12px;">1:1</button>
     </div>
     </div> <!-- Close tool-column -->
     </div> <!-- Close grid-measure -->
@@ -704,6 +631,37 @@
             a.click();
         }
 
+        // --- ZOOM SYSTEM ---
+        let currentZoom = 1.0;
+        function adjustZoom(delta) {
+            currentZoom += delta;
+            currentZoom = Math.min(Math.max(0.5, currentZoom), 2.0);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            currentZoom = 1.0;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const workspace = document.getElementById('zoomContainer') || document.body;
+            workspace.style.zoom = currentZoom;
+            document.getElementById('zoomVal').innerText = (currentZoom === 1 ? '1:1' : Math.round(currentZoom * 100) + '%');
+        }
+
+        function saveAndEvaluate() {
+            const name = document.getElementById('userNameFooter').value || document.getElementById('analystName').value;
+            if (!name) {
+                alert("Please enter your name for the report.");
+                return;
+            }
+            alert(`Saving Box Plot Data for ${name}...\n\n(Logic hook for evaluation system standby)`);
+            localStorage.setItem(`lss_pref_boxplot`, JSON.stringify({
+                name: name,
+                timestamp: new Date().toISOString()
+            }));
+        }
         // CLICK OUTSIDE MODAL
         window.onclick = function (e) {
             if (e.target == document.getElementById('infoModal')) closePopup();
@@ -735,6 +693,148 @@
     </script>
 
     <style>
+        /* MODERN MASTER ARCHITECT LAYOUT */
+        .grid-measure {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .tool-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .input-grid-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1000px) {
+            .input-grid-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ZOOM SYSTEM */
+        .zoom-controls {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 8px;
+            gap: 12px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .zoom-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 18px;
+        }
+
+        .zoom-btn:hover {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: black;
+        }
+
+        .zoom-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: white;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        /* MODERN STANDARDIZED FOOTER */
+        .workspace-footer {
+            margin-top: 50px;
+            padding: 30px;
+            background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5));
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-save:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-print:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
+
         /* Screen Layout Improvements */
         @media screen {
             .container {
