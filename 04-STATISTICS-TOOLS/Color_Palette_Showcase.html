@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day Mode Palette Lab | Eye-Comfort Light Designs</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f1f4;
+            color: #3a3f4a;
+            min-height: 100vh;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 50px 40px 25px;
+            position: relative;
+        }
+
+        .hero .tag {
+            font-family: 'Outfit', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            color: #8a90a0;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 36px;
+            font-weight: 900;
+            color: #1e2230;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
+            color: #6b7280;
+            font-size: 14px;
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .principles {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px 40px;
+            margin: 0 auto 10px;
+            max-width: 950px;
+        }
+
+        .principle {
+            text-align: center;
+            flex: 1;
+        }
+
+        .principle i {
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .principle strong {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 4px;
+            color: #4a5060;
+        }
+
+        .principle span {
+            font-size: 11px;
+            color: #8a90a0;
+            line-height: 1.4;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            padding: 15px 45px 50px;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .palette-card {
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .palette-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .palette-card.selected {
+            outline: 2px solid #4a6fa5;
+            outline-offset: 3px;
+        }
+
+        .palette-name {
+            padding: 20px 25px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .palette-name h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .palette-name .ptag {
+            font-size: 8px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mini-wrap {
+            padding: 0 20px 15px;
+        }
+
+        .mini-app {
+            border-radius: 14px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            height: 310px;
+        }
+
+        .mini-sb {
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .mini-sb-logo {
+            font-family: 'Outfit';
+            font-size: 7px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .mini-sb-item {
+            padding: 5px 7px;
+            border-radius: 5px;
+            font-size: 7px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mini-sb-item i {
+            font-size: 7px;
+        }
+
+        .mini-ws {
+            padding: 12px;
+            overflow: hidden;
+        }
+
+        .mini-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .mini-hdr h4 {
+            font-size: 10px;
+            font-weight: 800;
+            font-family: 'Outfit';
+        }
+
+        .mini-pill {
+            font-size: 6px;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .mini-section {
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+
+        .mini-lbl {
+            font-size: 6.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            margin-bottom: 3px;
+            display: block;
+        }
+
+        .mini-field {
+            width: 100%;
+            border-radius: 5px;
+            padding: 5px 7px;
+            font-size: 7px;
+            border: 1px solid;
+            margin-bottom: 5px;
+        }
+
+        .mini-tip {
+            border-radius: 7px;
+            padding: 7px 9px;
+            font-size: 7px;
+            line-height: 1.4;
+        }
+
+        .mini-tip-tag {
+            font-size: 6px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .mini-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 6px;
+        }
+
+        .mini-metric {
+            border-radius: 7px;
+            padding: 7px;
+            text-align: center;
+        }
+
+        .mini-metric-val {
+            font-family: 'Outfit';
+            font-size: 11px;
+            font-weight: 800;
+            display: block;
+        }
+
+        .mini-metric-lbl {
+            font-size: 5.5px;
+            text-transform: uppercase;
+            display: block;
+            margin-top: 1px;
+            letter-spacing: 0.3px;
+        }
+
+        .swatches {
+            display: flex;
+            padding: 0 20px 12px;
+            gap: 0;
+        }
+
+        .sw {
+            flex: 1;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            transition: 0.2s;
+        }
+
+        .sw:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .sw:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .rationale {
+            padding: 0 20px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .rationale-item {
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .rationale-item strong {
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 3px;
+        }
+
+        .bottom-bar {
+            text-align: center;
+            padding: 30px 40px 50px;
+        }
+
+        .bottom-bar p {
+            color: #8a90a0;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .apply-btn {
+            background: #2e3a50;
+            color: #e8eaef;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 14px 45px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Outfit';
+            border-radius: 12px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+
+        .apply-btn:hover:not(:disabled) {
+            background: #3a4860;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .apply-btn:disabled {
+            opacity: 0.3;
+            cursor: default;
+        }
+
+        #choiceName {
+            color: #6b7280;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .palette-card {
+            animation: fadeUp 0.5s ease backwards;
+        }
+
+        .palette-card:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .palette-card:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .palette-card:nth-child(3) {
+            animation-delay: 0.25s;
+        }
+
+        .palette-card:nth-child(4) {
+            animation-delay: 0.35s;
+        }
+
+        @media (max-width: 1100px) {
+            .palette-grid {
+                grid-template-columns: 1fr;
+                padding: 15px 20px 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hero">
+        <div class="tag">Day Mode · Ergonomic Light Design</div>
+        <h1>☀️ Light Mode Palettes</h1>
+        <p>Warm off-whites instead of harsh #FFFFFF. Low-glare surfaces. Strategic color anchors that guide your eye
+            without tiring it. Built for <strong>daylight work sessions</strong>.</p>
+    </div>
+
+    <div class="principles">
+        <div class="principle">
+            <i class="fas fa-sun" style="color: #c4940a;"></i>
+            <strong>No Pure White</strong>
+            <span>Off-white canvases reduce glare by 40% vs #FFFFFF in well-lit rooms</span>
+        </div>
+        <div class="principle">
+            <i class="fas fa-palette" style="color: #5a7aba;"></i>
+            <strong>Semantic Color</strong>
+            <span>Every accent color maps to a function — structure, insight, success, risk</span>
+        </div>
+        <div class="principle">
+            <i class="fas fa-text-height" style="color: #6a8a6a;"></i>
+            <strong>Ink-on-Paper</strong>
+            <span>Dark text on warm light — the way humans have read for centuries</span>
+        </div>
+    </div>
+
+    <div class="palette-grid">
+
+        <!-- ═════ PALETTE A: PAPER CRAFT ═════ -->
+        <div class="palette-card" onclick="pick(this,'paper')"
+            style="background: #faf9f6; border: 1px solid #e8e6e0; box-shadow: 0 2px 12px rgba(0,0,0,0.04);">
+            <div class="palette-name">
+                <h3 style="color: #2c3040;">📄 Paper Craft</h3>
+                <span class="ptag"
+                    style="background: rgba(90,122,186,0.08); color: #5a7aba; border: 1px solid rgba(90,122,186,0.15);">RECOMMENDED</span>
+            </div>
+            <div class="mini-wrap">
+                <div class="mini-app" style="border: 1px solid #e2e0da;">
+                    <div class="mini-sb" style="background: #f0eeea; border-right: 1px solid #e2e0da;">
+                        <div class="mini-sb-logo" style="color: #5a7aba;">DMAIC</div>
+                        <div class="mini-sb-item" style="background: #5a7aba; color: #fff; border-radius: 5px;"><i
+                                class="fas fa-file-signature"></i> Charter</div>
+                        <div class="mini-sb-item" style="color: #9a9da8;"><i class="fas fa-book"></i> Guide</div>
+                        <div class="mini-sb-item" style="color: #9a9da8;"><i class="fas fa-brain"></i> Lab</div>
+                    </div>
+                    <div class="mini-ws" style="background: #faf9f6;">
+                        <div class="mini-hdr">
+                            <h4 style="color: #1e2230;">Project Charter MASTER</h4>
+                            <div style="display:flex; gap:3px;">
+                                <span class="mini-pill"
+                                    style="background: rgba(200,140,40,0.06); border-color: rgba(200,140,40,0.2); color: #b8860b;"><i
+                                        class="fas fa-exclamation-triangle"></i> SCOPE</span>
+                                <span class="mini-pill"
+                                    style="background: rgba(90,122,186,0.06); border-color: rgba(90,122,186,0.15); color: #5a7aba;"><i
+                                        class="fas fa-shield-alt"></i> STRATEGY</span>
+                            </div>
+                        </div>
+                        <div class="mini-section"
+                            style="background: #ffffff; border: 1px solid #ececea; border-left: 3px solid #5a7aba;">
+                            <div style="display:flex; gap: 8px;">
+                                <div style="flex: 1.5;">
+                                    <span class="mini-lbl" style="color: #5a7aba;">Project Title</span>
+                                    <div class="mini-field"
+                                        style="background: #f7f6f3; border-color: #e0ddd8; color: #9a9da8;">Enter
+                                        high-level goal...</div>
+                                    <span class="mini-lbl" style="color: #5a7aba;">Business Case</span>
+                                    <div class="mini-field"
+                                        style="background: #f7f6f3; border-color: #e0ddd8; color: #9a9da8; height: 30px;">
+                                        Why now?...</div>
+                                </div>
+                                <div class="mini-tip"
+                                    style="flex: 0.9; background: #fdf8ee; border: 1px solid #f0e4c8; border-left: 2px solid #c4940a; align-self: flex-start;">
+                                    <span class="mini-tip-tag" style="color: #b8860b;">🥋 MBB WISDOM</span>
+                                    <span style="color: #5c5040;">"Make the pain impossible to ignore."</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mini-metrics">
+                            <div class="mini-metric"
+                                style="background: rgba(90,122,186,0.06); border: 1px solid rgba(90,122,186,0.08);">
+                                <span class="mini-metric-val" style="color: #4a68a0;">87%</span>
+                                <span class="mini-metric-lbl" style="color: #9a9da8;">Audit</span>
+                            </div>
+                            <div class="mini-metric"
+                                style="background: rgba(46,125,80,0.05); border: 1px solid rgba(46,125,80,0.08);">
+                                <span class="mini-metric-val" style="color: #2e7d50;">$90K</span>
+                                <span class="mini-metric-lbl" style="color: #9a9da8;">Savings</span>
+                            </div>
+                            <div class="mini-metric"
+                                style="background: rgba(120,90,160,0.05); border: 1px solid rgba(120,90,160,0.08);">
+                                <span class="mini-metric-val" style="color: #785aa0;">FIT</span>
+                                <span class="mini-metric-lbl" style="color: #9a9da8;">Strategic</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swatches">
+                <div class="sw" style="background: #f0eeea; color: #8a8880;">Sidebar</div>
+                <div class="sw" style="background: #faf9f6; color: #7a7870;">Canvas</div>
+                <div class="sw" style="background: #ffffff; color: #aaa;">Card</div>
+                <div class="sw" style="background: #5a7aba; color: #fff;">Primary</div>
+                <div class="sw" style="background: #c4940a; color: #fff;">Wisdom</div>
+                <div class="sw" style="background: #2e7d50; color: #fff;">Success</div>
+                <div class="sw" style="background: #c05050; color: #fff;">Alert</div>
+            </div>
+            <div class="rationale">
+                <div class="rationale-item" style="background: rgba(0,0,0,0.02);">
+                    <strong style="color: #5a7aba;"><i class="fas fa-feather-alt"></i> Eye Comfort</strong>
+                    <span style="color: #7a7d88;">Warm parchment tone (#FAF9F6) instead of harsh white. Like premium
+                        stationery — elegant and zero glare even in bright offices.</span>
+                </div>
+                <div class="rationale-item" style="background: rgba(0,0,0,0.02);">
+                    <strong style="color: #c4940a;"><i class="fas fa-lightbulb"></i> Smart Thinking</strong>
+                    <span style="color: #7a7d88;">Muted navy for structure, rich gold for expert wisdom. Classic "ink on
+                        paper" feel. The most natural reading experience possible.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════ PALETTE B: COTTON CLOUD ═════ -->
+        <div class="palette-card" onclick="pick(this,'cotton')"
+            style="background: #f5f6fa; border: 1px solid #e0e2ea; box-shadow: 0 2px 12px rgba(0,0,0,0.04);">
+            <div class="palette-name">
+                <h3 style="color: #2a2e3a;">☁️ Cotton Cloud</h3>
+                <span class="ptag"
+                    style="background: rgba(80,110,160,0.08); color: #506ea0; border: 1px solid rgba(80,110,160,0.12);">MODERN</span>
+            </div>
+            <div class="mini-wrap">
+                <div class="mini-app" style="border: 1px solid #dde0e8;">
+                    <div class="mini-sb" style="background: #eceef4; border-right: 1px solid #dde0e8;">
+                        <div class="mini-sb-logo" style="color: #506ea0;">DMAIC</div>
+                        <div class="mini-sb-item" style="background: #506ea0; color: #fff; border-radius: 5px;"><i
+                                class="fas fa-file-signature"></i> Charter</div>
+                        <div class="mini-sb-item" style="color: #a0a4b0;"><i class="fas fa-book"></i> Guide</div>
+                        <div class="mini-sb-item" style="color: #a0a4b0;"><i class="fas fa-brain"></i> Lab</div>
+                    </div>
+                    <div class="mini-ws" style="background: #f5f6fa;">
+                        <div class="mini-hdr">
+                            <h4 style="color: #1a1e2a;">Project Charter MASTER</h4>
+                            <div style="display:flex; gap:3px;">
+                                <span class="mini-pill"
+                                    style="background: rgba(220,150,50,0.06); border-color: rgba(220,150,50,0.2); color: #c4880a;"><i
+                                        class="fas fa-exclamation-triangle"></i> SCOPE</span>
+                                <span class="mini-pill"
+                                    style="background: rgba(90,80,150,0.06); border-color: rgba(90,80,150,0.12); color: #5a5096;"><i
+                                        class="fas fa-shield-alt"></i> STRATEGY</span>
+                            </div>
+                        </div>
+                        <div class="mini-section"
+                            style="background: #ffffff; border: 1px solid #e4e6ee; border-left: 3px solid #506ea0;">
+                            <div style="display:flex; gap: 8px;">
+                                <div style="flex: 1.5;">
+                                    <span class="mini-lbl" style="color: #506ea0;">Project Title</span>
+                                    <div class="mini-field"
+                                        style="background: #f0f1f6; border-color: #dde0e8; color: #a0a4b0;">Enter
+                                        high-level goal...</div>
+                                    <span class="mini-lbl" style="color: #506ea0;">Business Case</span>
+                                    <div class="mini-field"
+                                        style="background: #f0f1f6; border-color: #dde0e8; color: #a0a4b0; height: 30px;">
+                                        Why now?...</div>
+                                </div>
+                                <div class="mini-tip"
+                                    style="flex: 0.9; background: #faf5ee; border: 1px solid #ede4d4; border-left: 2px solid #c4880a; align-self: flex-start;">
+                                    <span class="mini-tip-tag" style="color: #c4880a;">🥋 MBB WISDOM</span>
+                                    <span style="color: #5a5560;">"Make the pain impossible to ignore."</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mini-metrics">
+                            <div class="mini-metric"
+                                style="background: rgba(80,110,160,0.06); border: 1px solid rgba(80,110,160,0.08);">
+                                <span class="mini-metric-val" style="color: #4060a0;">87%</span>
+                                <span class="mini-metric-lbl" style="color: #a0a4b0;">Audit</span>
+                            </div>
+                            <div class="mini-metric"
+                                style="background: rgba(30,130,80,0.05); border: 1px solid rgba(30,130,80,0.08);">
+                                <span class="mini-metric-val" style="color: #1e8250;">$90K</span>
+                                <span class="mini-metric-lbl" style="color: #a0a4b0;">Savings</span>
+                            </div>
+                            <div class="mini-metric"
+                                style="background: rgba(90,80,150,0.05); border: 1px solid rgba(90,80,150,0.08);">
+                                <span class="mini-metric-val" style="color: #5a5096;">FIT</span>
+                                <span class="mini-metric-lbl" style="color: #a0a4b0;">Strategic</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swatches">
+                <div class="sw" style="background: #eceef4; color: #8a8c96;">Sidebar</div>
+                <div class="sw" style="background: #f5f6fa; color: #7a7c86;">Canvas</div>
+                <div class="sw" style="background: #ffffff; color: #bbb;">Card</div>
+                <div class="sw" style="background: #506ea0; color: #fff;">Primary</div>
+                <div class="sw" style="background: #c4880a; color: #fff;">Wisdom</div>
+                <div class="sw" style="background: #1e8250; color: #fff;">Success</div>
+                <div class="sw" style="background: #c44848; color: #fff;">Alert</div>
+            </div>
+            <div class="rationale">
+                <div class="rationale-item" style="background: rgba(0,0,0,0.015);">
+                    <strong style="color: #506ea0;"><i class="fas fa-cloud"></i> Eye Comfort</strong>
+                    <span style="color: #7a7d88;">Cool lavender-white canvas — like a softly overcast sky. Eliminates
+                        yellow cast while staying gentle. Modern tech company feel.</span>
+                </div>
+                <div class="rationale-item" style="background: rgba(0,0,0,0.015);">
+                    <strong style="color: #c4880a;"><i class="fas fa-compass"></i> Smart Thinking</strong>
+                    <span style="color: #7a7d88;">Slate blue for logic and governance structures. Deep purple for
+                        strategic insights. Amber for expert wisdom. A corporate intelligence palette.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════ PALETTE C: SAGE MORNING ═════ -->
+        <div class="palette-card" onclick="pick(this,'morning')"
+            style="background: #f4f6f4; border: 1px solid #dce2dc; box-shadow: 0 2px 12px rgba(0,0,0,0.04);">
+            <div class="palette-name">
+                <h3 style="color: #2a3430;">🌿 Sage Morning</h3>
+                <span class="ptag"
+                    style="background: rgba(80,130,90,0.08); color: #50825a; border: 1px solid rgba(80,130,90,0.12);">CALMING</span>
+            </div>
+            <div class="mini-wrap">
+                <div class="mini-app" style="border: 1px solid #d5ddd6;">
+                    <div class="mini-sb" style="background: #e8ede9; border-right: 1px solid #d5ddd6;">
+                        <div class="mini-sb-logo" style="color: #50825a;">DMAIC</div>
+                        <div class="mini-sb-item" style="background: #50825a; color: #fff; border-radius: 5px;"><i
+                                class="fas fa-file-signature"></i> Charter</div>
+                        <div class="mini-sb-item" style="color: #92a096;"><i class="fas fa-book"></i> Guide</div>
+                        <div class="mini-sb-item" style="color: #92a096;"><i class="fas fa-brain"></i> Lab</div>
+                    </div>
+                    <div class="mini-ws" style="background: #f4f6f4;">
+                        <div class="mini-hdr">
+                            <h4 style="color: #1a2420;">Project Charter MASTER</h4>
+                            <div style="display:flex; gap:3px;">
+                                <span class="mini-pill"
+                                    style="background: rgba(190,140,50,0.06); border-color: rgba(190,140,50,0.18); color: #b08a30;"><i
+                                        class="fas fa-exclamation-triangle"></i> SCOPE</span>
+                                <span class="mini-pill"
+                                    style="background: rgba(80,120,140,0.06); border-color: rgba(80,120,140,0.12); color: #50788c;"><i
+                                        class="fas fa-shield-alt"></i> STRATEGY</span>
+                            </div>
+                        </div>
+                        <div class="mini-section"
+                            style="background: #fcfdfb; border: 1px solid #dce2dc; border-left: 3px solid #50825a;">
+                            <div style="display:flex; gap: 8px;">
+                                <div style="flex: 1.5;">
+                                    <span class="mini-lbl" style="color: #50825a;">Project Title</span>
+                                    <div class="mini-field"
+                                        style="background: #f0f3f0; border-color: #d5ddd6; color: #8a9a8e;">Enter
+                                        high-level goal...</div>
+                                    <span class="mini-lbl" style="color: #50825a;">Business Case</span>
+                                    <div class="mini-field"
+                                        style="background: #f0f3f0; border-color: #d5ddd6; color: #8a9a8e; height: 30px;">
+                                        Why now?...</div>
+                                </div>
+                                <div class="mini-tip"
+                                    style="flex: 0.9; background: #faf6ee; border: 1px solid #ede2cc; border-left: 2px solid #b08a30; align-self: flex-start;">
+                                    <span class="mini-tip-tag" style="color: #b08a30;">🥋 MBB WISDOM</span>
+                                    <span style="color: #5a5848;">"Make the pain impossible to ignore."</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mini-metrics">
+                            <div class="mini-metric"
+                                style="background: rgba(80,130,90,0.06); border: 1px solid rgba(80,130,90,0.06);">
+                                <span class="mini-metric-val" style="color: #3a7244;">87%</span>
+                                <span class="mini-metric-lbl" style="color: #8a9a8e;">Audit</span>
+                            </div>
+                            <div class="mini-metric"
+                                style="background: rgba(80,120,140,0.05); border: 1px solid rgba(80,120,140,0.06);">
+                                <span class="mini-metric-val" style="color: #50788c;">$90K</span>
+                                <span class="mini-metric-lbl" style="color: #8a9a8e;">Savings</span>
+                            </div>
+                            <div class="mini-metric"
+                                style="background: rgba(140,110,70,0.05); border: 1px solid rgba(140,110,70,0.06);">
+                                <span class="mini-metric-val" style="color: #8c6e46;">FIT</span>
+                                <span class="mini-metric-lbl" style="color: #8a9a8e;">Strategic</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swatches">
+                <div class="sw" style="background: #e8ede9; color: #6a7a6e;">Sidebar</div>
+                <div class="sw" style="background: #f4f6f4; color: #5a6a5e;">Canvas</div>
+                <div class="sw" style="background: #fcfdfb; color: #bbb;">Card</div>
+                <div class="sw" style="background: #50825a; color: #fff;">Primary</div>
+                <div class="sw" style="background: #b08a30; color: #fff;">Wisdom</div>
+                <div class="sw" style="background: #50788c; color: #fff;">Info</div>
+                <div class="sw" style="background: #b85050; color: #fff;">Alert</div>
+            </div>
+            <div class="rationale">
+                <div class="rationale-item" style="background: rgba(0,0,0,0.015);">
+                    <strong style="color: #50825a;"><i class="fas fa-leaf"></i> Eye Comfort</strong>
+                    <span style="color: #6a7a6e;">Minty off-white is the most restful canvas for the human eye. Green
+                        tones reduce cortisol. It's why hospitals use sage walls — it literally calms the nervous
+                        system.</span>
+                </div>
+                <div class="rationale-item" style="background: rgba(0,0,0,0.015);">
+                    <strong style="color: #b08a30;"><i class="fas fa-spa"></i> Smart Thinking</strong>
+                    <span style="color: #6a7a6e;">Nature's palette for focus: green for growth, teal for clarity, warm
+                        earth for grounded wisdom. Research shows 20% better creative problem-solving in green
+                        environments.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════ PALETTE D: SANDSTONE ═════ -->
+        <div class="palette-card" onclick="pick(this,'sandstone')"
+            style="background: #f8f5f0; border: 1px solid #e4ddd4; box-shadow: 0 2px 12px rgba(0,0,0,0.04);">
+            <div class="palette-name">
+                <h3 style="color: #3a3020;">🏛️ Sandstone</h3>
+                <span class="ptag"
+                    style="background: rgba(150,110,70,0.08); color: #966e46; border: 1px solid rgba(150,110,70,0.12);">EXECUTIVE</span>
+            </div>
+            <div class="mini-wrap">
+                <div class="mini-app" style="border: 1px solid #ddd6cc;">
+                    <div class="mini-sb" style="background: #efe9e0; border-right: 1px solid #ddd6cc;">
+                        <div class="mini-sb-logo" style="color: #7a6040;">DMAIC</div>
+                        <div class="mini-sb-item" style="background: #7a6040; color: #fff; border-radius: 5px;"><i
+                                class="fas fa-file-signature"></i> Charter</div>
+                        <div class="mini-sb-item" style="color: #a8a090;"><i class="fas fa-book"></i> Guide</div>
+                        <div class="mini-sb-item" style="color: #a8a090;"><i class="fas fa-brain"></i> Lab</div>
+                    </div>
+                    <div class="mini-ws" style="background: #f8f5f0;">
+                        <div class="mini-hdr">
+                            <h4 style="color: #2a2418;">Project Charter MASTER</h4>
+                            <div style="display:flex; gap:3px;">
+                                <span class="mini-pill"
+                                    style="background: rgba(180,80,40,0.06); border-color: rgba(180,80,40,0.18); color: #b45028;"><i
+                                        class="fas fa-exclamation-triangle"></i> SCOPE</span>
+                                <span class="mini-pill"
+                                    style="background: rgba(70,90,130,0.06); border-color: rgba(70,90,130,0.12); color: #465a82;"><i
+                                        class="fas fa-shield-alt"></i> STRATEGY</span>
+                            </div>
+                        </div>
+                        <div class="mini-section"
+                            style="background: #fffdf8; border: 1px solid #e4ddd4; border-left: 3px solid #7a6040;">
+                            <div style="display:flex; gap: 8px;">
+                                <div style="flex: 1.5;">
+                                    <span class="mini-lbl" style="color: #7a6040;">Project Title</span>
+                                    <div class="mini-field"
+                                        style="background: #f4f0ea; border-color: #ddd6cc; color: #a09888;">Enter
+                                        high-level goal...</div>
+                                    <span class="mini-lbl" style="color: #7a6040;">Business Case</span>
+                                    <div class="mini-field"
+                                        style="background: #f4f0ea; border-color: #ddd6cc; color: #a09888; height: 30px;">
+                                        Why now?...</div>
+                                </div>
+                                <div class="mini-tip"
+                                    style="flex: 0.9; background: #f0f2f8; border: 1px solid #d8dce8; border-left: 2px solid #465a82; align-self: flex-start;">
+                                    <span class="mini-tip-tag" style="color: #465a82;">🥋 MBB WISDOM</span>
+                                    <span style="color: #5a5448;">"Make the pain impossible to ignore."</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mini-metrics">
+                            <div class="mini-metric"
+                                style="background: rgba(122,96,64,0.06); border: 1px solid rgba(122,96,64,0.06);">
+                                <span class="mini-metric-val" style="color: #7a6040;">87%</span>
+                                <span class="mini-metric-lbl" style="color: #a09888;">Audit</span>
+                            </div>
+                            <div class="mini-metric"
+                                style="background: rgba(60,120,70,0.05); border: 1px solid rgba(60,120,70,0.06);">
+                                <span class="mini-metric-val" style="color: #3c7846;">$90K</span>
+                                <span class="mini-metric-lbl" style="color: #a09888;">Savings</span>
+                            </div>
+                            <div class="mini-metric"
+                                style="background: rgba(70,90,130,0.05); border: 1px solid rgba(70,90,130,0.06);">
+                                <span class="mini-metric-val" style="color: #465a82;">FIT</span>
+                                <span class="mini-metric-lbl" style="color: #a09888;">Strategic</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swatches">
+                <div class="sw" style="background: #efe9e0; color: #8a8278;">Sidebar</div>
+                <div class="sw" style="background: #f8f5f0; color: #7a7268;">Canvas</div>
+                <div class="sw" style="background: #fffdf8; color: #ccc;">Card</div>
+                <div class="sw" style="background: #7a6040; color: #fff;">Primary</div>
+                <div class="sw" style="background: #465a82; color: #fff;">Insight</div>
+                <div class="sw" style="background: #3c7846; color: #fff;">Success</div>
+                <div class="sw" style="background: #b84040; color: #fff;">Alert</div>
+            </div>
+            <div class="rationale">
+                <div class="rationale-item" style="background: rgba(0,0,0,0.015);">
+                    <strong style="color: #7a6040;"><i class="fas fa-scroll"></i> Eye Comfort</strong>
+                    <span style="color: #7a7268;">Warm linen tone — like aged parchment or Moleskine paper. The warmest,
+                        most natural reading surface. Eliminates all blue-light glare for maximum daytime
+                        comfort.</span>
+                </div>
+                <div class="rationale-item" style="background: rgba(0,0,0,0.015);">
+                    <strong style="color: #465a82;"><i class="fas fa-university"></i> Smart Thinking</strong>
+                    <span style="color: #7a7268;">Earth tones for authority. Navy-blue for analysis. The "boardroom
+                        notebook" feel — serious, grounded, and confident. Perfect for C-suite charter reviews.</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-bar">
+        <p>Select the palette that resonates, then tell me to apply it to your Project Charter MASTER.</p>
+        <button class="apply-btn" id="applyBtn" disabled>
+            <i class="fas fa-check"></i> &nbsp; SELECT A PALETTE ABOVE
+        </button>
+        <p id="choiceName"></p>
+    </div>
+
+    <script>
+        let current = null;
+        function pick(el, name) {
+            document.querySelectorAll('.palette-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            current = name;
+            const btn = document.getElementById('applyBtn');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paint-brush"></i> &nbsp; APPLY: ' + {
+                paper: 'PAPER CRAFT',
+                cotton: 'COTTON CLOUD',
+                morning: 'SAGE MORNING',
+                sandstone: 'SANDSTONE'
+            }[name];
+            const desc = {
+                paper: '📄 Paper Craft — Warm parchment with navy structure & gold wisdom',
+                cotton: '☁️ Cotton Cloud — Cool lavender-white with slate blue & deep purple',
+                morning: '🌿 Sage Morning — Minty green calm with teal clarity & earth wisdom',
+                sandstone: '🏛️ Sandstone — Warm linen executive feel with navy insights'
+            };
+            document.getElementById('choiceName').textContent = desc[name];
+        }
+    </script>
+</body>
+
+</html>
