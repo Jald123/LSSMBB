@@ -12,15 +12,80 @@
     <!-- Font Awesome for Premium Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ══════ SOFT GRAPHITE (Dark Mode - Default) ══════ */
         :root {
-            --primary: #1e3a8a;
-            --primary-hover: #1e40af;
-            --accent: #3b82f6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --glass-bg: rgba(15, 23, 42, 0.7);
-            --glass-border: rgba(59, 130, 246, 0.2);
-            --text-secondary: #94a3b8;
+            --primary: #6889b8;
+            --primary-hover: #5a78a8;
+            --accent: #6889b8;
+            --success: #6eaa78;
+            --warning: #c9a85a;
+            --danger: #c27070;
+            --warm: #b48c64;
+            --bg-canvas: #131417;
+            --bg-surface: #222329;
+            --bg-sidebar: #131417;
+            --glass-bg: rgba(34, 35, 41, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.04);
+            --text-primary: #d0d3d9;
+            --text-secondary: #7c8594;
+            --text-muted: #4a4f5a;
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --input-border: rgba(255, 255, 255, 0.04);
+            --wisdom-bg: rgba(210, 160, 80, 0.04);
+            --wisdom-border: rgba(210, 160, 80, 0.1);
+            --wisdom-accent: #c9a85a;
+            --wisdom-text: #9ca0a8;
+            --card-accent-border: #6889b8;
+            --card-hover-shadow: rgba(0, 0, 0, 0.4);
+            --sidebar-active-bg: rgba(100, 130, 200, 0.08);
+            --sidebar-active-text: #9aacc5;
+            --modal-bg: #131417;
+            --scrollbar-track: rgba(255, 255, 255, 0.02);
+            --scrollbar-thumb: rgba(104, 137, 184, 0.2);
+            --scope-bg: rgba(210, 160, 80, 0.06);
+            --scope-border: rgba(210, 160, 80, 0.2);
+            --scope-text: #c9a85a;
+            --strategy-bg: rgba(100, 130, 200, 0.06);
+            --strategy-border: rgba(100, 130, 200, 0.15);
+            --strategy-text: #7d9cc5;
+        }
+
+        /* ══════ COTTON CLOUD (Day Mode) ══════ */
+        [data-theme="light"] {
+            --primary: #506ea0;
+            --primary-hover: #405e90;
+            --accent: #506ea0;
+            --success: #1e8250;
+            --warning: #c4880a;
+            --danger: #c44848;
+            --warm: #5a5096;
+            --bg-canvas: #f5f6fa;
+            --bg-surface: #ffffff;
+            --bg-sidebar: #eceef4;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 0, 0, 0.06);
+            --text-primary: #1a1e2a;
+            --text-secondary: #5a5f6e;
+            --text-muted: #a0a4b0;
+            --input-bg: #f0f1f6;
+            --input-border: #dde0e8;
+            --wisdom-bg: #faf5ee;
+            --wisdom-border: #ede4d4;
+            --wisdom-accent: #c4880a;
+            --wisdom-text: #5a5560;
+            --card-accent-border: #506ea0;
+            --card-hover-shadow: rgba(0, 0, 0, 0.06);
+            --sidebar-active-bg: #506ea0;
+            --sidebar-active-text: #ffffff;
+            --modal-bg: #ffffff;
+            --scrollbar-track: rgba(0, 0, 0, 0.03);
+            --scrollbar-thumb: rgba(80, 110, 160, 0.2);
+            --scope-bg: rgba(220, 150, 50, 0.06);
+            --scope-border: rgba(220, 150, 50, 0.2);
+            --scope-text: #c4880a;
+            --strategy-bg: rgba(90, 80, 150, 0.06);
+            --strategy-border: rgba(90, 80, 150, 0.12);
+            --strategy-text: #5a5096;
         }
 
         /* MODERN SUITE LAYOUT */
@@ -29,13 +94,13 @@
             grid-template-columns: 280px 1fr;
             height: 100vh;
             overflow: hidden;
-            background: radial-gradient(circle at center, #1e293b 0%, #080c14 100%);
+            background: var(--bg-canvas);
         }
 
         .sidebar-left {
-            background: rgba(10, 10, 20, 0.6);
-            backdrop-filter: blur(15px);
-            border-right: 1px solid rgba(59, 130, 246, 0.1);
+            background: var(--bg-sidebar);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
             padding: 30px;
             display: flex;
             flex-direction: column;
@@ -54,20 +119,22 @@
         }
 
         .sidebar-title {
-            color: #FF6B35;
+            color: var(--primary);
             font-family: 'Orbitron';
-            font-size: 18px;
+            font-size: 20px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             margin-bottom: 5px;
         }
 
         .sidebar-label {
-            font-size: 11px;
-            color: var(--text-secondary);
+            font-size: 13px;
+            color: var(--primary);
             text-transform: uppercase;
+            letter-spacing: 1.5px;
             display: block;
             margin-bottom: 8px;
+            font-weight: 700;
         }
 
         /* INFOGRAPHIC MODAL (Professional Style) */
@@ -136,16 +203,18 @@
         }
 
         .info-card-pro h4 {
-            color: var(--accent);
-            font-size: 12px;
+            color: var(--primary);
+            font-size: 15px;
             text-transform: uppercase;
+            letter-spacing: 1.5px;
             margin: 0 0 10px;
+            font-weight: 800;
         }
 
         .info-card-pro p {
-            font-size: 15px;
+            font-size: 16px;
             line-height: 1.7;
-            color: #94a3b8;
+            color: var(--text-primary);
             margin: 0;
         }
 
@@ -175,8 +244,8 @@
 
         /* INPUT OVERRIDES */
         .card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(59, 130, 246, 0.15);
+            background: var(--bg-surface);
+            border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 30px;
@@ -184,33 +253,38 @@
         }
 
         .card:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.2);
-            border-color: rgba(59, 130, 246, 0.4);
-            background: rgba(30, 41, 59, 0.6);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px var(--card-hover-shadow);
+            border-color: var(--accent);
         }
 
         .premium-input,
         .premium-textarea {
             width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 15px !important;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-primary);
+            padding: 16px !important;
             border-radius: 12px;
             font-family: 'Inter';
+            font-size: 15px;
             line-height: 1.6;
             resize: vertical;
-            transition: 0.3s;
+            transition: all 0.3s;
             margin-bottom: 15px;
+        }
+
+        .premium-input::placeholder,
+        .premium-textarea::placeholder {
+            color: var(--text-muted);
         }
 
         .premium-input:focus,
         .premium-textarea:focus {
             outline: none;
             border-color: var(--accent);
-            background: rgba(255, 107, 53, 0.05);
-            box-shadow: 0 0 20px rgba(255, 107, 53, 0.1);
+            background: var(--input-bg);
+            box-shadow: 0 0 15px rgba(104, 137, 184, 0.1);
         }
 
         .copq-box {
@@ -1073,10 +1147,490 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
         }
+
+        /* ══════ THEME TOGGLE BUTTON ══════ */
+        .theme-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 9998;
+            background: var(--bg-surface);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px var(--card-hover-shadow);
+        }
+
+        .theme-toggle:hover {
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        .theme-toggle .fa-sun {
+            display: none;
+        }
+
+        [data-theme="light"] .theme-toggle .fa-sun {
+            display: inline;
+        }
+
+        [data-theme="light"] .theme-toggle .fa-moon {
+            display: none;
+        }
+
+        /* ══════ COTTON CLOUD — COMPREHENSIVE LIGHT OVERRIDES ══════ */
+        [data-theme="light"] body {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .sidebar-title {
+            color: var(--primary);
+        }
+
+        [data-theme="light"] .sidebar-label {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] h1,
+        [data-theme="light"] h2,
+        [data-theme="light"] h3,
+        [data-theme="light"] h4 {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .btn-primary {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+
+        [data-theme="light"] .btn-ghost {
+            color: var(--text-secondary) !important;
+            border-color: var(--glass-border) !important;
+        }
+
+        [data-theme="light"] .btn-ghost:hover {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+
+        [data-theme="light"] .phase-glow {
+            color: var(--primary) !important;
+        }
+
+        [data-theme="light"] .copq-box {
+            background: rgba(30, 130, 80, 0.05);
+            border-color: var(--success);
+        }
+
+        [data-theme="light"] .modal-overlay {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="light"] .modal-box {
+            background: var(--modal-bg);
+            border-color: var(--glass-border);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .info-overlay {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="light"] .info-box-premium {
+            background: var(--modal-bg);
+            border-color: var(--glass-border);
+        }
+
+        [data-theme="light"] .info-title-pro {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .info-card-pro {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: var(--glass-border);
+        }
+
+        [data-theme="light"] .info-card-pro p {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .guide-modal-box {
+            background: var(--modal-bg);
+            border-color: var(--glass-border);
+        }
+
+        [data-theme="light"] .guide-sidebar {
+            background: var(--bg-sidebar);
+            border-color: var(--glass-border);
+        }
+
+        [data-theme="light"] .guide-side-btn {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .guide-side-btn:hover,
+        [data-theme="light"] .guide-side-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        [data-theme="light"] .guide-main-content {
+            background: var(--bg-canvas);
+        }
+
+        [data-theme="light"] .mbb-table th {
+            background: rgba(0, 0, 0, 0.04);
+            color: var(--primary);
+        }
+
+        [data-theme="light"] .mbb-table td {
+            border-color: var(--glass-border);
+        }
+
+        [data-theme="light"] .example-box {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: var(--primary);
+        }
+
+        [data-theme="light"] .golden-standard-box {
+            background: linear-gradient(135deg, rgba(196, 136, 10, 0.08), rgba(196, 136, 10, 0.03));
+            border-color: rgba(196, 136, 10, 0.3);
+        }
+
+        [data-theme="light"] .golden-standard-box p {
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="light"] .critique-section {
+            background: rgba(196, 72, 72, 0.03);
+            border-color: rgba(196, 72, 72, 0.12);
+        }
+
+        [data-theme="light"] .critique-item {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: var(--glass-border);
+        }
+
+        [data-theme="light"] .stats-box {
+            background: rgba(80, 110, 160, 0.05);
+            border-color: rgba(80, 110, 160, 0.08);
+        }
+
+        [data-theme="light"] .stats-val {
+            color: var(--primary);
+        }
+
+        [data-theme="light"] .equation-box {
+            background: rgba(80, 110, 160, 0.05);
+            border-color: var(--primary);
+            box-shadow: none;
+        }
+
+        [data-theme="light"] .challenge-container {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: var(--primary);
+        }
+
+        [data-theme="light"] .challenge-question {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: var(--glass-border);
+        }
+
+        [data-theme="light"] .challenge-option {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: var(--glass-border);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .challenge-option:hover {
+            background: rgba(80, 110, 160, 0.06);
+            border-color: var(--primary);
+        }
+
+        [data-theme="light"] .mbb-bp-card {
+            background: rgba(80, 110, 160, 0.04);
+            border-color: rgba(80, 110, 160, 0.12);
+        }
+
+        [data-theme="light"] .bp-item {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        [data-theme="light"] .morale-wisdom-box {
+            background: rgba(90, 80, 150, 0.04);
+            border-color: rgba(90, 80, 150, 0.15);
+        }
+
+        [data-theme="light"] .morale-wisdom-box h4 {
+            color: var(--warm) !important;
+        }
+
+        [data-theme="light"] .morale-wisdom-box p {
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="light"] .temp-card {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: var(--glass-border);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .temp-card:hover {
+            background: rgba(30, 130, 80, 0.05);
+            border-color: var(--success);
+        }
+
+        [data-theme="light"] .workspace-footer {
+            background: linear-gradient(180deg, transparent, rgba(236, 238, 244, 0.5));
+            border-color: var(--glass-border);
+        }
+
+        [data-theme="light"] .footer-input-group {
+            background: var(--bg-surface);
+            border-color: var(--glass-border);
+        }
+
+        [data-theme="light"] .footer-input {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .zoom-controls {
+            background: var(--bg-surface) !important;
+            border-color: var(--glass-border) !important;
+        }
+
+        [data-theme="light"] .zoom-btn {
+            background: var(--bg-canvas) !important;
+            border-color: var(--glass-border) !important;
+            color: var(--text-secondary) !important;
+        }
+
+        [data-theme="light"] .zoom-value {
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="light"] .sticky-audit-trigger {
+            background: var(--bg-surface) !important;
+            border-color: var(--glass-border) !important;
+        }
+
+        [data-theme="light"] .premium-scroll::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        [data-theme="light"] .premium-scroll::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+        }
+
+        /* ══════ UNIVERSAL FONT READABILITY ══════ */
+        /* Ensure body text is always readable in both modes */
+        body {
+            color: var(--text-primary);
+        }
+
+        p,
+        span,
+        label,
+        div,
+        li,
+        td,
+        th {
+            color: inherit;
+        }
+
+        [data-theme="light"] .premium-input,
+        [data-theme="light"] .premium-textarea {
+            background: #f0f1f6 !important;
+            border-color: #dde0e8 !important;
+            color: #1a1e2a !important;
+        }
+
+        [data-theme="light"] .premium-input:focus,
+        [data-theme="light"] .premium-textarea:focus {
+            background: #ffffff !important;
+            border-color: #506ea0 !important;
+            box-shadow: 0 0 10px rgba(80, 110, 160, 0.2) !important;
+        }
+
+        /* ══════ LIGHT MODE — COMPREHENSIVE TEXT OVERRIDES ══════ */
+
+        /* 1. White text → dark text in light mode */
+        [data-theme="light"] [style*="color:white"],
+        [data-theme="light"] [style*="color: white"],
+        [data-theme="light"] [style*="color:#fff"],
+        [data-theme="light"] [style*="color: #fff"],
+        [data-theme="light"] [style*="color:#ffffff"],
+        [data-theme="light"] [style*="color: #ffffff"],
+        [data-theme="light"] [style*="color:#f8fafc"],
+        [data-theme="light"] [style*="color: #f8fafc"],
+        [data-theme="light"] [style*="color:#f0e6ff"],
+        [data-theme="light"] [style*="color:#e9d5ff"],
+        [data-theme="light"] [style*="color:#e0f2fe"],
+        [data-theme="light"] [style*="color:#fef3c7"] {
+            color: var(--text-primary) !important;
+        }
+
+        /* 2. Light gray text → readable dark gray */
+        [data-theme="light"] [style*="color:#94a3b8"],
+        [data-theme="light"] [style*="color: #94a3b8"],
+        [data-theme="light"] [style*="color:#cbd5e1"],
+        [data-theme="light"] [style*="color: #cbd5e1"],
+        [data-theme="light"] [style*="color:#d8b4fe"],
+        [data-theme="light"] [style*="color: #d8b4fe"],
+        [data-theme="light"] [style*="color:#e7e5e4"],
+        [data-theme="light"] [style*="color:#e2e8f0"] {
+            color: var(--text-secondary) !important;
+        }
+
+        /* 3. Dark-mode muted text → visible muted in light */
+        [data-theme="light"] [style*="color:#aaa"],
+        [data-theme="light"] [style*="color:#888"],
+        [data-theme="light"] [style*="color:#666"],
+        [data-theme="light"] [style*="color:#555"],
+        [data-theme="light"] [style*="color:#64748b"],
+        [data-theme="light"] [style*="color: #64748b"],
+        [data-theme="light"] [style*="color:#7c8594"] {
+            color: #5a5f6e !important;
+        }
+
+        /* 4. Accent-colored text that may be too bright on white */
+        [data-theme="light"] [style*="color:var(--accent)"] {
+            color: var(--primary) !important;
+        }
+
+        /* 5. Background overrides for dark-mode-designed sections */
+        [data-theme="light"] [style*="background:#0f172a"],
+        [data-theme="light"] [style*="background: #0f172a"],
+        [data-theme="light"] [style*="background:#080c14"],
+        [data-theme="light"] [style*="background: #080c14"] {
+            background: var(--bg-sidebar) !important;
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="light"] [style*="background:rgba(0,0,0,0.3)"],
+        [data-theme="light"] [style*="background: rgba(0,0,0,0.3)"],
+        [data-theme="light"] [style*="background:rgba(0, 0, 0, 0.3)"],
+        [data-theme="light"] [style*="background: rgba(0, 0, 0, 0.3)"],
+        [data-theme="light"] [style*="background:rgba(0,0,0,0.2)"],
+        [data-theme="light"] [style*="background: rgba(0, 0, 0, 0.2)"] {
+            background: rgba(0, 0, 0, 0.03) !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* 6. Dark-mode glassmorphism backgrounds → light equivalents */
+        [data-theme="light"] [style*="background:rgba(255, 255, 255, 0.03)"],
+        [data-theme="light"] [style*="background: rgba(255, 255, 255, 0.03)"],
+        [data-theme="light"] [style*="background:rgba(255,255,255,0.03)"],
+        [data-theme="light"] [style*="background:rgba(255, 255, 255, 0.05)"],
+        [data-theme="light"] [style*="background: rgba(255, 255, 255, 0.05)"] {
+            background: rgba(0, 0, 0, 0.02) !important;
+        }
+
+        /* 7. Border overrides */
+        [data-theme="light"] [style*="border-bottom:1px solid rgba(255,255,255,0.05)"],
+        [data-theme="light"] [style*="border-top: 1px solid rgba(255,255,255,0.05)"],
+        [data-theme="light"] [style*="border-top:1px solid rgba(255,255,255,0.05)"],
+        [data-theme="light"] [style*="border: 1px solid rgba(255,255,255,0.05)"],
+        [data-theme="light"] [style*="border:1px solid rgba(255,255,255,0.05)"],
+        [data-theme="light"] [style*="border: 1px solid rgba(255, 255, 255, 0.05)"],
+        [data-theme="light"] [style*="border: 1px solid rgba(255, 255, 255, 0.1)"],
+        [data-theme="light"] [style*="border:1px solid rgba(255,255,255,0.1)"],
+        [data-theme="light"] [style*="border-right: 1px solid rgba(255, 255, 255, 0.05)"],
+        [data-theme="light"] [style*="border-left: 1px solid rgba(255,255,255,0.1)"] {
+            border-color: var(--glass-border) !important;
+        }
+
+        /* 8. Header/section gradient backgrounds */
+        [data-theme="light"] [style*="background: linear-gradient(90deg, rgba(59, 130, 246, 0.1)"] {
+            background: linear-gradient(90deg, rgba(80, 110, 160, 0.06), transparent) !important;
+        }
+
+        [data-theme="light"] [style*="background: linear-gradient(180deg, transparent, rgba(15, 23, 42"] {
+            background: linear-gradient(180deg, transparent, rgba(236, 238, 244, 0.5)) !important;
+        }
+
+        [data-theme="light"] [style*="background: radial-gradient(circle at top right, rgba(59, 130, 246"] {
+            background: var(--bg-canvas) !important;
+        }
+
+        /* 9. Select / dropdown elements */
+        [data-theme="light"] select {
+            background: var(--bg-surface) !important;
+            border-color: var(--glass-border) !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* 10. Orbitron/accent font elements that use dark-mode colors */
+        [data-theme="light"] [style*="color:var(--accent)"],
+        [data-theme="light"] .sidebar-label,
+        [data-theme="light"] .audit-label-mini,
+        [data-theme="light"] .audit-val-mini {
+            color: var(--text-secondary) !important;
+        }
+
+        /* 11. Savings display (green) — ensure visible on white */
+        [data-theme="light"] #savingsDisplay {
+            color: var(--success) !important;
+            text-shadow: none !important;
+        }
+
+        /* 12. Audit grid in main workspace */
+        [data-theme="light"] .audit-grid [style*="background: rgba(0,0,0,0.3)"],
+        [data-theme="light"] .audit-grid [style*="background:rgba(0,0,0,0.3)"] {
+            background: var(--bg-canvas) !important;
+            border-color: var(--glass-border) !important;
+        }
+
+        /* 13. Fix any remaining text in scope creep modal */
+        [data-theme="light"] #scopeCreepModal .modal-box {
+            background: var(--bg-surface) !important;
+            border-color: var(--danger) !important;
+        }
+
+        [data-theme="light"] #scopeCreepModal [style*="background: #ef4444"],
+        [data-theme="light"] #scopeCreepModal [style*="background:#ef4444"] {
+            background: var(--danger) !important;
+        }
+
+        /* 14. Close button visibility */
+        [data-theme="light"] .close-pro {
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="light"] .close-pro:hover {
+            color: white;
+            background: rgba(196, 72, 72, 0.8);
+        }
+
+        /* 15. Wisdom tag gradient text */
+        [data-theme="light"] .wisdom-tag {
+            -webkit-text-fill-color: var(--warning);
+            color: var(--warning);
+        }
+
+        /* 16. Stats label visibility */
+        [data-theme="light"] .stats-label {
+            color: var(--text-secondary) !important;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- THEME TOGGLE -->
+    <button class="theme-toggle no-print" onclick="toggleTheme()" title="Toggle Day/Night Mode">
+        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun"></i>
+    </button>
 
     <!-- EXECUTIVE AUDIT SUMMARY (Strategic Layout) - Hidden on Screen, Show on Print -->
     <div id="print-summary-page" class="no-screen"
@@ -1283,7 +1837,7 @@
                         <option value="service">🖥️ Case: IT Service Resolution</option>
                     </select>
                     <button class="btn"
-                        style="background:rgba(239, 68, 68, 0.1); border:1px solid #ef4444; color:#ef4444; padding:8px 15px;"
+                        style="background:rgba(245, 158, 11, 0.1); border:1px solid #f59e0b; color:#fbbf24; padding:8px 15px;"
                         onclick="openScopeCreepModal()">
                         <i class="fas fa-exclamation-triangle"></i> SCOPE CREEP?
                     </button>
@@ -1325,9 +1879,11 @@
                             </div>
                         </div>
                         <div
-                            style="background:rgba(139, 92, 246, 0.05); border:1px solid rgba(139, 92, 246, 0.2); border-radius:15px; padding:15px; margin-top:20px;">
-                            <span class="wisdom-tag">🥋 MBB WISDOM</span>
-                            <p style="font-size:11px; color:#d8b4fe; line-height:1.5; font-style:italic; margin:0;">
+                            style="background:rgba(245, 158, 11, 0.05); border:1px solid rgba(245, 158, 11, 0.3); border-radius:15px; padding:15px; margin-top:20px; border-left: 4px solid #f59e0b;">
+                            <span
+                                style="font-family:'Orbitron'; font-size:10px; color:#fbbf24; display:block; margin-bottom:10px; letter-spacing:1px;">🥋
+                                MBB WISDOM</span>
+                            <p style="font-size:11px; color:#cbd5e1; line-height:1.5; font-style:italic; margin:0;">
                                 "Precision is the prerequisite for performance. If the Business Case doesn't bleed, the
                                 executives won't lead. Make the pain impossible to ignore."
                             </p>
@@ -1360,77 +1916,41 @@
             </div>
 
             <div class="card" style="border-top: 1px solid rgba(255,255,255,0.05);">
-                <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:30px; align-items: start;">
-                    <div>
-                        <h2 style="display:flex; align-items:center; gap:10px;">
-                            <i class="fas fa-microscope" style="color:var(--accent);"></i> 2. Execution Scope
-                        </h2>
-                        <p style="color:#aaa; font-size:12px; margin-bottom:20px;">Protect the project from scope creep
-                            by defining strict boundaries.</p>
+                <div>
+                    <h2 style="display:flex; align-items:center; gap:10px;">
+                        <i class="fas fa-microscope" style="color:var(--accent);"></i> 2. Execution Scope
+                    </h2>
+                    <p style="color:var(--text-secondary); font-size:14px; margin-bottom:20px;">Protect the project from
+                        scope creep
+                        by defining strict boundaries.</p>
 
-                        <div style="display:grid; gap:20px;">
-                            <div>
-                                <span class="sidebar-label">In-Scope (Focus Areas)</span>
-                                <textarea id="inScope" class="premium-textarea" rows="4"
-                                    placeholder="Processes, specific departments, or machines to be optimized..."></textarea>
-                            </div>
-                            <div>
-                                <span class="sidebar-label">Out-of-Scope (Boundaries)</span>
-                                <textarea id="outScope" class="premium-textarea" rows="4"
-                                    placeholder="Exclusions to prevent resource dilution..."></textarea>
-                            </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
+                        <div>
+                            <span class="sidebar-label">In-Scope (Focus Areas)</span>
+                            <textarea id="inScope" class="premium-textarea" rows="4"
+                                placeholder="Processes, specific departments, or machines to be optimized..."></textarea>
                         </div>
-                    </div>
-
-                    <!-- MASTER ARCHITECT: SIPOC / VISUAL ARCHITECTURE -->
-                    <div
-                        style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 25px;">
-                        <div
-                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                            <h4 style="margin:0; font-family:'Orbitron'; color:var(--accent); font-size:14px;">VISUAL
-                                ARCHITECTURE</h4>
-                            <span class="badge"
-                                style="background:rgba(59,130,246,0.1); color:var(--accent); font-size:10px;">SIPOC
-                                LITE</span>
+                        <div>
+                            <span class="sidebar-label">Out-of-Scope (Boundaries)</span>
+                            <textarea id="outScope" class="premium-textarea" rows="4"
+                                placeholder="Exclusions to prevent resource dilution..."></textarea>
                         </div>
-                        <div
-                            style="background: white; border-radius: 12px; padding: 10px; min-height: 250px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                            <img src="charter_philosophy_infographic.png" alt="Project Architecture SIPOC"
-                                style="width: 100%; height: auto; border-radius: 8px;">
-                            <div
-                                style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 12px; border-radius: 6px; font-size: 10px;">
-                                ARCHITECT VIEW
-                            </div>
-                        </div>
-                        <p style="color:#888; font-size:11px; margin-top:15px; font-style:italic;">
-                            *This diagram visualizes the high-level SIPOC (Supplier, Input, Process, Output, Customer)
-                            logic for your project.
-                        </p>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:40px; align-items: center;">
-                    <div>
-                        <h2 style="display:flex; align-items:center; gap:10px;">
-                            <i class="fas fa-users-cog" style="color:var(--accent);"></i> 3. Governance Team
-                        </h2>
-                        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:15px; margin-top:20px;">
-                            <div><span class="sidebar-label">Executive Sponsor</span><input type="text" id="sponsor"
-                                    class="premium-input"></div>
-                            <div><span class="sidebar-label">Process Owner</span><input type="text" id="processOwner"
-                                    class="premium-input"></div>
-                            <div><span class="sidebar-label">Lead Belt</span><input type="text" id="beltName"
-                                    class="premium-input"></div>
-                        </div>
-                    </div>
-                    <div
-                        style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
-                        <img src="stakeholder_influence_logic.png" alt="Stakeholder Influence Matrix"
-                            style="width: 100%; height: auto; border-radius: 6px; cursor: pointer;"
-                            onclick="explain('governance')">
-                        <div style="font-size: 9px; color: #666; margin-top: 5px;">STAKEHOLDER LOGIC</div>
+                <div>
+                    <h2 style="display:flex; align-items:center; gap:10px;">
+                        <i class="fas fa-users-cog" style="color:var(--accent);"></i> 3. Governance Team
+                    </h2>
+                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:25px; margin-top:20px;">
+                        <div><span class="sidebar-label">Executive Sponsor</span><input type="text" id="sponsor"
+                                class="premium-input"></div>
+                        <div><span class="sidebar-label">Process Owner</span><input type="text" id="processOwner"
+                                class="premium-input"></div>
+                        <div><span class="sidebar-label">Lead Belt</span><input type="text" id="beltName"
+                                class="premium-input"></div>
                     </div>
                 </div>
             </div>
@@ -2953,24 +3473,24 @@
 
             grid.innerHTML = `
                 <div class="info-card-pro animate-up" style="animation-delay: 0.1s;">
-                    <i class="fas fa-file-signature" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <i class="fas fa-file-signature" style="font-size: 28px; color: var(--primary); margin-bottom: 15px;"></i>
                     <h4>What is it?</h4>
-                    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">The Project Charter is the foundational contract between the team and leadership. It defines scope, goals, and authority.</p>
+                    <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7;">The Project Charter is the foundational contract between the team and leadership. It defines scope, goals, and authority.</p>
                 </div>
                 <div class="info-card-pro animate-up" style="animation-delay: 0.2s;">
-                    <i class="fas fa-compass" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <i class="fas fa-compass" style="font-size: 28px; color: var(--primary); margin-bottom: 15px;"></i>
                     <h4>Why use it?</h4>
-                    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">To prevent scope creep and ensure executive alignment. It provides the "North Star" for the entire DMAIC journey.</p>
+                    <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7;">To prevent scope creep and ensure executive alignment. It provides the "North Star" for the entire DMAIC journey.</p>
                 </div>
                 <div class="info-card-pro animate-up" style="animation-delay: 0.3s;">
-                    <i class="fas fa-calendar-check" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <i class="fas fa-calendar-check" style="font-size: 28px; color: var(--primary); margin-bottom: 15px;"></i>
                     <h4>When to add?</h4>
-                    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">Initiated at the start of the <strong>Define</strong> phase, and updated if scope shifts significantly (>20%).</p>
+                    <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7;">Initiated at the start of the <strong>Define</strong> phase, and updated if scope shifts significantly (>20%).</p>
                 </div>
                 <div class="info-card-pro animate-up" style="animation-delay: 0.4s;">
-                    <i class="fas fa-shield-halved" style="font-size: 24px; color: var(--accent); margin-bottom: 15px;"></i>
+                    <i class="fas fa-shield-halved" style="font-size: 28px; color: var(--primary); margin-bottom: 15px;"></i>
                     <h4>MBB Power Tip</h4>
-                    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">Never start data collection without a signed charter. It is your legal shield against competing organizational interests.</p>
+                    <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.7;">Never start data collection without a signed charter. It is your legal shield against competing organizational interests.</p>
                 </div>
             `;
             modal.style.display = 'flex';
@@ -3133,6 +3653,25 @@
                 timestamp: new Date().toISOString()
             }));
         }
+        // --- THEME TOGGLE SYSTEM ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            if (current === 'light') {
+                html.removeAttribute('data-theme');
+                localStorage.setItem('lss-charter-theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('lss-charter-theme', 'light');
+            }
+        }
+        // Restore saved theme on load
+        (function () {
+            const saved = localStorage.getItem('lss-charter-theme');
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
     </script>
 
     <script src="AssistantTools.js"></script>
