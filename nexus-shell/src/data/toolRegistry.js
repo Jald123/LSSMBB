@@ -204,7 +204,7 @@ export const toolRegistry = {
     },
     'gemba': {
         name: 'Gemba Walk: Waste ID',
-        src: '/04-STATISTICS-TOOLS/Tool_8Wastes_DOWNTIME.html',
+        src: '/04-STATISTICS-TOOLS/Tool_KaizenGemba_Premium.html',
         phase: 'Current State',
         category: 'LEAN',
         priority: 'PRIORITY 1',

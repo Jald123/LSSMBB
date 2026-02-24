@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Advanced Header/Footer Concepts</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #0a0a0e;
+            --text-main: #e2e8f0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            padding-bottom: 100px;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 36px;
+            color: #fff;
+            margin-top: 60px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 60px;
+            font-size: 16px;
+        }
+
+        .showcase-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+
+        .example-block {
+            border-radius: 20px;
+            overflow: hidden;
+            background: #111;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .example-title {
+            padding: 15px 25px;
+            background: #1a1a24;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .example-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 400;
+            letter-spacing: normal;
+        }
+
+        .content-placeholder {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.1);
+            font-style: italic;
+            font-size: 18px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Common Header/Footer Base Styles */
+        .header-base {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-base {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-sizing: border-box;
+            font-size: 12px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 1. HOLOGRAPHIC GLASS (Extreme Blur & Colored Glow) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex1 {
+            background: radial-gradient(circle at 20% 50%, rgba(121, 40, 202, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 80% 50%, rgba(0, 212, 255, 0.2) 0%, transparent 40%),
+                #0a0a0f;
+        }
+
+        .ex1 .header-base {
+            background: rgba(20, 20, 30, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .ex1 .logo {
+            font-family: 'Orbitron';
+            font-size: 18px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #00d4ff, #7928ca);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ex1 .nav-links {
+            display: flex;
+            gap: 30px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .ex1 .nav-links span {
+            color: #94a3b8;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .ex1 .nav-links span:hover,
+        .ex1 .nav-links span.active {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .ex1 .glow-btn {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .ex1 .glow-btn:hover {
+            background: #00d4ff;
+            color: #000;
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
+        }
+
+        .ex1 .footer-base {
+            background: rgba(20, 20, 30, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+        }
+
+        .ex1 .footer-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .ex1 .holo-badge {
+            background: linear-gradient(90deg, rgba(121, 40, 202, 0.2), rgba(0, 212, 255, 0.2));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Orbitron';
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 2. LIQUID AURORA (Moving gradient backgrounds) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex2 {
+            background: #000;
+        }
+
+        .ex2 .header-base {
+            background: linear-gradient(45deg, #ff007f, #7928ca, #00d4ff);
+            background-size: 300% 300%;
+            animation: aurora 10s ease infinite;
+            color: #fff;
+            border-bottom: none;
+            box-shadow: 0 10px 40px rgba(121, 40, 202, 0.3);
+        }
+
+        @keyframes aurora {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .ex2 .header-icon {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .ex2 .header-icon:hover {
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .ex2 .search-pill {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 30px;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 250px;
+        }
+
+        .ex2 .search-pill input {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            font-family: 'Inter';
+        }
+
+        .ex2 .search-pill input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .ex2 .footer-base {
+            background: #111;
+            border-top: 2px solid transparent;
+            border-image: linear-gradient(45deg, #ff007f, #7928ca, #00d4ff) 1;
+            color: #ccc;
+        }
+
+        .ex2 .footer-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .ex2 .stat-bar-container {
+            width: 80px;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .ex2 .stat-bar-fill {
+            height: 100%;
+            width: 65%;
+            background: linear-gradient(90deg, #ff007f, #00d4ff);
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 3. CYBERPUNK HUD (Angled cuts, high contrast) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex3 {
+            background: #07090f;
+        }
+
+        .ex3 .header-base {
+            background: #0f1423;
+            border-bottom: 2px solid #00f0ff;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 250px 100%, 230px 80%, 0 80%);
+            height: 70px;
+            padding-bottom: 10px;
+        }
+
+        .ex3 .cyber-logo {
+            font-family: 'Orbitron';
+            font-size: 20px;
+            font-weight: 900;
+            color: #00f0ff;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .ex3 .cyber-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .ex3 .cyber-item {
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 5px 15px;
+            font-family: 'Orbitron';
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+            transform: skewX(-15deg);
+        }
+
+        .ex3 .cyber-item span {
+            display: inline-block;
+            transform: skewX(15deg);
+        }
+
+        .ex3 .cyber-item:hover,
+        .ex3 .cyber-item.active {
+            background: #00f0ff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+        }
+
+        .ex3 .footer-base {
+            background: #0f1423;
+            border-top: 2px solid #ff0055;
+            clip-path: polygon(0 20%, 230px 20%, 250px 0, 100% 0, 100% 100%, 0 100%);
+            height: 60px;
+            padding-top: 10px;
+            color: #00f0ff;
+            font-family: 'Orbitron';
+        }
+
+        .ex3 .footer-right {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .ex3 .cyber-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            background: rgba(255, 0, 85, 0.1);
+            border: 1px solid rgba(255, 0, 85, 0.3);
+            padding: 4px 10px;
+            color: #ff0055;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 4. FLOATING DOCK (Mac-OS inspired floating elements) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex4 {
+            background: #e2e8f0;
+        }
+
+        /* Light background for contrast */
+        .ex4 .content-placeholder {
+            color: rgba(0, 0, 0, 0.1);
+        }
+
+        .ex4 .header-base {
+            background: transparent;
+            /* Wrapper is transparent */
+            padding: 20px;
+        }
+
+        .ex4 .floating-island {
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 1);
+            color: #1e293b;
+        }
+
+        .ex4 .mac-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ex4 .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .ex4 .dot.r {
+            background: #ff5f56;
+        }
+
+        .ex4 .dot.y {
+            background: #ffbd2e;
+        }
+
+        .ex4 .dot.g {
+            background: #27c93f;
+        }
+
+        .ex4 .island-title {
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .ex4 .island-tools {
+            display: flex;
+            gap: 15px;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .ex4 .island-tools i {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .ex4 .island-tools i:hover {
+            color: #0f172a;
+        }
+
+        .ex4 .footer-base {
+            background: transparent;
+            padding: 20px;
+        }
+
+        .ex4 .floating-footer {
+            width: 100%;
+            height: 100%;
+            background: #1e293b;
+            /* Dark footer */
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            color: #f8fafc;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .ex4 .sync-pulse {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .ex4 .pulse-ring {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            70% {
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 5. NEUMORPHIC ELEGANCE (Soft, extruded UI) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex5 {
+            background: #e0e5ec;
+        }
+
+        .ex5 .content-placeholder {
+            color: rgba(0, 0, 0, 0.1);
+        }
+
+        .ex5 .header-base {
+            background: #e0e5ec;
+            box-shadow: 9px 9px 16px rgb(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.8);
+            color: #4b5563;
+        }
+
+        .ex5 .neu-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e5ec;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 5px 5px 10px rgb(163, 177, 198, 0.6), -5px -5px 10px rgba(255, 255, 255, 0.8);
+            transition: 0.2s;
+            color: #6b7280;
+        }
+
+        .ex5 .neu-btn:active,
+        .ex5 .neu-btn.pressed {
+            box-shadow: inset 5px 5px 10px rgb(163, 177, 198, 0.6), inset -5px -5px 10px rgba(255, 255, 255, 0.8);
+            color: #3b82f6;
+        }
+
+        .ex5 .neu-title {
+            font-weight: 800;
+            font-size: 16px;
+            letter-spacing: 1px;
+            color: #374151;
+        }
+
+        .ex5 .neu-pill {
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+            color: #6b7280;
+            box-shadow: inset 5px 5px 10px rgb(163, 177, 198, 0.4), inset -5px -5px 10px rgba(255, 255, 255, 0.6);
+        }
+
+        .ex5 .footer-base {
+            background: #e0e5ec;
+            box-shadow: 0 -4px 10px rgb(163, 177, 198, 0.3);
+            color: #6b7280;
+        }
+
+        .ex5 .neu-progress {
+            width: 150px;
+            height: 10px;
+            border-radius: 5px;
+            background: #e0e5ec;
+            box-shadow: inset 3px 3px 6px rgb(163, 177, 198, 0.6), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+        }
+
+        .ex5 .neu-progress-fill {
+            height: 100%;
+            width: 78%;
+            background: #3b82f6;
+            border-radius: 5px;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 6. DARK STEALTH (Deep black, purple/cyan micro-glows) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex6 {
+            background: #050505;
+        }
+
+        .ex6 .header-base {
+            background: #0a0a0a;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .ex6 .stealth-logo {
+            font-family: 'Orbitron';
+            font-weight: 900;
+            font-size: 18px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ex6 .stealth-logo i {
+            color: #a855f7;
+            filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
+        }
+
+        .ex6 .stealth-nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .ex6 .stealth-link {
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            transition: 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .ex6 .stealth-link:hover,
+        .ex6 .stealth-link.active {
+            color: #fff;
+        }
+
+        .ex6 .stealth-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -21px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #06b6d4;
+            box-shadow: 0 -2px 10px rgba(6, 182, 212, 0.8);
+        }
+
+        .ex6 .profile-ring {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(45deg, #a855f7, #06b6d4);
+        }
+
+        .ex6 .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #222;
+            border: 2px solid #0a0a0a;
+            box-sizing: border-box;
+        }
+
+        .ex6 .footer-base {
+            background: #0a0a0a;
+            border-top: 1px solid #1a1a1a;
+            color: #555;
+        }
+
+        .ex6 .stealth-badge {
+            background: #111;
+            border: 1px solid #222;
+            padding: 4px 12px;
+            border-radius: 4px;
+            color: #888;
+            font-weight: 600;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ex6 .stealth-badge i {
+            color: #06b6d4;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 7. PREMIUM DASHBOARD (Multi-line, enterprise feel) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex7 {
+            background: #f8fafc;
+        }
+
+        .ex7 .content-placeholder {
+            color: rgba(0, 0, 0, 0.1);
+        }
+
+        .ex7 .header-base {
+            height: auto;
+            flex-direction: column;
+            padding: 0;
+            background: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            color: #0f172a;
+        }
+
+        .ex7 .top-tier {
+            width: 100%;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .ex7 .bottom-tier {
+            width: 100%;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            box-sizing: border-box;
+            background: #f1f5f9;
+            gap: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .ex7 .enterprise-logo {
+            font-weight: 900;
+            font-size: 18px;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+        }
+
+        .ex7 .global-search {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 6px 15px;
+            border-radius: 6px;
+            width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #94a3b8;
+        }
+
+        .ex7 .tab {
+            cursor: pointer;
+            padding: 12px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+
+        .ex7 .tab:hover,
+        .ex7 .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+
+        .ex7 .footer-base {
+            background: #fff;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        .ex7 .footer-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .ex7 .version-tag {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 8. GAMING / ESPORTS (Slanted, bold, high contrast orange) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex8 {
+            background: rgba(0, 0, 0, 0.9);
+            background-image: radial-gradient(#222 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .ex8 .header-base {
+            background: #111;
+            border-bottom: 3px solid #f97316;
+            text-transform: uppercase;
+        }
+
+        .ex8 .game-title {
+            background: #f97316;
+            color: #000;
+            font-family: 'Orbitron';
+            font-weight: 900;
+            font-size: 16px;
+            padding: 10px 30px;
+            transform: skewX(-20deg);
+            margin-left: 20px;
+        }
+
+        .ex8 .game-title span {
+            display: inline-block;
+            transform: skewX(20deg);
+        }
+
+        .ex8 .game-nav {
+            display: flex;
+            gap: 5px;
+        }
+
+        .ex8 .game-btn {
+            background: #222;
+            color: #ccc;
+            font-family: 'Orbitron';
+            font-weight: 700;
+            font-size: 12px;
+            padding: 10px 20px;
+            transform: skewX(-20deg);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .ex8 .game-btn span {
+            display: inline-block;
+            transform: skewX(20deg);
+        }
+
+        .ex8 .game-btn:hover,
+        .ex8 .game-btn.active {
+            background: #ea580c;
+            color: #fff;
+        }
+
+        .ex8 .footer-base {
+            background: #111;
+            border-top: 1px solid #333;
+            color: #888;
+            font-family: 'Orbitron';
+            font-weight: 700;
+        }
+
+        .ex8 .ping-monitor {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #22c55e;
+        }
+
+        .ex8 .bars {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+            height: 12px;
+        }
+
+        .ex8 .bar {
+            width: 3px;
+            background: #22c55e;
+            border-radius: 1px;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 9. CRYSTAL PRISM (Glass with multi-color refractions) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex9 {
+            background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') center/cover;
+            position: relative;
+        }
+
+        .ex9::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .ex9 .header-base {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .ex9 .glass-logo {
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 4px;
+        }
+
+        .ex9 .glass-logo b {
+            font-weight: 800;
+        }
+
+        .ex9 .glass-search {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 15px;
+            color: #fff;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ex9 .glass-search input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-family: 'Inter';
+        }
+
+        .ex9 .glass-search input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .ex9 .footer-base {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .ex9 .footer-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .ex9 .prism-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 10. COSMIC INFINITY (Deep space, glowing dots, ultra minimal) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex10 {
+            background: #020205;
+        }
+
+        .ex10 .header-base {
+            background: transparent;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+            position: relative;
+        }
+
+        .ex10 .header-base::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8a2be2, transparent);
+            box-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2;
+        }
+
+        .ex10 .cosmic-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ex10 .orb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #8a2be2;
+            box-shadow: 0 0 15px #8a2be2, inset -3px -3px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .ex10 .logo-text {
+            font-family: 'Orbitron';
+            font-weight: 500;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .ex10 .cosmic-nav {
+            display: flex;
+            gap: 40px;
+        }
+
+        .ex10 .cosmic-link {
+            color: #5c5c77;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .ex10 .cosmic-link:hover,
+        .ex10 .cosmic-link.active {
+            color: #e2e8f0;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        .ex10 .footer-base {
+            background: transparent;
+            border-top: 1px solid rgba(138, 43, 226, 0.1);
+            color: #5c5c77;
+        }
+
+        .ex10 .stellar-data {
+            display: flex;
+            gap: 30px;
+            font-family: 'Orbitron';
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        .ex10 .data-node {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ex10 .data-dot {
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00d4ff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>10 MASTERPIECE ARCHITECTURES</h1>
+    <div class="subtitle">Highly Advanced • Animated • Premium Aesthetics</div>
+
+    <div class="showcase-container">
+
+        <!-- 1. HOLOGRAPHIC GLASS -->
+        <div class="example-block ex1">
+            <div class="example-title">01. Holographic Glass <span class="example-desc">Extreme blur, colored glow
+                    fields, floating text</span></div>
+            <header class="header-base">
+                <div class="logo">SYNAPSE</div>
+                <div class="nav-links">
+                    <span class="active">Dashboards</span>
+                    <span>Analytics</span>
+                    <span>Reports</span>
+                </div>
+                <button class="glow-btn"><i class="fas fa-bolt"></i> ENGAGE</button>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div>&copy; 2026 LSS Synapse System</div>
+                <div class="footer-right">
+                    <span class="holo-badge">LIVE SYNC ACTIVATED</span>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 2. LIQUID AURORA -->
+        <div class="example-block ex2">
+            <div class="example-title">02. Liquid Aurora <span class="example-desc">Animated gradient backgrounds,
+                    vibrant energy</span></div>
+            <header class="header-base">
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <i class="fas fa-bars header-icon"></i>
+                    <span
+                        style="font-family: 'Orbitron'; font-weight: 900; font-size: 18px; letter-spacing: 1px;">VORTEX</span>
+                </div>
+                <div class="search-pill">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search commands...">
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <i class="fas fa-bell header-icon"></i>
+                    <i class="fas fa-user-circle header-icon"></i>
+                </div>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div>Environment: Production Tier 1</div>
+                <div class="footer-right">
+                    <span>Performance Core</span>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar-fill"></div>
+                    </div>
+                    <span style="color: #00d4ff; font-weight: 700;">65%</span>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 3. CYBERPUNK HUD -->
+        <div class="example-block ex3">
+            <div class="example-title">03. Cyberpunk HUD <span class="example-desc">Angled clips, high contrast neon,
+                    tech-borders</span></div>
+            <header class="header-base">
+                <div class="cyber-logo">NEXUS_OS</div>
+                <div class="cyber-menu">
+                    <div class="cyber-item active"><span>// MODULE_1</span></div>
+                    <div class="cyber-item"><span>// SETTINGS</span></div>
+                </div>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div>SYS.VER. 9.4.2</div>
+                <div class="footer-right">
+                    <div class="cyber-stat"><i class="fas fa-exclamation-triangle"></i> ANOMALY ZERO</div>
+                    <div class="cyber-stat"
+                        style="background: rgba(0, 240, 255, 0.1); border-color: rgba(0, 240, 255, 0.3); color: #00f0ff;">
+                        <i class="fas fa-satellite-dish"></i> UPLINK_OK</div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 4. FLOATING DOCK -->
+        <div class="example-block ex4">
+            <div class="example-title" style="background:#fff; color:#1e293b; border-bottom:1px solid #e2e8f0;">04.
+                Floating Dock <span class="example-desc">Mac-OS inspired, rounded islands, isolated components</span>
+            </div>
+            <header class="header-base">
+                <div class="floating-island">
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <div class="mac-dots">
+                            <div class="dot r"></div>
+                            <div class="dot y"></div>
+                            <div class="dot g"></div>
+                        </div>
+                        <div class="island-title">Master Architect Workspace</div>
+                    </div>
+                    <div class="island-tools">
+                        <i class="fas fa-layer-group"></i>
+                        <i class="fas fa-border-all"></i>
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                </div>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div class="floating-footer">
+                    <div>Workspace Saved Locally</div>
+                    <div class="sync-pulse">
+                        <div class="pulse-ring"></div>
+                        Auto-Sync Active
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 5. NEUMORPHIC ELEGANCE -->
+        <div class="example-block ex5">
+            <div class="example-title" style="background: #e0e5ec; color: #4b5563; border-bottom: 1px solid #d1d9e6;">
+                05. Neumorphic Elegance <span class="example-desc">Soft extruded UI, physical depth, monochrome
+                    shadows</span></div>
+            <header class="header-base">
+                <div class="neu-btn"><i class="fas fa-arrow-left"></i></div>
+                <div class="neu-title">Project Charter Analysis</div>
+                <div class="neu-pill">Editing</div>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div>Phase Completion</div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="neu-progress">
+                        <div class="neu-progress-fill"></div>
+                    </div>
+                    <span style="font-weight: 800;">78%</span>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 6. DARK STEALTH -->
+        <div class="example-block ex6">
+            <div class="example-title">06. Dark Stealth <span class="example-desc">Deep black, subtle colored lights,
+                    ultra-clean</span></div>
+            <header class="header-base">
+                <div class="stealth-logo"><i class="fas fa-cube"></i> ENIGMA</div>
+                <div class="stealth-nav">
+                    <div class="stealth-link active">Overview</div>
+                    <div class="stealth-link">Integrations</div>
+                    <div class="stealth-link">Security</div>
+                </div>
+                <div class="profile-ring">
+                    <div class="profile-img"></div>
+                </div>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div>End-to-End Encryption</div>
+                <div class="stealth-badge"><i class="fas fa-shield-check"></i> SECURE COMMS</div>
+            </footer>
+        </div>
+
+        <!-- 7. PREMIUM DASHBOARD -->
+        <div class="example-block ex7">
+            <div class="example-title" style="background: #fff; color: #0f172a; border-bottom: 1px solid #e2e8f0;">07.
+                Premium Dashboard <span class="example-desc">Dual-tier header, enterprise structure, clean
+                    utility</span></div>
+            <header class="header-base">
+                <div class="top-tier">
+                    <div class="enterprise-logo">Acme Corp HQ</div>
+                    <div class="global-search"><i class="fas fa-search"></i> Search across organization...</div>
+                    <div style="display: flex; gap: 20px; color: #64748b;">
+                        <i class="fas fa-question-circle"></i>
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+                <div class="bottom-tier">
+                    <div class="tab active">Overview</div>
+                    <div class="tab">Financials</div>
+                    <div class="tab">Team Dynamics</div>
+                    <div class="tab">Settings</div>
+                </div>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div>Privacy Policy • Terms of Service</div>
+                <div class="footer-right">
+                    <span class="version-tag">ENTERPRISE v4.0</span>
+                    <span>Support ID: B7X-99</span>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 8. GAMING / ESPORTS -->
+        <div class="example-block ex8">
+            <div class="example-title">08. Gaming / HUD <span class="example-desc">Slanted geometry, bold typography,
+                    extreme contrast</span></div>
+            <header class="header-base">
+                <div class="game-title"><span>COMMAND CENTER</span></div>
+                <div class="game-nav">
+                    <div class="game-btn active"><span>TACTICS</span></div>
+                    <div class="game-btn"><span>ARMORY</span></div>
+                </div>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div>SYSTEM LOG: ALL SYSTEMS NOMINAL</div>
+                <div class="footer-right">
+                    <div class="ping-monitor">
+                        SERVER PING: 24MS
+                        <div class="bars">
+                            <div class="bar" style="height: 4px;"></div>
+                            <div class="bar" style="height: 8px;"></div>
+                            <div class="bar" style="height: 12px;"></div>
+                            <div class="bar" style="height: 12px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 9. CRYSTAL PRISM -->
+        <div class="example-block ex9">
+            <div class="example-title">09. Crystal Prism <span class="example-desc">Photo background, translucent glass,
+                    ethereal feel</span></div>
+            <header class="header-base">
+                <div class="glass-logo">AURA<b>PRISM</b></div>
+                <div class="glass-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Discover...">
+                </div>
+                <i class="fas fa-bars" style="font-size: 20px; color: #fff; cursor: pointer;"></i>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div>Photography by Unsplash</div>
+                <div class="footer-right">
+                    <span class="prism-tag">Visually Optimized</span>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 10. COSMIC INFINITY -->
+        <div class="example-block ex10">
+            <div class="example-title">10. Cosmic Infinity <span class="example-desc">Deep space dark, glowing accent
+                    lines, extreme minimalism</span></div>
+            <header class="header-base">
+                <div class="cosmic-logo">
+                    <div class="orb"></div>
+                    <div class="logo-text">A S T R A L</div>
+                </div>
+                <div class="cosmic-nav">
+                    <div class="cosmic-link active">Constellations</div>
+                    <div class="cosmic-link">Nebulae</div>
+                    <div class="cosmic-link">Galaxies</div>
+                </div>
+                <i class="fas fa-ellipsis-h" style="color: #5c5c77; cursor: pointer;"></i>
+            </header>
+            <div class="content-placeholder">Main Workspace Region</div>
+            <footer class="footer-base">
+                <div>Deep Space Network</div>
+                <div class="stellar-data">
+                    <div class="data-node">
+                        <div class="data-dot"></div> ALFA CE-3
+                    </div>
+                    <div class="data-node">
+                        <div class="data-dot" style="background:#ff007f; box-shadow: 0 0 5px #ff007f;"></div> BETA X-9
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

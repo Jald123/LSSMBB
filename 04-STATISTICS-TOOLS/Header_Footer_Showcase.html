@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header & Footer Showcase</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1c23;
+            color: white;
+            padding-bottom: 50px;
+        }
+
+        .showcase-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .example-block {
+            margin-bottom: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #111;
+            position: relative;
+        }
+
+        .example-title {
+            padding: 15px 20px;
+            background: #222;
+            font-family: 'Orbitron';
+            font-size: 14px;
+            color: #888;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .content-placeholder {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-style: italic;
+        }
+
+        /* Common Header/Footer Base Styles */
+        .header-base {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .footer-base {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            font-size: 11px;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 1. CYBER TEAL (Inspired by screenshot) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex1 .header-base {
+            background: #0B0F19;
+            border-bottom: 1px solid #1a2333;
+        }
+
+        .ex1 .left-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ex1 .back-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .ex1 .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .ex1 .title-area {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ex1 .phase {
+            color: #00e5ff;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ex1 .title {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .ex1 .center-pills {
+            display: flex;
+            background: #05080f;
+            border-radius: 20px;
+            padding: 3px;
+        }
+
+        .ex1 .pill {
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ex1 .pill.active {
+            background: #00e5ff;
+            color: #0B0F19;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+        }
+
+        .ex1 .icon-group {
+            display: flex;
+            gap: 15px;
+            color: #888;
+            align-items: center;
+        }
+
+        .ex1 .icon-group i {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .ex1 .icon-group i:hover {
+            color: #00e5ff;
+        }
+
+        .ex1 .footer-base {
+            background: #05080f;
+            color: #555;
+            border-top: 1px solid #111;
+        }
+
+        .ex1 .footer-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            font-family: 'Orbitron';
+            letter-spacing: 1px;
+        }
+
+        .ex1 .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #00e5ff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00e5ff;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 2. COTTON CLOUD (Light & Clean) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex2 {
+            background: #f5f6fa;
+        }
+
+        .ex2 .header-base {
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            color: #1a1e2a;
+        }
+
+        .ex2 .title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #1a1e2a;
+        }
+
+        .ex2 .phase {
+            color: #506ea0;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: rgba(80, 110, 160, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .ex2 .nav-links {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #5a5f6e;
+        }
+
+        .ex2 .nav-links span {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .ex2 .nav-links span:hover {
+            color: #506ea0;
+        }
+
+        .ex2 .nav-links span.active {
+            color: #506ea0;
+        }
+
+        .ex2 .nav-links span.active::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #506ea0;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .ex2 .footer-base {
+            background: #ffffff;
+            color: #5a5f6e;
+            border-top: 1px solid #dde0e8;
+        }
+
+        .ex2 .footer-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .ex2 .badge {
+            background: #1e8250;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 3. GRAPHITE GLASS (Frosted & Modern) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex3 {
+            background: url('https://www.transparenttextures.com/patterns/dark-matter.png') #131417;
+        }
+
+        .ex3 .header-base {
+            background: rgba(34, 35, 41, 0.7);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ex3 .logo {
+            font-family: 'Orbitron';
+            font-size: 16px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #6889b8, #a0b8d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ex3 .search-bar {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 250px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .ex3 .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #6889b8;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ex3 .footer-base {
+            background: rgba(19, 20, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #7c8594;
+        }
+
+        .ex3 .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ex3 .mini-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 15px;
+        }
+
+        .ex3 .bar {
+            width: 3px;
+            background: #6889b8;
+            border-radius: 1px;
+        }
+
+        /* ═════════════════════════════════════════════════════ */
+        /* 4. NEON FOCUS (Animated & Striking) */
+        /* ═════════════════════════════════════════════════════ */
+        .ex4 {
+            background: #000;
+        }
+
+        .ex4 .header-base {
+            background: #080808;
+            position: relative;
+        }
+
+        .ex4 .header-base::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #ff007f, #7928ca, #00d4ff);
+            background-size: 200% 200%;
+            animation: gradientMove 3s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .ex4 .btn-glow {
+            background: transparent;
+            border: 1px solid #7928ca;
+            color: #fff;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(121, 40, 202, 0.2);
+        }
+
+        .ex4 .btn-glow:hover {
+            background: #7928ca;
+            box-shadow: 0 0 20px rgba(121, 40, 202, 0.6);
+        }
+
+        .ex4 .footer-base {
+            background: #080808;
+            color: #444;
+            position: relative;
+        }
+
+        .ex4 .footer-base::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(121, 40, 202, 0), rgba(121, 40, 202, 0.5), rgba(121, 40, 202, 0));
+        }
+
+        .ex4 .footer-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            color: #888;
+            font-family: 'Orbitron';
+        }
+
+        .pulse-text {
+            animation: pulse 2s infinite;
+            color: #ff007f;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="showcase-container">
+
+        <h1 style="text-align: center; margin-bottom: 50px; font-family: 'Orbitron'; color: #fff;">Modern Header &
+            Footer Concepts</h1>
+
+        <!-- EXAMPLE 1: CYBER TEAL -->
+        <div class="example-block ex1">
+            <div class="example-title">1. CYBER TEAL (Ultra-Modern, Slim) <span>Idea: Minimalist focus mode</span></div>
+
+            <header class="header-base">
+                <div class="left-section">
+                    <div class="back-btn"><i class="fas fa-chevron-left"></i></div>
+                    <div class="title-area">
+                        <span class="phase">DEFINE PHASE</span>
+                        <span class="title">Project Triage & Scope</span>
+                    </div>
+                </div>
+
+                <div class="center-pills">
+                    <div class="pill active"><i class="fas fa-hammer"></i> DO</div>
+                    <div class="pill"><i class="fas fa-graduation-cap"></i> LEARN</div>
+                </div>
+
+                <div class="icon-group">
+                    <i class="fas fa-file-alt"></i>
+                    <i class="fas fa-folder"></i>
+                    <i class="fas fa-search"></i>
+                    <div style="width: 1px; height: 15px; background: #333; margin: 0 5px;"></div>
+                    <i class="fas fa-minus"></i>
+                    <i class="fas fa-home"></i>
+                    <i class="fas fa-plus"></i>
+                    <div style="width: 1px; height: 15px; background: #333; margin: 0 5px;"></div>
+                    <i class="fas fa-sun"></i>
+                    <span style="font-family:'Orbitron'; font-size:10px; font-weight:700;">AST-V2</span>
+                </div>
+            </header>
+
+            <div class="content-placeholder">Main Workspace Content area goes here...</div>
+
+            <footer class="footer-base">
+                <div class="footer-left">
+                    &copy; 2026 Master Architect Suite
+                </div>
+                <div class="footer-right">
+                    <span><i class="fas fa-project-diagram"></i> ACTIVE PROJECTS: 4</span>
+                    |
+                    <span>LATENCY: 12ms</span>
+                    |
+                    <span style="display: flex; align-items: center; gap: 6px; color: #00e5ff;">
+                        <div class="status-dot"></div> SYSTEM ONLINE
+                    </span>
+                </div>
+            </footer>
+        </div>
+
+
+        <!-- EXAMPLE 2: COTTON CLOUD -->
+        <div class="example-block ex2">
+            <div class="example-title" style="background: #fff; color: #555; border-bottom: 1px solid #eee;">2. COTTON
+                CLOUD (Clean, Day Mode) <span>Idea: High readability, professional</span></div>
+
+            <header class="header-base">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="phase">EXECUTE</div>
+                    <div class="title">Standard Operating Procedure</div>
+                </div>
+
+                <div class="nav-links">
+                    <span class="active">Overview</span>
+                    <span>Process Map</span>
+                    <span>Validation</span>
+                </div>
+
+                <div style="display: flex; gap: 15px; align-items: center; color: #5a5f6e;">
+                    <i class="fas fa-bell"></i>
+                    <i class="fas fa-cog"></i>
+                    <div
+                        style="width: 30px; height: 30px; border-radius: 8px; background: #506ea0; color: white; display: flex; justify-content: center; align-items: center; font-weight: 700; font-size: 12px;">
+                        JD</div>
+                </div>
+            </header>
+
+            <div class="content-placeholder" style="color: #aaa;">Main Workspace Content area goes here...</div>
+
+            <footer class="footer-base">
+                <div class="footer-left">
+                    Ref: SOP-HR-2026-v2.1
+                </div>
+                <div class="footer-right">
+                    <span><i class="fas fa-check-circle" style="color: #1e8250;"></i> Auto-Saved just now</span>
+                    <span class="badge">MBB Certified</span>
+                </div>
+            </footer>
+        </div>
+
+
+        <!-- EXAMPLE 3: GRAPHITE GLASS -->
+        <div class="example-block ex3">
+            <div class="example-title" style="background: rgba(0,0,0,0.5);">3. GRAPHITE GLASS (Frosted & Atmospheric)
+                <span>Idea: Deep focus, immersive</span></div>
+
+            <header class="header-base">
+                <div class="logo">LSS HUB</div>
+
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <span>Search projects...</span>
+                </div>
+
+                <div style="display: flex; gap: 15px; align-items: center; color: #888;">
+                    <i class="fas fa-chart-line"></i>
+                    <div style="width: 1px; height: 15px; background: rgba(255,255,255,0.1);"></div>
+                    <div class="user-avatar"></div>
+                </div>
+            </header>
+
+            <div class="content-placeholder">Main Workspace Content area goes here...</div>
+
+            <footer class="footer-base">
+                <div class="footer-left" style="display: flex; gap: 15px;">
+                    <span style="color: #6889b8;"><i class="fas fa-shield-alt"></i> Secure Session</span>
+                </div>
+                <div class="footer-right">
+                    <span>Server Load:</span>
+                    <div class="mini-chart">
+                        <div class="bar" style="height: 4px;"></div>
+                        <div class="bar" style="height: 8px;"></div>
+                        <div class="bar" style="height: 6px;"></div>
+                        <div class="bar" style="height: 12px; background: #c9a85a;"></div>
+                        <div class="bar" style="height: 5px;"></div>
+                    </div>
+                    <span>42%</span>
+                    <div style="width: 1px; height: 10px; background: rgba(255,255,255,0.1);"></div>
+                    <span style="font-size: 10px; text-transform: uppercase;">ENV: PROD</span>
+                </div>
+            </footer>
+        </div>
+
+
+        <!-- EXAMPLE 4: NEON FOCUS -->
+        <div class="example-block ex4">
+            <div class="example-title">4. NEON FOCUS (Vibrant animations) <span>Idea: High energy, attention
+                    grabbing</span></div>
+
+            <header class="header-base">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="color: #fff; font-weight: 800; font-family: 'Orbitron'; letter-spacing: 2px;">
+                        <i class="fas fa-bolt" style="color: #00d4ff;"></i> ADVANCED LAB
+                    </div>
+                </div>
+
+                <button class="btn-glow">INITIATE ANALYSIS</button>
+            </header>
+
+            <div class="content-placeholder">Main Workspace Content area goes here...</div>
+
+            <footer class="footer-base">
+                <div class="footer-left" style="font-family: 'Orbitron'; font-size: 10px;">
+                    OPERATION: IN PROGRESS
+                </div>
+                <div class="footer-right">
+                    <span class="pulse-text"><i class="fas fa-record-vinyl"></i> LIVE SYNC</span>
+                    <span style="color: #555;">|</span>
+                    <span id="clock" style="color: #00d4ff;">14:22:05 GMT</span>
+                </div>
+            </footer>
+        </div>
+
+    </div>
+
+    <script>
+        // Simple clock for ex4
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString() + ' GMT';
+        }, 1000);
+    </script>
+</body>
+
+</html>
