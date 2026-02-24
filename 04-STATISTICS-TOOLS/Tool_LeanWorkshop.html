@@ -587,8 +587,6 @@
         }
 
         .meta-box {
-            cursor: pointer;
-            cursor: pointer;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 8px;
@@ -612,35 +610,11 @@
             letter-spacing: 0.5px;
         }
 
-
-        .meta-box.active {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-            transform: translateY(-2px);
-        }
-
-        .meta-box.active .meta-value {
+        .meta-value {
             display: block;
             margin-top: 10px;
             padding-top: 10px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeIn 0.3s forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .meta-value {
-            display: none;
             font-size: 13px;
             color: var(--text-primary);
             line-height: 1.4;
@@ -978,7 +952,7 @@
                     // ➡️ RIGHT SIDE (70% - ORGANIZED THEMES)
                     html += '<div style="flex: 1; padding:10px; display:flex; flex-direction:column;">';
                     // Super Hero Header
-                    html += '<div style="background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); color: white; text-align: center; padding: 15px 30px; border-radius: 8px; font-family: \\'Orbitron\\', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(30,60,114,0.3); margin-bottom: 30px; text-transform: uppercase;">🏆 Organized Themes</div>';
+                    html += `<div style="background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); color: white; text-align: center; padding: 15px 30px; border-radius: 8px; font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(30,60,114,0.3); margin-bottom: 30px; text-transform: uppercase;">🏆 Organized Themes</div>`;
 
                     html += '<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; align-items:flex-start;">';
                     const colors = ['#f9e79f', '#aed6f1', '#f5b7b1', '#d2b4de', '#abebc6'];
@@ -7438,12 +7412,12 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
                 </div>
 
                 <div class="header-meta-grid">
-                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">What Is It?</span><div class="meta-value">${tool.what}</div></div>
-                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">Why Use It?</span><div class="meta-value">${tool.why}</div></div>
-                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">When To Use?</span><div class="meta-value">${tool.when}</div></div>
-                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">The Standard</span><div class="meta-value">${tool.standard}</div></div>
-                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">Interpretation</span><div class="meta-value">${tool.interp}</div></div>
-                    <div class="meta-box" onclick="this.classList.toggle('active')" style="cursor:pointer;"><span class="meta-label">Reference Values</span><div class="meta-value">${tool.ref}</div></div>
+                    <div class="meta-box"><span class="meta-label">What Is It?</span><div class="meta-value">${tool.what}</div></div>
+                    <div class="meta-box"><span class="meta-label">Why Use It?</span><div class="meta-value">${tool.why}</div></div>
+                    <div class="meta-box"><span class="meta-label">When To Use?</span><div class="meta-value">${tool.when}</div></div>
+                    <div class="meta-box"><span class="meta-label">The Standard</span><div class="meta-value">${tool.standard}</div></div>
+                    <div class="meta-box"><span class="meta-label">Interpretation</span><div class="meta-value">${tool.interp}</div></div>
+                    <div class="meta-box"><span class="meta-label">Reference Values</span><div class="meta-value">${tool.ref}</div></div>
                 </div>
 
             ${(() => {
