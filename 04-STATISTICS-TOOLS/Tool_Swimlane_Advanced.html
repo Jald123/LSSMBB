@@ -150,8 +150,8 @@
             flex: 1;
             background: #334155;
             overflow: auto;
-            /* align-items: center;  -- Removed to fix top clipping issue */
-            padding: 50px;
+            padding: 80px 100px;
+            /* Increased padding to prevent left labels and top border from clipping */
             position: relative;
         }
 
@@ -162,9 +162,9 @@
             box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.7);
             min-width: 1250px;
             position: relative;
-            transform-origin: top center;
-            margin: 0 auto;
-            /* Centering the pool surface without flex to prevent top clipping */
+            transform-origin: top left;
+            margin: 0;
+            /* Removed auto to prevent left-side clipping when viewport is small */
         }
 
         .lane-divider {
