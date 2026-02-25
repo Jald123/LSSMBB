@@ -68,7 +68,7 @@
         /* LAYOUT OVERRIDES */
         .app-grid {
             display: grid;
-            grid-template-columns: 260px 1fr;
+            grid-template-columns: 220px 1fr;
             gap: 20px;
             min-height: 90vh;
         }
@@ -227,9 +227,9 @@
 
         /* ZOOM CONTROLS */
         .zoom-controls {
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
             display: flex;
             align-items: center;
             background: rgba(15, 23, 42, 0.9);
@@ -378,7 +378,7 @@
         </div>
     </nav>
 
-    <div class="container" style="max-width: 1600px;">
+    <div class="container" style="max-width: 98%; padding: 0 15px; margin: 0 auto;">
 
         <!-- TOP NAV -->
         <div class="flex-between"
@@ -457,7 +457,7 @@
                 </div>
 
                 <!-- MAIN WORK GRID -->
-                <div id="workspaceGrid" style="display: grid; grid-template-columns: 350px 1fr; gap: 20px;">
+                <div id="workspaceGrid" style="display: grid; grid-template-columns: 280px 1fr; gap: 20px;">
 
                     <!-- INPUT CARD -->
                     <div class="input-card-wrapper">
@@ -518,6 +518,14 @@
                                 style="overflow-x: auto; background: #fff; color: #333; padding: 20px; border-radius: 4px; transition: transform 0.2s;">
                                 <!-- VISUALS GO HERE -->
                             </div>
+
+                            <!-- ZOOM TOOLS -->
+                            <div class="zoom-controls">
+                                <button class="zoom-btn" onclick="adjustZoom(-0.1)">-</button>
+                                <div class="zoom-value" id="zoomVal">1:1</div>
+                                <button class="zoom-btn" onclick="adjustZoom(0.1)">+</button>
+                                <button class="zoom-btn" onclick="resetZoom()" style="font-size:12px;">1:1</button>
+                            </div>
                         </div>
                     </div>
 
@@ -537,13 +545,6 @@
                     </button>
                 </div>
 
-                <!-- ZOOM TOOLS -->
-                <div class="zoom-controls">
-                    <button class="zoom-btn" onclick="adjustZoom(-0.1)">-</button>
-                    <div class="zoom-value" id="zoomVal">1:1</div>
-                    <button class="zoom-btn" onclick="adjustZoom(0.1)">+</button>
-                    <button class="zoom-btn" onclick="resetZoom()" style="font-size:12px;">1:1</button>
-                </div>
             </div>
         </div>
     </div>
@@ -689,6 +690,39 @@
     </style>
 
     <script>
+        // --- RACI Interactive Grid Functions (Global Scope) ---
+        window.raciState = { tasks: ['Task 1'], roles: ['Manager'], matrix: {} };
+        window.renderRaciGrid = function () {
+            const d = window.raciState;
+            let h = '<table style="width:100%; border-collapse:collapse; font-size:12px;"><tr><th style="padding:8px; background:#f4f6f7;">Task \\ Role</th>';
+            d.roles.forEach((r, i) => h += '<th style="padding:8px; background:#f4f6f7;">' + r + '</th>');
+            h += '</tr>';
+            d.tasks.forEach((t, ti) => {
+                h += '<tr><td style="padding:8px; background:#fff; border:1px solid #eee;">' + t + '</td>';
+                d.roles.forEach((r, ri) => {
+                    const val = d.matrix[ti + '-' + ri] || '';
+                    let bg = val == 'R' ? '#f9e79f' : (val == 'A' ? '#f5b7b1' : (val == 'C' ? '#aed6f1' : (val == 'I' ? '#d7bde2' : '#fff')));
+                    h += '<td class="raci-cell" style="background:' + bg + '; border:1px solid #eee;" onclick="cycleRaci(' + ti + ',' + ri + ')">' + val + '</td>';
+                });
+                h += '</tr>';
+            });
+            h += '</table>';
+            const gridEl = document.getElementById('raci-grid');
+            if (gridEl) gridEl.innerHTML = h;
+            const dataEl = document.getElementById('input-raci_data');
+            if (dataEl) dataEl.value = JSON.stringify(d);
+        };
+        window.cycleRaci = function (t, r) {
+            const map = { '': 'R', 'R': 'A', 'A': 'C', 'C': 'I', 'I': '' };
+            const k = t + '-' + r;
+            window.raciState.matrix[k] = map[window.raciState.matrix[k] || ''] || '';
+            window.renderRaciGrid();
+        };
+        window.addRaciTask = function () { window.raciState.tasks.push('New Task'); window.renderRaciGrid(); };
+        window.addRaciRole = function () { window.raciState.roles.push('New Role'); window.renderRaciGrid(); };
+        window.clearRaci = function () { window.raciState = { tasks: ['Task 1'], roles: ['Manager'], matrix: {} }; window.renderRaciGrid(); };
+        window.initRaciGrid = function () { setTimeout(window.renderRaciGrid, 500); };
+
         // --- TOOL CONFIGURATION DATABASE ---
         const toolDB = {
 
@@ -905,30 +939,55 @@
                     { title: "4. Label", desc: "Create a Header Card for each group that summarizes it." }
                 ],
                 inputs: [
+                    { id: 'meta_project_title', label: 'Project Title', type: 'text', placeholder: 'Enter project name...' },
                     { id: 'meta_created_by', label: 'Created By', type: 'text', placeholder: 'Your Name', definition: "Author.", example: "Belt Name" },
                     { id: 'meta_date', label: 'Date', type: 'text', placeholder: 'YYYY-MM-DD', definition: "Creation.", example: "2023-10-01" },
                     { id: 'data', label: 'Idea Groups (Format: Header: Idea, Idea...)', type: 'textarea', tip: 'Separate groups with blank lines.', placeholder: 'Service Issues:\nLate staff\nRude behavior\n\nProduct Defects:\nBroken seal\nWrong color', definition: "Grouped brainstorming ideas.", example: "Theme: Idea 1" }
                 ],
                 scenarios: {
-                    'health': { desc: "Patient Complaints Categorization", data: { meta_created_by: "QA Team", meta_date: "2023-11-20", data: "Service:\nRude nurse\nDoctor late\nLong wait\n\nFacilities:\nCold room\nHard bed\nNoisy hallway\n\nProcess:\nLost paperwork\nWrong bill" } },
-                    'mfg': { desc: "Production Delays", data: { meta_created_by: "Line Super", meta_date: "2023-10-10", data: "Machine:\nSensor fail\nMotor overheat\n\nMaterial:\nWrong part\nRusty metal\n\nMan:\nNew operator\nShift change" } },
-                    'service': { desc: "Customer Feedback", data: { meta_created_by: "Support Lead", meta_date: "2023-12-15", data: "UI/UX:\nHard to login\nButton hidden\n\nFeature:\nMissing dark mode\nExport to PDF\n\nBilling:\nDouble charge\nNo receipt" } }
+                    'health1': {
+                        desc: "Healthcare: ER Patient Flow (Ideal)",
+                        rationale: "Why this is ideal: Ideas are specifically grouped into actionable categories (Triage, Bed Placement, Discharge) with clear, granular issues that can be targeted for Kaizen improvements.",
+                        data: { meta_project_title: "ER Wait Time Reduction", meta_created_by: "Dr. Smith", meta_date: "2023-11-20", data: "Triage Process:\nDelays in initial assessment\nUnclear sorting criteria\nNo fast-track lane\n\nBed Placement:\nSlow bed turnover\nPoor communication with wards\nHousekeeping delays\n\nDischarge:\nWaiting for pharmacy\nDelay in doctor sign-off\nTransportation issues" }
+                    },
+                    'health2': {
+                        desc: "Healthcare: Medication Errors (Ideal)",
+                        rationale: "Why this is ideal: Groups represent distinct phases of the medication lifecycle, separating systemic/process issues from human factors.",
+                        data: { meta_project_title: "Medication Safety Initiative", meta_created_by: "QA Team", meta_date: "2023-12-01", data: "Prescribing Stage:\nIllegible handwriting\nSystem alert fatigue\nWrong dosage entered\n\nDispensing Stage:\nLook-alike drugs\nHigh workload in pharmacy\nLabel printing errors\n\nAdministration Stage:\nPatient unverified\nWrong time of day\nMissed dose" }
+                    },
+                    'health3': {
+                        desc: "Healthcare: Patient Satisfaction (Ideal)",
+                        rationale: "Why this is ideal: It covers multiple diverse touchpoints of the patient journey, capturing tangible elements of care quality that can be measured.",
+                        data: { meta_project_title: "HCAHPS Score Improvement", meta_created_by: "Patient Exp Officer", meta_date: "2024-01-15", data: "Communication:\nDoctors seem rushed\nConflicting information\nNurses unresponsive\n\nEnvironment:\nRoom too noisy at night\nUncomfortable chairs\nCleanliness issues\n\nFood/Amenities:\nFood is cold\nLimited dietary options\nTV not working" }
+                    },
+                    'health4': {
+                        desc: "Healthcare: Vague Issues (Poor)",
+                        rationale: "Why this is poor: The categories are too broad/'catch-all', and the ideas listed ('bad', 'everything is slow') lack the specific details needed to formulate a root cause.",
+                        data: { meta_project_title: "General Problems (Broad)", meta_created_by: "Staff", meta_date: "2024-02-01", data: "Bad Stuff:\nEverything is slow\nPeople are mad\nToo expensive\n\nOther Things:\nComputers are broken\nBad management\nTired staff" }
+                    },
+                    'health5': {
+                        desc: "Healthcare: Mixed Solutions & Problems (Poor)",
+                        rationale: "Why this is poor: It mixes root problems with proposed solutions. An affinity diagram should organize the raw 'Voice of Customer' or issues, not jump to concluding solutions.",
+                        data: { meta_project_title: "Lab Delays", meta_created_by: "Lab Tech", meta_date: "2024-02-05", data: "Testing Delays:\nLack of reagents\nMachine calibration slow\n\nThings we should do:\nBuy a new machine\nHire more people\nFire the vendor" }
+                    },
+                    'mfg': { desc: "Manufacturing: Production Delays", data: { meta_project_title: "Line 2 Capacity Analysis", meta_created_by: "Line Super", meta_date: "2023-10-10", data: "Machine:\nSensor fail\nMotor overheat\n\nMaterial:\nWrong part\nRusty metal\n\nMan:\nNew operator\nShift change" } },
+                    'service': { desc: "Service/Office: Customer Feedback", data: { meta_project_title: "Q4 App Feedback", meta_created_by: "Support Lead", meta_date: "2023-12-15", data: "UI/UX:\nHard to login\nButton hidden\n\nFeature:\nMissing dark mode\nExport to PDF\n\nBilling:\nDouble charge\nNo receipt" } }
                 },
                 render: (data) => {
                     let html = '<div style="font-family:sans-serif; min-height:400px; background:white;">';
                     html += `
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #34495e; padding-bottom:10px; margin-bottom:15px; padding: 20px 20px 0 20px;">
-                            <h3 style="color:#2c3e50; margin:0;">🧠 Affinity Diagram</h3>
-                            <div style="text-align:right; font-size:11px; color:#7f8c8d;">
-                                <strong>Created By:</strong> \${data.meta_created_by || 'Unknown'}<br>
-                                <strong>Date:</strong> \${data.meta_date || new Date().toLocaleDateString()}
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #34495e; padding-bottom:10px; margin-bottom:20px; padding: 20px 20px 0 20px;">
+                            <h3 style="color:#2c3e50; margin:0; font-size:24px;">🧠 Affinity Diagram: ${data.meta_project_title || 'Untitled Project'}</h3>
+                            <div style="text-align:right; font-size:13px; color:#7f8c8d;">
+                                <strong>Created By:</strong> ${data.meta_created_by || 'Unknown'}<br>
+                                <strong>Date:</strong> ${data.meta_date || new Date().toLocaleDateString()}
                             </div>
                         </div>`;
 
-                    const groups = data.data.split('\\n\\n').filter(g => g.trim());
+                    const groups = data.data.split('\n\n').filter(g => g.trim());
                     let allItems = [];
                     groups.forEach(g => {
-                        const lines = g.split('\\n').filter(l => l.trim());
+                        const lines = g.split('\n').filter(l => l.trim());
                         allItems.push(...lines.slice(1).map(it => it.replace(/^-/, '').trim()));
                     });
 
@@ -937,35 +996,35 @@
 
                     // ⬅️ LEFT SIDE (30% - RAW CHAOS)
                     html += '<div style="flex: 0 0 30%; position:relative; background:#f8fafc; border-radius:12px; border:2px dashed #cbd5e1; padding:20px; display:flex; flex-direction:column; align-items:center;">';
-                    html += '<div style="background:#e2e8f0; color:#475569; padding:5px 15px; border-radius:20px; font-size:11px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; margin-bottom:20px;">Raw Data (Chaos)</div>';
-                    html += '<div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; align-content:flex-start;">';
+                    html += '<div style="background:#e2e8f0; color:#475569; padding:8px 20px; border-radius:20px; font-size:13px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; margin-bottom:25px;">Raw Data (Chaos)</div>';
+                    html += '<div style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center; align-content:flex-start;">';
 
                     const chaosColors = ['#fdfefe', '#fef9e7', '#f4ecf7', '#e8f8f5'];
                     allItems.forEach((it, i) => {
                         const c = chaosColors[i % chaosColors.length];
-                        const r = Math.random() * 40 - 20; // Random rotation between -20 and 20 deg
-                        html += `<div style="background:\${c}; padding:8px; width:75px; height:75px; box-sizing:border-box; border-radius:1px; box-shadow:2px 2px 5px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; text-align:center; transform:rotate(\${r}deg); font-family:'Comic Sans MS', 'Marker Felt', sans-serif; font-size:10px; color:#334155; line-height:1.2; word-wrap:break-word; overflow:hidden;">\${it}</div>`;
+                        const r = Math.random() * 40 - 20;
+                        html += '<div style="background:' + c + '; padding:10px; width:90px; height:90px; box-sizing:border-box; border-radius:1px; box-shadow:2px 2px 5px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center; text-align:center; transform:rotate(' + r + 'deg); font-family:Comic Sans MS, Marker Felt, sans-serif; font-size:12px; color:#334155; line-height:1.3; overflow:hidden;">' + it + '</div>';
                     });
 
                     html += '</div></div>';
 
                     // ➡️ RIGHT SIDE (70% - ORGANIZED THEMES)
                     html += '<div style="flex: 1; padding:10px; display:flex; flex-direction:column;">';
-                    // Super Hero Header
-                    html += `<div style="background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); color: white; text-align: center; padding: 15px 30px; border-radius: 8px; font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(30,60,114,0.3); margin-bottom: 30px; text-transform: uppercase;">🏆 Organized Themes</div>`;
+                    html += '<div style="background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); color: white; text-align: center; padding: 18px 30px; border-radius: 8px; font-family: Orbitron, sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(30,60,114,0.3); margin-bottom: 30px; text-transform: uppercase;">🏆 Organized Themes</div>';
 
-                    html += '<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; align-items:flex-start;">';
+                    html += '<div style="display:flex; flex-wrap:wrap; gap:25px; justify-content:center; align-items:flex-start;">';
                     const colors = ['#f9e79f', '#aed6f1', '#f5b7b1', '#d2b4de', '#abebc6'];
                     groups.forEach((g, i) => {
-                        const lines = g.split('\\n').filter(l => l.trim());
+                        const lines = g.split('\n').filter(l => l.trim());
                         const header = lines[0].replace(/:$/, '').replace('Theme:', '').trim();
                         const items = lines.slice(1);
-                        html += `<div style="background:\${colors[i % colors.length]}; padding:0; width:200px; border-radius:2px; box-shadow:4px 4px 10px rgba(0,0,0,0.15); display:flex; flex-direction:column; transform:rotate(\${Math.random() * 4 - 2}deg); transition: transform 0.2s ease;">
-                        <div style="background:rgba(0,0,0,0.08); padding:10px; font-weight:bold; font-size:13px; text-align:center; border-bottom:1px solid rgba(0,0,0,0.1); color:#1e293b;">\${header}</div>
-                        <div style="padding:15px; flex:1;">
-                            <ul style="padding-left:20px; margin:0; font-family:'Comic Sans MS', 'Marker Felt', sans-serif; font-size:13px; color:#334155;">\${items.map(it => `< li style = "margin-bottom:6px;" >\${ it.replace(/^-/, '').trim() }</li > `).join('')}</ul>
-                        </div>
-                     </div>`;
+                        const itemsHtml = items.map(it => '<li style="margin-bottom:8px;">' + it.replace(/^-/, '').trim() + '</li>').join('');
+                        const rot = Math.random() * 4 - 2;
+                        html += '<div style="background:' + colors[i % colors.length] + '; padding:0; width:220px; border-radius:4px; box-shadow:4px 4px 10px rgba(0,0,0,0.15); display:flex; flex-direction:column; transform:rotate(' + rot + 'deg); transition: transform 0.2s ease;">';
+                        html += '<div style="background:rgba(0,0,0,0.08); padding:12px; font-weight:bold; font-size:15px; text-align:center; border-bottom:1px solid rgba(0,0,0,0.1); color:#1e293b;">' + header + '</div>';
+                        html += '<div style="padding:18px; flex:1;">';
+                        html += '<ul style="padding-left:22px; margin:0; font-family:Comic Sans MS, Marker Felt, sans-serif; font-size:14px; color:#334155; line-height:1.5;">' + itemsHtml + '</ul>';
+                        html += '</div></div>';
                     });
                     html += '</div></div>';
                     html += '</div></div>';
@@ -1077,37 +1136,7 @@
                                 <div style="margin-top:10px; font-size:10px; color:#999;">Tip: Click cells to cycle R->A->C->I.</div>
                             </div>
                             <input type="hidden" id="input-raci_data">
-                            <script>
-                                window.raciState = { tasks:['Task 1'], roles:['Manager'], matrix:{} };
-                                window.renderRaciGrid = function() {
-                                    const d = window.raciState;
-                                    let h = '<table style="width:100%; border-collapse:collapse; font-size:12px;"><tr><th style="padding:8px; background:#f4f6f7;">Task \\ Role</th>';
-                                    d.roles.forEach((r,i) => h += '<th style="padding:8px; background:#f4f6f7;">'+r+'</th>');
-                                    h += '</tr>';
-                                    d.tasks.forEach((t, ti) => {
-                                        h += '<tr><td style="padding:8px; background:#fff; border:1px solid #eee;">'+t+'</td>';
-                                        d.roles.forEach((r, ri) => {
-                                            const val = d.matrix[ti+'-'+ri] || '';
-                                            let bg = val=='R'?'#f9e79f':(val=='A'?'#f5b7b1':(val=='C'?'#aed6f1':(val=='I'?'#d7bde2':'#fff')));
-                                            h += '<td class="raci-cell" style="background:'+bg+'; border:1px solid #eee;" onclick="cycleRaci('+ti+','+ri+')">'+val+'</td>';
-                                        });
-                                        h += '</tr>';
-                                    });
-                                    h += '</table>';
-                                    document.getElementById('raci-grid').innerHTML = h;
-                                    document.getElementById('input-raci_data').value = JSON.stringify(d);
-                                };
-                                window.cycleRaci = function(t, r) {
-                                    const map = {'':'R', 'R':'A', 'A':'C', 'C':'I', 'I':''};
-                                    const k = t+'-'+r;
-                                    window.raciState.matrix[k] = map[window.raciState.matrix[k]||''] || '';
-                                    window.renderRaciGrid();
-                                };
-                                window.addRaciTask = function() { window.raciState.tasks.push('New Task'); window.renderRaciGrid(); };
-                                window.addRaciRole = function() { window.raciState.roles.push('New Role'); window.renderRaciGrid(); };
-                                window.clearRaci = function() { window.raciState = {tasks:['Task 1'], roles:['Manager'], matrix:{}}; window.renderRaciGrid(); };
-                                setTimeout(window.renderRaciGrid, 500); // Init
-                            <\/script>
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onload="if(!window.raciInitDone){window.raciInitDone=true;initRaciGrid();}">
                         `
                     }
                 ],
@@ -7580,26 +7609,18 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
             const select = document.getElementById('scenarioSelector');
             select.innerHTML = `<option value="custom">-- Custom Input --</option>`;
             if (tool.scenarios) {
-                const keys = ['health', 'mfg', 'service'];
-                keys.forEach(k => {
-                    if (tool.scenarios[k]) {
-                        let icon = '';
-                        if (k === 'mfg') icon = '';
-                        if (k === 'service') icon = 'Ã°Å¸ÂÂ¥';
-                        let label = tool.scenarios[k].desc;
-                        if (k === 'health') label = "Healthcare: " + label;
-                        if (k === 'mfg') label = "Manufacturing: " + label;
-                        if (k === 'service') label = "Service/Office: " + label;
-
-                        select.innerHTML += `<option value="${k}">${icon} ${label}</option>`;
-                    }
-                });
-
                 for (const [key, val] of Object.entries(tool.scenarios)) {
-                    if (!keys.includes(key) && key !== 'ex1' && key !== 'ex2') {
-                        let label = val.desc || key.toUpperCase();
-                        select.innerHTML += `<option value="${key}">Ã°Å¸â€ºÂ Ã¯Â¸Â </option>`;
-                    }
+                    if (key === 'ex1' || key === 'ex2') continue;
+                    let icon = '💡';
+                    if (key.startsWith('health') || (val.desc && val.desc.toLowerCase().includes('healthcare'))) icon = '🏥';
+                    else if (key.startsWith('mfg') || (val.desc && val.desc.toLowerCase().includes('manufactur'))) icon = '🏭';
+                    else if (key.startsWith('service') || (val.desc && val.desc.toLowerCase().includes('service'))) icon = '🏢';
+
+                    let label = val.desc || key.toUpperCase();
+                    if (!label.includes(':') && key.startsWith('health')) label = "Healthcare: " + label;
+                    if (!label.includes(':') && key.startsWith('mfg')) label = "Manufacturing: " + label;
+
+                    select.innerHTML += `<option value="${key}">${icon} ${label}</option>`;
                 }
             }
 
@@ -7627,20 +7648,34 @@ Ticket Closure | Help Desk:R, User:C, Manager:I`
                     const el = document.getElementById('input-' + f.id);
                     if (el) el.value = '';
                 });
+
+                const existingRat = document.getElementById('scenarioRationale');
+                if (existingRat) existingRat.style.display = 'none';
+
                 updateVisual();
                 return;
             }
 
             const scen = tool.scenarios[scenarioKey];
             if (scen) {
-                // Maybe update a small text under the dropdown
                 const descEl = document.createElement('div');
                 descEl.id = 'scenarioDesc';
                 descEl.style.fontSize = '12px'; descEl.style.color = 'var(--accent)'; descEl.style.marginBottom = '10px'; descEl.style.fontStyle = 'italic';
                 const sel = document.getElementById('scenarioSelector');
                 sel.parentNode.insertBefore(descEl, sel.nextSibling);
 
-                document.getElementById('scenarioDesc').innerText = "Loaded: " + scen.desc;
+                descEl.innerText = "Loaded: " + scen.desc;
+
+                // Rationale display logic
+                const ratEl = document.getElementById('scenarioRationale');
+                if (ratEl) {
+                    if (scen.rationale) {
+                        ratEl.innerHTML = `<strong>💡 Educator Note:</strong><br>` + scen.rationale;
+                        ratEl.style.display = 'block';
+                    } else {
+                        ratEl.style.display = 'none';
+                    }
+                }
 
                 // Fill Data
                 const data = scen.data;

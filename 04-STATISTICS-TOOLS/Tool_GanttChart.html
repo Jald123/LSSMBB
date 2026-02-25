@@ -368,18 +368,32 @@
         }
 
         .task-card {
-            background: white;
-            border: 1px solid #dee2e6;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s;
+            transition: 0.3s;
         }
 
         .task-card:hover {
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border-color: var(--accent);
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .task-card.level-1 {
+            margin-left: 20px;
+            border-left: 3px solid #3498db;
+            background: rgba(52, 152, 219, 0.05);
+            opacity: 0.95;
+        }
+
+        .task-card.level-2 {
+            margin-left: 40px;
+            border-left: 3px solid #9b59b6;
+            background: rgba(155, 89, 182, 0.03);
+            opacity: 0.9;
         }
 
         .task-header {
@@ -1029,7 +1043,7 @@
             const id = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
             const t = data || {
                 id: id,
-                name: level === 0 ? `New Task ${id}` : (level === 1 ? `Sub-Task ${id}` : `Sub-Sub-Task ${id}`),
+                name: level === 0 ? `New Task` : (level === 1 ? `Sub-Task` : `Sub-Sub-Task`),
                 level: level,
                 phase: 'define',
                 start: new Date().toISOString().split('T')[0],
@@ -1051,18 +1065,36 @@
             const container = document.getElementById('tasksList');
             container.innerHTML = '';
 
+            let mainCounter = 0;
+            let subCounter = 0;
+            let subSubCounter = 0;
+
             tasks.forEach((t, index) => {
+                if (t.level === 0) {
+                    mainCounter++;
+                    subCounter = 0;
+                    subSubCounter = 0;
+                    t.displayIdLabel = `${mainCounter}`;
+                } else if (t.level === 1) {
+                    subCounter++;
+                    subSubCounter = 0;
+                    t.displayIdLabel = `${mainCounter}.${subCounter}`;
+                } else if (t.level === 2) {
+                    subSubCounter++;
+                    t.displayIdLabel = `${mainCounter}.${subCounter}.${subSubCounter}`;
+                }
+
                 const div = document.createElement('div');
                 div.className = `task-card level-${t.level || 0}`;
 
-                const badgeColor = t.level === 1 ? '#3498db' : (t.level === 2 ? '#9b59b6' : '#6c757d');
+                const badgeColor = t.level === 1 ? 'rgba(52, 152, 219, 0.7)' : (t.level === 2 ? 'rgba(155, 89, 182, 0.5)' : '#6c757d');
                 const badgeText = t.level === 1 ? 'Sub' : (t.level === 2 ? 'Sub-Sub' : 'Task');
 
                 div.innerHTML = `
                     <div class="task-header">
                         <div style="display:flex; align-items:center;">
                             <span class="level-badge" style="background:${badgeColor}; color:white;">${badgeText}</span>
-                            <strong style="color:#2c3e50; font-size:12px;">#${t.id}</strong>
+                            <strong style="color:var(--accent); font-size:13px; margin-left: 8px;"># ${t.displayIdLabel}</strong>
                         </div>
                         <button onclick="deleteTask(${index})" style="background:none; border:none; color:#dc3545; cursor:pointer; font-size:18px; opacity:0.7; transition:0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</button>
                     </div>
@@ -1331,7 +1363,7 @@
                     texts.setAttribute("y", cy + 4);
                     texts.setAttribute("font-size", "11");
                     texts.setAttribute("font-weight", "bold");
-                    texts.textContent = t.name;
+                    texts.textContent = `${t.displayIdLabel || ''} ${t.name}`;
                     taskGroup.appendChild(texts);
 
                 } else {
@@ -1392,7 +1424,7 @@
                     texts.setAttribute("y", barY + (barH / 2) + 4);
                     texts.setAttribute("font-size", t.level === 0 ? "11" : "9");
                     texts.setAttribute("fill", textColor);
-                    texts.textContent = `${t.name} (${t.progress}%)`;
+                    texts.textContent = `${t.displayIdLabel || ''} ${t.name} (${t.progress}%)`;
 
                     const progW = barWidth * (t.progress / 100);
                     if (progW > 0) {

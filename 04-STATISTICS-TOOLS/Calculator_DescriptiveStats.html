@@ -80,6 +80,93 @@
                     }
                 }
             },
+            'med_vitals': {
+                name: "🏥 Med: Patient BP (Systolic)",
+                normal: {
+                    data: "120, 122, 118, 121, 119, 120, 122, 118, 121, 119, 120, 123, 117, 121, 120, 118, 122, 119, 121, 120",
+                    desc: "<b>Med: BP Monitoring:</b> Stable patient vitals. Within normal physiological range.",
+                    context: {
+                        mean: "<b>Context:</b> Average 120 mmHg is the clinical target.",
+                        skew: "<b>Context:</b> Symmetric data indicates stable hemodynamic state."
+                    }
+                },
+                skewed: {
+                    data: "120, 122, 118, 165, 119, 120, 122, 180, 121, 119, 120, 175, 117, 121, 120, 190, 122, 119, 121, 200",
+                    desc: "<b>Med: BP Monitoring:</b> Patient experiencing hypertensive crisis/spikes.",
+                    context: {
+                        mean: "<b>Context:</b> Mean is skewed high due to severe hypertensive episodes.",
+                        outlier: "<b>Context:</b> 190 and 200 mmHg are life-threatening outliers."
+                    }
+                }
+            },
+            'med_lab': {
+                name: "🏥 Med: Lab TAT (STAT)",
+                normal: {
+                    data: "25, 28, 26, 27, 24, 25, 29, 26, 27, 25, 28, 24, 26, 27, 25, 28, 26, 27, 25, 24",
+                    desc: "<b>Med: Lab Turnaround:</b> Consistent STAT results under 30-min target.",
+                    context: {
+                        mean: "<b>Context:</b> Mean of 26 minutes meets the clinical SLA."
+                    }
+                },
+                skewed: {
+                    data: "25, 28, 26, 95, 24, 110, 29, 26, 85, 25, 28, 120, 26, 27, 25, 28, 105, 27, 25, 24",
+                    desc: "<b>Med: Lab Turnaround:</b> Equipment failure causing massive delays in some batches.",
+                    context: {
+                        skew: "<b>Context:</b> Massive Right Skew. Outliers exceed target by 4x."
+                    }
+                }
+            },
+            'med_response': {
+                name: "🏥 Med: Nurse Call Response",
+                normal: {
+                    data: "2, 3, 2, 4, 3, 2, 3, 2, 4, 3, 2, 3, 2, 3, 2, 4, 3, 2, 3, 2",
+                    desc: "<b>Med: Response Time:</b> Excellent bedside response. Sub-5 minute performance.",
+                    context: {
+                        mean: "<b>Context:</b> 2.7 min average shows high patient safety compliance."
+                    }
+                },
+                skewed: {
+                    data: "2, 3, 2, 15, 25, 2, 30, 2, 18, 3, 2, 3, 45, 3, 2, 22, 3, 2, 3, 2",
+                    desc: "<b>Med: Response Time:</b> Understaffing during shift change causing critical delays.",
+                    context: {
+                        median: "<b>Context:</b> Median remains low (3m), but Mean is blown to 10m+ by delays."
+                    }
+                }
+            },
+            'med_pharmacy': {
+                name: "🏥 Med: Pharmacy Dispensing",
+                normal: {
+                    data: "10, 12, 11, 10, 13, 11, 12, 10, 11, 12, 10, 12, 11, 10, 13, 11, 12, 10, 11, 12",
+                    desc: "<b>Med: Pharmacy:</b> Standard prescription fills. High efficiency.",
+                    context: {
+                        cv: "<b>Context:</b> Very low variation (CV < 10%). Reliable service."
+                    }
+                },
+                skewed: {
+                    data: "10, 12, 11, 10, 65, 11, 80, 10, 11, 75, 10, 12, 90, 10, 13, 11, 12, 55, 11, 12",
+                    desc: "<b>Med: Pharmacy:</b> Narcotic verification causing outlier delays.",
+                    context: {
+                        outlier: "<b>Context:</b> Outliers are the complex dual-signoff prescriptions."
+                    }
+                }
+            },
+            'med_surgical': {
+                name: "🏥 Med: Surgical Setup (OR)",
+                normal: {
+                    data: "45, 48, 46, 47, 44, 45, 49, 46, 47, 45, 48, 44, 46, 47, 45, 48, 46, 47, 45, 44",
+                    desc: "<b>Med: OR Setup:</b> Standard OR prep time. Process is capable.",
+                    context: {
+                        mean: "<b>Context:</b> 46 min setup time is within best-practice benchmarks."
+                    }
+                },
+                skewed: {
+                    data: "45, 48, 46, 120, 44, 150, 49, 46, 110, 45, 48, 44, 46, 135, 45, 48, 46, 47, 45, 44",
+                    desc: "<b>Med: OR Setup:</b> Instrument contamination leading to OR cleaning cycles.",
+                    context: {
+                        skew: "<b>Context:</b> Significant Right Skew from cleaning re-certification time."
+                    }
+                }
+            },
             'service': {
                 name: "Service (Call Center)",
                 normal: {
@@ -354,12 +441,13 @@
             font-weight: bold;
             margin-bottom: 5px;
             text-transform: uppercase;
-            font-size: 11px;
+            font-size: 13px;
         }
 
         .intro-text {
             color: var(--text-secondary);
             line-height: 1.4;
+            font-size: 14px;
         }
 
         .stats-grid {
@@ -386,21 +474,21 @@
         }
 
         .stat-label {
-            font-size: 11px;
+            font-size: 13px;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .stat-val {
-            font-size: 20px;
+            font-size: 26px;
             font-weight: 700;
             color: white;
             margin: 8px 0;
         }
 
         .stat-sub {
-            font-size: 10px;
+            font-size: 11px;
             color: #888;
         }
 
@@ -408,7 +496,7 @@
             background: rgba(46, 204, 113, 0.1);
             border-left: 3px solid var(--success);
             padding: 10px;
-            font-size: 12px;
+            font-size: 14px;
             margin-top: 10px;
             border-radius: 4px;
             color: #DDD;
@@ -947,49 +1035,62 @@
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 30px;">
-                            <!-- SIDEBAR: INPUT -->
-                            <div class="card">
-                                <h3>1. Input Data</h3>
-
-                                <label style="font-size:12px; color:var(--text-secondary);">Select Example
-                                    Scenario:</label>
-                                <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()">
-                                    <option value="">-- Custom Input --</option>
-                                    <option value="manufacturing">⚙️ Manufacturing (Pistons)</option>
-                                    <option value="healthcare">🏥 Healthcare (Wait Times)</option>
-                                    <option value="service">🎧 Service (Call Center)</option>
-                                </select>
-
-                                <div id="scenarioDesc"
-                                    style="font-size: 12px; color: var(--accent); margin: 10px 0; min-height: 35px; line-height: 1.4;">
-                                    Select a scenario to load example data or type your own below.
+                        <div style="display: flex; flex-direction: column; gap: 30px;">
+                            <!-- TOP: INPUT -->
+                            <div class="card" style="width: 100%;">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="margin: 0;">1. Input Data</h3>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <label
+                                            style="font-size:12px; color:var(--text-secondary); margin-bottom: 0;">Select
+                                            Scenario:</label>
+                                        <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()"
+                                            style="margin: 0; width: 250px;">
+                                            <option value="">-- Custom Input --</option>
+                                            <option value="manufacturing">⚙️ Manufacturing (Pistons)</option>
+                                            <option value="healthcare">🏥 Healthcare (Wait Times)</option>
+                                            <option value="med_vitals">🏥 Med: Patient BP</option>
+                                            <option value="med_lab">🏥 Med: Lab TAT</option>
+                                            <option value="med_response">🏥 Med: Nurse Call</option>
+                                            <option value="med_pharmacy">🏥 Med: Pharmacy</option>
+                                            <option value="med_surgical">🏥 Med: OR Setup</option>
+                                            <option value="service">🎧 Service (Call Center)</option>
+                                        </select>
+                                    </div>
                                 </div>
 
-                                <textarea id="dataInput" rows="12"
-                                    style="width: 100%; padding: 10px; background: var(--surface-1); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 6px; font-family: monospace;"
-                                    placeholder="10.5, 11.2, 10.8..."></textarea>
-
-                                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                    <button id="btnNormal" class="btn btn-ghost"
-                                        style="flex:1; font-size:11px; color: var(--success);"
-                                        onclick="toggleType('normal')">🟢
-                                        Normal</button>
-                                    <button id="btnSkewed" class="btn btn-ghost"
-                                        style="flex:1; font-size:11px; color: var(--error);"
-                                        onclick="toggleType('skewed')">🔴
-                                        Skewed</button>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                                    <div>
+                                        <textarea id="dataInput" rows="5"
+                                            style="width: 100%; padding: 12px; background: var(--surface-1); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 6px; font-family: monospace; font-size: 14px;"
+                                            placeholder="10.5, 11.2, 10.8..."></textarea>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                                        <div id="scenarioDesc"
+                                            style="font-size: 13px; color: var(--accent); min-height: 35px; line-height: 1.4;">
+                                            Select a scenario to load example data or type your own.
+                                        </div>
+                                        <div style="display: flex; gap: 10px;">
+                                            <button id="btnNormal" class="btn btn-ghost"
+                                                style="flex:1; font-size:12px; color: var(--success);"
+                                                onclick="toggleType('normal')">🟢 Normal</button>
+                                            <button id="btnSkewed" class="btn btn-ghost"
+                                                style="flex:1; font-size:12px; color: var(--error);"
+                                                onclick="toggleType('skewed')">🔴 Skewed</button>
+                                        </div>
+                                        <div style="display: flex; gap: 10px;">
+                                            <button class="btn btn-ghost" style="flex: 1; font-size:11px;"
+                                                onclick="autoFixData()">✨ Auto-Fix</button>
+                                            <button class="btn btn-primary" onclick="calcStats()"
+                                                style="flex: 1; justify-content: center;">🚀 Calculate</button>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <button class="btn btn-ghost" style="width:100%; margin-top:5px; font-size:11px;"
-                                    onclick="autoFixData()">✨ Auto-Fix Formatting</button>
-                                <button class="btn btn-primary" onclick="calcStats()"
-                                    style="width: 100%; justify-content: center; margin-top: 20px;">🚀 Calculate
-                                    Stats</button>
                             </div>
 
-                            <!-- RESULTS -->
-                            <div id="resultsPanel" style="display:none;">
+                            <!-- RESULTS PANEL: GRID OF STATS -->
+                            <div id="resultsPanel" style="display:none; width: 100%;">
                                 <!-- PRINT HEADER (Only shows on print) -->
                                 <div class="print-header">
                                     <h1>📊 Descriptive Statistics Report</h1>
@@ -1000,60 +1101,67 @@
                                     </div>
                                 </div>
 
-                                <!-- SECTION 1: CENTRAL TENDENCY & SPREAD -->
-                                <h3>2. Key Statistics</h3>
-                                <div class="stats-grid">
-                                    <div class="stat-box" onclick="explain('count')">
-                                        <div class="stat-label">Count (N)</div>
-                                        <div class="stat-val" id="resN">-</div>
+                                <div
+                                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                                    <!-- SECTION 1: CENTRAL TENDENCY & SPREAD -->
+                                    <div>
+                                        <h3>2. Key Statistics</h3>
+                                        <div class="stats-grid">
+                                            <div class="stat-box" onclick="explain('count')">
+                                                <div class="stat-label">Count (N)</div>
+                                                <div class="stat-val" id="resN">-</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('mean')">
+                                                <div class="stat-label">Mean (Avg)</div>
+                                                <div class="stat-val" id="resMean">-</div>
+                                                <div class="stat-sub" id="resCI">± 0.00</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('median')">
+                                                <div class="stat-label">Median</div>
+                                                <div class="stat-val" id="resMedian">-</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('stdDev')">
+                                                <div class="stat-label">Std Dev (σ)</div>
+                                                <div class="stat-val" id="resStdDev">-</div>
+                                                <div class="stat-sub" id="resVar">Var: -</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('range')">
+                                                <div class="stat-label">Range</div>
+                                                <div class="stat-val" id="resRange">-</div>
+                                                <div class="stat-sub" id="resMinMax">Min-Max</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('cv')">
+                                                <div class="stat-label">CV %</div>
+                                                <div class="stat-val" id="resCV">-</div>
+                                                <div class="stat-sub">Variation</div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="stat-box" onclick="explain('mean')">
-                                        <div class="stat-label">Mean (Avg)</div>
-                                        <div class="stat-val" id="resMean">-</div>
-                                        <div class="stat-sub" id="resCI">± 0.00</div>
-                                    </div>
-                                    <div class="stat-box" onclick="explain('median')">
-                                        <div class="stat-label">Median</div>
-                                        <div class="stat-val" id="resMedian">-</div>
-                                    </div>
-                                    <div class="stat-box" onclick="explain('stdDev')">
-                                        <div class="stat-label">Std Dev (σ)</div>
-                                        <div class="stat-val" id="resStdDev">-</div>
-                                        <div class="stat-sub" id="resVar">Var: -</div>
-                                    </div>
-                                    <div class="stat-box" onclick="explain('range')">
-                                        <div class="stat-label">Range</div>
-                                        <div class="stat-val" id="resRange">-</div>
-                                        <div class="stat-sub" id="resMinMax">Min-Max</div>
-                                    </div>
-                                    <div class="stat-box" onclick="explain('cv')">
-                                        <div class="stat-label">CV %</div>
-                                        <div class="stat-val" id="resCV">-</div>
-                                        <div class="stat-sub">Variation</div>
-                                    </div>
-                                </div>
 
-                                <!-- SECTION 2: SHAPE & NORMALITY -->
-                                <h3>3. Shape & Normality</h3>
-                                <div class="stats-grid">
-                                    <div class="stat-box" onclick="explain('skew')">
-                                        <div class="stat-label">Skewness</div>
-                                        <div class="stat-val" id="resSkew">-</div>
-                                        <div class="stat-sub" id="skewDesc">Normal</div>
-                                    </div>
-                                    <div class="stat-box" onclick="explain('kurt')">
-                                        <div class="stat-label">Kurtosis</div>
-                                        <div class="stat-val" id="resKurt">-</div>
-                                    </div>
-                                    <div class="stat-box" onclick="explain('ad')">
-                                        <div class="stat-label">Anderson-Darling</div>
-                                        <div class="stat-val" id="resAD">-</div>
-                                        <div class="stat-sub" id="resP">P-Value: -</div>
-                                    </div>
-                                    <div class="stat-box" onclick="explain('outlier')">
-                                        <div class="stat-label">Outliers</div>
-                                        <div class="stat-val" id="resOutliers">-</div>
-                                        <div class="stat-sub">IQR Method</div>
+                                    <!-- SECTION 2: SHAPE & NORMALITY -->
+                                    <div>
+                                        <h3>3. Shape & Normality</h3>
+                                        <div class="stats-grid">
+                                            <div class="stat-box" onclick="explain('skew')">
+                                                <div class="stat-label">Skewness</div>
+                                                <div class="stat-val" id="resSkew">-</div>
+                                                <div class="stat-sub" id="skewDesc">Normal</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('kurt')">
+                                                <div class="stat-label">Kurtosis</div>
+                                                <div class="stat-val" id="resKurt">-</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('ad')">
+                                                <div class="stat-label">Normality</div>
+                                                <div class="stat-val" id="resAD" style="font-size: 18px;">-</div>
+                                                <div class="stat-sub" id="resP">P-Value: -</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('outlier')">
+                                                <div class="stat-label">Outliers</div>
+                                                <div class="stat-val" id="resOutliers">-</div>
+                                                <div class="stat-sub">IQR Method</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1776,6 +1884,7 @@
                             window.print();
                         }
                     </script>
-<script src="AssistantTools.js"></script></body>
+                    <script src="AssistantTools.js"></script>
+</body>
 
 </html>
