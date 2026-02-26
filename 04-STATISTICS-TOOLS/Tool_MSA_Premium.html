@@ -324,6 +324,91 @@
             grid-template-columns: 1fr 1fr 1fr;
             gap: 24px;
         }
+
+        /* RESIZABLE SPLIT PANEL */
+        .resizable-split {
+            display: flex;
+            gap: 0;
+            align-items: stretch;
+        }
+
+        .resizable-split>.card {
+            min-width: 250px;
+            margin-bottom: 24px;
+        }
+
+        .split-left {
+            flex: 1 1 50%;
+        }
+
+        .split-right {
+            flex: 1 1 50%;
+        }
+
+        .split-resizer {
+            width: 12px;
+            cursor: col-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            user-select: none;
+            position: relative;
+            z-index: 10;
+        }
+
+        .split-resizer::before {
+            content: '';
+            width: 4px;
+            height: 60px;
+            background: linear-gradient(180deg, transparent, var(--accent), transparent);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .split-resizer:hover::before,
+        .split-resizer.dragging::before {
+            height: 100px;
+            width: 6px;
+            background: linear-gradient(180deg, transparent, var(--primary), transparent);
+            box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+        }
+
+        /* MSA INFO BUTTON */
+        .msa-info-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #a78bfa;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: msaPulse 3s ease-in-out infinite;
+        }
+
+        .msa-info-btn:hover {
+            background: rgba(139, 92, 246, 0.25);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        @keyframes msaPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.1);
+            }
+        }
     </style>
 </head>
 
@@ -343,7 +428,10 @@
                     </div>
                     <h1>MSA Gage R&R</h1>
                     <p style="color:var(--text-secondary); font-size:14px;">Audit your measurement system to ensure
-                        accurate, repeatable, and reproducible data.</p>
+                        accurate, repeatable, and reproducible data.
+                        <span class="msa-info-btn" onclick="showMSAInfo()" title="What is MSA Gage R&R?">ℹ️ What is
+                            MSA?</span>
+                    </p>
                 </div>
                 <div style="display:flex; gap:12px;">
                     <button class="btn btn-ghost" onclick="showInfographic()">
@@ -356,9 +444,9 @@
             </header>
 
             <!-- TOP SECTION: SETUP & PARAMETERS -->
-            <div class="grid-2">
+            <div class="resizable-split" id="topSplitPanel">
                 <!-- 1. STUDY SETUP -->
-                <div class="card">
+                <div class="card split-left">
                     <h2>1. Study Setup</h2>
                     <div style="margin-bottom:20px;">
                         <label style="font-size:12px; color:var(--text-secondary); display:block; margin-bottom:8px;">
@@ -421,8 +509,11 @@
                     </div>
                 </div>
 
+                <!-- RESIZER HANDLE -->
+                <div class="split-resizer" id="splitResizer" title="Drag to resize panels"></div>
+
                 <!-- 2. REPORT & ANALYST -->
-                <div class="card">
+                <div class="card split-right">
                     <h2>2. Report & Export</h2>
                     <label style="font-size:12px; color:var(--text-secondary); display:block; margin-bottom:8px;">LEAD
                         ANALYST (REQUIRED FOR PRINT)</label>
@@ -655,6 +746,92 @@
                 onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
             <h3 id="magnifyTitle" style="color:var(--accent); margin-bottom:15px;">Chart Zoom</h3>
             <img id="magnifyImg" style="width:100%; border-radius:12px;">
+        </div>
+    </div>
+
+    <!-- MSA INFO MODAL -->
+    <div id="msaInfoModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-box" style="max-width:850px; max-height:90vh; overflow-y:auto;">
+            <span class="close-btn"
+                onclick="document.getElementById('msaInfoModal').style.display='none'">&times;</span>
+            <div style="text-align:center; margin-bottom:30px;">
+                <div style="font-size:48px; margin-bottom:10px;">📏🔬</div>
+                <h2 style="color:var(--accent); font-size:22px;">MSA Gage R&R — The Complete Guide</h2>
+                <p style="color:var(--text-muted); font-size:13px;">Measurement System Analysis | Lean Six Sigma —
+                    Measure Phase</p>
+            </div>
+
+            <div
+                style="background:rgba(139,92,246,0.08); padding:20px; border-radius:12px; border-left:4px solid var(--accent); margin-bottom:20px;">
+                <h4 style="color:var(--accent); margin-bottom:8px;">🤔 What is MSA Gage R&R?</h4>
+                <p style="font-size:13px; color:var(--text-primary); line-height:1.7;">Measurement System Analysis (MSA)
+                    Gage R&R is a statistical study that evaluates the <b>reliability</b> of your measurement system.
+                    Before you analyze process data, you must first prove that the <b>measurement tool and people</b>
+                    producing that data are trustworthy. If the measurement system is flawed, every downstream decision
+                    is built on faulty data.</p>
+            </div>
+
+            <div class="grid-2" style="margin-bottom:20px;">
+                <div class="card"
+                    style="background:rgba(249,115,22,0.08); border-left:4px solid var(--primary); margin-bottom:0;">
+                    <h4 style="color:var(--primary); margin-bottom:10px;">🔄 R = Repeatability (EV)</h4>
+                    <p style="font-size:12px; line-height:1.6;">Can the <b>SAME person</b> get the <b>SAME result</b>
+                        when measuring the <b>SAME part</b> multiple times using the <b>SAME tool</b>?</p>
+                    <div
+                        style="margin-top:10px; padding:8px; background:rgba(0,0,0,0.3); border-radius:6px; font-size:11px; color:var(--text-muted);">
+                        If poor → Equipment is the problem (calibration, wear)</div>
+                </div>
+                <div class="card"
+                    style="background:rgba(139,92,246,0.08); border-left:4px solid var(--accent); margin-bottom:0;">
+                    <h4 style="color:var(--accent); margin-bottom:10px;">👥 R = Reproducibility (AV)</h4>
+                    <p style="font-size:12px; line-height:1.6;">Can <b>DIFFERENT people</b> get the <b>SAME result</b>
+                        when measuring the <b>SAME part</b> with the <b>SAME tool</b>?</p>
+                    <div
+                        style="margin-top:10px; padding:8px; background:rgba(0,0,0,0.3); border-radius:6px; font-size:11px; color:var(--text-muted);">
+                        If poor → Training/SOP is the problem (technique, interpretation)</div>
+                </div>
+            </div>
+
+            <div class="card" style="border-left:4px solid var(--success); margin-bottom:20px;">
+                <h4 style="color:var(--success); margin-bottom:12px;">📊 The 10/30 Acceptance Rule</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; font-size:12px;">
+                    <div style="padding:12px; background:rgba(34,197,94,0.1); border-radius:8px; text-align:center;">
+                        <div style="font-size:24px; font-weight:900; color:#4ade80;">&lt; 10%</div>
+                        <div style="color:var(--success); font-weight:700; margin-top:4px;">EXCELLENT</div>
+                        <div style="color:var(--text-muted); margin-top:4px;">Measurement system is reliable</div>
+                    </div>
+                    <div style="padding:12px; background:rgba(234,179,8,0.1); border-radius:8px; text-align:center;">
+                        <div style="font-size:24px; font-weight:900; color:#facc15;">10–30%</div>
+                        <div style="color:var(--warning); font-weight:700; margin-top:4px;">MARGINAL</div>
+                        <div style="color:var(--text-muted); margin-top:4px;">Acceptable based on context</div>
+                    </div>
+                    <div style="padding:12px; background:rgba(239,68,68,0.1); border-radius:8px; text-align:center;">
+                        <div style="font-size:24px; font-weight:900; color:#f87171;">&gt; 30%</div>
+                        <div style="color:var(--error); font-weight:700; margin-top:4px;">UNACCEPTABLE</div>
+                        <div style="color:var(--text-muted); margin-top:4px;">Fix measurement system first</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border-left:4px solid var(--warning); margin-bottom:20px;">
+                <h4 style="color:var(--warning); margin-bottom:10px;">🔢 nDC — Number of Distinct Categories</h4>
+                <p style="font-size:12px; line-height:1.6;">nDC tells you how many different "levels" of variation your
+                    measurement tool can actually detect. Think of it as <b>resolution</b>. Target: <b>≥ 5
+                        categories</b>. If nDC < 5, the tool is too coarse — like trying to weigh milligrams on a
+                        bathroom scale.</p>
+            </div>
+
+            <div
+                style="background:rgba(255,255,255,0.03); padding:20px; border-radius:12px; border:1px solid var(--glass-border);">
+                <h4 style="color:var(--text-primary); margin-bottom:12px;">📋 When to Use This Tool</h4>
+                <ul style="font-size:12px; color:var(--text-secondary); margin-left:20px; line-height:1.8;">
+                    <li><b>Before</b> collecting baseline data in the Measure phase</li>
+                    <li><b>After</b> acquiring a new measurement device or method</li>
+                    <li><b>When</b> different operators produce inconsistent results</li>
+                    <li><b>Before</b> setting control chart limits or SPC monitoring</li>
+                    <li><b>During</b> process capability studies (Cp/Cpk) — invalid if MSA fails</li>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -990,6 +1167,57 @@
             document.getElementById('btn-apples').style.background = (type === 'apples' ? 'var(--accent)' : 'transparent');
             document.getElementById('btn-health').style.background = (type === 'healthcare' ? 'var(--accent)' : 'transparent');
         }
+
+        function showMSAInfo() { document.getElementById('msaInfoModal').style.display = 'flex'; }
+
+        // --- DRAGGABLE SPLIT RESIZER ---
+        (function () {
+            const resizer = document.getElementById('splitResizer');
+            const panel = document.getElementById('topSplitPanel');
+            if (!resizer || !panel) return;
+
+            const left = panel.querySelector('.split-left');
+            const right = panel.querySelector('.split-right');
+            if (!left || !right) return;
+
+            let isDragging = false;
+            let startX = 0;
+            let startLeftWidth = 0;
+
+            resizer.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startLeftWidth = left.getBoundingClientRect().width;
+                resizer.classList.add('dragging');
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                const panelWidth = panel.getBoundingClientRect().width;
+                const resizerWidth = resizer.getBoundingClientRect().width;
+                let newLeftW = startLeftWidth + dx;
+                const minW = 250;
+                const maxW = panelWidth - resizerWidth - minW;
+                newLeftW = Math.max(minW, Math.min(newLeftW, maxW));
+                const leftPct = (newLeftW / panelWidth) * 100;
+                const rightPct = ((panelWidth - newLeftW - resizerWidth) / panelWidth) * 100;
+                left.style.flex = '0 0 ' + leftPct + '%';
+                right.style.flex = '0 0 ' + rightPct + '%';
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    resizer.classList.remove('dragging');
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
+        })();
     </script>
 
     <script src="AssistantTools.js"></script>
