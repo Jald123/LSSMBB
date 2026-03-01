@@ -103,32 +103,49 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
         }
 
-        /* SECTION HEADERS (Design Reference) */
+        /* SECTION HEADERS (3D / ENGRAVED LOOK) */
         .section-header-modern {
             background: rgba(226, 232, 240, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 25px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            padding: 15px 30px;
             margin: -30px -30px 25px -30px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            /* Back to Left-Aligned */
             position: relative;
             border-radius: 12px 12px 0 0;
+            box-shadow: 0 10px 15px -10px rgba(0, 0, 0, 0.2);
+            /* 3D Shadow as per image hint */
+        }
+
+        [data-theme="dark"] .section-header-modern {
+            background: rgba(30, 41, 59, 0.6);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.7);
         }
 
         .section-header-modern h2 {
-            font-size: 15px !important;
-            font-weight: 700 !important;
-            color: #1e293b;
+            font-size: 18px !important;
+            /* Original Size */
+            font-weight: 800 !important;
+            color: #334155;
             text-transform: none !important;
             letter-spacing: 0.5px;
             margin: 0 !important;
+            text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.8);
+            /* Engraved font effect */
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         [data-theme="dark"] .section-header-modern h2 {
             color: #f1f5f9;
+            text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.5);
+            /* Inset for Dark */
         }
 
         .section-status-pill {
@@ -2025,7 +2042,8 @@
 
             <div class="card glass-card" style="border-left:5px solid var(--accent);">
                 <div class="section-header-modern">
-                    <h2>1. Strategic Intent & Executive Summary</h2>
+                    <h2><i class="fas fa-bullseye" style="color:var(--accent);"></i> 1. Strategic Intent & Executive
+                        Summary</h2>
                     <span class="section-status-pill">Editing</span>
                 </div>
 
@@ -2087,7 +2105,7 @@
 
             <div class="card glass-card" style="border-top: 1px solid rgba(255,255,255,0.05);">
                 <div class="section-header-modern">
-                    <h2>2. Execution Scope</h2>
+                    <h2><i class="fas fa-microscope" style="color:var(--accent);"></i> 2. Execution Scope</h2>
                     <span class="section-status-pill">Editing</span>
                 </div>
                 <div>
@@ -2116,7 +2134,7 @@
 
             <div class="card glass-card">
                 <div class="section-header-modern">
-                    <h2>3. Governance Team</h2>
+                    <h2><i class="fas fa-users-cog" style="color:var(--accent);"></i> 3. Governance Team</h2>
                     <span class="section-status-pill">Editing</span>
                 </div>
                 <div>
@@ -2137,10 +2155,10 @@
                 </div>
             </div>
 
-            <!-- CARD 4: FINANCIAL IMPACT (COPQ) -->
             <div class="card glass-card" style="border-left:5px solid var(--success);">
                 <div class="section-header-modern">
-                    <h2>4. Financial Impact (COPQ)</h2>
+                    <h2><i class="fas fa-funnel-dollar" style="color:var(--success);"></i> 4. Financial Impact (COPQ)
+                    </h2>
                     <button onclick="showCOPQCalc()" class="section-status-pill"
                         style="cursor: pointer; position: absolute; right: 20px; border: 1px solid rgba(16, 185, 129, 0.2);">
                         AUDIT <i class="fas fa-calculator"></i>
@@ -2184,8 +2202,9 @@
             <!-- CARD 5: TIMELINE MILESTONES -->
             <div class="card glass-card" style="border-left:5px solid var(--warning);">
                 <div class="section-header-modern">
-                    <h2>5. Project Control & Timeline <i class="fas fa-info-circle" onclick="explain('timeline')"
-                            style="cursor:pointer; color:var(--accent); margin-left:10px;"></i></h2>
+                    <h2><i class="fas fa-calendar-check" style="color:var(--warning);"></i> 5. Project Control &
+                        Timeline <i class="fas fa-info-circle" onclick="explain('timeline')"
+                            style="cursor:pointer; color:var(--accent); margin-left:10px; font-size:14px;"></i></h2>
                     <span class="section-status-pill">Editing</span>
                 </div>
                 <div style="margin-top:20px; display:grid; grid-template-columns: repeat(5, 1fr); gap:15px;">
@@ -2216,7 +2235,7 @@
             <div class="card glass-card"
                 style="border-top:5px solid #0f172a; background:rgba(255,255,255,0.02); margin-bottom: 80px;">
                 <div class="section-header-modern">
-                    <h2>6. Executive Project Audit</h2>
+                    <h2><i class="fas fa-shield-check" style="color:#0f172a;"></i> 6. Executive Project Audit</h2>
                     <span class="section-status-pill">v2.4</span>
                 </div>
 
