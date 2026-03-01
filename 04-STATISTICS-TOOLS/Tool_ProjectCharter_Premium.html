@@ -206,13 +206,17 @@
         }
 
         .sidebar-label {
-            font-size: 13px;
-            color: var(--primary);
+            font-size: 12px;
+            color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             display: block;
-            margin-bottom: 8px;
-            font-weight: 700;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        [data-theme="light"] .sidebar-label {
+            color: #475569;
         }
 
         /* INFOGRAPHIC MODAL (Professional Style) */
@@ -368,10 +372,10 @@
         .premium-textarea {
             width: 100%;
             background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            color: var(--text-primary);
-            padding: 18px !important;
-            border-radius: 16px;
+            border: 1.5px solid var(--input-border);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
             font-family: 'Inter', sans-serif;
             font-size: 15px;
             line-height: 1.6;
@@ -379,6 +383,11 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             margin-bottom: 15px;
             box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] .premium-input,
+        [data-theme="light"] .premium-textarea {
+            color: #1e293b;
         }
 
         [data-theme="light"] .premium-input,
@@ -401,9 +410,161 @@
         .premium-textarea:focus {
             outline: none;
             border-color: var(--accent);
-            background: var(--bg-surface);
-            box-shadow: 0 10px 30px var(--card-hover-shadow), inset 0 0 0 1px var(--accent);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.2), inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* PREMIUM HEADER CONTROLS */
+        .header-controls-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.3);
+            padding: 8px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+        }
+
+        .scenario-label {
+            font-size: 10px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            margin-right: 5px;
+        }
+
+        .premium-select-box {
+            background: #0f172a;
+            border: 1.5px solid rgba(59, 130, 246, 0.4);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .premium-select-box option {
+            color: white !important;
+            background: #0f172a;
+            padding: 12px;
+        }
+
+        .premium-select-box optgroup {
+            background: #1e293b;
+            color: var(--accent);
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        /* Highlight POOR cases in dropdown */
+        .premium-select-box option[value*="poor"] {
+            color: #fca5a5 !important;
+            /* Soft red for visibility */
+            background: #450a0a;
+        }
+
+        .premium-select-box:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-header-alert {
+            background: rgba(251, 191, 36, 0.05);
+            border: 1.5px solid #f59e0b;
+            color: #f59e0b;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-header-alert:hover {
+            background: rgba(251, 191, 36, 0.15);
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.2);
+        }
+
+        .btn-header-info {
+            background: rgba(148, 163, 184, 0.1);
+            border: 1.5px solid #94a3b8;
+            color: #475569;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        [data-theme="dark"] .btn-header-info {
+            color: #cbd5e1;
+            border-color: #64748b;
+        }
+
+        .btn-header-info:hover {
+            background: rgba(148, 163, 184, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(100, 116, 139, 0.2);
+        }
+
+        /* ORANGE WISDOM MODAL */
+        .modal-wisdom-orange {
+            background: linear-gradient(135deg, #f97316, #ea580c) !important;
+            border: 2px solid #fdba74 !important;
+            color: white !important;
+            box-shadow: 0 20px 50px rgba(234, 88, 12, 0.4) !important;
+        }
+
+        .modal-wisdom-orange h3 {
+            color: white !important;
+            font-weight: 900 !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-wisdom-orange p {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .wisdom-infographic {
+            width: 100%;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 5px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .wisdom-infographic:hover {
+            transform: scale(1.01);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif !important;
+            font-size: 32px !important;
+            font-weight: 900 !important;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 !important;
         }
 
         .mbb-wisdom-card {
@@ -2018,23 +2179,33 @@
                     <span class="phase-glow">DEFINE PHASE</span>
                     <h1>Project Charter MASTER</h1>
                 </div>
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <span style="font-size:10px; color:#94a3b8; text-transform:uppercase;">Simulation Case:</span>
-                    <select id="scenarioSelect" onchange="loadScenario()"
-                        style="background:#0f172a; border:1px solid var(--accent); color:white; padding:8px 12px; border-radius:10px; font-size:12px; cursor:pointer;">
+                <div class="header-controls-container">
+                    <span class="scenario-label">Simulation Case:</span>
+                    <select id="scenarioSelect" onchange="loadScenario()" class="premium-select-box">
                         <option value="">-- CUSTOM CHARTER --</option>
-                        <option value="manufacturing">⚙️ Case: Manufacturing Scrap</option>
-                        <option value="healthcare">🏥 Case: Patient Flow</option>
-                        <option value="service">🖥️ Case: IT Service Resolution</option>
+                        <optgroup label="Manufacturing">
+                            <option value="manufacturing">⚙️ Case: Manufacturing Scrap</option>
+                            <option value="mfg_poor_baseline">⚠️ [POOR] Fix the Machines</option>
+                        </optgroup>
+                        <optgroup label="Healthcare (Medical)">
+                            <option value="healthcare">🏥 Case: Patient Flow</option>
+                            <option value="hc_med_errors">💉 Case: Medication Accuracy</option>
+                            <option value="hc_readmission">🛌 Case: 30-Day Readmission</option>
+                            <option value="hc_poor_broad">⚠️ [POOR] Improve Hospital Quality</option>
+                            <option value="hc_poor_subjective">⚠️ [POOR] Happy Nursing Staff</option>
+                        </optgroup>
+                        <optgroup label="Service & IT">
+                            <option value="service">🖥️ Case: IT Service Resolution</option>
+                            <option value="service_churn">📉 Case: Customer Churn</option>
+                        </optgroup>
                     </select>
-                    <button class="btn"
-                        style="background:rgba(245, 158, 11, 0.1); border:1px solid #f59e0b; color:#fbbf24; padding:8px 15px;"
-                        onclick="openScopeCreepModal()">
+
+                    <div style="width: 1px; height: 25px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
+
+                    <button class="btn-header-alert" onclick="openScopeCreepModal()">
                         <i class="fas fa-exclamation-triangle"></i> SCOPE CREEP?
                     </button>
-                    <button class="btn"
-                        style="background:rgba(255,107,53,0.1); border:1px solid var(--accent); color:var(--accent); padding:8px 15px;"
-                        onclick="openPremiumInfo('charter')">
+                    <button class="btn-header-info" onclick="openPremiumInfo('charter')">
                         <i class="fas fa-info-circle"></i> STRATEGY
                     </button>
                 </div>
@@ -3289,13 +3460,23 @@
                     goal: "Reduce scrap from 5% to 2% by Dec 31st.",
                     inScope: "Line A curing oven parameters.",
                     outScope: "Line B, Mixing process.",
-                    sponsor: "Plant Manager",
-                    owner: "Production Lead",
-                    cost: 150,
-                    count: 1200
+                    sponsor: "Plant Manager", owner: "Production Lead", cost: 150, count: 1200
                 },
-                context: "Manufacturing Focus: Physical defects are the primary driver of cost. Focus on input variables (X's).",
-                reason: "Scrap is a visible waste. Reducing it directly improves the Bottom Line."
+                context: "Manufacturing Focus: Physical defects.",
+                reason: "Direct impact on P&L."
+            },
+            'mfg_poor_baseline': {
+                data: {
+                    title: "Fix the Machines [REASON: VAGUE TITLE]",
+                    businessCase: "The machines are old and break a lot. We need to fix them. [REASON: NO FINANCIALS]",
+                    problem: "Production is slow because of machine issues. [REASON: NO BASELINE/DATA]",
+                    goal: "Make the machines work better. [REASON: NOT MEASURABLE]",
+                    inScope: "Everything in the factory.",
+                    outScope: "Nothing.",
+                    sponsor: "Manager", owner: "Team", cost: 0, count: 0
+                },
+                context: "FAIL CASE: This charter lacks any statistical rigor.",
+                reason: "Trainees should learn that without data, you just have an opinion."
             },
             'healthcare': {
                 data: {
@@ -3305,13 +3486,62 @@
                     goal: "Reduce discharge time to < 2 hours by Q3.",
                     inScope: "Ward 3 Discharge process.",
                     outScope: "ER, ICU transfers.",
-                    sponsor: "Director of Nursing",
-                    owner: "Ward Manager",
-                    cost: 500, // Opportunity cost of bed
-                    count: 300 // Delayed patients
+                    sponsor: "Director of Nursing", owner: "Ward Manager", cost: 500, count: 300
                 },
-                context: "Healthcare Focus: Flow and Time. Bed availability is the critical resource.",
-                reason: "Faster discharge = More capacity for new patients = Higher revenue and better care."
+                context: "Healthcare Focus: Flow and Time.",
+                reason: "Capacity improvement."
+            },
+            'hc_med_errors': {
+                data: {
+                    title: "Reduce Medication Administration Errors",
+                    businessCase: "Current error rate of 2.1% increases patient risk and litigation costs.",
+                    problem: "Since July 2025, the pharmacy reports 21 errors per 1000 doses in the Pediatric unit.",
+                    goal: "Reduce med errors from 2.1% to < 0.5% by end of year.",
+                    inScope: "Pediatric unit medication dispensing and administration.",
+                    outScope: "Adult oncology, Outpatient clinic.",
+                    sponsor: "Chief Medical Officer", owner: "Head Pharmacist", cost: 1200, count: 150
+                },
+                context: "Medical Excellence: Focus on Patient Safety.",
+                reason: "High risk/High reward compliance project."
+            },
+            'hc_readmission': {
+                data: {
+                    title: "Reduce 30-Day Cardiac Readmission Rates",
+                    businessCase: "CMS penalties for readmission cost the hospital $450k per year.",
+                    problem: "30-day readmission rate for CHF patients is 18%, vs the national benchmark of 12%.",
+                    goal: "Reduce readmission rate from 18% to 11% by Oct 2026.",
+                    inScope: "Cardiology discharge planning, Follow-up call process.",
+                    outScope: "Surgical readmissions, ER non-cardiac visits.",
+                    sponsor: "VP of Quality", owner: "Cardiology Dept Head", cost: 3500, count: 80
+                },
+                context: "Medical Regulatory: Compliance and Penalties.",
+                reason: "Avoidance of federal financial penalties."
+            },
+            'hc_poor_broad': {
+                data: {
+                    title: "Improve Hospital Quality [REASON: BOILING THE OCEAN]",
+                    businessCase: "We want to be the best hospital in the city. [REASON: NO ROI]",
+                    problem: "Patients complain about everything. [REASON: NOT QUANTIFIED]",
+                    goal: "Be 100% perfect by next month. [REASON: IMPOSSIBLE GOAL]",
+                    inScope: "The whole hospital.",
+                    outScope: "None.",
+                    sponsor: "The Hospital", owner: "Everyone", cost: 0, count: 0
+                },
+                context: "FAIL CASE: Scope is way too large.",
+                reason: "Trainees must learn to 'Salami Slice' the problem into manageable projects."
+            },
+            'hc_poor_subjective': {
+                data: {
+                    title: "Happy Nursing Staff [REASON: SUBJECTIVE TITLE]",
+                    businessCase: "Nurses are tired and we want them to feel better. [REASON: NOT STRATEGIC]",
+                    problem: "Nurses seem unhappy on Mondays. [REASON: VAGUE OBSERVATION]",
+                    goal: "Increase happiness by 50%. [REASON: NOT MEASURABLE]",
+                    inScope: "Nursing lounge.",
+                    outScope: "Work hours.",
+                    sponsor: "HR", owner: "Lead Nurse", cost: 0, count: 0
+                },
+                context: "FAIL CASE: This is a culture issue, not a DMAIC project.",
+                reason: "Six Sigma fixes processes, not feelings (without specific metrics)."
             },
             'service': {
                 data: {
@@ -3321,13 +3551,23 @@
                     goal: "Increase First Call Resolution (FCR) from 60% to 80% by year end.",
                     inScope: "Tier 1 Support Team.",
                     outScope: "Field Service Engineers.",
-                    sponsor: "VP of Support",
-                    owner: "Support Manager",
-                    cost: 25, // Cost per call
-                    count: 5000 // Repeat calls
+                    sponsor: "VP of Support", owner: "Support Manager", cost: 25, count: 5000
                 },
-                context: "Service Focus: Customer Experience and Efficiency. FCR is the 'Golden Metric'.",
-                reason: "Solving it once prevents future rework and frustration."
+                context: "Service Focus: Customer Experience.",
+                reason: "Efficiency and frustration reduction."
+            },
+            'service_churn': {
+                data: {
+                    title: "Reduce Customer Churn Rate",
+                    businessCase: "Losing 4% of subscribers monthly leads to $1.2M in annual lost recurring revenue.",
+                    problem: "Monthly churn has increased from 2% to 4% since the new billing system launch.",
+                    goal: "Reduce monthly churn rate from 4% to 1.8% by Q4.",
+                    inScope: "Billing dispute process, Customer retention offers.",
+                    outScope: "Direct sales, Product development.",
+                    sponsor: "Chief Revenue Officer", owner: "Customer Success Lead", cost: 150, count: 8000
+                },
+                context: "Revenue Protection: Customer Lifetime Value.",
+                reason: "Direct impact on Top-Line growth."
             }
         };
 
@@ -3399,8 +3639,15 @@
 
                 if (currentScenario && scenarios[currentScenario]) {
                     const s = scenarios[currentScenario];
-                    content += `<div style='margin-top:15px; padding:10px; background:rgba(52, 152, 219, 0.1); border-left:3px solid #3498db; font-size:13px;'>
-                        <b>Scenario Context:</b> ${s.context}<br><br>${s.reason}</div>`;
+                    let contextHtml = s.context;
+                    // Dynamically highlight any [POOR] or [REASON] patterns in the context
+                    contextHtml = contextHtml.replace(/\[(.*?)\]/g, '<span style="color:#ef4444; font-weight:800;">[$1]</span>');
+
+                    content += `<div style='margin-top:15px; padding:15px; background:rgba(239, 68, 68, 0.05); border-left:4px solid #ef4444; border-radius:8px; font-size:13px;'>
+                        <b style="color:#ef4444; display:block; margin-bottom:5px; text-transform:uppercase; letter-spacing:1px;">Scenario Coaching:</b> 
+                        <span style="color:#cbd5e1; line-height:1.6;">${contextHtml}</span>
+                        <div style="margin-top:10px; color:white; font-style:italic; font-size:12px;">${s.reason}</div>
+                    </div>`;
                 }
 
                 document.getElementById('modalContent').innerHTML = content;
@@ -3897,20 +4144,20 @@
 
     <!-- WISDOM MODAL -->
     <div id="wisdomModal" class="modal-overlay" onclick="closeModal(event)">
-        <div class="modal-box"
-            style="max-width:600px; padding:40px; text-align:center; border: 1px solid var(--accent); background:rgba(15,23,42,0.95); backdrop-filter:blur(10px);">
-            <span class="close-btn" onclick="document.getElementById('wisdomModal').style.display='none'">&times;</span>
-            <i class="fas fa-quote-left"
-                style="font-size:40px; color:var(--accent); margin-bottom:20px; opacity:0.5;"></i>
-            <h3
-                style="color:var(--text-primary); margin-bottom:20px; font-size:24px; font-style:italic; line-height:1.6;">
+        <div class="modal-box modal-wisdom-orange" style="max-width:900px;">
+            <span class="close-btn" onclick="document.getElementById('wisdomModal').style.display='none'"
+                style="color:white; opacity:0.8;">&times;</span>
+            <i class="fas fa-quote-left" style="font-size:40px; color:white; margin-bottom:20px; opacity:0.6;"></i>
+            <h3 style="font-size:28px; line-height:1.4; margin-bottom:15px;">
                 "Precision is the prerequisite for performance. If the Business Case doesn't bleed, the executives won't
                 lead. Make the pain impossible to ignore."
             </h3>
-            <p
-                style="color:var(--text-secondary); font-size:14px; text-transform:uppercase; letter-spacing:2px; font-weight:800;">
-                — Master Black Belt Principle
+            <p style="font-size:16px; text-transform:uppercase; letter-spacing:3px; font-weight:900; opacity:0.9;">
+                — Master Black Belt Principle —
             </p>
+
+            <img src="mbb_wisdom_principles.png" class="wisdom-infographic" alt="MBB Principles Infographic"
+                onerror="this.style.display='none'; console.warn('Wisdom infographic not found. Please ensure mbb_wisdom_principles.png is in the same folder.');">
         </div>
     </div>
 
