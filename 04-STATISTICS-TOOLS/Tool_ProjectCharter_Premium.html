@@ -88,6 +88,67 @@
             --strategy-text: #5a5096;
         }
 
+        /* GLASSMORPHIC CARDS */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        [data-theme="light"] .glass-card {
+            background: rgba(255, 255, 255, 0.6) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* SECTION HEADERS (Design Reference) */
+        .section-header-modern {
+            background: rgba(226, 232, 240, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 25px;
+            margin: -30px -30px 25px -30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .section-header-modern h2 {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            color: #1e293b;
+            text-transform: none !important;
+            letter-spacing: 0.5px;
+            margin: 0 !important;
+        }
+
+        [data-theme="dark"] .section-header-modern h2 {
+            color: #f1f5f9;
+        }
+
+        .section-status-pill {
+            position: absolute;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .section-status-pill {
+            background: rgba(0, 0, 0, 0.3);
+            color: #94a3b8;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
         /* MODERN SUITE LAYOUT */
         .app-container {
             display: grid;
@@ -1962,16 +2023,10 @@
                 </div>
             </header>
 
-            <div class="card" style="border-left:5px solid var(--accent);">
-                <div class="flex-between"
-                    style="background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent); padding: 15px 25px; margin: -30px -30px 25px -30px; border-bottom: 1px solid rgba(59, 130, 246, 0.1);">
-                    <h2 style="margin:0; font-size: 18px;"><i class="fas fa-bullseye"
-                            style="color:var(--accent); margin-right: 10px;"></i> 1. Strategic Intent & Executive
-                        Summary</h2>
-                    <div
-                        style="font-size:10px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:1px; background: rgba(59, 130, 246, 0.1); padding: 4px 10px; border-radius: 4px;">
-                        <i class="fas fa-shield-alt"></i> MASTER ARCHITECT MODE
-                    </div>
+            <div class="card glass-card" style="border-left:5px solid var(--accent);">
+                <div class="section-header-modern">
+                    <h2>1. Strategic Intent & Executive Summary</h2>
+                    <span class="section-status-pill">Editing</span>
                 </div>
 
                 <div style="margin-top:25px;">
@@ -1987,11 +2042,14 @@
                             <div class="input-wrapper">
                                 <textarea id="businessCase" class="premium-textarea" rows="3"
                                     placeholder="Why now? Strategic alignment..."></textarea>
-                                <button class="ai-rewrite-btn"
-                                    onclick="reviewInput('businessCase', 'Business Case')">🥋</button>
+                                <button class="ai-rewrite-btn" onclick="reviewInput('businessCase', 'Business Case')"><i
+                                        class="fas fa-wand-magic-sparkles"></i></button>
                             </div>
                         </div>
-                        <div class="mbb-wisdom-card">
+                        <div class="mbb-wisdom-card" onclick="openWisdomModal()"
+                            style="cursor:pointer; transition:transform 0.2s;"
+                            onmouseover="this.style.transform='translateY(-2px) scale(1.02)';"
+                            onmouseout="this.style.transform='translateY(0) scale(1)';">
                             <span class="mbb-wisdom-label">
                                 <i class="fas fa-graduation-cap"></i> MBB WISDOM
                             </span>
@@ -2009,8 +2067,8 @@
                         <div class="input-wrapper">
                             <textarea id="problemStmt" class="premium-textarea" rows="3"
                                 placeholder="Quantify the pain: What, Where, When, Extent..."></textarea>
-                            <button class="ai-rewrite-btn"
-                                onclick="reviewInput('problemStmt', 'Problem Statement')">🥋</button>
+                            <button class="ai-rewrite-btn" onclick="reviewInput('problemStmt', 'Problem Statement')"><i
+                                    class="fas fa-wand-magic-sparkles"></i></button>
                         </div>
                     </div>
 
@@ -2020,30 +2078,35 @@
                         <div class="input-wrapper">
                             <textarea id="goalStmt" class="premium-textarea" rows="2"
                                 placeholder="Specific, Measurable, Achievable..."></textarea>
-                            <button class="ai-rewrite-btn"
-                                onclick="reviewInput('goalStmt', 'Goal Statement')">🥋</button>
+                            <button class="ai-rewrite-btn" onclick="reviewInput('goalStmt', 'Goal Statement')"><i
+                                    class="fas fa-wand-magic-sparkles"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card" style="border-top: 1px solid rgba(255,255,255,0.05);">
+            <div class="card glass-card" style="border-top: 1px solid rgba(255,255,255,0.05);">
+                <div class="section-header-modern">
+                    <h2>2. Execution Scope</h2>
+                    <span class="section-status-pill">Editing</span>
+                </div>
                 <div>
-                    <h2 style="display:flex; align-items:center; gap:10px;">
-                        <i class="fas fa-microscope" style="color:var(--accent);"></i> 2. Execution Scope
-                    </h2>
                     <p style="color:var(--text-secondary); font-size:14px; margin-bottom:20px;">Protect the project from
                         scope creep
                         by defining strict boundaries.</p>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
                         <div>
-                            <span class="sidebar-label">In-Scope (Focus Areas)</span>
+                            <span class="sidebar-label">In-Scope (Focus Areas) <i class="fas fa-info-circle"
+                                    onclick="explain('inscope')"
+                                    style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></span>
                             <textarea id="inScope" class="premium-textarea" rows="4"
                                 placeholder="Processes, specific departments, or machines to be optimized..."></textarea>
                         </div>
                         <div>
-                            <span class="sidebar-label">Out-of-Scope (Boundaries)</span>
+                            <span class="sidebar-label">Out-of-Scope (Boundaries) <i class="fas fa-info-circle"
+                                    onclick="explain('outscope')"
+                                    style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></span>
                             <textarea id="outScope" class="premium-textarea" rows="4"
                                 placeholder="Exclusions to prevent resource dilution..."></textarea>
                         </div>
@@ -2051,43 +2114,56 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card glass-card">
+                <div class="section-header-modern">
+                    <h2>3. Governance Team</h2>
+                    <span class="section-status-pill">Editing</span>
+                </div>
                 <div>
-                    <h2 style="display:flex; align-items:center; gap:10px;">
-                        <i class="fas fa-users-cog" style="color:var(--accent);"></i> 3. Governance Team
-                    </h2>
                     <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:25px; margin-top:20px;">
-                        <div><span class="sidebar-label">Executive Sponsor</span><input type="text" id="sponsor"
-                                class="premium-input"></div>
-                        <div><span class="sidebar-label">Process Owner</span><input type="text" id="processOwner"
-                                class="premium-input"></div>
-                        <div><span class="sidebar-label">Lead Belt</span><input type="text" id="beltName"
-                                class="premium-input"></div>
+                        <div><span class="sidebar-label">Executive Sponsor <i class="fas fa-info-circle"
+                                    onclick="explain('sponsor')"
+                                    style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></span><input
+                                type="text" id="sponsor" class="premium-input"></div>
+                        <div><span class="sidebar-label">Process Owner <i class="fas fa-info-circle"
+                                    onclick="explain('owner')"
+                                    style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></span><input
+                                type="text" id="processOwner" class="premium-input"></div>
+                        <div><span class="sidebar-label">Lead Belt <i class="fas fa-info-circle"
+                                    onclick="explain('belt')"
+                                    style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></span><input
+                                type="text" id="beltName" class="premium-input"></div>
                     </div>
                 </div>
             </div>
 
             <!-- CARD 4: FINANCIAL IMPACT (COPQ) -->
-            <div class="card" style="border-left:5px solid var(--success);">
-                <div class="flex-between">
+            <div class="card glass-card" style="border-left:5px solid var(--success);">
+                <div class="section-header-modern">
                     <h2>4. Financial Impact (COPQ)</h2>
-                    <button onclick="showCOPQCalc()"
-                        style="background: var(--accent); color: white; border: none; padding: 5px 15px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 800; font-family:'Orbitron';">
-                        AUDIT FORMULA <i class="fas fa-calculator"></i>
+                    <button onclick="showCOPQCalc()" class="section-status-pill"
+                        style="cursor: pointer; position: absolute; right: 20px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                        AUDIT <i class="fas fa-calculator"></i>
                     </button>
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px; margin-top:20px;">
                     <div>
-                        <label class="sidebar-label">Avg Defect Cost ($)</label>
+                        <label class="sidebar-label">Avg Defect Cost ($) <i class="fas fa-info-circle"
+                                onclick="explain('cost')"
+                                style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></label>
                         <input type="number" id="costPerDefect" value="150" class="premium-input"
                             oninput="calcSavings()">
 
-                        <label class="sidebar-label">Annual Unit Volume</label>
+                        <label class="sidebar-label">Annual Unit Volume <i class="fas fa-info-circle"
+                                onclick="explain('volume')"
+                                style="cursor:pointer; color:var(--accent); margin-left:5px;"></i></label>
                         <input type="number" id="annualDefects" value="1200" class="premium-input"
                             oninput="calcSavings()">
                     </div>
                     <div>
-                        <label class="sidebar-label">Reduction Target <span id="rangeVal"
+                        <label class="sidebar-label">Reduction Target <i class="fas fa-info-circle"
+                                onclick="explain('target')"
+                                style="cursor:pointer; color:var(--accent); margin-left:5px;"></i> <span id="rangeVal"
                                 style="color:var(--accent); font-weight:800; float:right;">50%</span></label>
                         <input type="range" id="reductionTarget" min="10" max="100" value="50" class="reduction-slider"
                             oninput="updateRangeVal(this.value); calcSavings()">
@@ -2106,12 +2182,11 @@
             </div>
 
             <!-- CARD 5: TIMELINE MILESTONES -->
-            <div class="card" style="border-left:5px solid var(--warning);">
-                <div class="flex-between">
-                    <h2>5. Project Control & Timeline</h2>
-                    <div style="font-size:10px; color:var(--warning); font-weight:700; text-transform:uppercase;">
-                        <i class="fas fa-calendar-check"></i> MILESTONE TRACKING
-                    </div>
+            <div class="card glass-card" style="border-left:5px solid var(--warning);">
+                <div class="section-header-modern">
+                    <h2>5. Project Control & Timeline <i class="fas fa-info-circle" onclick="explain('timeline')"
+                            style="cursor:pointer; color:var(--accent); margin-left:10px;"></i></h2>
+                    <span class="section-status-pill">Editing</span>
                 </div>
                 <div style="margin-top:20px; display:grid; grid-template-columns: repeat(5, 1fr); gap:15px;">
                     <div>
@@ -2138,13 +2213,11 @@
             </div>
 
             <!-- CARD 6: EXECUTIVE PROJECT AUDIT (Renumbered) -->
-            <div class="card"
+            <div class="card glass-card"
                 style="border-top:5px solid #0f172a; background:rgba(255,255,255,0.02); margin-bottom: 80px;">
-                <div class="flex-between"
-                    style="border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:15px; margin-bottom:20px;">
-                    <h2 style="margin:0;"><i class="fas fa-shield-check"></i> 6. Executive Project Audit</h2>
-                    <div style="font-family:'Orbitron'; font-size:10px; color:#64748b;">VERSION 2.4 | LSS-CHARTER-2026
-                    </div>
+                <div class="section-header-modern">
+                    <h2>6. Executive Project Audit</h2>
+                    <span class="section-status-pill">v2.4</span>
                 </div>
 
                 <div class="audit-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
@@ -3240,12 +3313,22 @@
         };
 
         const glossary = {
+            "title": { title: "Project Title", text: "<b>Trainee Focus:</b> Keep it under 10 words. Must refer to the specific process and the primary metric being improved. E.g., 'Reduce Invoice Processing Time'." },
+            "goal": { title: "SMART Goal", text: "<b>Trainee Focus:</b> Specific, Measurable, Achievable, Relevant, Time-bound. Provide the Baseline, Target, and Deadline. E.g., 'Reduce cycle time from 5 days to 2 days by Q3'." },
+            "inscope": { title: "In-Scope (Focus Areas)", text: "<b>Trainee Focus:</b> Be ruthless. What EXACTLY are you fixing? Define the start and end points of the process. If it's not here, you shouldn't be working on it." },
+            "outscope": { title: "Out-of-Scope (Boundaries)", text: "<b>Trainee Focus:</b> Your defense against project failure. Explicitly list related processes, departments, or steps that you will NOT fix to prevent scope creep." },
+            "sponsor": { title: "Executive Sponsor", text: "<b>Trainee Focus:</b> The person with the checkbook and the authority to clear roadblocks. Needs to have a vested interest in the financial or strategic impact." },
+            "owner": { title: "Process Owner", text: "<b>Trainee Focus:</b> The person who runs the process daily. They must agree with the changes, as they will own the new process in the Control phase." },
+            "belt": { title: "Lead Belt", text: "<b>Trainee Focus:</b> The project manager and statistical investigator (You). Responsible for DMAIC execution and keeping the team on schedule." },
+            "cost": { title: "Avg Defect Cost ($)", text: "<b>Trainee Focus:</b> Hard financial data. Do not guess; get Finance to validate this number. Includes labor waste, rework, and scrap." },
+            "volume": { title: "Annual Unit Volume", text: "<b>Trainee Focus:</b> How many times does this defect happen per year? Multiply by Average Defect Cost to get your Baseline Cost of Poor Quality (COPQ)." },
+            "target": { title: "Reduction Target", text: "<b>Trainee Focus:</b> Usually between 50%-80% depending on constraints. Don't promise 100% reduction unless it's a poka-yoke (mistake-proofing) implementation." },
             "business_case": { title: "Business Case", text: "Why does the business care? Connect the project to Money, Strategy, or Risk.<br><i>'If we don't fix this, we lose $X or Customer Y.'</i>" },
             "problem_stmt": { title: "Problem Statement", text: "Objective description of the pain.<br><b>Must have:</b><br>&bull; What is wrong?<br>&bull; Where is it happening?<br>&bull; Since when?<br>&bull; What is the magnitude?" },
             "copq": { title: "Cost of Poor Quality (COPQ)", text: "The financial justification for the project.<br>Includes: Scrap, Rework, Warranty claims, Lost Capacity, and Inspection costs." },
             "timeline": {
-                title: "Timeline Milestones (MBB Best Practice)",
-                text: "<b>The Pulse of Project Execution.</b><br><br>An MBB views the timeline not as suggestions, but as <b>commitments</b> to leadership.<br><br><b>Standard DMAIC Duration:</b><br>&bull; <b>Define:</b> 2-3 Weeks (Scope & Charter)<br>&bull; <b>Measure:</b> 2-4 Weeks (Data Collection)<br>&bull; <b>Analyze:</b> 3-5 Weeks (Root Cause Validation)<br>&bull; <b>Improve:</b> 3-6 Weeks (Pilot & Implementation)<br>&bull; <b>Control:</b> 2-4 Weeks (Sustainment & Handover)<br><br><i>Warning: Projects exceeding 6 months suffer from 'Scope Creep' and leadership fatigue.</i>"
+                title: "Project Control & Timeline",
+                text: "<b>Trainee Focus:</b> Set strict phase gate deadlines. 3-6 months maximum. Prolonged charters lose momentum and leadership support.<br><br><b>Standard DMAIC Duration:</b><br>&bull; <b>Define:</b> 2-3 Weeks (Scope & Charter)<br>&bull; <b>Measure:</b> 2-4 Weeks (Data Collection)<br>&bull; <b>Analyze:</b> 3-5 Weeks (Root Cause Validation)<br>&bull; <b>Improve:</b> 3-6 Weeks (Pilot & Implementation)<br>&bull; <b>Control:</b> 2-4 Weeks (Sustainment & Handover)<br><br><i>Warning: Projects exceeding 6 months suffer from 'Scope Creep' and leadership fatigue.</i>"
             },
             "savings": {
                 title: "Projected Annual Savings Calculation",
@@ -3725,6 +3808,14 @@
             alert("Generating Premium PDF Report... (Feature placeholder for prototype)");
         }
 
+        function showCOPQCalc() {
+            explain('savings');
+        }
+
+        function openWisdomModal() {
+            document.getElementById('wisdomModal').style.display = 'flex';
+        }
+
         // Initialize calculation on load
         calcSavings();
 
@@ -3784,6 +3875,25 @@
             }
         })();
     </script>
+
+    <!-- WISDOM MODAL -->
+    <div id="wisdomModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-box"
+            style="max-width:600px; padding:40px; text-align:center; border: 1px solid var(--accent); background:rgba(15,23,42,0.95); backdrop-filter:blur(10px);">
+            <span class="close-btn" onclick="document.getElementById('wisdomModal').style.display='none'">&times;</span>
+            <i class="fas fa-quote-left"
+                style="font-size:40px; color:var(--accent); margin-bottom:20px; opacity:0.5;"></i>
+            <h3
+                style="color:var(--text-primary); margin-bottom:20px; font-size:24px; font-style:italic; line-height:1.6;">
+                "Precision is the prerequisite for performance. If the Business Case doesn't bleed, the executives won't
+                lead. Make the pain impossible to ignore."
+            </h3>
+            <p
+                style="color:var(--text-secondary); font-size:14px; text-transform:uppercase; letter-spacing:2px; font-weight:800;">
+                — Master Black Belt Principle
+            </p>
+        </div>
+    </div>
 
     <script src="AssistantTools.js"></script>
 </body>
