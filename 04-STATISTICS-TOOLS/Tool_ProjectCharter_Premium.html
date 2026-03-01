@@ -414,6 +414,10 @@
             box-shadow: 0 0 20px rgba(255, 107, 53, 0.2), inset 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
+        .ai-rewrite-btn {
+            display: none !important;
+        }
+
         /* PREMIUM HEADER CONTROLS */
         .header-controls-container {
             display: flex;
@@ -2186,6 +2190,7 @@
                         <optgroup label="Manufacturing">
                             <option value="manufacturing">⚙️ Case: Manufacturing Scrap</option>
                             <option value="mfg_poor_baseline">⚠️ [POOR] Fix the Machines</option>
+                            <option value="mfg_poor_scope">⚠️ [POOR] Improve Production</option>
                         </optgroup>
                         <optgroup label="Healthcare (Medical)">
                             <option value="healthcare">🏥 Case: Patient Flow</option>
@@ -2193,10 +2198,13 @@
                             <option value="hc_readmission">🛌 Case: 30-Day Readmission</option>
                             <option value="hc_poor_broad">⚠️ [POOR] Improve Hospital Quality</option>
                             <option value="hc_poor_subjective">⚠️ [POOR] Happy Nursing Staff</option>
+                            <option value="hc_poor_vague">⚠️ [POOR] Better Patient Care</option>
                         </optgroup>
                         <optgroup label="Service & IT">
                             <option value="service">🖥️ Case: IT Service Resolution</option>
                             <option value="service_churn">📉 Case: Customer Churn</option>
+                            <option value="service_poor_time">⚠️ [POOR] Portal Update</option>
+                            <option value="service_poor_subjective">⚠️ [POOR] Unhappy Customers</option>
                         </optgroup>
                     </select>
 
@@ -3467,16 +3475,29 @@
             },
             'mfg_poor_baseline': {
                 data: {
-                    title: "Fix the Machines [REASON: VAGUE TITLE]",
-                    businessCase: "The machines are old and break a lot. We need to fix them. [REASON: NO FINANCIALS]",
-                    problem: "Production is slow because of machine issues. [REASON: NO BASELINE/DATA]",
-                    goal: "Make the machines work better. [REASON: NOT MEASURABLE]",
+                    title: "Fix the Machines [REASON: No process identifier]",
+                    businessCase: "The machines are old and break a lot. We need to fix them. [REASON: Missing financial justification]",
+                    problem: "Production is slow because of machine issues. [REASON: Zero baseline data or timeframe]",
+                    goal: "Make the machines work better. [REASON: Goal is not measurable (how much better?)]",
                     inScope: "Everything in the factory.",
                     outScope: "Nothing.",
                     sponsor: "Manager", owner: "Team", cost: 0, count: 0
                 },
                 context: "FAIL CASE: This charter lacks any statistical rigor.",
-                reason: "Trainees should learn that without data, you just have an opinion."
+                reason: "Identify that without a 'Before' state (baseline), you cannot prove an 'After' state (improvement)."
+            },
+            'mfg_poor_scope': {
+                data: {
+                    title: "Improve Production Efficiency [REASON: Boiling the ocean]",
+                    businessCase: "We want more output. [REASON: Vague strategic link]",
+                    problem: "Output is not enough. [REASON: No comparison to capacity]",
+                    goal: "Maximize production as soon as possible. [REASON: No fixed target or deadline]",
+                    inScope: "All factory lines.",
+                    outScope: "None.",
+                    sponsor: "COO", owner: "Foreman", cost: 0, count: 0
+                },
+                context: "FAIL CASE: The scope is too broad for a 3-6 month window.",
+                reason: "Projects must be scoped to a single process or line to ensure specialized attention and success."
             },
             'healthcare': {
                 data: {
@@ -3519,29 +3540,42 @@
             },
             'hc_poor_broad': {
                 data: {
-                    title: "Improve Hospital Quality [REASON: BOILING THE OCEAN]",
-                    businessCase: "We want to be the best hospital in the city. [REASON: NO ROI]",
-                    problem: "Patients complain about everything. [REASON: NOT QUANTIFIED]",
-                    goal: "Be 100% perfect by next month. [REASON: IMPOSSIBLE GOAL]",
+                    title: "Improve Hospital Quality [REASON: Not a project, it is a mission]",
+                    businessCase: "We want to be the best hospital. [REASON: No specific ROI defined]",
+                    problem: "Patients complain about everything. [REASON: Generalization with no frequency data]",
+                    goal: "Be 100% perfect by next month. [REASON: Unattainable 'False Promise']",
                     inScope: "The whole hospital.",
                     outScope: "None.",
                     sponsor: "The Hospital", owner: "Everyone", cost: 0, count: 0
                 },
                 context: "FAIL CASE: Scope is way too large.",
-                reason: "Trainees must learn to 'Salami Slice' the problem into manageable projects."
+                reason: "Successful Belts focus on 'Critical to Quality' (CTQ) metrics, not entire organizations."
             },
             'hc_poor_subjective': {
                 data: {
-                    title: "Happy Nursing Staff [REASON: SUBJECTIVE TITLE]",
-                    businessCase: "Nurses are tired and we want them to feel better. [REASON: NOT STRATEGIC]",
-                    problem: "Nurses seem unhappy on Mondays. [REASON: VAGUE OBSERVATION]",
-                    goal: "Increase happiness by 50%. [REASON: NOT MEASURABLE]",
+                    title: "Happy Nursing Staff [REASON: Soft-metric that cannot be easily measured]",
+                    businessCase: "Nurses are tired. [REASON: Descriptive, not analytical]",
+                    problem: "Nurses seem unhappy on Mondays. [REASON: Anecdotal evidence vs Statistical data]",
+                    goal: "Increase happiness by 50%. [REASON: No valid measurement system exists for 'Happiness']",
                     inScope: "Nursing lounge.",
                     outScope: "Work hours.",
                     sponsor: "HR", owner: "Lead Nurse", cost: 0, count: 0
                 },
-                context: "FAIL CASE: This is a culture issue, not a DMAIC project.",
-                reason: "Six Sigma fixes processes, not feelings (without specific metrics)."
+                context: "FAIL CASE: Process vs People.",
+                reason: "DMAIC is for fixing process defects. Behavior/Attitude issues are better handled by HR or Leadership coaching."
+            },
+            'hc_poor_vague': {
+                data: {
+                    title: "Better Patient Care [REASON: Vague value proposition]",
+                    businessCase: "Care needs improvement. [REASON: No gap analysis]",
+                    problem: "Patients wait too long. [REASON: 'Long' is subjective - no median time given]",
+                    goal: "Improve waiting by 20%. [REASON: Improving 'Waiting' is not a metric, 'Waiting time' is]",
+                    inScope: "Waiting room.",
+                    outScope: "Exam rooms.",
+                    sponsor: "Director", owner: "Staff", cost: 0, count: 0
+                },
+                context: "FAIL CASE: Metric definition failure.",
+                reason: "If you cannot measure it with a stopwatch, a scale, or a counter, it is not a Six Sigma project yet."
             },
             'service': {
                 data: {
@@ -3568,6 +3602,32 @@
                 },
                 context: "Revenue Protection: Customer Lifetime Value.",
                 reason: "Direct impact on Top-Line growth."
+            },
+            'service_poor_time': {
+                data: {
+                    title: "Portal Update [REASON: This is a Just-Do-It task, not a DMAIC project]",
+                    businessCase: "The portal is old. [REASON: Missing 'Why Now' justification]",
+                    problem: "We need new features. [REASON: Solving a solution, not a root cause]",
+                    goal: "Finish update by next Friday. [REASON: Project schedule vs Process improvement cycle]",
+                    inScope: "The code.",
+                    outScope: "The backend.",
+                    sponsor: "IT Lead", owner: "Dev Team", cost: 0, count: 0
+                },
+                context: "FAIL CASE: Methodology mismatch.",
+                reason: "Use DMAIC only when the cause is unknown. If you just need to install/update something, use standard Project Management."
+            },
+            'service_poor_subjective': {
+                data: {
+                    title: "Unhappy Customers [REASON: Title is a symptom, not a process fix]",
+                    businessCase: "They are leaving. [REASON: No quantification of loss]",
+                    problem: "People are grumpy on calls. [REASON: Subjective feedback without sentiment analysis data]",
+                    goal: "Make them smile more. [REASON: Not a professional quality metric]",
+                    inScope: "Calls.",
+                    outScope: "Email.",
+                    sponsor: "VP Service", owner: "Manager", cost: 0, count: 0
+                },
+                context: "FAIL CASE: Symptom focused, not defect focused.",
+                reason: "A defect must be an event that is observable and measurable. 'Unhappiness' is too vague to assign a Sigma level."
             }
         };
 
@@ -3640,8 +3700,8 @@
                 if (currentScenario && scenarios[currentScenario]) {
                     const s = scenarios[currentScenario];
                     let contextHtml = s.context;
-                    // Dynamically highlight any [POOR] or [REASON] patterns in the context
-                    contextHtml = contextHtml.replace(/\[(.*?)\]/g, '<span style="color:#ef4444; font-weight:800;">[$1]</span>');
+                    // Dynamically highlight any [POOR] or [REASON] patterns in the context - make it small and red
+                    contextHtml = contextHtml.replace(/\[(.*?)\]/g, '<span style="color:#ef4444; font-size:11px; font-weight:800; display:block; margin-top:4px;">[$1]</span>');
 
                     content += `<div style='margin-top:15px; padding:15px; background:rgba(239, 68, 68, 0.05); border-left:4px solid #ef4444; border-radius:8px; font-size:13px;'>
                         <b style="color:#ef4444; display:block; margin-bottom:5px; text-transform:uppercase; letter-spacing:1px;">Scenario Coaching:</b> 
