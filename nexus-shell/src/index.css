@@ -110,6 +110,7 @@
   --color-nexus-cyan: var(--color-nexus-cyan-base);
   --color-nexus-gold: var(--color-nexus-gold-base);
   --color-nexus-purple: var(--color-nexus-purple-base);
+  --color-nexus-accent: var(--color-nexus-cyan-base);
 
   --color-nexus-success: var(--color-nexus-success-base);
   --color-nexus-warn: var(--color-nexus-warn-base);
