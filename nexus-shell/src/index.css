@@ -2,6 +2,8 @@
 
 @import "tailwindcss";
 
+@import "tailwindcss";
+
 /* Utility: Hide scrollbar */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
@@ -110,7 +112,6 @@
   --color-nexus-cyan: var(--color-nexus-cyan-base);
   --color-nexus-gold: var(--color-nexus-gold-base);
   --color-nexus-purple: var(--color-nexus-purple-base);
-  --color-nexus-accent: var(--color-nexus-cyan-base);
 
   --color-nexus-success: var(--color-nexus-success-base);
   --color-nexus-warn: var(--color-nexus-warn-base);
@@ -143,7 +144,11 @@ body {
 }
 
 .nexus-focus {
-  @apply outline-none ring-2 ring-nexus-accent ring-offset-2 ring-offset-nexus-navy;
+  outline: none;
+  ring: 2px;
+  ring-color: var(--nexus-accent);
+  ring-offset: 2px;
+  ring-offset-color: var(--nexus-bg-deep);
 }
 
 /* Animations */
@@ -197,26 +202,6 @@ body {
     0 25px 40px rgba(0, 0, 0, var(--shadow-opacity, 0.7)),
     inset 0 1.5px 1px var(--color-nexus-border),
     inset 0 -2px 2px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.header-3d::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--color-nexus-cyan), transparent);
-  background-size: 200% 100%;
-  animation: engraved-move 6s linear infinite;
-  box-shadow: 0 0 15px var(--color-nexus-cyan);
-  z-index: 10;
-}
-
-.light-mode .header-3d::before {
-  background: linear-gradient(90deg, transparent, #06b6d4, transparent);
-  box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
 }
 
 .footer-3d {
@@ -229,40 +214,4 @@ body {
     0 10px 20px rgba(0, 0, 0, var(--shadow-opacity, 0.6)),
     inset 0 2px 1px var(--color-nexus-border),
     inset 0 -2px 2px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.footer-3d::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--color-nexus-gold), transparent);
-  background-size: 200% 100%;
-  animation: engraved-move 8s linear infinite reverse;
-  box-shadow: 0 0 15px var(--color-nexus-gold);
-  z-index: 10;
-}
-
-.light-mode .footer-3d::before {
-  background: linear-gradient(90deg, transparent, #d97706, transparent);
-  box-shadow: 0 0 10px rgba(217, 119, 6, 0.6);
-}
-
-@keyframes engraved-move {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-/* Glowing text for shell phase badge */
-.header-3d span.text-nexus-cyan {
-  text-shadow: 0 0 10px var(--color-nexus-cyan), 0 0 20px rgba(34, 211, 238, 0.3);
-  font-weight: 900 !important;
 }
