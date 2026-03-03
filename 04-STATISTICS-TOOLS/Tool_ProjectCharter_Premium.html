@@ -2535,9 +2535,11 @@
     <!-- ZOOM TOOLS -->
     <div class="zoom-controls no-print">
         <button class="zoom-btn" onclick="adjustZoom(-0.1)">-</button>
-        <div class="zoom-value" id="zoomVal">1:1</div>
+        <button class="zoom-btn" onclick="window.location.href='Tool_WorkflowHub.html'" title="Main Hub"><i
+                class="fas fa-home" style="font-size:14px;"></i></button>
+        <button class="zoom-btn" onclick="toggleFullScreen()" title="Toggle Full-Screen (F11)" id="fullscreen-btn"><i
+                class="fas fa-expand" style="font-size:14px;"></i></button>
         <button class="zoom-btn" onclick="adjustZoom(0.1)">+</button>
-        <button class="zoom-btn" onclick="resetZoom()" style="font-size:12px;">1:1</button>
     </div>
 
     <!-- STRATEGIC INFO POPUP -->
@@ -4250,13 +4252,40 @@
                 localStorage.setItem('lss-charter-theme', 'light');
             }
         }
-        // Restore saved theme on load
+        // Restore saved theme on load (DEFAULT: Light/Day Mode)
         (function () {
             const saved = localStorage.getItem('lss-charter-theme');
-            if (saved === 'light') {
+            if (saved === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                // Default to light mode if no preference saved
                 document.documentElement.setAttribute('data-theme', 'light');
             }
         })();
+
+        // --- FULLSCREEN TOGGLE (F11 simulation) ---
+        function toggleFullScreen() {
+            const btn = document.getElementById('fullscreen-btn');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    if (btn) btn.innerHTML = '<i class="fas fa-compress" style="font-size:14px;"></i>';
+                }).catch(err => {
+                    console.error('Full-screen error:', err.message);
+                });
+            } else {
+                document.exitFullscreen();
+                if (btn) btn.innerHTML = '<i class="fas fa-expand" style="font-size:14px;"></i>';
+            }
+        }
+        // Listen for F11 key to sync button state
+        document.addEventListener('fullscreenchange', () => {
+            const btn = document.getElementById('fullscreen-btn');
+            if (btn) {
+                btn.innerHTML = document.fullscreenElement
+                    ? '<i class="fas fa-compress" style="font-size:14px;"></i>'
+                    : '<i class="fas fa-expand" style="font-size:14px;"></i>';
+            }
+        });
     </script>
 
     <!-- WISDOM MODAL -->
