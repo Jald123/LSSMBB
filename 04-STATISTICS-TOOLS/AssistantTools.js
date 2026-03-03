@@ -68,9 +68,10 @@
             <div class="dock-tool" title="Highlighter" id="highlighter-toggle" onclick="toggleHighlighter()">🖍️</div>
             <div class="dock-tool" title="Sniper Zoom" id="sniper-toggle" onclick="toggleSniper()">🔍</div>
             <div style="display:flex; gap:6px; padding:6px 10px; background:rgba(255,255,255,0.05); border-radius:20px; border:1px solid rgba(255,255,255,0.1);">
-                <div class="dock-tool zoom-control" title="Zoom Out" onclick="changePageZoom(-0.1)" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #6366f1, #4f46e5);">➖</div>
-                <div class="dock-tool zoom-control" title="Zoom Reset" onclick="changePageZoom(0)" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #f97316, #ea580c);">🏠</div>
-                <div class="dock-tool zoom-control" title="Zoom In" onclick="changePageZoom(0.1)" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #22c55e, #16a34a);">➕</div>
+                <div class="dock-tool zoom-control zoom-out" title="Zoom Out" onclick="changePageZoom(-0.1)" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #6366f1, #4f46e5);">➖</div>
+                <div class="dock-tool zoom-control zoom-reset" title="Zoom Reset" onclick="changePageZoom(0)" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #f97316, #ea580c);">🏠</div>
+                <div class="dock-tool zoom-control zoom-fullscreen" title="Toggle Fullscreen" onclick="toggleFullScreen()" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #8b5cf6, #7c3aed);">⛶</div>
+                <div class="dock-tool zoom-control zoom-in" title="Zoom In" onclick="changePageZoom(0.1)" style="width:28px; height:28px; font-size:12px; background:linear-gradient(135deg, #22c55e, #16a34a);">➕</div>
             </div>
             <div style="font-size:10px; color:#aaa; font-family:monospace;">AST-V2</div>
         </div>
@@ -721,5 +722,61 @@
         document.getElementById('assistant-dock').style.transform = `translateX(-50%) scale(${1 / state.zoom})`;
         showToast(`Zoom: ${Math.round(state.zoom * 100)}%`);
     };
+
+    // 9. FULLSCREEN LOGIC
+    window.toggleFullScreen = function () {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().then(() => {
+                showToast("Entering Full-Screen Mode");
+            }).catch(err => {
+                console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+                showToast("Full-screen unavailable");
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                showToast("Exiting Full-Screen Mode");
+            }
+        }
+    };
+
+    // 10. TOAST FALLBACK (If not defined elsewhere)
+    if (typeof window.showToast !== 'function') {
+        window.showToast = function (msg) {
+            let toast = document.getElementById('assistant-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'assistant-toast';
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(15, 23, 42, 0.95);
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 30px;
+                    font-size: 13px;
+                    font-weight: 600;
+                    letter-spacing: 0.5px;
+                    z-index: 20000;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                    border: 1px solid rgba(255,255,255,0.1);
+                    pointer-events: none;
+                    opacity: 0;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            toast.style.bottom = '40px';
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.bottom = '30px';
+            }, 2500);
+        };
+    }
 
 })();
