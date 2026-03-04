@@ -30,6 +30,7 @@ import {
     Eraser,
     Crosshair,
     Maximize2,
+    Minimize2,
     Pen,
     Highlighter as HighlighterIcon,
     Pencil,
@@ -58,6 +59,26 @@ const ToolWorkspace = () => {
 
     const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
     const tool = toolRegistry[toolId];
+
+    // --- FULLSCREEN LOGIC ---
+    const [isFullScreen, setIsFullScreen] = useState(false);
+    const toggleFullScreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    };
+
+    useEffect(() => {
+        const handleFullScreenChange = () => {
+            setIsFullScreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullScreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
+    }, []);
 
     // --- ESCAPE KEY HANDLER ---
     useEffect(() => {
@@ -352,6 +373,10 @@ const ToolWorkspace = () => {
                     <div className="w-px h-8 bg-nexus-border/50 mx-2" />
                     <button onClick={toggleTheme} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}>
                         {theme === 'dark' ? <Sun className="w-4 h-4 group-hover:text-yellow-400" /> : <Moon className="w-4 h-4 group-hover:text-sky-400" />}
+                    </button>
+                    <div className="w-px h-8 bg-nexus-border/50 mx-1" />
+                    <button onClick={toggleFullScreen} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}>
+                        {isFullScreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                     </button>
                     <div className={`text-[10px] font-orbitron font-black ml-2 uppercase opacity-50 tracking-widest ${theme === 'light' ? 'text-slate-400' : 'text-slate-600'}`}>AST-V2</div>
                 </div>
