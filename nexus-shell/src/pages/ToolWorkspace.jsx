@@ -388,10 +388,16 @@ const ToolWorkspace = () => {
             </div>
 
             {/* 🚀 MAIN CONTENT */}
-            <div className="flex-1 flex overflow-hidden relative pt-16">
-
-                <div className="w-full h-full pb-14 overflow-hidden">
-                    <iframe src={tool.src} onLoad={handleIframeLoad} title={tool.name} className="w-full h-full border-none bg-slate-900 origin-top" loading="lazy" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals" />
+            <div className="flex-1 flex overflow-hidden relative pt-16 p-4 pb-20">
+                <div className={`w-full h-full overflow-hidden rounded-2xl border shadow-2xl transition-all duration-300 ${theme === 'light' ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/5'}`}>
+                    <iframe
+                        src={tool.src}
+                        onLoad={handleIframeLoad}
+                        title={tool.name}
+                        className="w-full h-full border-none origin-top"
+                        loading="lazy"
+                        sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals"
+                    />
                 </div>
 
                 <AnimatePresence>
@@ -553,15 +559,15 @@ const ToolWorkspace = () => {
                         </>
                     )}
                 </AnimatePresence>
-            </div>
 
-            {/* 🎮 MISSION CONTROL FOOTER */}
-            <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full shell-interactive transition-all duration-300 footer-3d`}>
-                <button onClick={() => navigate('/')} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><Home className="w-3.5 h-3.5" /></button>
-                <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) navigate(`/workspace/${prevTool.id}`); else navigate('/journey'); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ChevronLeft className="w-4 h-4" /></button>
-                <button onClick={() => markToolComplete(toolId)} className={`relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 active:scale-95 ${isCompleted ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-800 border-slate-600 text-slate-200'}`}>{isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}{isCompleted ? 'SECURED' : 'MARK DONE'}</button>
-                <button onClick={handleNextStation} className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all"><span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span><ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" /></button>
-                <button onClick={() => { if (activeIframe?.contentWindow) activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ArrowUp className="w-3.5 h-3.5" /></button>
+                {/* 🎮 MISSION CONTROL FOOTER */}
+                <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full shell-interactive transition-all duration-300 footer-3d`}>
+                    <button onClick={() => navigate('/')} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><Home className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) navigate(`/workspace/${prevTool.id}`); else navigate('/journey'); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ChevronLeft className="w-4 h-4" /></button>
+                    <button onClick={() => markToolComplete(toolId)} className={`relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 active:scale-95 ${isCompleted ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-800 border-slate-600 text-slate-200'}`}>{isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}{isCompleted ? 'SECURED' : 'MARK DONE'}</button>
+                    <button onClick={handleNextStation} className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all"><span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span><ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" /></button>
+                    <button onClick={() => { if (activeIframe?.contentWindow) activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ArrowUp className="w-3.5 h-3.5" /></button>
+                </div>
             </div>
             {/* Global Cursor Injects for Drawing Mode */}
             {activeAssistantTool === 'draw' && (
@@ -571,7 +577,7 @@ const ToolWorkspace = () => {
                     .shell-interactive, .shell-interactive * { cursor: auto !important; }
                 `}} />
             )}
-        </div>
+        </div >
     );
 };
 
