@@ -326,37 +326,37 @@ const ToolWorkspace = () => {
             {/* 🔝 HEADER BAR */}
             <div className={`h-16 flex items-center justify-between px-6 z-[900] absolute top-0 left-0 right-0 shell-interactive transition-all duration-300 header-3d`}>
                 <div className="flex items-center gap-6 w-1/4">
-                    <button onClick={() => navigate(-1)} className="w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center text-slate-400 hover:bg-white/5 hover:text-white transition-all group">
+                    <button onClick={() => navigate(-1)} className={`w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center transition-all group ${theme === 'light' ? 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}>
                         <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
                     </button>
                     <div className="w-px h-6 bg-nexus-border" />
                     <div>
                         <span className="text-[10px] font-black font-orbitron text-nexus-cyan tracking-widest uppercase block mb-0.5">{tool.phase} Phase</span>
-                        <h1 className="text-lg font-black text-white font-orbitron tracking-tight truncate max-w-[200px]">{tool.name}</h1>
+                        <h1 className={`text-lg font-black font-orbitron tracking-tight truncate max-w-[200px] ${theme === 'light' ? 'text-slate-800' : 'text-white'}`}>{tool.name}</h1>
                     </div>
                 </div>
 
                 <div className="flex-1 flex justify-center items-center gap-6">
                     <div className="flex items-center gap-1">
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold shadow-[0_0_10px_rgba(236,72,153,0.3)]' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><FileText className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'calculator' ? null : 'calculator')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 text-cyan-400 font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)]' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><Calculator className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'draw' ? null : 'draw')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-lime-500/20 text-lime-400 font-bold shadow-[0_0_10px_rgba(132,204,22,0.3)]' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><PenTool className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'sniper' ? null : 'sniper')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'sniper' ? 'bg-violet-500/20 text-violet-400 font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)]' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><Search className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold shadow-[0_0_10px_rgba(236,72,153,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><FileText className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'calculator' ? null : 'calculator')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 text-cyan-400 font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><Calculator className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'draw' ? null : 'draw')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-lime-500/20 text-lime-400 font-bold shadow-[0_0_10px_rgba(132,204,22,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><PenTool className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'sniper' ? null : 'sniper')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'sniper' ? 'bg-violet-500/20 text-violet-400 font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><Search className="w-4 h-4" /></button>
                     </div>
                     <div className="w-px h-8 bg-nexus-border/50 mx-2" />
                     <div className="flex items-center gap-1">
-                        <button onClick={() => handleZoom(-0.1)} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-indigo-400 flex items-center justify-center transition-all"><Minus className="w-4 h-4" /></button>
-                        <button onClick={resetZoom} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-orange-400 flex items-center justify-center transition-all"><Home className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => handleZoom(0.1)} className="w-8 h-8 rounded-lg hover:bg-white/5 text-slate-400 hover:text-emerald-400 flex items-center justify-center transition-all"><Plus className="w-4 h-4" /></button>
+                        <button onClick={() => handleZoom(-0.1)} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-indigo-500' : 'hover:bg-white/5 text-slate-400 hover:text-indigo-400'}`}><Minus className="w-4 h-4" /></button>
+                        <button onClick={resetZoom} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-orange-500' : 'hover:bg-white/5 text-slate-400 hover:text-orange-400'}`}><Home className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => handleZoom(0.1)} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-emerald-500' : 'hover:bg-white/5 text-slate-400 hover:text-emerald-400'}`}><Plus className="w-4 h-4" /></button>
                     </div>
                     <div className="w-px h-8 bg-nexus-border/50 mx-2" />
-                    <button onClick={toggleTheme} className="w-10 h-10 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white flex items-center justify-center transition-all group">
+                    <button onClick={toggleTheme} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}>
                         {theme === 'dark' ? <Sun className="w-4 h-4 group-hover:text-yellow-400" /> : <Moon className="w-4 h-4 group-hover:text-sky-400" />}
                     </button>
-                    <div className="text-[10px] text-slate-600 font-orbitron font-black ml-2 uppercase opacity-50 tracking-widest">AST-V2</div>
+                    <div className={`text-[10px] font-orbitron font-black ml-2 uppercase opacity-50 tracking-widest ${theme === 'light' ? 'text-slate-400' : 'text-slate-600'}`}>AST-V2</div>
                 </div>
 
-                <div className="bg-black/60 p-1 rounded-full border border-white/5 flex shadow-inner w-1/4 justify-end">
+                <div className={`p-1 rounded-full border flex shadow-inner w-1/4 justify-end ${theme === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-black/60 border-white/5'}`}>
                     <button onClick={() => setViewMode('do')} className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'do' ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}><Terminal className="w-3 h-3" /> DO</button>
                     <button onClick={() => setViewMode('learn')} className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'learn' ? 'bg-nexus-purple text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}><FileText className="w-3 h-3" /> LEARN</button>
                 </div>
