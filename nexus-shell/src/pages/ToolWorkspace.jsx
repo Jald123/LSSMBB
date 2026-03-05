@@ -388,8 +388,8 @@ const ToolWorkspace = () => {
             </div>
 
             {/* 🚀 MAIN CONTENT */}
-            <div className="flex-1 flex overflow-hidden relative pt-16 p-4 pb-20">
-                <div className={`w-full h-full overflow-hidden rounded-2xl border shadow-2xl transition-all duration-300 p-2 ${theme === 'light' ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/5'}`}>
+            <div className="flex-1 overflow-auto relative pt-16 px-6 pb-20 flex items-start justify-center">
+                <div className={`w-full max-w-6xl h-full min-h-full overflow-hidden rounded-2xl border shadow-2xl transition-all duration-300 p-2 mx-auto ${theme === 'light' ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/5'}`}>
                     <iframe
                         src={tool.src}
                         onLoad={handleIframeLoad}
