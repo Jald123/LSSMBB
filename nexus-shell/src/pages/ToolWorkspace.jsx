@@ -394,7 +394,7 @@ const ToolWorkspace = () => {
                         src={tool.src}
                         onLoad={handleIframeLoad}
                         title={tool.name}
-                        className="w-full h-full border-none origin-top rounded-xl"
+                        className={`w-full h-full border-none origin-top rounded-xl ring-1 ${theme === 'light' ? 'ring-slate-200' : 'ring-white/10'}`}
                         loading="lazy"
                         sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals"
                     />
