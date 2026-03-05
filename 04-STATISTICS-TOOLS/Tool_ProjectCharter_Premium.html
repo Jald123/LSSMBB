@@ -2516,7 +2516,8 @@
             </div>
 
             <!-- STANDARDIZED FOOTER (Moved here from outside app-container to be non-floating) -->
-            <div class="workspace-footer no-print neu-panel" style="margin-top: 50px; position: static;">
+            <div class="workspace-footer no-print neu-panel"
+                style="margin-top: 50px; position: static; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
                 <div class="footer-input-group">
                     <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
                     <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name">
@@ -2527,6 +2528,12 @@
                 <button class="action-btn btn-print" onclick="preparePrint()">
                     <i class="fas fa-print"></i> Print Report
                 </button>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+                    <img src="images/hql_logo_footer.png"
+                        style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                        alt="HQL Logo">
+                </div>
             </div>
         </div>
     </div>

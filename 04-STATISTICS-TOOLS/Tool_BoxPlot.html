@@ -286,6 +286,10 @@
                 <div class="chart-container" id="zoomContainer"
                     style="background: white; border-radius: 8px; position:relative; height:450px;">
                     <canvas id="boxChart"></canvas>
+                    <div class="canvas-branding"
+                        style="position: absolute; bottom: 10px; right: 20px; pointer-events: none; opacity: 0.6;">
+                        <img src="images/hql_logo_footer.png" style="height: 30px;">
+                    </div>
                 </div>
                 <!-- STATS TABLE (Visible on Screen) -->
                 <div id="statsTableContainer" style="margin-top:20px; overflow-x:auto;"></div>
@@ -305,6 +309,12 @@
             <button class="action-btn btn-print" onclick="preparePrint()">
                 <i class="fas fa-print"></i> Print Report
             </button>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+                <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+                <img src="images/hql_logo_footer.png"
+                    style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                    alt="HQL Logo">
+            </div>
         </div>
     </div> <!-- Close tool-column -->
 
