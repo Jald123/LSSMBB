@@ -389,15 +389,17 @@ const ToolWorkspace = () => {
 
             {/* 🚀 MAIN CONTENT */}
             <div className="flex-1 flex overflow-hidden relative pt-16 p-4 pb-20">
-                <div className={`w-full h-full overflow-auto rounded-2xl border shadow-2xl transition-all duration-300 py-2 pl-2 pr-10 ${theme === 'light' ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/5'}`}>
-                    <iframe
-                        src={tool.src}
-                        onLoad={handleIframeLoad}
-                        title={tool.name}
-                        className={`w-full h-full border-none origin-top rounded-xl ring-1 ${theme === 'light' ? 'ring-slate-200' : 'ring-white/10'}`}
-                        loading="lazy"
-                        sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals"
-                    />
+                <div className={`w-full h-full overflow-hidden rounded-2xl border shadow-2xl transition-all duration-300 p-3 ${theme === 'light' ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/5'}`}>
+                    <div className="w-full h-full overflow-auto custom-scrollbar p-1">
+                        <iframe
+                            src={tool.src}
+                            onLoad={handleIframeLoad}
+                            title={tool.name}
+                            className={`w-full h-full border-none origin-top rounded-xl ring-1 ${theme === 'light' ? 'ring-slate-200' : 'ring-white/10'}`}
+                            loading="lazy"
+                            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals"
+                        />
+                    </div>
                 </div>
 
                 <AnimatePresence>
