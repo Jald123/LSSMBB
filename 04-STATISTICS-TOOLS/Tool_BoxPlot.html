@@ -12,9 +12,8 @@
 </head>
 
 <body>
-    <div class="container" style="max-width:calc(100% - 40px); margin:0 auto; padding:20px;">
-        <div class="grid-measure"
-            style="display:grid; grid-template-columns: 1fr; gap:30px; max-width: 1400px; margin: 0 auto;">
+    <div class="container" style="width: 100%; max-width: 100%; margin: 0; padding: 20px; box-sizing: border-box;">
+        <div class="grid-measure" style="display: grid; grid-template-columns: 1fr; gap: 30px; width: 100%; margin: 0;">
             <div class="guide-column">
                 <!-- GUIDE SECTION -->
                 <div class="explainer-section"
@@ -262,7 +261,8 @@
                 <h3>Input Data Groups</h3>
                 <p style="font-size:12px; color:var(--text-secondary);">One group per line. Comma separated values.</p>
                 <textarea id="dataInput" rows="10" placeholder="Group A: 10, 12, 15...&#10;Group B: 8, 9, 11..."
-                    style="width:100%; background:var(--surface-1); color:white; padding:10px; border-radius:8px; border:1px solid #334155;"></textarea>
+                    style="width:100%; background:var(--surface-1); color:white; padding:10px; border-radius:8px; border:1px solid #334155;"
+                    oninput="autoSaveData()"></textarea>
                 <button class="btn btn-primary" onclick="drawBoxPlot()" style="width:100%; margin-top:10px;">Draw
                     Plot</button>
                 <div style="display:flex; gap:10px; margin-top:5px;">
@@ -374,28 +374,7 @@
             document.getElementById('progressText').innerText = progress + '%';
         }
 
-        function loadExample(type) {
-            const caseDiv = document.getElementById('casePresentation');
-            const caseText = document.getElementById('caseText');
-            caseDiv.style.display = 'block';
-
-            if (type === 'normal') {
-                document.getElementById('dataInput').value = "Standard A: 10,11,10.5,9.8,10.2,10.4,11.1,10.3,9.9,10.0\nStandard B: 10.2,10.5,10.3,10.1,10.4,10.2,10.6,10.3,10.2,10.4";
-                caseText.innerHTML = `
-                    <strong style="color:#4ade80;">Normal / Stable Process:</strong><br>
-                    Notice how the <strong>Median</strong> line is roughly in the center of the box, and the whiskers are about equal length. 
-                    This symmetry indicates a Normal Distribution. There are <strong>No Outliers</strong> (dots), suggesting the process is stable and predictable.
-                `;
-            } else {
-                document.getElementById('dataInput').value = "Good Process: 10,10.2,10.1,9.9,10,10.3,10.1\nSkewed Process: 10,11,12,13,10,10,10,18,25";
-                caseText.innerHTML = `
-                    <strong style="color:#f87171;">Abnormal / Skewed Process:</strong><br>
-                    Look at "Skewed Process". The box is crushed to one side, and there are distinct <strong>Red Dots (Outliers)</strong> at 18 and 25.
-                    <br><em>Interpretation:</em> Something unusual happened (Special Cause Variation) to produce these high values. Do not just delete them; investigate!
-                `;
-            }
-            drawBoxPlot();
-        }
+        // loadExample consolidated below
 
         function preparePrint() {
             // Populate Print View with current state
@@ -652,16 +631,32 @@
 
         function saveAndEvaluate() {
             const name = document.getElementById('userNameFooter').value || document.getElementById('analystName').value;
+            const data = document.getElementById('dataInput').value;
             if (!name) {
                 alert("Please enter your name for the report.");
                 return;
             }
-            alert(`Saving Box Plot Data for ${name}...\n\n(Logic hook for evaluation system standby)`);
-            localStorage.setItem(`lss_pref_boxplot`, JSON.stringify({
+
+            const payload = {
                 name: name,
+                data: data,
                 timestamp: new Date().toISOString()
-            }));
+            };
+
+            localStorage.setItem(`lss_pref_boxplot`, JSON.stringify(payload));
+            alert(`Analysis for ${name} saved successfully! Your data will be restored when you return.`);
         }
+        function autoSaveData() {
+            const data = document.getElementById('dataInput').value;
+            const name = document.getElementById('userNameFooter').value || document.getElementById('analystName').value;
+            const payload = {
+                name: name,
+                data: data,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem(`lss_pref_boxplot`, JSON.stringify(payload));
+        }
+
         // CLICK OUTSIDE MODAL
         window.onclick = function (e) {
             if (e.target == document.getElementById('infoModal')) closePopup();
@@ -684,8 +679,18 @@
     <script>
         // Ensure chart loads on open
         document.addEventListener('DOMContentLoaded', () => {
-            // Load a default example silently if input is empty
-            if (!document.getElementById('dataInput').value) {
+            const savedData = localStorage.getItem('lss_pref_boxplot');
+            if (savedData) {
+                const parsed = JSON.parse(savedData);
+                document.getElementById('dataInput').value = parsed.data || "";
+                if (parsed.name) {
+                    document.getElementById('analystName').value = parsed.name;
+                    document.getElementById('userNameFooter').value = parsed.name;
+                    updateProgress();
+                }
+                if (parsed.data) drawBoxPlot();
+            } else {
+                // Load default if no saved data
                 document.getElementById('dataInput').value = "Group A: 10,12,11,13,10,14,12,11,10\nGroup B: 14,15,14,16,13,15,14,15";
                 drawBoxPlot();
             }
