@@ -505,220 +505,253 @@
 
                 <!-- TOOL COLUMN -->
                 <div class="tool-column">
-                    <!-- TABS -->
-                    <div style="margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); margin-top:40px;">
-                        <!-- Moved down 40px -->
-                        <button class="tab-btn active" onclick="switchTab('dist')">📊 Probability Distributions</button>
-                        <button class="tab-btn" onclick="switchTab('power')">🔋 Sample Size & Power</button>
-                        <button class="tab-btn" onclick="switchTab('adtest')">📉 Anderson-Darling Test</button>
+                    <!-- REMOVED TABS, NOW SEQUENTIAL -->
+
+                    <!-- SECTION 1: DISTRIBUTIONS -->
+                    <div
+                        style="border-bottom: 2px solid rgba(155, 89, 182, 0.3); padding-bottom: 40px; margin-bottom: 40px;">
+                        <h2
+                            style="color: var(--accent); font-family: 'Orbitron'; margin-bottom: 25px; display: flex; align-items: center; gap: 15px;">
+                            <span
+                                style="background: rgba(155, 89, 182, 0.1); padding: 8px; border-radius: 8px;">📊</span>
+                            Probability Distributions
+                        </h2>
+                        <div id="tab_dist" class="tab-content" style="display: block;">
+                            <div class="grid-2">
+                                <!-- CONTROLS -->
+                                <div>
+                                    <div class="card control-panel">
+                                        <h3>1. Select Distribution</h3>
+                                        <div style="display:flex; gap:10px; margin-bottom:20px;">
+                                            <button class="btn btn-secondary-card btn-tooltip"
+                                                onclick="setDist('normal')"
+                                                data-hover="WHAT: Continuous data (Bell Curve).&#10;WHEN: Height, Time, Weight, Salary.&#10;INTERP: Symmetric. 68% ±1σ. Tail = Rare.&#10;RANGE: -∞ to +∞">
+                                                Normal (Z)</button>
+
+                                            <button class="btn btn-secondary-card btn-tooltip"
+                                                onclick="setDist('binomial')"
+                                                data-hover="WHAT: Discrete Pass/Fail outcomes.&#10;WHEN: Inspections, Coin Flips, Yes/No.&#10;INTERP: Function of (n) trials & (p) prob.&#10;RANGE: 0 to n">
+                                                Binomial (P/F)</button>
+
+                                            <button class="btn btn-secondary-card btn-tooltip"
+                                                onclick="setDist('poisson')"
+                                                data-hover="WHAT: Rare events over time/area.&#10;WHEN: Accidents/Year, Defects/Unit.&#10;INTERP: Skewed right. Mean = Variance = λ.&#10;RANGE: 0 to ∞">
+                                                Poisson (Rate)</button>
+                                        </div>
+
+                                        <!-- DYNAMIC CONTROLS -->
+                                        <div id="controls_normal">
+                                            <h4 style="color:var(--accent); margin-bottom:10px;">Normal Params</h4>
+                                            <div class="slider-group">
+                                                <label><span>Mean (μ): <span id="v_mu">0</span></span></label>
+                                                <input type="range" min="-10" max="10" value="0" step="0.5"
+                                                    oninput="updateDist(); document.getElementById('v_mu').innerText=this.value;">
+                                            </div>
+                                            <div class="slider-group">
+                                                <label><span>StDev (σ): <span id="v_sigma">1</span></span></label>
+                                                <input type="range" min="0.5" max="5" value="1" step="0.1"
+                                                    oninput="updateDist(); document.getElementById('v_sigma').innerText=this.value;">
+                                            </div>
+                                        </div>
+                                        <div id="controls_binomial" style="display:none;">
+                                            <h4 style="color:var(--accent); margin-bottom:10px;">Binomial Params</h4>
+                                            <div class="slider-group">
+                                                <label><span>Trials (n): <span id="v_n">10</span></span></label>
+                                                <input type="range" min="1" max="50" value="10" step="1"
+                                                    oninput="updateDist(); document.getElementById('v_n').innerText=this.value;">
+                                            </div>
+                                            <div class="slider-group">
+                                                <label><span>Prob (p): <span id="v_p">0.5</span></span></label>
+                                                <input type="range" min="0.01" max="1.0" value="0.5" step="0.01"
+                                                    oninput="updateDist(); document.getElementById('v_p').innerText=this.value;">
+                                            </div>
+                                        </div>
+                                        <div id="controls_poisson" style="display:none;">
+                                            <h4 style="color:var(--accent); margin-bottom:10px;">Poisson Params</h4>
+                                            <div class="slider-group">
+                                                <label class="btn-tooltip" style="cursor:help; width:fit-content;"
+                                                    data-hover="WHAT: The average rate of occurrence (Mean = Variance = λ).&#10;WHEN: Count data (e.g., defects per 1000 units).&#10;INTERP: As λ increases, the skewed distribution becomes more Normal.&#10;NORMAL: Typical rates > 5 approach normality.">
+                                                    Lambda (λ): <span id="v_lam">5</span> ⓘ</label>
+                                                <input type="range" min="0.5" max="20" value="5" step="0.5"
+                                                    oninput="updateDist(); document.getElementById('v_lam').innerText=this.value;">
+                                            </div>
+                                        </div>
+
+                                        <div style="margin-top:20px; font-size:12px; color:var(--text-secondary);">
+                                            <p><strong>Use Case:</strong> <span id="dist_desc">Modeling continuous data
+                                                    like
+                                                    Time or
+                                                    Weight.</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- VISUAL -->
+                                <div>
+                                    <div class="lab-screen">
+                                        <canvas id="distChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- TAB 1: DISTRIBUTIONS -->
-                    <div id="tab_dist" class="tab-content">
-                        <div class="grid-2">
-                            <!-- CONTROLS -->
-                            <div>
+                    <!-- SECTION 2: POWER & SAMPLE SIZE -->
+                    <div
+                        style="border-bottom: 2px solid rgba(234, 88, 12, 0.3); padding-bottom: 40px; margin-bottom: 40px;">
+                        <h2
+                            style="color: #ea580c; font-family: 'Orbitron'; margin-bottom: 25px; display: flex; align-items: center; gap: 15px;">
+                            <span
+                                style="background: rgba(234, 88, 12, 0.1); padding: 8px; border-radius: 8px;">🔋</span>
+                            Sample Size & Power
+                        </h2>
+                        <div id="tab_power" class="tab-content" style="display:block;">
+                            <div class="grid-2">
+                                <!-- CALCULATOR -->
                                 <div class="card control-panel">
-                                    <h3>1. Select Distribution</h3>
-                                    <div style="display:flex; gap:10px; margin-bottom:20px;">
-                                        <button class="btn btn-secondary-card btn-tooltip" onclick="setDist('normal')"
-                                            data-hover="WHAT: Continuous data (Bell Curve).&#10;WHEN: Height, Time, Weight, Salary.&#10;INTERP: Symmetric. 68% ±1σ. Tail = Rare.&#10;RANGE: -∞ to +∞">
-                                            Normal (Z)</button>
+                                    <h3 class="btn-tooltip" style="cursor:help; width:fit-content;"
+                                        data-hover="WHAT: Formula to find 'n' needed to detect a difference.&#10;WHEN: BEFORE collecting data for T-Tests/ANOVA.&#10;INTERP: Balance between Risk (Alpha), Power (1-Beta), and Cost (n).&#10;NORMAL: Power > 0.8, Alpha = 0.05.">
+                                        Sample Size Calculator (1-Sample Mean) ⓘ</h3>
+                                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">
+                                        How many samples do I need to "see" a difference?
+                                    </p>
 
-                                        <button class="btn btn-secondary-card btn-tooltip" onclick="setDist('binomial')"
-                                            data-hover="WHAT: Discrete Pass/Fail outcomes.&#10;WHEN: Inspections, Coin Flips, Yes/No.&#10;INTERP: Function of (n) trials & (p) prob.&#10;RANGE: 0 to n">
-                                            Binomial (P/F)</button>
-
-                                        <button class="btn btn-secondary-card btn-tooltip" onclick="setDist('poisson')"
-                                            data-hover="WHAT: Rare events over time/area.&#10;WHEN: Accidents/Year, Defects/Unit.&#10;INTERP: Skewed right. Mean = Variance = λ.&#10;RANGE: 0 to ∞">
-                                            Poisson (Rate)</button>
+                                    <div class="form-group">
+                                        <label>Effect Size (Delta) - Smallest Difference to detect</label>
+                                        <input type="number" id="p_delta" value="1.0" oninput="calcPower()">
                                     </div>
-
-                                    <!-- DYNAMIC CONTROLS -->
-                                    <div id="controls_normal">
-                                        <h4 style="color:var(--accent); margin-bottom:10px;">Normal Params</h4>
-                                        <div class="slider-group">
-                                            <label><span>Mean (μ): <span id="v_mu">0</span></span></label>
-                                            <input type="range" min="-10" max="10" value="0" step="0.5"
-                                                oninput="updateDist(); document.getElementById('v_mu').innerText=this.value;">
-                                        </div>
-                                        <div class="slider-group">
-                                            <label><span>StDev (σ): <span id="v_sigma">1</span></span></label>
-                                            <input type="range" min="0.5" max="5" value="1" step="0.1"
-                                                oninput="updateDist(); document.getElementById('v_sigma').innerText=this.value;">
-                                        </div>
+                                    <div class="form-group">
+                                        <label>Standard Deviation (Sigma) - Noise</label>
+                                        <input type="number" id="p_sigma" value="2.0" oninput="calcPower()">
                                     </div>
-                                    <div id="controls_binomial" style="display:none;">
-                                        <h4 style="color:var(--accent); margin-bottom:10px;">Binomial Params</h4>
-                                        <div class="slider-group">
-                                            <label><span>Trials (n): <span id="v_n">10</span></span></label>
-                                            <input type="range" min="1" max="50" value="10" step="1"
-                                                oninput="updateDist(); document.getElementById('v_n').innerText=this.value;">
-                                        </div>
-                                        <div class="slider-group">
-                                            <label><span>Prob (p): <span id="v_p">0.5</span></span></label>
-                                            <input type="range" min="0.01" max="1.0" value="0.5" step="0.01"
-                                                oninput="updateDist(); document.getElementById('v_p').innerText=this.value;">
-                                        </div>
+                                    <div class="form-group">
+                                        <label>Desired Power (Usually 0.80 or 0.90)</label>
+                                        <input type="number" id="p_power" value="0.9" step="0.05" max="0.99"
+                                            oninput="calcPower()">
                                     </div>
-                                    <div id="controls_poisson" style="display:none;">
-                                        <h4 style="color:var(--accent); margin-bottom:10px;">Poisson Params</h4>
-                                        <div class="slider-group">
-                                            <label class="btn-tooltip" style="cursor:help; width:fit-content;"
-                                                data-hover="WHAT: The average rate of occurrence (Mean = Variance = λ).&#10;WHEN: Count data (e.g., defects per 1000 units).&#10;INTERP: As λ increases, the skewed distribution becomes more Normal.&#10;NORMAL: Typical rates > 5 approach normality.">
-                                                Lambda (λ): <span id="v_lam">5</span> ⓘ</label>
-                                            <input type="range" min="0.5" max="20" value="5" step="0.5"
-                                                oninput="updateDist(); document.getElementById('v_lam').innerText=this.value;">
-                                        </div>
-                                    </div>
-
-                                    <div style="margin-top:20px; font-size:12px; color:var(--text-secondary);">
-                                        <p><strong>Use Case:</strong> <span id="dist_desc">Modeling continuous data like
-                                                Time or
-                                                Weight.</span></p>
+                                    <div class="form-group">
+                                        <label class="btn-tooltip" style="cursor:help; width:fit-content;"
+                                            data-hover="Risk of a False Alarm (Type I Error).&#10;We accept a 5% chance of saying 'There is a difference' when there isn't one.">
+                                            Alpha (Risk of False Positive) ⓘ</label>
+                                        <input type="number" id="p_alpha" value="0.05" readonly>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- VISUAL -->
-                            <div>
-                                <div class="lab-screen">
-                                    <canvas id="distChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            <!-- RESULTS -->
+                            <div class="card"
+                                style="text-align:center; display:flex; flex-direction:column; justify-content:center;">
+                                <h4 style="color:var(--text-secondary); text-transform:uppercase;">Required Sample Size
+                                </h4>
+                                <div id="res_n" class="big-number">34</div>
+                                <div style="font-size:12px; color:var(--text-secondary);">Samples Needed</div>
 
-                    <!-- TAB 2: POWER & SAMPLE SIZE -->
-                    <div id="tab_power" class="tab-content" style="display:none;">
-                        <div class="grid-2">
-                            <!-- CALCULATOR -->
-                            <div class="card control-panel">
-                                <h3 class="btn-tooltip" style="cursor:help; width:fit-content;"
-                                    data-hover="WHAT: Formula to find 'n' needed to detect a difference.&#10;WHEN: BEFORE collecting data for T-Tests/ANOVA.&#10;INTERP: Balance between Risk (Alpha), Power (1-Beta), and Cost (n).&#10;NORMAL: Power > 0.8, Alpha = 0.05.">
-                                    Sample Size Calculator (1-Sample Mean) ⓘ</h3>
-                                <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">
-                                    How many samples do I need to "see" a difference?
-                                </p>
-
-                                <div class="form-group">
-                                    <label>Effect Size (Delta) - Smallest Difference to detect</label>
-                                    <input type="number" id="p_delta" value="1.0" oninput="calcPower()">
-                                </div>
-                                <div class="form-group">
-                                    <label>Standard Deviation (Sigma) - Noise</label>
-                                    <input type="number" id="p_sigma" value="2.0" oninput="calcPower()">
-                                </div>
-                                <div class="form-group">
-                                    <label>Desired Power (Usually 0.80 or 0.90)</label>
-                                    <input type="number" id="p_power" value="0.9" step="0.05" max="0.99"
-                                        oninput="calcPower()">
-                                </div>
-                                <div class="form-group">
-                                    <label class="btn-tooltip" style="cursor:help; width:fit-content;"
-                                        data-hover="Risk of a False Alarm (Type I Error).&#10;We accept a 5% chance of saying 'There is a difference' when there isn't one.">
-                                        Alpha (Risk of False Positive) ⓘ</label>
-                                    <input type="number" id="p_alpha" value="0.05" readonly>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- RESULTS -->
-                        <div class="card"
-                            style="text-align:center; display:flex; flex-direction:column; justify-content:center;">
-                            <h4 style="color:var(--text-secondary); text-transform:uppercase;">Required Sample Size
-                            </h4>
-                            <div id="res_n" class="big-number">34</div>
-                            <div style="font-size:12px; color:var(--text-secondary);">Samples Needed</div>
-
-                            <div style="margin-top:30px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
-                                <div style="font-size:12px; color:var(--text-secondary); text-transform:uppercase;">
-                                    Sensitivity
-                                    Analysis</div>
-                                <p style="font-size:11px; color:#aaa;">What if we only have 20 samples?</p>
-                                <div style="font-size:24px; font-weight:bold; color:var(--warning);" id="res_act_power">
-                                    65%
-                                </div>
-                                <div class="power-meter">
-                                    <div id="bar_power" class="power-fill" style="width:65%;"></div>
-                                </div>
-                                <div style="font-size:10px; color:#aaa; margin-top:5px;">Power (Chance of detecting
-                                    the
-                                    shift)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB 3: ANDERSON-DARLING TEST -->
-                <div id="tab_adtest" class="tab-content" style="display:none;">
-                    <div class="grid-2">
-                        <!-- CONTROLS -->
-                        <div class="card control-panel">
-                            <h3 class="btn-tooltip" style="cursor:help; width:fit-content;"
-                                data-hover="WHAT: The most powerful test for Normality.&#10;WHEN: Before T-Tests, ANOVA, or Capability Analysis.&#10;RULE: If P < 0.05, data is NOT Normal.">
-                                Anderson-Darling Normality Test ⓘ
-                            </h3>
-                            <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">
-                                Paste your data to check if it fits the Bell Curve.
-                            </p>
-
-                            <div class="form-group">
-                                <label>Data Input (Comma or Space separated)</label>
-                                <textarea id="ad_data" rows="5"
-                                    style="width:100%; border-radius:6px; background:#0f172a; border:1px solid #334155; color:white; padding:10px; font-family:monospace;"
-                                    placeholder="e.g. 10.2, 10.5, 9.8, 10.1..."></textarea>
-                            </div>
-
-                            <select class="scenario-select" onchange="loadADExample(this.value)"
-                                style="width:100%; padding:8px; margin-bottom:15px; background:#1e293b; color:white; border:1px solid #3b82f6; border-radius:4px;">
-                                <option value="">-- Load Medical Example --</option>
-                                <option value="med_wait">🏥 ER Wait Times (Minutes)</option>
-                                <option value="med_bp">💓 Blood Pressure (Systolic)</option>
-                                <option value="med_lab">🧪 Lab Results (Glucose mg/dL)</option>
-                            </select>
-
-                            <div style="display:flex; justify-content:flex-end;">
-                                <button class="btn btn-primary" onclick="calcADTest()">Run Test 🏃‍♂️</button>
-                            </div>
-                        </div>
-
-                        <!-- RESULTS -->
-                        <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
-                            <h4 style="color:var(--text-secondary); text-transform:uppercase; text-align:center;">Test
-                                Results</h4>
-
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
                                 <div
-                                    style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; text-align:center;">
-                                    <div style="font-size:11px; color:#aaa;">AD Statistic (A²)</div>
-                                    <div id="res_ad_stat" style="font-size:20px; font-weight:bold; color:white;">-</div>
+                                    style="margin-top:30px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+                                    <div style="font-size:12px; color:var(--text-secondary); text-transform:uppercase;">
+                                        Sensitivity
+                                        Analysis</div>
+                                    <p style="font-size:11px; color:#aaa;">What if we only have 20 samples?</p>
+                                    <div style="font-size:24px; font-weight:bold; color:var(--warning);"
+                                        id="res_act_power">
+                                        65%
+                                    </div>
+                                    <div class="power-meter">
+                                        <div id="bar_power" class="power-fill" style="width:65%;"></div>
+                                    </div>
+                                    <div style="font-size:10px; color:#aaa; margin-top:5px;">Power (Chance of detecting
+                                        the
+                                        shift)
+                                    </div>
                                 </div>
-                                <div
-                                    style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; text-align:center;">
-                                    <div style="font-size:11px; color:#aaa;">P-Value</div>
-                                    <div id="res_ad_p" style="font-size:20px; font-weight:bold; color:white;">-</div>
+                                <div style="margin-top:20px; height:180px; width:100%;">
+                                    <canvas id="powerChart"></canvas>
                                 </div>
-                            </div>
-
-                            <div id="ad_conclusion"
-                                style="margin-top:20px; padding:15px; border-radius:6px; text-align:center; display:none;">
-                                <!-- Dynamic Conclusion -->
-                            </div>
-                            <div id="ad_chart_container"
-                                style="height:150px; width:100%; margin-top:20px; display:none;">
-                                <canvas id="adChart"></canvas>
                             </div>
                         </div>
                     </div>
+
+                    <!-- SECTION 3: ANDERSON-DARLING TEST -->
+                    <div style="padding-bottom: 40px;">
+                        <h2
+                            style="color: #3b82f6; font-family: 'Orbitron'; margin-bottom: 25px; display: flex; align-items: center; gap: 15px;">
+                            <span
+                                style="background: rgba(59, 130, 246, 0.1); padding: 8px; border-radius: 8px;">📉</span>
+                            Anderson-Darling Test
+                        </h2>
+                        <div id="tab_adtest" class="tab-content" style="display:block;">
+                            <div class="grid-2">
+                                <!-- CONTROLS -->
+                                <div class="card control-panel">
+                                    <h3 class="btn-tooltip" style="cursor:help; width:fit-content;"
+                                        data-hover="WHAT: The most powerful test for Normality.&#10;WHEN: Before T-Tests, ANOVA, or Capability Analysis.&#10;RULE: If P < 0.05, data is NOT Normal.">
+                                        Anderson-Darling Normality Test ⓘ
+                                    </h3>
+                                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom:15px;">
+                                        Paste your data to check if it fits the Bell Curve.
+                                    </p>
+
+                                    <div class="form-group">
+                                        <label>Data Input (Comma or Space separated)</label>
+                                        <textarea id="ad_data" rows="5"
+                                            style="width:100%; border-radius:6px; background:#0f172a; border:1px solid #334155; color:white; padding:10px; font-family:monospace;"
+                                            placeholder="e.g. 10.2, 10.5, 9.8, 10.1..."></textarea>
+                                    </div>
+
+                                    <select class="scenario-select" onchange="loadADExample(this.value)"
+                                        style="width:100%; padding:8px; margin-bottom:15px; background:#1e293b; color:white; border:1px solid #3b82f6; border-radius:4px;">
+                                        <option value="">-- Load Medical Example --</option>
+                                        <option value="med_wait">🏥 ER Wait Times (Minutes)</option>
+                                        <option value="med_bp">💓 Blood Pressure (Systolic)</option>
+                                        <option value="med_lab">🧪 Lab Results (Glucose mg/dL)</option>
+                                    </select>
+
+                                    <div style="display:flex; justify-content:flex-end;">
+                                        <button class="btn btn-primary" onclick="calcADTest()">Run Test 🏃‍♂️</button>
+                                    </div>
+                                </div>
+
+                                <!-- RESULTS -->
+                                <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
+                                    <h4
+                                        style="color:var(--text-secondary); text-transform:uppercase; text-align:center;">
+                                        Test
+                                        Results</h4>
+
+                                    <div
+                                        style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                                        <div
+                                            style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; text-align:center;">
+                                            <div style="font-size:11px; color:#aaa;">AD Statistic (A²)</div>
+                                            <div id="res_ad_stat"
+                                                style="font-size:20px; font-weight:bold; color:white;">-</div>
+                                        </div>
+                                        <div
+                                            style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; text-align:center;">
+                                            <div style="font-size:11px; color:#aaa;">P-Value</div>
+                                            <div id="res_ad_p" style="font-size:20px; font-weight:bold; color:white;">-
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="ad_conclusion"
+                                        style="margin-top:20px; padding:15px; border-radius:6px; text-align:center; display:none;">
+                                        <!-- Dynamic Conclusion -->
+                                    </div>
+                                    <div id="ad_chart_container"
+                                        style="height:150px; width:100%; margin-top:20px; display:none;">
+                                        <canvas id="adChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
-
-            </div>
-
-        </div>
-    </div> <!-- Close tool-column -->
-    </div> <!-- Close grid-measure -->
+            </div> <!-- Close tool-column -->
+        </div> <!-- Close grid-measure -->
     </div>
 
     <!-- HELP PANEL REMOVED -->
@@ -817,7 +850,7 @@
     </div>
 
     <script>
-        // GLOBAL CHART
+        // GLOBAL CHARTS
         let ctx = document.getElementById('distChart').getContext('2d');
         let distChart = new Chart(ctx, {
             type: 'line',
@@ -829,8 +862,19 @@
                     mode: 'index',
                     intersect: false,
                 },
-                scales: { y: { beginAtZero: true } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#94a3b8' }
+                    }
+                },
                 plugins: {
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
                             label: function (context) {
@@ -842,35 +886,43 @@
             }
         });
 
+        let pctx = document.getElementById('powerChart').getContext('2d');
+        let powerChart = new Chart(pctx, {
+            type: 'line',
+            data: { labels: [], datasets: [{ label: 'Power (%)', data: [], borderColor: '#f97316', backgroundColor: 'rgba(249, 115, 22, 0.1)', fill: true, tension: 0.4 }] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    y: {
+                        min: 0, max: 100,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#94a3b8', callback: v => v + '%' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#94a3b8' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Power vs Sample Size', color: '#94a3b8', font: { size: 10 } }
+                }
+            }
+        });
+
         // STATE
         let activeDist = 'normal';
 
         function toggleHelp() { document.getElementById('slidePanel').classList.toggle('open'); }
 
-        function switchTab(id) {
-            document.getElementById('tab_dist').style.display = id === 'dist' ? 'block' : 'none';
-            document.getElementById('tab_power').style.display = id === 'power' ? 'block' : 'none';
-            document.getElementById('tab_adtest').style.display = id === 'adtest' ? 'block' : 'none';
-
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Maximize Layout for Anderson-Darling Test (User Request)
-            const grid = document.querySelector('.execution-grid');
-            if (id === 'adtest') {
-                grid.classList.add('maximize-tool');
-            } else {
-                grid.classList.remove('maximize-tool');
-            }
-
-            if (id === 'dist') updateDist();
-            if (id === 'power') calcPower();
-            if (id === 'adtest') {
-                // Pre-fill dummy data if empty
-                if (document.getElementById('ad_data').value === '') {
-                    document.getElementById('ad_data').value = "10.2, 10.5, 9.9, 10.1, 10.3, 10.0, 9.8, 10.2, 10.4, 10.1, 9.7, 10.5, 10.2, 10.0, 10.3, 10.1, 9.9, 10.4, 9.8, 10.2";
-                }
-            }
+        window.onload = function () {
+            updateDist();
+            calcPower();
+            // Pre-fill dummy data
+            document.getElementById('ad_data').value = "10.2, 10.5, 9.9, 10.1, 10.3, 10.0, 9.8, 10.2, 10.4, 10.1, 9.7, 10.5, 10.2, 10.0, 10.3, 10.1, 9.9, 10.4, 9.8, 10.2";
+            calcADTest();
         }
 
         function setDist(type) {
@@ -985,11 +1037,26 @@
             // Back calculate Z_beta -> convert to Power
             // Doing a visual estimation for demo
             let actPower = 50;
-            if (n > 50) actPower = 30; // If you need 50 but have 20, power is low
-            if (n <= 20) actPower = 90; // If you need 10 and have 20, power is high
+            if (n > 50) actPower = 30;
+            if (n <= 20) actPower = 90;
 
             document.getElementById('res_act_power').innerText = actPower + '%';
             document.getElementById('bar_power').style.width = actPower + '%';
+
+            // Generate Power Curve Labels & Data
+            let pLabels = [];
+            let pData = [];
+            for (let i = 5; i <= 100; i += 5) {
+                pLabels.push(i);
+                // Simple sigmoid for power curve demo
+                // Power increases as N increases
+                let pVal = 100 / (1 + Math.exp(-0.1 * (i - n)));
+                pData.push(pVal);
+            }
+
+            powerChart.data.labels = pLabels;
+            powerChart.data.datasets[0].data = pData;
+            powerChart.update();
 
             // Auto update progress since calc ran
             // updateProgress();
@@ -1535,6 +1602,7 @@
             <button class="btn btn-primary" onclick="closePopup()" style="margin-top:20px;">Got it</button>
         </div>
     </div>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>
