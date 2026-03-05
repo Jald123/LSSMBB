@@ -145,10 +145,7 @@ body {
 
 .nexus-focus {
   outline: none;
-  ring: 2px;
-  ring-color: var(--nexus-accent);
-  ring-offset: 2px;
-  ring-offset-color: var(--nexus-bg-deep);
+  box-shadow: 0 0 0 2px var(--nexus-bg-deep), 0 0 0 4px var(--nexus-accent);
 }
 
 /* Animations */
