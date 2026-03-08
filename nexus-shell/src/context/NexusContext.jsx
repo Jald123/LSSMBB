@@ -33,12 +33,18 @@ export const NexusProvider = ({ children }) => {
     // Persist state changes
     useEffect(() => {
         localStorage.setItem('nexus_os_state', JSON.stringify(state));
+
         // Apply theme to document body
+        const root = document.documentElement;
         if (state.theme === 'light') {
-            document.documentElement.classList.add('light-mode');
+            root.classList.add('light-mode');
         } else {
-            document.documentElement.classList.remove('light-mode');
+            root.classList.remove('light-mode');
         }
+
+        // Apply industry (sector) class for dynamic CSS theme shifting
+        root.classList.remove('sector-healthcare', 'sector-business', 'sector-life');
+        root.classList.add(`sector-${state.industry}`);
     }, [state]);
 
     // --- ACTIONS ---

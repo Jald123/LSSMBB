@@ -65,10 +65,10 @@ const ArmoryMission = () => {
 
     return (
         <div className="w-full max-w-[1400px] mx-auto px-4 py-6 min-h-[calc(100vh-40px)] flex flex-col">
-            <div className="bg-nexus-bg-surface border border-nexus-border rounded-[2.5rem] overflow-hidden shadow-nexus flex-1 flex flex-col transition-colors duration-300">
+            <div className="bg-[#0f172a]/95 border border-cyan-500/30 rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8),0_0_40px_rgba(34,211,238,0.1)] flex-1 flex flex-col">
 
                 {/* 🏷️ Header Bar */}
-                <div className="bg-nexus-navy/40 border-b border-nexus-border px-8 py-4 flex items-center justify-between shrink-0">
+                <div className="bg-black/40 border-b border-cyan-500/20 px-8 py-4 flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="w-6 h-6 bg-cyan-500/10 rounded flex items-center justify-center border border-cyan-500/30">
                             <Shield className="w-3.5 h-3.5 text-cyan-400" />
@@ -77,24 +77,24 @@ const ArmoryMission = () => {
                     </div>
                     <button
                         onClick={() => navigate('/armory')}
-                        className="w-8 h-8 rounded-lg bg-nexus-surface border border-nexus-border flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:border-nexus-accent/30 transition-all"
+                        className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 hover:text-white hover:border-white/30 transition-all"
                     >
                         <X className="w-4 h-4" />
                     </button>
                 </div>
 
                 {/* 🎮 Mission Header */}
-                <div className="bg-nexus-surface/50 border-b border-nexus-border px-10 py-8 flex items-start justify-between shrink-0">
+                <div className="bg-slate-900/50 border-b border-white/5 px-10 py-8 flex items-start justify-between shrink-0">
                     <div className="flex gap-6">
                         <button
                             onClick={() => navigate('/armory')}
-                            className="bg-nexus-surface border border-nexus-border px-4 py-2 rounded-lg text-[10px] font-black font-orbitron text-nexus-text-secondary hover:text-nexus-text-primary transition-colors h-10"
+                            className="bg-white/5 border border-white/10 px-4 py-2 rounded-lg text-[10px] font-black font-orbitron text-slate-400 hover:text-white transition-colors h-10"
                         >
                             ← BACK TO HUB
                         </button>
                         <div className="space-y-1">
-                            <h2 className="text-2xl font-black font-orbitron text-nexus-text-primary tracking-widest leading-none">{currentMission.title}</h2>
-                            <p className="text-nexus-text-secondary text-[11px] font-medium max-w-2xl leading-relaxed">{currentMission.subtitle}</p>
+                            <h2 className="text-2xl font-black font-orbitron text-white tracking-widest leading-none">{currentMission.title}</h2>
+                            <p className="text-slate-500 text-[11px] font-medium max-w-2xl leading-relaxed">{currentMission.subtitle}</p>
                         </div>
                     </div>
                     <div className="text-right">
@@ -109,7 +109,7 @@ const ArmoryMission = () => {
                 </div>
 
                 {/* 🏷️ Tooltip Hud */}
-                <div className="h-6 bg-nexus-accent/5 border-b border-nexus-border flex items-center px-10 gap-2 overflow-hidden shrink-0">
+                <div className="h-6 bg-cyan-500/5 border-b border-cyan-500/10 flex items-center px-10 gap-2 overflow-hidden shrink-0">
                     <div className="w-1 h-1 rounded-full bg-cyan-400 animate-pulse" />
                     <AnimatePresence mode="wait">
                         <motion.span
@@ -117,7 +117,7 @@ const ArmoryMission = () => {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="text-[8px] font-black font-orbitron text-nexus-accent/60 uppercase tracking-[0.2em]"
+                            className="text-[8px] font-black font-orbitron text-cyan-400/60 uppercase tracking-[0.2em]"
                         >
                             {hoverText || "Ready for Calibration..."}
                         </motion.span>
@@ -128,8 +128,8 @@ const ArmoryMission = () => {
                 <div className="flex-1 relative overflow-y-auto custom-scrollbar flex flex-col items-center p-10 pt-24">
                     {!isComplete && (
                         <div className="absolute top-8 text-center z-10">
-                            <div className="text-nexus-accent font-black font-orbitron text-sm tracking-widest mb-1">ROUND {round} OF {currentMission.type === 'triage_shot' ? 1 : (currentMission.type === 'detective_board' ? 4 : 5)}</div>
-                            <div className="text-nexus-text-secondary text-[10px] font-black tracking-[0.2em] uppercase">{currentMission.goal}</div>
+                            <div className="text-cyan-400 font-black font-orbitron text-sm tracking-widest mb-1">ROUND {round} OF {currentMission.type === 'triage_shot' ? 1 : (currentMission.type === 'detective_board' ? 4 : 5)}</div>
+                            <div className="text-slate-500 text-[10px] font-black tracking-[0.2em] uppercase">{currentMission.goal}</div>
                         </div>
                     )}
 
@@ -204,7 +204,7 @@ const ArmoryMission = () => {
                 </div>
 
                 {/* 🛠️ Footer Bar */}
-                <div className="bg-nexus-navy/40 border-t border-nexus-border px-8 py-3 flex items-center justify-between shrink-0">
+                <div className="bg-black/40 border-t border-cyan-500/20 px-8 py-3 flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" />
                         <span className="text-[10px] font-black font-orbitron text-cyan-400/60 uppercase tracking-widest">Mission Status: Tactical</span>
@@ -235,7 +235,7 @@ const GameRenderer = ({ type, round, setRound, setScore, setIsComplete, setHover
         case 'docking_sim': return <CapabilityGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} setHoverText={setHoverText} />;
         case 'triage_shot': return <ParetoGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} setHoverText={setHoverText} />;
         case 'detective_board': return <FishboneGame round={round} setRound={setRound} setScore={setScore} setIsComplete={setIsComplete} setHoverText={setHoverText} />;
-        default: return <div className="text-nexus-text-secondary font-black font-orbitron">SYSTEM INITIALIZING...</div>;
+        default: return <div className="text-slate-700 font-black font-orbitron">SYSTEM INITIALIZING...</div>;
     }
 };
 
@@ -292,8 +292,8 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete }) => {
     }, [captured]);
 
     return (
-        <div className="w-full min-h-[550px] relative border-2 border-nexus-border rounded-[2rem] bg-nexus-surface/40 overflow-hidden shadow-inner">
-            <div className="absolute top-4 left-0 right-0 text-center font-black font-orbitron text-[10px] text-nexus-text-secondary tracking-widest uppercase py-4">
+        <div className="w-full min-h-[550px] relative border-2 border-cyan-500/20 rounded-[2rem] bg-black/40 overflow-hidden shadow-inner">
+            <div className="absolute top-4 left-0 right-0 text-center font-black font-orbitron text-[10px] text-slate-500 tracking-widest uppercase py-4">
                 SCENARIO: {currentScenario.scenario}
             </div>
 
@@ -397,7 +397,7 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete }) => {
 
     return (
         <div className="w-full flex flex-col items-center gap-10">
-            <div className="text-center font-black font-orbitron text-[10px] text-nexus-text-secondary tracking-[0.3em] uppercase mb-4">
+            <div className="text-center font-black font-orbitron text-[10px] text-slate-500 tracking-[0.3em] uppercase mb-4">
                 SCENARIO: {currentScenario.scenario}
             </div>
 
@@ -433,7 +433,7 @@ const DraggableItem = ({ name, onMouseEnter, onMouseLeave }) => {
             onDragStart={(e) => e.dataTransfer.setData("text", name)}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            className="px-6 py-3 bg-nexus-card border border-nexus-border rounded-xl text-nexus-text-primary font-black font-orbitron text-[10px] tracking-widest cursor-grab active:cursor-grabbing shadow-xl hover:bg-nexus-surface transition-colors"
+            className="px-6 py-3 bg-nexus-surface border border-nexus-border rounded-xl text-nexus-text-primary font-black font-orbitron text-[10px] tracking-widest cursor-grab active:cursor-grabbing shadow-xl"
         >
             {name}
         </div>
@@ -449,9 +449,9 @@ const Bucket = ({ label, content, onDrop }) => {
                 ${content ? 'border-cyan-500 bg-cyan-500/10 shadow-[0_0_20px_rgba(34,211,238,0.2)]' : 'border-nexus-border bg-nexus-surface/10'}
             `}
         >
-            <div className="text-4xl font-black font-orbitron text-white opacity-20 absolute top-4 left-6 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] pointer-events-none select-none">{label}</div>
+            <div className="text-3xl font-black font-orbitron text-nexus-text-primary opacity-5 absolute top-2 left-4">{label}</div>
             {content && (
-                <div className="text-[10px] font-black font-orbitron text-nexus-accent text-center px-2 animate-in fade-in zoom-in duration-300">
+                <div className="text-[10px] font-black font-orbitron text-cyan-400 text-center px-2 animate-in fade-in zoom-in duration-300">
                     {content}
                 </div>
             )}
@@ -516,7 +516,7 @@ const MsaGame = ({ round, setRound, setScore, setIsComplete, setHoverText }) => 
 
     return (
         <div className="w-full flex flex-col items-center">
-            <div className="text-center font-black font-orbitron text-[10px] text-nexus-text-secondary tracking-[0.3em] uppercase mb-8">
+            <div className="text-center font-black font-orbitron text-[10px] text-slate-500 tracking-[0.3em] uppercase mb-8">
                 SCENARIO: {currentScenario.scenario}
             </div>
 
@@ -915,8 +915,8 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete }) => {
     return (
         <div className="w-full flex flex-col items-center">
             <div className="bg-pink-500/5 border-2 border-pink-500/30 p-12 rounded-[2.5rem] w-full max-w-lg text-center mb-12 shadow-[0_0_50px_rgba(236,72,153,0.1)]">
-                <div className="text-[10px] font-black font-orbitron text-nexus-purple uppercase tracking-[0.3em] mb-3">Detective Evidence</div>
-                <div className="text-2xl font-black font-orbitron text-nexus-text-primary uppercase tracking-wider">{currentClue.t}</div>
+                <div className="text-[10px] font-black font-orbitron text-pink-500 uppercase tracking-[0.3em] mb-3">Detective Evidence</div>
+                <div className="text-2xl font-black font-orbitron text-white uppercase tracking-wider">{currentClue.t}</div>
             </div>
 
             <div className="grid grid-cols-2 gap-5 w-full max-w-lg">
@@ -931,7 +931,7 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete }) => {
                     <button
                         key={opt.cat}
                         onClick={() => handleCategory(opt.cat)}
-                        className="bg-nexus-surface border border-nexus-border p-8 rounded-2xl font-black font-orbitron text-[10px] tracking-[0.2em] text-nexus-text-secondary hover:bg-nexus-purple hover:text-white hover:border-nexus-purple hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-all uppercase"
+                        className="bg-slate-900 border border-white/5 p-8 rounded-2xl font-black font-orbitron text-[10px] tracking-[0.2em] text-slate-500 hover:bg-pink-500 hover:text-white hover:border-pink-500 hover:shadow-[0_0_30px_rgba(236,72,153,0.3)] transition-all uppercase"
                     >
                         {opt.label} ({opt.cat})
                     </button>
