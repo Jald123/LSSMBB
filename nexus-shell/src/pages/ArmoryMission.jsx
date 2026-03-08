@@ -449,7 +449,7 @@ const Bucket = ({ label, content, onDrop }) => {
                 ${content ? 'border-cyan-500 bg-cyan-500/10 shadow-[0_0_20px_rgba(34,211,238,0.2)]' : 'border-nexus-border bg-nexus-surface/10'}
             `}
         >
-            <div className="text-3xl font-black font-orbitron text-nexus-text-primary opacity-5 absolute top-2 left-4">{label}</div>
+            <div className="text-4xl font-black font-orbitron text-white opacity-20 absolute top-4 left-6 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] pointer-events-none select-none">{label}</div>
             {content && (
                 <div className="text-[10px] font-black font-orbitron text-nexus-accent text-center px-2 animate-in fade-in zoom-in duration-300">
                     {content}
