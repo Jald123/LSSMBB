@@ -108,42 +108,39 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
 
                     {/* Context Hub - Advanced "Mission Control" Style */}
                     {!isCollapsed && (
-                        <div className="mt-8 px-3">
-                            <div className="hud-panel rounded-2xl p-4 space-y-4 shadow-2xl relative group">
+                        <div className="mt-6 px-3">
+                            <div className="bg-nexus-card/50 border border-nexus-border/50 rounded-xl p-3 space-y-4 shadow-inner relative overflow-hidden group">
+                                {/* Decorator Line */}
+                                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-nexus-cyan/0 via-nexus-cyan/20 to-nexus-cyan/0" />
+
                                 {/* Industry (Sector) Selector */}
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between text-[9px] font-black text-nexus-text-secondary/60 uppercase tracking-[0.2em] pl-1">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-nexus-gold animate-pulse" /> DEPLOYMENT SECTOR
-                                        </div>
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-[9px] font-black text-nexus-text-secondary/60 uppercase tracking-widest pl-1">
+                                        <div className="w-1 h-1 rounded-full bg-nexus-gold" /> SECTOR
                                     </div>
-                                    <div className="flex flex-col gap-1.5">
+                                    <div className="grid grid-cols-1 gap-1">
                                         {['healthcare', 'business', 'life'].map((ctx) => (
                                             <button
                                                 key={ctx}
                                                 onClick={() => setIndustry(ctx)}
-                                                className={`relative overflow-hidden text-[10px] font-black font-orbitron text-left px-4 py-2 rounded-lg border transition-all duration-300 flex items-center justify-between group/btn ${industry === ctx
-                                                    ? 'bg-nexus-accent/20 border-nexus-accent/40 text-nexus-accent shadow-[0_0_15px_rgba(var(--nexus-accent-rgb),0.15)]'
-                                                    : 'bg-transparent border-transparent hover:bg-white/5 text-nexus-text-secondary hover:text-nexus-text-primary'
+                                                className={`relative overflow-hidden text-[9px] font-bold font-orbitron text-left px-3 py-1.5 rounded border transition-all duration-300 flex items-center justify-between group/btn ${industry === ctx
+                                                    ? 'bg-nexus-cyan/10 border-nexus-cyan/30 text-nexus-cyan shadow-[0_0_10px_rgba(34,211,238,0.1)]'
+                                                    : 'bg-transparent border-transparent hover:bg-nexus-text-primary/5 text-nexus-text-secondary hover:text-nexus-text-primary'
                                                     }`}
                                             >
-                                                <span className="relative z-10">{ctx.toUpperCase()}</span>
-                                                {industry === ctx && (
-                                                    <motion.div layoutId="sector-active">
-                                                        <Activity className="w-3 h-3 text-nexus-accent" />
-                                                    </motion.div>
-                                                )}
+                                                {ctx.toUpperCase()}
+                                                {industry === ctx && <Activity className="w-3 h-3" />}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
 
                                 {/* Methodology (Engine) Selector - Compact Grid */}
-                                <div className="space-y-3 pt-4 border-t border-nexus-border/20">
-                                    <div className="flex items-center gap-2 text-[9px] font-black text-nexus-text-secondary/60 uppercase tracking-[0.2em] pl-1">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-nexus-accent" /> MISSION ENGINE
+                                <div className="space-y-2 pt-2 border-t border-nexus-border/30">
+                                    <div className="flex items-center gap-2 text-[9px] font-black text-nexus-text-secondary/60 uppercase tracking-widest pl-1">
+                                        <div className="w-1 h-1 rounded-full bg-nexus-cyan" /> ENGINE
                                     </div>
-                                    <div className="grid grid-cols-2 gap-2">
+                                    <div className="grid grid-cols-2 gap-1.5">
                                         {['DMAIC', 'DMADV', 'KAIZEN', 'FOCUS'].map((m) => (
                                             <button
                                                 key={m}
@@ -154,12 +151,12 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
                                                             : 'find';
                                                     navigate(`/journey/${target}`);
                                                 }}
-                                                className={`text-[9px] font-black font-orbitron text-center py-2 rounded-lg border transition-all duration-300 relative overflow-hidden ${methodology === m
-                                                    ? 'bg-nexus-accent text-nexus-navy border-nexus-accent shadow-[0_0_20px_rgba(var(--nexus-accent-rgb),0.3)]'
-                                                    : 'bg-black/20 border-white/5 text-nexus-text-secondary hover:border-nexus-accent/50 hover:text-nexus-accent'
+                                                className={`text-[9px] font-black font-orbitron text-center py-1.5 rounded border transition-all duration-300 ${methodology === m
+                                                    ? 'bg-nexus-text-primary text-nexus-bg-deep border-nexus-text-primary shadow-sm'
+                                                    : 'bg-nexus-bg/50 border-nexus-border/50 text-nexus-text-secondary hover:border-nexus-cyan/50 hover:text-nexus-cyan'
                                                     }`}
                                             >
-                                                <span className="relative z-10">{m}</span>
+                                                {m === 'FOCUS' ? 'FOCUS' : m}
                                             </button>
                                         ))}
                                     </div>

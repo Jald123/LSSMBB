@@ -14,8 +14,7 @@ import {
     X,
     Cpu,
     Shield,
-    BookOpen,
-    Rocket
+    BookOpen
 } from 'lucide-react';
 
 import { useNexus } from '../context/NexusContext';
@@ -93,44 +92,23 @@ const HangarHome = () => {
         >
             {/* 🚀 HERO SECTION */}
             <motion.div variants={itemVariants} className="text-center mb-16 relative">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-nexus-accent/5 rounded-full blur-[100px] -z-10" />
-                <div className="inline-flex items-center gap-2 bg-nexus-accent/10 border border-nexus-accent/30 px-5 py-2 rounded-full mb-6">
-                    <Activity className="w-4 h-4 text-nexus-accent" />
-                    <span className="text-[10px] font-black font-orbitron text-nexus-accent tracking-[0.2em] uppercase">
-                        System Online: {industry.toUpperCase()} DEPLOYMENT
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-nexus-cyan/5 rounded-full blur-[100px] -z-10" />
+                <div className="inline-flex items-center gap-2 bg-nexus-cyan/10 border border-nexus-cyan/30 px-5 py-2 rounded-full mb-6">
+                    <Activity className="w-4 h-4 text-nexus-cyan" />
+                    <span className="text-[10px] font-black font-orbitron text-nexus-cyan tracking-[0.2em] uppercase">
+                        System Online: {industry.toUpperCase()} ENV
                     </span>
                 </div>
                 <h1 className="text-7xl font-black font-orbitron leading-[1.1] mb-6 tracking-tight">
                     <span className="text-nexus-text-primary">COMMAND YOUR</span><br />
-                    <span className="radar-sweep-text uppercase">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-nexus-cyan via-nexus-gold to-nexus-purple bg-[length:200%_auto] animate-gradient-flow">
                         LEAN LEGACY.
                     </span>
                 </h1>
-                <p className="text-nexus-text-secondary max-w-2xl mx-auto text-lg leading-relaxed font-medium italic mb-8">
-                    "The 6.0 Sigma Frontier waits for no one. <span className="text-nexus-accent">Calibrate your process.</span> Secure your legacy." <br />
-                    <span className="text-nexus-accent/60 font-orbitron text-[10px] mt-3 block tracking-[0.3em] uppercase opacity-70">— NEXUS OS JOURNEY ENGINE | MBB ARCHITECTURE</span>
+                <p className="text-nexus-text-secondary max-w-2xl mx-auto text-lg leading-relaxed font-medium italic">
+                    "The biggest room in the world is the room for improvement." <br />
+                    <span className="text-nexus-cyan/60 font-orbitron text-xs mt-2 block tracking-widest">— NEXUS OS JOURNEY ENGINE</span>
                 </p>
-
-                {/* 🎯 MISSION QUICK-START CTA */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1 }}
-                    className="flex justify-center"
-                >
-                    <Link
-                        to="/journey/define"
-                        className="group relative flex items-center gap-4 bg-nexus-accent/20 hover:bg-nexus-accent/30 border border-nexus-accent/40 px-10 py-5 rounded-2xl transition-all duration-500 hover:scale-105"
-                    >
-                        <div className="absolute inset-0 bg-nexus-accent/5 blur-xl group-hover:blur-2xl transition-all" />
-                        <Rocket className="w-5 h-5 text-nexus-accent animate-bounce" />
-                        <div className="text-left">
-                            <div className="text-[10px] font-black font-orbitron text-nexus-accent tracking-widest uppercase">Resume Active Operation</div>
-                            <div className="text-sm font-bold text-nexus-text-primary capitalize">Project: {industry} Optimization</div>
-                        </div>
-                        <ChevronRight className="w-5 h-5 text-nexus-accent group-hover:translate-x-2 transition-transform" />
-                    </Link>
-                </motion.div>
             </motion.div>
 
             {/* 📚 PHASE 0: FOUNDATION STAGE */}
