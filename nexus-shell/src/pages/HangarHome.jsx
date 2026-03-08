@@ -14,7 +14,8 @@ import {
     X,
     Cpu,
     Shield,
-    BookOpen
+    BookOpen,
+    Rocket
 } from 'lucide-react';
 
 import { useNexus } from '../context/NexusContext';
