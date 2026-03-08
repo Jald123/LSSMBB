@@ -90,8 +90,8 @@
   /* White frosted glass */
   --nexus-text-primary-base: #0f172a;
   /* Slate-900 (High contrast) */
-  --nexus-text-secondary-base: #475569;
-  /* Slate-600 */
+  --nexus-text-secondary-base: #334155;
+  /* Slate-700 */
   --nexus-shadow-base: 0 15px 35px -5px rgba(148, 163, 184, 0.3);
   /* Softer, colored shadow */
 
@@ -116,6 +116,10 @@
   --color-nexus-success: var(--color-nexus-success-base);
   --color-nexus-warn: var(--color-nexus-warn-base);
   --color-nexus-error: var(--color-nexus-error-base);
+
+  --color-nexus-text-primary: var(--nexus-text-primary-base);
+  --color-nexus-text-secondary: var(--nexus-text-secondary-base);
+  --color-nexus-accent: var(--color-nexus-cyan-base);
 
   --radius-nexus: var(--radius-nexus);
   --radius-nexus-lg: var(--radius-nexus-lg);

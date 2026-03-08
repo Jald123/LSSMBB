@@ -347,22 +347,22 @@ const ToolWorkspace = () => {
             {/* 🔝 HEADER BAR */}
             <div className={`h-16 flex items-center justify-between px-6 z-[900] absolute top-0 left-0 right-0 shell-interactive transition-all duration-300 header-3d`}>
                 <div className="flex items-center gap-6 w-1/4">
-                    <button onClick={() => navigate(-1)} className={`w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center transition-all group ${theme === 'light' ? 'text-slate-500 hover:bg-slate-100 hover:text-slate-800' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}>
+                    <button onClick={() => navigate(-1)} className={`w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center transition-all group ${theme === 'light' ? 'text-nexus-text-secondary hover:bg-slate-100 hover:text-nexus-text-primary' : 'text-nexus-text-secondary hover:bg-white/5 hover:text-nexus-text-primary'}`}>
                         <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
                     </button>
                     <div className="w-px h-6 bg-nexus-border" />
                     <div>
                         <span className="text-[10px] font-black font-orbitron text-nexus-cyan tracking-widest uppercase block mb-0.5">{tool.phase} Phase</span>
-                        <h1 className={`text-lg font-black font-orbitron tracking-tight truncate max-w-[200px] ${theme === 'light' ? 'text-slate-800' : 'text-white'}`}>{tool.name}</h1>
+                        <h1 className={`text-lg font-black font-orbitron tracking-tight truncate max-w-[200px] ${theme === 'light' ? 'text-nexus-text-primary' : 'text-white'}`}>{tool.name}</h1>
                     </div>
                 </div>
 
                 <div className="flex-1 flex justify-center items-center gap-6">
                     <div className="flex items-center gap-1">
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold shadow-[0_0_10px_rgba(236,72,153,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><FileText className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'calculator' ? null : 'calculator')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 text-cyan-400 font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><Calculator className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'draw' ? null : 'draw')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-lime-500/20 text-lime-400 font-bold shadow-[0_0_10px_rgba(132,204,22,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><PenTool className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'sniper' ? null : 'sniper')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'sniper' ? 'bg-violet-500/20 text-violet-400 font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}><Search className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold shadow-[0_0_10px_rgba(236,72,153,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><FileText className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'calculator' ? null : 'calculator')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 text-cyan-400 font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Calculator className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'draw' ? null : 'draw')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-lime-500/20 text-lime-400 font-bold shadow-[0_0_10px_rgba(132,204,22,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><PenTool className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'sniper' ? null : 'sniper')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'sniper' ? 'bg-violet-500/20 text-violet-400 font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Search className="w-4 h-4" /></button>
                     </div>
                     <div className="w-px h-8 bg-nexus-border/50 mx-2" />
                     <div className="flex items-center gap-1">
@@ -378,7 +378,7 @@ const ToolWorkspace = () => {
                     <button onClick={toggleFullScreen} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}>
                         {isFullScreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                     </button>
-                    <div className={`text-[10px] font-orbitron font-black ml-2 uppercase opacity-50 tracking-widest ${theme === 'light' ? 'text-slate-400' : 'text-slate-600'}`}>AST-V2</div>
+                    <div className={`text-[10px] font-orbitron font-black ml-2 uppercase opacity-50 tracking-widest ${theme === 'light' ? 'text-nexus-text-secondary' : 'text-nexus-text-secondary/60'}`}>AST-V2</div>
                 </div>
 
                 <div className={`p-1 rounded-full border flex shadow-inner w-1/4 justify-end ${theme === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-black/60 border-white/5'}`}>

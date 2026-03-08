@@ -56,11 +56,11 @@ const HangarHome = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-nexus-card border border-nexus-border rounded-3xl p-8 max-w-2xl w-full relative overflow-hidden shadow-2xl"
+                className="bg-nexus-card border border-nexus-border rounded-3xl p-10 max-w-4xl w-full relative overflow-hidden shadow-2xl"
             >
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-slate-400 hover:text-white"
+                    className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-nexus-text-secondary hover:text-nexus-text-primary"
                 >
                     <X className="w-5 h-5" />
                 </button>
@@ -70,7 +70,7 @@ const HangarHome = () => {
                     <p className="text-sm text-nexus-text-secondary font-medium tracking-wide">{subtitle}</p>
                 </div>
 
-                <div className="mb-8 text-slate-300 leading-relaxed text-sm space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="mb-8 text-nexus-text-secondary leading-relaxed text-sm space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
                     {children}
                 </div>
 
@@ -261,7 +261,7 @@ const HangarHome = () => {
                             <h4 className="text-xl font-black text-nexus-text-primary">DMAIC Engine</h4>
                             <p className="text-[10px] text-nexus-text-secondary font-medium">Root Cause Analysis & Optimization.</p>
                         </div>
-                        <ChevronRight className="ml-auto w-5 h-5 text-slate-700 group-hover:text-nexus-cyan transition-colors" />
+                        <ChevronRight className="ml-auto w-5 h-5 text-nexus-text-secondary/40 group-hover:text-nexus-cyan transition-colors" />
                     </motion.div>
 
                     {/* DMADV Card */}
@@ -279,7 +279,7 @@ const HangarHome = () => {
                             <h4 className="text-xl font-black text-nexus-text-primary">DMADV (DFSS)</h4>
                             <p className="text-[10px] text-nexus-text-secondary font-medium">Design for Six Sigma & Innovation.</p>
                         </div>
-                        <ChevronRight className="ml-auto w-5 h-5 text-slate-700 group-hover:text-nexus-gold transition-colors" />
+                        <ChevronRight className="ml-auto w-5 h-5 text-nexus-text-secondary/40 group-hover:text-nexus-gold transition-colors" />
                     </motion.div>
 
                     {/* KAIZEN Card */}
@@ -297,7 +297,7 @@ const HangarHome = () => {
                             <h4 className="text-xl font-black text-nexus-text-primary">Kaizen Event</h4>
                             <p className="text-[10px] text-nexus-text-secondary font-medium">3-5 Day Rapid Improvement Blitz.</p>
                         </div>
-                        <ChevronRight className="ml-auto w-5 h-5 text-slate-700 group-hover:text-nexus-purple transition-colors" />
+                        <ChevronRight className="ml-auto w-5 h-5 text-nexus-text-secondary/40 group-hover:text-nexus-purple transition-colors" />
                     </motion.div>
 
                     {/* FOCUS-PDCA Card */}
@@ -315,7 +315,7 @@ const HangarHome = () => {
                             <h4 className="text-xl font-black text-nexus-text-primary">FOCUS-PDCA</h4>
                             <p className="text-[10px] text-nexus-text-secondary font-medium">Systematic Problem Solving Cycle.</p>
                         </div>
-                        <ChevronRight className="ml-auto w-5 h-5 text-slate-700 group-hover:text-green-500 transition-colors" />
+                        <ChevronRight className="ml-auto w-5 h-5 text-nexus-text-secondary/40 group-hover:text-green-500 transition-colors" />
                     </motion.div>
                 </div>
             </div>
@@ -373,11 +373,11 @@ const HangarHome = () => {
                         <div className="grid grid-cols-2 gap-4 my-6">
                             <div className="p-4 bg-white/5 rounded-xl border border-white/5">
                                 <h4 className="text-nexus-cyan font-bold font-orbitron mb-2">LEAN</h4>
-                                <p className="text-xs text-slate-400">Focuses on waste removal, flow, and creating value for the customer. Origin: Toyota Production System.</p>
+                                <p className="text-xs text-nexus-text-secondary">Focuses on waste removal, flow, and creating value for the customer. Origin: Toyota Production System.</p>
                             </div>
                             <div className="p-4 bg-white/5 rounded-xl border border-white/5">
                                 <h4 className="text-nexus-purple font-bold font-orbitron mb-2">SIX SIGMA</h4>
-                                <p className="text-xs text-slate-400">Focuses on reducing variation and defects using statistical tools. Origin: Motorola.</p>
+                                <p className="text-xs text-nexus-text-secondary">Focuses on reducing variation and defects using statistical tools. Origin: Motorola.</p>
                             </div>
                         </div>
                         <p>Completion of this module will unlock your <span className="text-nexus-gold font-bold">White Belt Certification</span>.</p>
@@ -409,11 +409,11 @@ const HangarHome = () => {
                                 { label: 'Collaboration', desc: 'Silos destroy value; cross-functionality builds it.' },
                                 { label: 'Continuous Imp.', desc: 'Better than yesterday, every day.' }
                             ].map((pillar, i) => (
-                                <li key={i} className="flex items-start gap-3 p-2 bg-nexus-surface rounded-lg border border-nexus-border/50">
-                                    <div className="w-5 h-5 rounded-full bg-nexus-cyan/10 flex items-center justify-center text-nexus-cyan font-bold text-xs ring-1 ring-nexus-cyan/30">{i + 1}</div>
+                                <li key={i} className="flex items-start gap-4 p-4 bg-nexus-surface rounded-2xl border border-nexus-border/50 shadow-sm">
+                                    <div className="w-6 h-6 rounded-full bg-nexus-cyan/10 flex items-center justify-center text-nexus-cyan font-black font-orbitron text-xs ring-1 ring-nexus-cyan/30 shrink-0">{i + 1}</div>
                                     <div>
-                                        <span className="font-bold text-nexus-text-primary text-xs block">{pillar.label}</span>
-                                        <span className="text-[10px] text-slate-500">{pillar.desc}</span>
+                                        <span className="font-black font-orbitron text-nexus-text-primary text-sm block mb-0.5">{pillar.label}</span>
+                                        <span className="text-xs text-nexus-text-secondary font-medium leading-relaxed">{pillar.desc}</span>
                                     </div>
                                 </li>
                             ))}

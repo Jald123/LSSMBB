@@ -85,7 +85,7 @@ const PhaseOrbitView = () => {
                             <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 text-white">
                                 <Activity className="w-16 h-16 text-nexus-cyan animate-pulse mb-6" />
                                 <h3 className="text-2xl font-black font-orbitron mb-2">TACTICAL BRIEFING // OFFLINE</h3>
-                                <p className="text-slate-400 font-mono text-sm max-w-md text-center">
+                                <p className="text-nexus-text-secondary font-mono text-sm max-w-md text-center">
                                     Video feed for <span className="text-nexus-cyan">{phase.title}</span> is currently encrypted or unavailable in this sector.
                                 </p>
                             </div>
@@ -128,7 +128,7 @@ const PhaseOrbitView = () => {
                                 <Cpu className="w-5 h-5 text-nexus-cyan" />
                             </div>
                             <div className="flex flex-col items-end">
-                                <span className="text-[9px] font-black font-orbitron text-slate-600 tracking-tighter uppercase mb-1">Station ID</span>
+                                <span className="text-[9px] font-black font-orbitron text-nexus-text-secondary/40 tracking-tighter uppercase mb-1">Station ID</span>
                                 <span className="text-[10px] text-nexus-text-primary font-black font-orbitron">{tool.id.toUpperCase()}</span>
                             </div>
                         </div>
@@ -151,7 +151,7 @@ const PhaseOrbitView = () => {
                             <h3 className="text-2xl font-black text-nexus-text-primary group-hover:text-nexus-cyan transition-colors mb-3 leading-tight tracking-tight">
                                 {tool.name}
                             </h3>
-                            <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                            <p className="text-xs text-nexus-text-secondary/60 font-medium leading-relaxed">
                                 Heavy-duty protocol for <span className="text-nexus-text-secondary">{tool.category.toLowerCase()}</span> mastery. Optimized for <span className="text-nexus-text-secondary">{tool.belt}</span> level operations.
                             </p>
                         </div>
@@ -159,14 +159,14 @@ const PhaseOrbitView = () => {
                         {/* Status / Priority Footer */}
                         <div className="flex items-center justify-between mt-auto pt-6 border-t border-nexus-border/50">
                             <div className="flex flex-col">
-                                <span className="text-[8px] font-black font-orbitron text-slate-600 uppercase tracking-widest mb-1">Priority</span>
+                                <span className="text-[8px] font-black font-orbitron text-nexus-text-secondary/40 uppercase tracking-widest mb-1">Priority</span>
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-2 h-2 rounded-full bg-nexus-cyan" />
                                     <span className="text-[10px] font-black font-orbitron text-nexus-text-primary">{tool.priority}</span>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end">
-                                <span className="text-[8px] font-black font-orbitron text-slate-600 uppercase tracking-widest mb-1">Visual</span>
+                                <span className="text-[8px] font-black font-orbitron text-nexus-text-secondary/40 uppercase tracking-widest mb-1">Visual</span>
                                 <div className="text-[10px] font-black font-orbitron text-nexus-cyan shadow-cyan-300">LAUNCH</div>
                             </div>
                         </div>
@@ -189,7 +189,7 @@ const PhaseOrbitView = () => {
                                 state={{ mode: 'learn' }}
                                 className="w-14 h-14 rounded-2xl bg-black/40 border border-nexus-border flex items-center justify-center group/btn hover:border-nexus-purple hover:bg-nexus-purple/5 transition-all"
                             >
-                                <BookOpen className="w-5 h-5 text-slate-600 group-hover/btn:text-nexus-purple transition-colors" />
+                                <BookOpen className="w-5 h-5 text-nexus-text-secondary/40 group-hover/btn:text-nexus-purple transition-colors" />
                             </Link>
                         </div>
                     </motion.div>

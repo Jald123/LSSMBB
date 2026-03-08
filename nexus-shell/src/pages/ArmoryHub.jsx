@@ -78,7 +78,7 @@ const ArmoryHub = () => {
                     </div>
                     <button
                         onClick={() => navigate('/')}
-                        className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-500 hover:text-white hover:border-white/30 transition-all"
+                        className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-nexus-text-secondary hover:text-nexus-text-primary hover:border-white/30 transition-all"
                     >
                         <X className="w-4 h-4" />
                     </button>
@@ -98,7 +98,7 @@ const ArmoryHub = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="text-slate-400 text-sm font-medium tracking-wide"
+                            className="text-nexus-text-secondary text-sm font-medium tracking-wide"
                         >
                             Select a station to calibrate your core skills. Master these, or fail the project.
                         </motion.p>
@@ -136,11 +136,11 @@ const ArmoryHub = () => {
                                             <h3 className="text-lg font-black font-orbitron text-white tracking-wider group-hover:text-cyan-400 transition-colors uppercase">
                                                 {mission.name}
                                             </h3>
-                                            <p className="text-[10px] font-black text-slate-500 tracking-[0.2em] uppercase mt-1">
+                                            <p className="text-[10px] font-black text-nexus-text-secondary/60 tracking-[0.2em] uppercase mt-1">
                                                 {mission.tag}
                                             </p>
                                         </div>
-                                        <p className="text-xs text-slate-400 font-medium leading-relaxed">
+                                        <p className="text-xs text-nexus-text-secondary font-medium leading-relaxed">
                                             {mission.desc}
                                         </p>
                                     </div>
@@ -169,7 +169,7 @@ const ArmoryHub = () => {
                                     <div key={i} className="w-4 h-1 bg-cyan-500/20 rounded-full" />
                                 ))}
                             </div>
-                            <span className="text-[9px] font-black font-orbitron text-slate-600 uppercase tracking-widest">Nexus OS / Armory v2.1</span>
+                            <span className="text-[9px] font-black font-orbitron text-nexus-text-secondary/40 uppercase tracking-widest">Nexus OS / Armory v2.1</span>
                         </div>
                     </div>
                 </div>

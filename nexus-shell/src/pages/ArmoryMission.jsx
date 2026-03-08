@@ -64,8 +64,8 @@ const ArmoryMission = () => {
     if (!currentMission) return <div className="p-20 text-white font-orbitron">SYSTEM ERROR: MISSION NOT FOUND</div>;
 
     return (
-        <div className="max-w-7xl mx-auto px-6 py-8 min-h-[calc(100vh-100px)]">
-            <div className="bg-[#0f172a]/95 border border-cyan-500/30 rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8),0_0_40px_rgba(34,211,238,0.1)] h-full flex flex-col">
+        <div className="w-full max-w-[1400px] mx-auto px-4 py-6 min-h-[calc(100vh-40px)] flex flex-col">
+            <div className="bg-[#0f172a]/95 border border-cyan-500/30 rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8),0_0_40px_rgba(34,211,238,0.1)] flex-1 flex flex-col">
 
                 {/* 🏷️ Header Bar */}
                 <div className="bg-black/40 border-b border-cyan-500/20 px-8 py-4 flex items-center justify-between shrink-0">
@@ -133,14 +133,16 @@ const ArmoryMission = () => {
                         </div>
                     )}
 
-                    <GameRenderer
-                        type={currentMission.type}
-                        round={round}
-                        setRound={setRound}
-                        setScore={setScore}
-                        setIsComplete={setIsComplete}
-                        setHoverText={setHoverText}
-                    />
+                    <div className="flex-1 w-full flex flex-col items-center justify-center">
+                        <GameRenderer
+                            type={currentMission.type}
+                            round={round}
+                            setRound={setRound}
+                            setScore={setScore}
+                            setIsComplete={setIsComplete}
+                            setHoverText={setHoverText}
+                        />
+                    </div>
 
                     {/* Completion Screen */}
                     <AnimatePresence>
@@ -290,7 +292,7 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete }) => {
     }, [captured]);
 
     return (
-        <div className="w-full h-full relative border-2 border-cyan-500/20 rounded-[2rem] bg-black/40 overflow-hidden shadow-inner">
+        <div className="w-full min-h-[550px] relative border-2 border-cyan-500/20 rounded-[2rem] bg-black/40 overflow-hidden shadow-inner">
             <div className="absolute top-4 left-0 right-0 text-center font-black font-orbitron text-[10px] text-slate-500 tracking-widest uppercase py-4">
                 SCENARIO: {currentScenario.scenario}
             </div>
@@ -301,7 +303,7 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete }) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="w-full h-full relative"
+                    className="w-full min-h-[500px] relative"
                 >
                     {words.map((w, i) => (
                         <Bubble
@@ -399,7 +401,7 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete }) => {
                 SCENARIO: {currentScenario.scenario}
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4 min-h-[60px]">
+            <div className="flex flex-wrap justify-center gap-6 min-h-[100px]">
                 {items.map(item => (
                     <DraggableItem
                         key={item}
@@ -410,7 +412,7 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete }) => {
                 ))}
             </div>
 
-            <div className="flex gap-4 w-full px-10">
+            <div className="grid grid-cols-5 gap-6 w-full max-w-6xl px-10">
                 {['S', 'I', 'P', 'O', 'C'].map(bucket => (
                     <Bucket
                         key={bucket}
@@ -431,7 +433,7 @@ const DraggableItem = ({ name, onMouseEnter, onMouseLeave }) => {
             onDragStart={(e) => e.dataTransfer.setData("text", name)}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            className="px-6 py-3 bg-white border border-white/20 rounded-xl text-nexus-navy font-black font-orbitron text-[10px] tracking-widest cursor-grab active:cursor-grabbing shadow-xl"
+            className="px-6 py-3 bg-nexus-surface border border-nexus-border rounded-xl text-nexus-text-primary font-black font-orbitron text-[10px] tracking-widest cursor-grab active:cursor-grabbing shadow-xl"
         >
             {name}
         </div>
@@ -443,11 +445,11 @@ const Bucket = ({ label, content, onDrop }) => {
         <div
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => onDrop(e.dataTransfer.getData("text"))}
-            className={`flex-1 h-32 rounded-2xl border-2 flex flex-col items-center justify-center relative transition-all duration-300
-                ${content ? 'border-cyan-500 bg-cyan-500/10 shadow-[0_0_20px_rgba(34,211,238,0.2)]' : 'border-white/10 bg-white/5'}
+            className={`flex-1 min-h-[140px] rounded-2xl border-2 flex flex-col items-center justify-center relative transition-all duration-300
+                ${content ? 'border-cyan-500 bg-cyan-500/10 shadow-[0_0_20px_rgba(34,211,238,0.2)]' : 'border-nexus-border bg-nexus-surface/10'}
             `}
         >
-            <div className="text-3xl font-black font-orbitron text-white/5 absolute top-2 left-4">{label}</div>
+            <div className="text-3xl font-black font-orbitron text-nexus-text-primary opacity-5 absolute top-2 left-4">{label}</div>
             {content && (
                 <div className="text-[10px] font-black font-orbitron text-cyan-400 text-center px-2 animate-in fade-in zoom-in duration-300">
                     {content}
@@ -888,7 +890,9 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete }) => {
         { t: "Barista didn't sleep", c: "MAN" },
         { t: "Oven thermostat is broken", c: "MACHINE" },
         { t: "Coffee beans were expired", c: "MATERIAL" },
-        { t: "Brewing time exceeds 10 mins", c: "METHOD" }
+        { t: "Brewing time exceeds 10 mins", c: "METHOD" },
+        { t: "Humidity affecting flour weight", c: "MOTHER NATURE" },
+        { t: "Scale reading +/- 2g error", c: "MEASUREMENT" }
     ];
 
     const currentClue = clues[round - 1];
@@ -897,7 +901,7 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete }) => {
         if (cat === currentClue.c) {
             setScore(s => s + 25);
             setHoverText("ROOT CAUSE IDENTIFIED.");
-            if (round < 4) {
+            if (round < clues.length) {
                 setRound(r => r + 1);
             } else {
                 setIsComplete(true);
@@ -920,7 +924,9 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete }) => {
                     { label: 'Personnel', cat: 'MAN' },
                     { label: 'Equipment', cat: 'MACHINE' },
                     { label: 'Supplies', cat: 'MATERIAL' },
-                    { label: 'Process', cat: 'METHOD' }
+                    { label: 'Process', cat: 'METHOD' },
+                    { label: 'Environment', cat: 'MOTHER NATURE' },
+                    { label: 'Inspection', cat: 'MEASUREMENT' }
                 ].map(opt => (
                     <button
                         key={opt.cat}
