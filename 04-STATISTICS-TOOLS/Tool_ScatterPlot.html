@@ -9,40 +9,212 @@
     <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
+    <style>
+        .premium-input {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 8px !important;
+            padding: 12px 16px !important;
+            color: white !important;
+            font-size: 15px !important;
+            transition: all 0.3s !important;
+        }
+
+        .premium-input:focus {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
+        }
+
+        .ai-coach-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-family: 'Orbitron';
+            font-size: 12px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-coach-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+        }
+
+        .workspace-footer {
+            margin-top: 30px;
+            padding: 20px 30px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-radius: 12px;
+        }
+
+        .footer-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="flex-between">
+    <div class="container" style="max-width: 98%; padding: 20px; box-sizing: border-box;">
+        <div class="flex-between"
+            style="background:#0f172a; padding:20px; border-radius:12px; border:1px solid #1e293b; margin-bottom:30px;">
             <div>
-                <span class="phase-glow">PHASE: ANALYZE</span>
-                <h1>∴ Scatter Plot & Correlation</h1>
+                <span
+                    style="background:#2563eb; color:white; padding:4px 12px; border-radius:6px; font-size:12px; font-weight:bold; text-transform:uppercase;">PHASE:
+                    ANALYZE</span>
+                <h1 style="margin: 10px 0 0 0; font-family:'Orbitron',sans-serif; font-size:32px; color:white;">Scatter
+                    Plot & Correlation</h1>
+                <div style="color:#94a3b8; font-style:italic; font-size:14px; margin-top:5px;">"Visualizing
+                    relationships between process variables."</div>
             </div>
-            <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
-                Dashboard</button>
+            <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'"
+                style="border:1px solid rgba(255,255,255,0.1);">
+                <i class="fas fa-th"></i> DASHBOARD
+            </button>
         </div>
 
         <div class="grid-2">
             <div class="card">
-                <h3>X-Y Data Pairs</h3>
-                <p style="font-size:12px; color:var(--text-secondary);">One pair per line: X, Y</p>
-                <textarea id="dataInput" rows="10" placeholder="10, 25&#10;12, 30&#10;14, 35..."
-                    style="width:100%; background:var(--surface-1); color:white; padding:10px;"></textarea>
+                <h3 style="color:var(--accent); margin-bottom:15px;">1. X-Y Data Pairs</h3>
+                <p style="font-size:12px; color:var(--text-secondary); margin-bottom:10px;">One pair per line: X, Y
+                    (e.g., Temperature, Yield)</p>
+                <textarea id="dataInput" rows="12" placeholder="10, 25&#10;12, 30&#10;14, 35..." class="premium-input"
+                    style="width:100%; font-family:monospace;"></textarea>
                 <button class="btn btn-primary" onclick="drawScatter()"
-                    style="width:100%; margin-top:10px;">Analyze</button>
-                <button class="btn btn-ghost" onclick="loadExample()" style="width:100%; margin-top:5px;">Load
-                    Example</button>
+                    style="width:100%; margin-top:20px; justify-content:center;">🚀 Generate Analysis</button>
+                <button class="btn btn-ghost" onclick="loadExample()"
+                    style="width:100%; margin-top:10px; border: 1px dashed rgba(255,255,255,0.1);">
+                    <i class="fas fa-database"></i> Load Example Data
+                </button>
             </div>
             <div class="card">
-                <div class="flex-between">
-                    <h3>Correlation</h3>
-                    <div class="chart-controls">
-                        <div class="control-btn" onclick="downloadChart()">⬇️</div>
+                <div class="flex-between" style="margin-bottom: 20px;">
+                    <h3 style="color:#aaa; margin:0;">Visual & Statistical Correlation</h3>
+                    <button class="ai-coach-btn" onclick="askAICoach()" id="aiBtn">
+                        <i class="fas fa-robot"></i> Ask Gemini Coach
+                    </button>
+                    <div class="chart-controls" style="position: static;">
+                        <div class="control-btn" onclick="downloadChart()"
+                            style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; cursor: pointer; color: #cbd5e1;">
+                            ⬇️</div>
                     </div>
                 </div>
-                <p id="corrOutput" style="font-size:14px; margin-bottom:10px; color:var(--accent);">Coefficient (r): --
-                </p>
-                <div class="chart-container"><canvas id="scatterChart"></canvas></div>
+
+                <div id="resultPanel"
+                    style="display:none; margin-bottom:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:8px;">
+                    <div id="corrOutput" style="font-size:18px; color:var(--accent); font-weight:bold;"></div>
+                    <div id="interpretation" style="font-size:13px; color:#cbd5e1; margin-top:5px; line-height:1.5;">
+                    </div>
+                </div>
+
+                <div class="chart-container" style="height:400px; position:relative;">
+                    <canvas id="scatterChart"></canvas>
+                    <div class="canvas-branding"
+                        style="position: absolute; bottom: 10px; right: 20px; pointer-events: none; opacity: 0.6;">
+                        <img src="images/hql_logo_footer.png" style="height: 30px;">
+                    </div>
+                </div>
+
+                <div id="aiPanel"
+                    style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #6366f1; display: none;">
+                    <div
+                        style="color: #818cf8; font-weight: bold; font-size: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-magic"></i> GEMINI STRATEGIC INSIGHTS
+                    </div>
+                    <div id="aiOutput" style="font-size: 13px; color: #e2e8f0; line-height: 1.5; min-height: 30px;">
+                        Processing correlation pattern...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STANDARDIZED FOOTER -->
+        <div class="workspace-footer no-print">
+            <div class="footer-input-group">
+                <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+                <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                    oninput="document.getElementById('analystName').value = this.value; updateProgress();">
+            </div>
+            <button class="action-btn btn-save" onclick="alert('Analysis Evaluated & Saved!')">
+                <i class="fas fa-save"></i> Save & Evaluate
+            </button>
+            <button class="action-btn btn-print" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Report
+            </button>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+                <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+                <img src="images/hql_logo_footer.png"
+                    style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                    alt="HQL Logo">
+            </div>
+        </div>
+
+        <input type="hidden" id="analystName">
+
+        <div style="margin: 30px 0;">
+            <div style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:5px; color:#94a3b8;">
+                <span>ANALYSIS COMPLETION</span>
+                <span id="progressText">0%</span>
+            </div>
+            <div style="width:100%; background:#0f172a; height:6px; border-radius:3px; overflow:hidden;">
+                <div id="progressBar" style="width:0%; height:100%; background:#10b981; transition:width 0.3s;"></div>
             </div>
         </div>
     </div>
@@ -52,6 +224,23 @@
             document.getElementById('dataInput').value = "10,25\n12,30\n14,35\n16,40\n18,48\n20,55";
             drawScatter();
         }
+        function updateProgress() {
+            let score = 0;
+            const analyst = document.getElementById('analystName').value.trim();
+            const data = document.getElementById('dataInput').value.trim();
+
+            if (data.length > 10) score += 40;
+            if (chart) score += 40;
+            if (analyst.length > 2) score += 20;
+
+            document.getElementById('progressBar').style.width = score + '%';
+            document.getElementById('progressText').innerText = score + '% Complete';
+
+            if (document.getElementById('userNameFooter')) {
+                document.getElementById('userNameFooter').value = analyst;
+            }
+        }
+
         function drawScatter() {
             const raw = document.getElementById('dataInput').value;
             const lines = raw.split('\n');
@@ -69,13 +258,26 @@
                 }
             });
 
-            if (n < 2) return;
+            if (n < 2) {
+                alert("Please enter at least 2 coordinate pairs.");
+                return;
+            }
 
             // Calculate r
             const numerator = (n * xySum) - (xSum * ySum);
             const denominator = Math.sqrt(((n * xxSum) - (xSum * xSum)) * ((n * yySum) - (ySum * ySum)));
             const r = denominator ? numerator / denominator : 0;
-            document.getElementById('corrOutput').innerHTML = `Pearson (r) = <strong>${r.toFixed(4)}</strong>`;
+
+            document.getElementById('resultPanel').style.display = 'block';
+            document.getElementById('corrOutput').innerHTML = `Pearson Coefficient (r) = ${r.toFixed(4)}`;
+
+            let interpretation = "";
+            const absR = Math.abs(r);
+            if (absR >= 0.7) interpretation = "Strong " + (r > 0 ? "Positive" : "Negative") + " correlation. A clear relationship exists.";
+            else if (absR >= 0.4) interpretation = "Moderate " + (r > 0 ? "Positive" : "Negative") + " correlation. Some relationship noted.";
+            else interpretation = "Weak or no correlation. The variables do not appear related statisticaly.";
+
+            document.getElementById('interpretation').innerText = interpretation;
 
             const ctx = document.getElementById('scatterChart').getContext('2d');
             if (chart) chart.destroy();
@@ -83,29 +285,83 @@
                 type: 'scatter',
                 data: {
                     datasets: [{
-                        label: 'Data',
+                        label: 'Process Observations',
                         data: data,
-                        backgroundColor: '#E67E22',
-                        pointRadius: 5
+                        backgroundColor: '#3b82f6',
+                        borderColor: 'rgba(59, 130, 246, 0.5)',
+                        borderWidth: 1,
+                        pointRadius: 6,
+                        hoverRadius: 8,
+                        pointStyle: 'circle'
                     }]
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: false } },
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
                     scales: {
-                        x: { grid: { color: 'rgba(255,255,255,0.1)' } },
-                        y: { grid: { color: 'rgba(255,255,255,0.1)' } }
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, border: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, border: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } }
                     }
                 }
             });
+            updateProgress();
         }
+
+        async function askAICoach() {
+            const btn = document.getElementById('aiBtn');
+            const panel = document.getElementById('aiPanel');
+            const output = document.getElementById('aiOutput');
+            const rVal = document.getElementById('corrOutput').innerText;
+
+            if (!chart) {
+                alert("Please analyze the data first.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+            panel.style.display = 'block';
+            output.innerText = "Consulting Master Black Belt wisdom on correlation patterns...";
+
+            const prompt = `Act as a Lean Six Sigma Master Black Belt. 
+            I have a Scatter Plot showing: ${rVal}.
+            Give me a concise 3-sentence professional recommendation on what this correlation means for process improvement (considering causation vs correlation).`;
+
+            try {
+                const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    output.innerText = data.candidates[0].content.parts[0].text;
+                } else {
+                    output.innerText = "Error: Strategic advice unavailable.";
+                }
+            } catch (error) {
+                console.error("AI Error:", error);
+                output.innerText = "AI Connection failed.";
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-robot"></i> Ask Gemini Coach';
+            }
+        }
+
         function downloadChart() {
             const a = document.createElement('a');
-            a.download = 'ScatterPlot.png';
+            a.download = 'ScatterPlot_Correlation.png';
             a.href = document.getElementById('scatterChart').toDataURL();
             a.click();
         }
     </script>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>

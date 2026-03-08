@@ -2515,12 +2515,12 @@
                     Export Charter Report</button>
             </div>
 
-            <!-- STANDARDIZED FOOTER (Moved here from outside app-container to be non-floating) -->
-            <div class="workspace-footer no-print neu-panel"
-                style="margin-top: 50px; position: static; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+            <!-- STANDARDIZED FOOTER -->
+            <div class="workspace-footer no-print">
                 <div class="footer-input-group">
                     <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
-                    <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name">
+                    <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                        oninput="document.getElementById('beltName').value = this.value; updatePrintName(this.value);">
                 </div>
                 <button class="action-btn btn-save" onclick="saveAndEvaluate()">
                     <i class="fas fa-save"></i> Save & Evaluate

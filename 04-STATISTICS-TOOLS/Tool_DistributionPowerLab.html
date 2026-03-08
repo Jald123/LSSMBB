@@ -424,7 +424,6 @@
 
                 <!-- LEFT COLUMN: Guide & Report -->
                 <div class="guide-column">
-
                     <!-- PRE-REQS & ROLES -->
                     <div class="card" style="margin-bottom:20px;">
                         <h4 style="color:#ea580c; text-transform:uppercase; margin-bottom:10px;">📋 Pre-Requirements
@@ -444,7 +443,6 @@
                     <div class="card" style="margin-bottom:20px;">
                         <h3 style="color:#9B59B6; margin-bottom:15px;">🎮 How to Execute</h3>
                         <div style="display:flex; flex-direction:column; gap:10px;">
-                            <!-- Step 1 -->
                             <div class="btn-tooltip"
                                 data-hover="Ensure Sample Size (n) > 30. Check for Measurement Error first."
                                 style="display:flex; align-items:center; gap:10px; padding:8px; background:#334155; border-radius:6px; cursor:help;">
@@ -454,7 +452,6 @@
                                 <div style="font-size:13px; color:white;"><b>Collect:</b> Gather initial data (n=30+).
                                 </div>
                             </div>
-                            <!-- Step 2 -->
                             <div class="btn-tooltip" data-hover="Look for Outliers, Bi-Modal shapes, or Skewness."
                                 style="display:flex; align-items:center; gap:10px; padding:8px; background:#334155; border-radius:6px; cursor:help;">
                                 <div
@@ -462,7 +459,6 @@
                                     2</div>
                                 <div style="font-size:13px; color:white;"><b>Plot:</b> Visualize shape.</div>
                             </div>
-                            <!-- Step 3 -->
                             <div class="btn-tooltip"
                                 data-hover="If P-Value < 0.05, data is Non-Normal. Consider Transformation."
                                 style="display:flex; align-items:center; gap:10px; padding:8px; background:#334155; border-radius:6px; cursor:help;">
@@ -471,7 +467,6 @@
                                     3</div>
                                 <div style="font-size:13px; color:white;"><b>Test Fit:</b> Anderson-Darling Test.</div>
                             </div>
-                            <!-- Step 4 -->
                             <div class="btn-tooltip"
                                 data-hover="Balance the Cost of Sampling vs. the Risk of Missing a Shift."
                                 style="display:flex; align-items:center; gap:10px; padding:8px; background:#334155; border-radius:6px; cursor:help;">
@@ -483,37 +478,20 @@
                         </div>
                     </div>
 
-                    <!-- REPORT & EXPORT SECTION -->
-                    <div class="card" style="border: 1px solid var(--accent);">
-                        <h3 style="color:var(--accent);">Report & Export</h3>
-
-                        <div style="margin-top:15px;">
-                            <label style="font-size:12px; color:var(--text-secondary);">Analyst / Created By:</label>
-                            <div
-                                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                                <span style="font-size:10px; color:#aaa;" id="progressText">0% Complete</span>
-                            </div>
-                            <input type="text" id="analystName" placeholder="Enter your name..."
-                                style="width:100%; padding:10px; background:#0f172a; border:1px solid #334155; color:white; border-radius:6px; margin-bottom:5px;"
-                                oninput="updateProgress()">
-
-                            <div class="progress-container">
-                                <div class="progress-bar" id="progressBar"></div>
-                            </div>
-                            <div style="font-size:10px; color:#64748b; font-style:italic; margin-bottom:15px;">Progress
-                                tracks data entry and analysis steps.</div>
+                    <!-- PROGRESS METER (Standalone) -->
+                    <div class="card" style="border: 1px solid var(--accent); margin-bottom:20px;">
+                        <h4 style="color:var(--accent); margin-bottom:10px;">📊 Analysis Maturity</h4>
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                            <span style="font-size:10px; color:#aaa;" id="progressText">0% Complete</span>
                         </div>
-
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                            <button class="btn btn-primary-card"
-                                style="background:#ea580c; width:100%; justify-content:center;"
-                                onclick="saveAnalysis()">💾 Save</button>
-                            <button class="btn btn-secondary-card" style="width:100%; justify-content:center;"
-                                onclick="preparePrint()">📷 Print PDF</button>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progressBar"></div>
                         </div>
+                        <div style="font-size:10px; color:#64748b; font-style:italic;">Tracks verification and power
+                            validation steps.</div>
                     </div>
-
-                </div> <!-- End Left Column -->
+                </div>
 
                 <!-- TOOL COLUMN -->
                 <div class="tool-column">
@@ -602,8 +580,12 @@
 
                                 <!-- VISUAL -->
                                 <div>
-                                    <div class="lab-screen">
+                                    <div class="lab-screen" style="position:relative;">
                                         <canvas id="distChart"></canvas>
+                                        <div class="canvas-branding"
+                                            style="position: absolute; bottom: 10px; right: 20px; pointer-events: none; opacity: 0.6;">
+                                            <img src="images/hql_logo_footer.png" style="height: 30px;">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -680,8 +662,12 @@
                                                 shift)
                                             </div>
                                         </div>
-                                        <div style="margin-top:20px; height:180px; width:100%;">
+                                        <div style="margin-top:20px; height:180px; width:100%; position:relative;">
                                             <canvas id="powerChart"></canvas>
+                                            <div class="canvas-branding"
+                                                style="position: absolute; bottom: 5px; right: 10px; pointer-events: none; opacity: 0.4;">
+                                                <img src="images/hql_logo_footer.png" style="height: 20px;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -759,18 +745,46 @@
                                             <!-- Dynamic Conclusion -->
                                         </div>
                                         <div id="ad_chart_container"
-                                            style="height:150px; width:100%; margin-top:20px; display:none;">
+                                            style="height:150px; width:100%; margin-top:20px; display:none; position:relative;">
                                             <canvas id="adChart"></canvas>
+                                            <div class="canvas-branding"
+                                                style="position: absolute; bottom: 5px; right: 10px; pointer-events: none; opacity: 0.4;">
+                                                <img src="images/hql_logo_footer.png" style="height: 20px;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
-
                     </div>
                 </div> <!-- Close tool-column -->
             </div> <!-- Close grid-measure -->
+
+            <!-- STANDARDIZED FOOTER -->
+            <div class="workspace-footer no-print neu-panel"
+                style="margin-top: 50px; position: static; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                <div class="footer-input-group">
+                    <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+                    <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                        oninput="document.getElementById('analystName').value = this.value; updateProgress();">
+                </div>
+                <button class="action-btn btn-save" onclick="saveAndEvaluate()">
+                    <i class="fas fa-save"></i> Save & Evaluate
+                </button>
+                <button class="action-btn btn-print" onclick="preparePrint()">
+                    <i class="fas fa-print"></i> Print Report
+                </button>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+                    <img src="images/hql_logo_footer.png"
+                        style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                        alt="HQL Logo">
+                </div>
+            </div>
+
+            <!-- HIDDEN INPUT FOR COMPATIBILITY -->
+            <input type="hidden" id="analystName">
         </div>
 
         <!-- HELP PANEL REMOVED -->
@@ -1531,9 +1545,9 @@
                 }
             }
 
-            function saveAnalysis() {
+            function saveAndEvaluate() {
                 const name = document.getElementById('analystName').value;
-                if (!name) { alert("Please enter Analyst Name first."); return; }
+                if (!name) { alert("Please enter Your Name in the footer first."); return; }
                 alert("Analysis Saved! Ready to Print.");
                 updateProgress();
             }

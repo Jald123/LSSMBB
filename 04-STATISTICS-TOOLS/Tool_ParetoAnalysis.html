@@ -9,10 +9,9 @@
     <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Roboto:wght@300;400;500;700&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Roboto:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
     <style>
         :root {
             --primary: #0F1115;
@@ -345,6 +344,126 @@
             width: 90%;
             border: 1px solid var(--accent);
         }
+
+        /* STANDARDIZED FOOTER */
+        .workspace-footer {
+            margin-top: 50px;
+            padding: 20px 30px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-radius: 12px;
+        }
+
+        .footer-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-save:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-print:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .canvas-branding {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .ai-coach-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-family: 'Orbitron';
+            font-size: 12px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-coach-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+        }
+
+        .premium-input {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 8px !important;
+            padding: 12px 16px !important;
+            color: white !important;
+            font-size: 15px !important;
+            transition: all 0.3s !important;
+        }
+
+        .premium-input:focus {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
+        }
     </style>
 </head>
 
@@ -453,14 +572,22 @@
                         <div class="control-btn" onclick="magnify('paretoChart', 'Pareto Analysis')">🔍</div>
                         <div class="control-btn" onclick="downloadChart('paretoChart', 'Pareto Analysis')">⬇️</div>
                     </div>
-                    <div class="chart-container"><canvas id="paretoChart"></canvas></div>
+                    <div class="chart-container">
+                        <canvas id="paretoChart"></canvas>
+                        <div class="canvas-branding"
+                            style="position: absolute; bottom: 10px; right: 20px; pointer-events: none; opacity: 0.6;">
+                            <img src="images/hql_logo_footer.png" style="height: 30px;">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- SUMMARY & AI -->
                 <div class="card">
                     <div class="flex-between">
                         <h3>💡 Key Findings</h3>
-                        <button class="btn btn-ghost" onclick="askAICoach()" id="aiBtn">Ask Gemini</button>
+                        <button class="ai-coach-btn" onclick="askAICoach()" id="aiBtn">
+                            <i class="fas fa-robot"></i> Ask Gemini Coach
+                        </button>
                     </div>
 
                     <div id="analysisSummary"
@@ -475,38 +602,29 @@
                     </div>
                 </div>
 
-                <!-- REPORT & EXPORT SECTION -->
-                <div class="report-section no-print">
-                    <div class="report-header">Report & Export</div>
-
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:center;">
-                        <div>
-                            <label style="font-size:12px; color:var(--text-secondary);">Analyst / Created By:</label>
-                            <input type="text" id="analystName" placeholder="Enter your name..."
-                                style="width:100%; padding:10px; background:var(--surface-1); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:white; margin-top:5px;"
-                                oninput="updateProgress()">
-                        </div>
-                        <div style="text-align:right;">
-                            <span id="completionPct" style="color:var(--text-secondary); font-size:12px;">0%
-                                Complete</span>
-                        </div>
+                <!-- STANDARDIZED FOOTER -->
+                <div class="workspace-footer no-print">
+                    <div class="footer-input-group">
+                        <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+                        <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                            oninput="document.getElementById('analystName').value = this.value; updateProgress();">
                     </div>
-
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill" style="width:0%;"></div>
-                    </div>
-                    <p style="font-size:11px; color:var(--text-secondary); margin-bottom:20px;">Progress tracks data
-                        entry completion and quality checks.</p>
-
-                    <div style="display:flex; gap:15px;">
-                        <button class="report-btn report-btn-save" onclick="saveResults()">
-                            💾 Save & Evaluate
-                        </button>
-                        <button class="report-btn report-btn-print" onclick="printReport()">
-                            🖨️ Print PDF
-                        </button>
+                    <button class="action-btn btn-save" onclick="saveResults()">
+                        <i class="fas fa-save"></i> Save & Evaluate
+                    </button>
+                    <button class="action-btn btn-print" onclick="printReport()">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                    <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+                        <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+                        <img src="images/hql_logo_footer.png"
+                            style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                            alt="HQL Logo">
                     </div>
                 </div>
+
+                <!-- Hidden source field for legacy compatibility -->
+                <input type="hidden" id="analystName">
 
             </div>
         </div>
@@ -771,9 +889,9 @@
             const div = document.createElement('div');
             div.className = 'input-row';
             div.innerHTML = `
-            <input type="text" placeholder="Category" value="${name}" style="background:var(--surface-1); border:1px solid #444; color:white; padding:8px; border-radius:4px;">
-            <input type="number" placeholder="Count" value="${val}" style="background:var(--surface-1); border:1px solid #444; color:white; padding:8px; border-radius:4px;">
-            <button onclick="this.parentElement.remove()" style="background:var(--accent); border:none; color:white; border-radius:4px; cursor:pointer;">&times;</button>
+            <input type="text" placeholder="Category" value="${name}" class="premium-input" style="flex:2;">
+            <input type="number" placeholder="Count" value="${val}" class="premium-input" style="flex:1;">
+            <button onclick="this.parentElement.remove()" style="background:var(--accent); border:none; color:white; border-radius:8px; cursor:pointer; width:30px; height:45px; display:flex; align-items:center; justify-content:center; font-size:20px;">&times;</button>
         `;
             document.getElementById('inputContainer').appendChild(div);
         }
@@ -834,17 +952,20 @@
                             data: cumulative,
                             type: 'line',
                             yAxisID: 'y1',
-                            borderColor: '#E74C3C',
-                            backgroundColor: 'rgba(231, 76, 60, 0.5)',
-                            borderWidth: 2,
-                            pointRadius: 4,
-                            tension: 0.1
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#f97316',
+                            tension: 0.3
                         },
                         {
                             label: 'Frequency',
                             data: dataCounts,
                             yAxisID: 'y',
-                            backgroundColor: '#29B6F6'
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 8,
+                            hoverBackgroundColor: '#2563eb'
                         }
                     ]
                 },
@@ -855,9 +976,32 @@
                         y1: { type: 'linear', position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: { callback: function (value) { return value + "%" } } }
                     },
                     plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: '#e2e8f0',
+                                font: { family: 'Orbitron', size: 10 }
+                            }
+                        },
                         annotation: {
                             annotations: {
-                                line80: { type: 'line', yMin: 80, yMax: 80, yScaleID: 'y1', borderColor: '#2ECC71', borderDash: [5, 5] }
+                                line80: {
+                                    type: 'line',
+                                    yMin: 80,
+                                    yMax: 80,
+                                    yScaleID: 'y1',
+                                    borderColor: '#10b981',
+                                    borderWidth: 2,
+                                    borderDash: [10, 5],
+                                    label: {
+                                        content: '80% Threshold',
+                                        display: true,
+                                        position: 'end',
+                                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                                        color: 'white',
+                                        font: { size: 10, weight: 'bold' }
+                                    }
+                                }
                             }
                         }
                     }

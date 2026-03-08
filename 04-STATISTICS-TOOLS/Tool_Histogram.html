@@ -122,27 +122,116 @@
         border-left: 4px solid #eab308;
     }
 
-    /* PRINT STYLES */
-    @media print {
-        body * {
-            visibility: hidden;
-        }
+    /* STANDARDIZED FOOTER */
+    .workspace-footer {
+        margin-top: 50px;
+        padding: 20px 30px;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        border-radius: 12px;
+    }
 
-        #print-report,
-        #print-report * {
-            visibility: visible;
-        }
+    .footer-input-group {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 5px 15px;
+        flex: 1;
+        max-width: 300px;
+    }
 
-        #print-report {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            display: block !important;
-            background: white;
-            color: black;
-            padding: 40px;
-        }
+    .footer-input {
+        background: transparent;
+        border: none;
+        color: white;
+        padding: 10px;
+        width: 100%;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+    }
+
+    .btn-save {
+        background: #10b981;
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-save:hover {
+        background: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-print {
+        background: #3b82f6;
+        color: white;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-print:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    .premium-input {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 8px !important;
+        padding: 12px 16px !important;
+        color: white !important;
+        font-size: 15px !important;
+        transition: all 0.3s !important;
+    }
+
+    .premium-input:focus {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
+    }
+
+    .ai-coach-btn {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-family: 'Orbitron';
+        font-size: 12px;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .ai-coach-btn:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
     }
 </style>
 
@@ -280,8 +369,8 @@
             </select>
 
             <label style="font-size:12px; color:#aaa;">Or Paste Custom Data:</label>
-            <textarea id="dataInput" rows="6" placeholder="Paste data here..."
-                style="width:100%; background:var(--surface-1); color:white; padding:10px; border:1px solid #333; border-radius:6px; font-family:monospace;"></textarea>
+            <textarea id="dataInput" rows="6" placeholder="Paste data here..." class="premium-input"
+                style="width:100%; font-family:monospace; margin-top:10px;"></textarea>
 
             <!-- Dynamic Stats Table for Story Mode reflection -->
             <div id="calcStatsTable" style="margin-top:15px; margin-bottom:15px; display:none;">
@@ -305,18 +394,11 @@
                 📊 Process Data & Draw
             </button>
 
-            <!-- Report Section -->
+            <!-- Progress Section -->
             <div style="margin-top: 25px; padding-top:20px; border-top:1px solid #333;">
-                <h4 style="color:#ea580c; font-size:14px; margin-bottom:10px;">Report & Export</h4>
-
-                <div style="margin-bottom:10px;">
-                    <input type="text" id="analystName" placeholder="Enter Analyst Name..." oninput="updateProgress()"
-                        style="width:100%; padding:8px; border-radius:4px; border:1px solid #444; background:#0f172a; color:white; font-size:13px;">
-                </div>
-
                 <div style="margin-bottom:15px;">
                     <div style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:5px;">
-                        <span>Progress</span>
+                        <span>Analysis Completion</span>
                         <span id="progressText">0%</span>
                     </div>
                     <div style="width:100%; background:#0f172a; height:6px; border-radius:3px;">
@@ -325,25 +407,16 @@
                         </div>
                     </div>
                 </div>
-
-                <div style="display:flex; gap:10px;">
-                    <button class="btn btn-ghost" onclick="alert('Analysis Saved!')"
-                        style="flex:1; border:1px solid #ea580c; color:#ea580c;">💾 Save</button>
-                    <button class="btn btn-ghost" onclick="printReport()"
-                        style="flex:1; border:1px solid var(--text-secondary);">🖨️ Print PDF</button>
-                </div>
             </div>
         </div>
 
         <!-- CHART AREA -->
         <div class="card">
-            <div class="flex-between">
+            <div class="flex-between" style="margin-bottom:15px;">
                 <h3 style="color:#aaa;">Visual Distribution Analysis</h3>
-                <div style="font-size:12px; color:#666; display:flex; align-items:center; gap:5px;">
-                    <span
-                        style="display:inline-block; width:10px; height:2px; background:#e74c3c; border:1px dotted #e74c3c;"></span>
-                    Bell Curve Principles
-                </div>
+                <button class="ai-coach-btn" onclick="askAICoach()" id="aiBtn">
+                    <i class="fas fa-robot"></i> Ask Gemini Coach
+                </button>
                 <div class="chart-controls">
                     <div class="control-btn" onclick="downloadChart()">⬇️</div>
                 </div>
@@ -357,7 +430,17 @@
                 style="margin-top:20px; padding:15px; background:rgba(255,255,255,0.05); border-radius:6px; display:none;">
                 <strong style="color:var(--accent); font-size:14px;">🤖 System Interpretation:</strong>
                 <div id="interpText" style="margin-top:5px; font-size:13px; color:#cbd5e1; line-height:1.6;"></div>
-                <div id="statsOutput" style="margin-top:10px; font-size:11px; color:#64748b; font-family:monospace;">
+                <div id="statsOutput"
+                    style="margin-top:10px; font-size:11px; color:#64748b; font-family:monospace; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:10px;">
+                </div>
+                <div class="ai-panel"
+                    style="background: rgba(99, 102, 241, 0.1); padding: 15px; border-radius:8px; border-left: 3px solid #6366f1;">
+                    <div
+                        style="color: #6366f1; font-weight: bold; font-size: 12px; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-magic"></i> GEMINI STRATEGIC ADVICE
+                    </div>
+                    <div id="aiOutput" style="font-size: 13px; color: #cbd5e1; min-height: 20px;">Click "Ask Gemini
+                        Coach" for advanced statistical insights.</div>
                 </div>
             </div>
         </div>
@@ -426,6 +509,30 @@
             </div>
         </div>
     </div>
+
+    <!-- STANDARDIZED FOOTER -->
+    <div class="workspace-footer no-print">
+        <div class="footer-input-group">
+            <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+            <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                oninput="document.getElementById('analystName').value = this.value; updateProgress();">
+        </div>
+        <button class="action-btn btn-save" onclick="alert('Analysis Evaluated & Saved!')">
+            <i class="fas fa-save"></i> Save & Evaluate
+        </button>
+        <button class="action-btn btn-print" onclick="printReport()">
+            <i class="fas fa-print"></i> Print Report
+        </button>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+            <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+            <img src="images/hql_logo_footer.png"
+                style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                alt="HQL Logo">
+        </div>
+    </div>
+
+    <!-- Hidden field for compatibility -->
+    <input type="hidden" id="analystName">
 
     <!-- POPUP EXPLAINER MODAL -->
     <div class="modal-overlay" id="popupExplainModal" style="z-index:3000;">
@@ -537,19 +644,20 @@
                             type: 'line',
                             label: 'Normal Curve (Theoretical)',
                             data: bellPoints,
-                            borderColor: '#e74c3c',
-                            borderWidth: 2,
-                            borderDash: [5, 5], // Dotted Line
+                            borderColor: '#f97316',
+                            borderWidth: 3,
+                            borderDash: [10, 5],
                             pointRadius: 0,
-                            tension: 0.4 // Smooth curve
+                            tension: 0.4
                         },
                         {
                             type: 'bar',
                             label: 'Frequency',
                             data: counts,
-                            backgroundColor: '#F1C40F',
-                            borderRadius: 4,
-                            maxBarThickness: 50
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 8,
+                            maxBarThickness: 50,
+                            hoverBackgroundColor: '#2563eb'
                         }
                     ]
                 },
@@ -610,14 +718,64 @@
         // REPORTING
         function updateProgress() {
             let score = 0;
-            const name = document.getElementById('analystName').value;
-            const data = document.getElementById('dataInput').value;
+            const analyst = document.getElementById('analystName').value.trim();
+            const data = document.getElementById('dataInput').value.trim();
 
-            if (data.length > 5) score += 50;
-            if (name.length > 2) score += 50;
+            if (data.length > 10) score += 40;
+            if (chart) score += 40;
+            if (analyst.length > 2) score += 20;
 
             document.getElementById('progressBar').style.width = score + "%";
-            document.getElementById('progressText').innerText = score + "%";
+            document.getElementById('progressText').innerText = score + "% Complete";
+
+            // Sync analyst name to footer if it was changed from hidden field
+            if (document.getElementById('userNameFooter')) {
+                document.getElementById('userNameFooter').value = analyst;
+            }
+        }
+
+        async function askAICoach() {
+            const btn = document.getElementById('aiBtn');
+            const output = document.getElementById('aiOutput');
+            const interp = document.getElementById('interpText').innerText;
+            const stats = document.getElementById('statsOutput').innerText;
+
+            if (!chart) {
+                alert("Please process data first.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+            output.innerText = "Analyzing your distribution pattern...";
+
+            const prompt = `Act as a Lean Six Sigma Master Black Belt. 
+            I have a Histogram with the following metrics: ${stats}.
+            System Interpretation says: ${interp}.
+            Based on this distribution, give me a concise 3-sentence professional recommendation focusing on process stability and potential root causes.`;
+
+            try {
+                const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    output.innerText = data.candidates[0].content.parts[0].text;
+                } else {
+                    output.innerText = "Error: Unable to generate advice. Please check API configuration.";
+                }
+            } catch (error) {
+                console.error("AI Error:", error);
+                output.innerText = "AI Connection failed. Verify your network or API key.";
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-robot"></i> Ask Gemini Coach';
+            }
         }
 
         function printReport() {
@@ -931,6 +1089,7 @@
             popup.style.left = (rect.left + window.scrollX) + 'px'; // Simple left alignment
         }
     </script>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>

@@ -355,6 +355,107 @@
             }
         }
 
+        /* PREMIUM COMPONENTS */
+        .premium-input {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 8px !important;
+            padding: 12px 16px !important;
+            color: white !important;
+            font-size: 15px !important;
+            transition: all 0.3s !important;
+        }
+
+        .premium-input:focus {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
+        }
+
+        .ai-coach-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-family: 'Orbitron';
+            font-size: 11px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-coach-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+        }
+
+        .workspace-footer {
+            margin-top: 30px;
+            padding: 20px 30px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-radius: 12px;
+        }
+
+        .footer-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        /* PRINT HEADER */
         .print-header {
             display: none;
         }
@@ -366,23 +467,29 @@
     <div class="container">
 
         <!-- HEADER -->
-        <div class="flex-between" style="margin-bottom: 20px;">
+        <div class="flex-between no-print"
+            style="margin-bottom: 30px; background: linear-gradient(to right, rgba(30,58,138,0.2), transparent); padding: 25px; border-radius: 12px; border-left: 5px solid #3b82f6;">
             <div>
-                <span class="phase-glow">PHASE: ANALYZE</span>
-                <div style="height: 15px;"></div>
-                <h1>Process Capability <span class="ai-badge">AI ENABLED</span>
-                    <button class="btn btn-ghost" onclick="openExplainer()"
-                        style="padding: 4px 10px; font-size: 11px; margin-left: 10px; border: 1px solid var(--accent); color: var(--accent);">🤔
-                        Simple Explanation</button>
-                </h1>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
-                    Measure Perfection. <span style="color: var(--accent);">Reduce Defects.</span> Are you meeting
-                    customer limits?
+                <span class="phase-glow"
+                    style="background: #3b82f6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 2px; font-family: 'Orbitron', sans-serif;">PHASE:
+                    ANALYZE</span>
+                <div style="height: 10px;"></div>
+                <h1
+                    style="font-family: 'Orbitron', sans-serif; font-size: 32px; letter-spacing: -1px; margin: 0; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    Process Capability (Cp/Cpk) <span
+                        style="font-size: 14px; -webkit-text-fill-color: #3b82f6; vertical-align: middle; margin-left:10px; letter-spacing: 1px;">AI
+                        COACH ENABLED</span></h1>
+                <p style="color: #94a3b8; font-size: 14px; margin-top: 8px; font-family: 'Inter', sans-serif;">
+                    Measure Perfection. <span style="color: #60a5fa; font-weight: 600;">Reduce Defects.</span> Are you
+                    meeting customer limits?
                 </p>
             </div>
-            <div style="text-align: right;">
-                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
-                    Back</button>
+            <div style="text-align: right; display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-primary" onclick="openExplainer()"
+                    style="padding: 10px 20px; font-weight: 700; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">🤔
+                    Simple Explanation</button>
+                <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'"
+                    style="font-size: 12px;">← Tools Hub</button>
             </div>
         </div>
 
@@ -438,7 +545,8 @@
                 <h3>1. Scenario & Specs</h3>
 
                 <label style="font-size:12px; color:var(--text-secondary);">Select Industry Scenario:</label>
-                <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()">
+                <select id="scenarioSelect" class="premium-input" onchange="loadScenario()"
+                    style="width: 100%; margin-bottom: 15px;">
                     <option value="">-- Custom Data --</option>
                     <optgroup label="Manufacturing (Piston Diameter)">
                         <option value="manufacturing_capable">🟢 Capable (Process Tight)</option>
@@ -473,18 +581,21 @@
                 <div class="grid-2">
                     <div class="form-group">
                         <label>LSL (Lower Limit)</label>
-                        <input type="number" id="lsl" placeholder="e.g. 45" value="45">
+                        <input type="number" id="lsl" class="premium-input" placeholder="e.g. 45" value="45"
+                            style="width:100%;">
                     </div>
                     <div class="form-group">
                         <label>USL (Upper Limit)</label>
-                        <input type="number" id="usl" placeholder="e.g. 55" value="55">
+                        <input type="number" id="usl" class="premium-input" placeholder="e.g. 55" value="55"
+                            style="width:100%;">
                     </div>
                 </div>
 
                 <h3 style="margin-top: 20px;">2. Process Data</h3>
                 <div class="form-group">
                     <label>Data (Comma Separated)</label>
-                    <textarea id="dataInput" rows="6" placeholder="48, 49, 52, 50, 51..."></textarea>
+                    <textarea id="dataInput" class="premium-input" rows="6" placeholder="48, 49, 52, 50, 51..."
+                        style="width:100%;"></textarea>
                 </div>
 
                 <!-- Example buttons removed as scenarios now cover capable/incapable cases -->
@@ -551,12 +662,14 @@
 
                 <!-- PROFESSIONAL STATISTICS REPORT -->
                 <div class="report-section">
-                    <div class="report-header">
+                    <div class="report-header" style="background:#1e293b; padding:15px; border-radius:8px 8px 0 0;">
                         <div style="display: flex; justify-content: space-between; align-items:center;">
                             <h3
                                 style="margin: 0; color: #60a5fa; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;">
                                 📋 Process Capability Analysis Report</h3>
-                            <span style="font-size: 11px; color: #94a3b8;">Auto-Generated</span>
+                            <button class="ai-coach-btn" onclick="askAICoach()" id="aiBtn">
+                                <i class="fas fa-robot"></i> Ask Gemini Coach
+                            </button>
                         </div>
                     </div>
                     <div style="padding: 15px;">
@@ -602,33 +715,40 @@
                     </div>
                 </div>
 
-                <!-- REPORT & EXPORT -->
-                <div class="card"
-                    style="margin-top: 20px; background: linear-gradient(135deg, #1e3a5f, #0f172a); border: 1px solid #334155;">
-                    <div class="flex-between" style="margin-bottom: 15px;">
-                        <div>
-                            <h3 style="margin: 0;">📊 Report & Export</h3>
-                            <div class="progress-container" style="width: 200px;">
-                                <div class="progress-bar" id="progressBar"></div>
-                            </div>
-                        </div>
-                        <span id="progress-text" style="font-size: 12px; color: #94a3b8;">0% Complete</span>
+                <!-- STANDARDIZED FOOTER -->
+                <div class="workspace-footer no-print">
+                    <div class="footer-input-group">
+                        <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+                        <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                            oninput="document.getElementById('createdBy').value = this.value; updateProgress();">
                     </div>
-
-                    <!-- CREATED BY FIELD -->
-                    <div style="margin-bottom: 15px;">
-                        <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 5px;">Created By
-                            (Analyst Name):</label>
-                        <input type="text" id="createdBy" placeholder="Enter your name..." oninput="updateProgress()"
-                            style="width: 100%; padding: 10px; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: white; font-size: 13px;">
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-primary print-hide" style="flex: 1; background: #ea580c;"
-                            onclick="saveReport()">💾 Save Report</button>
-                        <button class="btn btn-ghost print-hide" style="flex: 1;" onclick="printReport()">🖨️ Print
-                            PDF (2-Page)</button>
+                    <button class="action-btn btn-save" onclick="saveReport()">
+                        <i class="fas fa-save"></i> Save Analysis
+                    </button>
+                    <button class="action-btn btn-print" onclick="printReport()">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                    <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+                        <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+                        <img src="images/hql_logo_footer.png"
+                            style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                            alt="HQL Logo">
                     </div>
                 </div>
+
+                <div style="margin: 30px 0;">
+                    <div
+                        style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:5px; color:#94a3b8;">
+                        <span>ANALYSIS COMPLETION</span>
+                        <span id="progress-text">0% - Get Started</span>
+                    </div>
+                    <div style="width:100%; background:#0f172a; height:6px; border-radius:3px; overflow:hidden;">
+                        <div id="progressBar" style="width:0%; height:100%; background:#3b82f6; transition:width 0.3s;">
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="createdBy">
 
                 <!-- PRINT HEADER (Only shows on print) -->
                 <div class="print-header">
@@ -1005,6 +1125,7 @@
     <script>
         let chartInstance = null;
         let currentScenario = null;
+        let isCalculated = false;
         Chart.defaults.color = '#90A4AE';
         Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
 
@@ -1487,7 +1608,7 @@
         }
 
         // UPDATE PROGRESS BAR
-        let isCalculated = false;
+
 
         function updateProgress() {
             let progress = 0;
@@ -1520,6 +1641,100 @@
                 bar.style.background = "linear-gradient(90deg, #10b981, #34d399)";
             } else {
                 bar.style.background = "linear-gradient(90deg, #3b82f6, #ec4899)";
+            }
+        }
+
+        async function askAICoach() {
+            const btn = document.getElementById('aiBtn');
+            const cp = document.getElementById('resCp').innerText;
+            const cpk = document.getElementById('resCpk').innerText;
+            const sigma = document.getElementById('resSigma').innerText;
+            const verdict = document.getElementById('rptVerdictText').innerText;
+
+            if (!isCalculated) {
+                alert("Please calculate capability first.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consulting...';
+
+            const prompt = `Act as a Lean Six Sigma Master Black Belt. 
+            I have a Process Capability Analysis:
+            - Cp: ${cp}
+            - Cpk: ${cpk}
+            - Sigma Level: ${sigma}
+            - Verdict: ${verdict}
+            
+            Provide a strategic, 4-sentence Master Black Belt advice on if the process should be centered, variance-reduced, or if it's world-class. Focus on actionable LSS philosophy.`;
+
+            try {
+                const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const adviceText = data.candidates[0].content.parts[0].text;
+                    const recTd = document.getElementById('rptRecommendation');
+                    recTd.innerHTML = `<strong>AI Coach:</strong> ${adviceText}`;
+                    recTd.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert("AI Coach failed to provide insights. API Error.");
+                }
+            } catch (error) {
+                console.error("AI Error:", error);
+                alert("AI connection failed.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-robot"></i> Ask Gemini Coach';
+            }
+        }
+
+        function updateProgress() {
+            const nameField = document.getElementById('createdBy');
+            const footerNameField = document.getElementById('userNameFooter');
+
+            // Sync values
+            if (footerNameField && nameField) {
+                nameField.value = footerNameField.value;
+            }
+
+            let progress = 0;
+            let text = "Not Started";
+            let nameVal = nameField ? nameField.value.trim() : "";
+
+            if (document.getElementById('dataInput').value.trim().length > 5) {
+                progress = 30;
+                text = "Data Entered";
+            }
+
+            if (isCalculated) {
+                progress = 80;
+                text = "Analysis Complete";
+            }
+
+            if (isCalculated && nameVal.length > 2) {
+                progress = 100;
+                text = "Ready to Export";
+            }
+
+            const bar = document.getElementById('progressBar');
+            const txt = document.getElementById('progress-text');
+
+            if (bar) bar.style.width = progress + '%';
+            if (txt) txt.innerText = progress + '% - ' + text;
+
+            if (bar) {
+                if (progress === 100) {
+                    bar.style.background = "linear-gradient(90deg, #10b981, #34d399)";
+                } else {
+                    bar.style.background = "linear-gradient(90deg, #3b82f6, #ec4899)";
+                }
             }
         }
 

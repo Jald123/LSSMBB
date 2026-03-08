@@ -229,7 +229,13 @@
                             <div class="control-btn" onclick="downloadChart('paretoChart', 'Pareto of Effects')">⬇️
                             </div>
                         </div>
-                        <div class="chart-container"><canvas id="paretoChart"></canvas></div>
+                        <div class="chart-container" style="position:relative;">
+                            <canvas id="paretoChart"></canvas>
+                            <div class="canvas-branding"
+                                style="position: absolute; bottom: 10px; right: 20px; pointer-events: none; opacity: 0.6;">
+                                <img src="images/hql_logo_footer.png" style="height: 30px;">
+                            </div>
+                        </div>
                         <div id="paretoExplain" style="font-size:12px; color:#aaa; margin-top:5px; text-align:center;">
                             Bars crossing the line are significant.</div>
                         <div id="analysisSummary"
@@ -250,25 +256,6 @@
                         </div>
                     </div>
 
-                    <!-- REPORT & EXPORT SECTION -->
-                    <div id="reportSection" class="card no-print"
-                        style="margin-top:20px; border-top: 3px solid #2ecc71;">
-                        <div style="font-size:18px; font-weight:bold; color:#2ecc71; margin-bottom:15px;">Process
-                            Optimization Report</div>
-                        <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:20px; align-items:center;">
-                            <div>
-                                <label style="font-size:12px; color:var(--text-secondary);">Optimization Lead /
-                                    Analyst:</label>
-                                <input type="text" id="analystName" placeholder="Enter name..."
-                                    style="width:100%; padding:10px; background:var(--surface-1); border:1px solid rgba(255, 255, 255, 0.1); border-radius:6px; color:white; margin-top:5px;">
-                            </div>
-                            <div style="text-align:right;">
-                                <button class="btn btn-primary" style="margin-top:20px;" onclick="printReport()">🖨️
-                                    Generate PDF Report</button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
             </div>
@@ -276,6 +263,30 @@
         </div>
 
     </div>
+
+    <!-- STANDARDIZED FOOTER -->
+    <div class="workspace-footer no-print neu-panel"
+        style="margin: 20px; position: static; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+        <div class="footer-input-group">
+            <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+            <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                oninput="document.getElementById('analystName').value = this.value;">
+        </div>
+        <button class="action-btn btn-save" onclick="analyzeDOE()">
+            <i class="fas fa-magic"></i> Run Analysis
+        </button>
+        <button class="action-btn btn-print" onclick="printReport()">
+            <i class="fas fa-print"></i> Print Report
+        </button>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+            <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+            <img src="images/hql_logo_footer.png"
+                style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                alt="HQL Logo">
+        </div>
+    </div>
+
+    <input type="hidden" id="analystName">
 
     <!-- INFOGRAPHIC EXPLANATION MODAL -->
     <div class="modal-overlay" id="hypothesisInfoModal"
