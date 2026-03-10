@@ -103,6 +103,39 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
         }
 
+        /* 🚀 NEON GLASS SCROLLBAR - INTERNAL OVERRIDE */
+        ::-webkit-scrollbar {
+            width: 4px !important;
+            height: 4px !important;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent !important;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(104, 137, 184, 0.3) !important;
+            border-radius: 20px !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            box-shadow: inset 0 0 5px rgba(27, 107, 130, 0.2) !important;
+            transition: all 0.4s ease !important;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary) !important;
+            box-shadow: 0 0 15px var(--primary) !important;
+        }
+
+        ::-webkit-scrollbar-button {
+            display: none !important;
+        }
+
+        /* Firefox Support */
+        * {
+            scrollbar-width: thin !important;
+            scrollbar-color: rgba(104, 137, 184, 0.3) transparent !important;
+        }
+
         /* SECTION HEADERS (3D / ENGRAVED LOOK) */
         .section-header-modern {
             background: rgba(226, 232, 240, 0.4);
