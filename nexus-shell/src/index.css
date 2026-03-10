@@ -121,11 +121,16 @@
   --color-nexus-text-secondary: var(--nexus-text-secondary-base);
   --color-nexus-accent: var(--color-nexus-cyan-base);
 
+  --color-nexus-bg-deep: var(--nexus-bg-deep);
+  --color-nexus-bg-surface: var(--nexus-bg-surface);
+
   --radius-nexus: var(--radius-nexus);
   --radius-nexus-lg: var(--radius-nexus-lg);
 
   --shadow-nexus: var(--nexus-shadow-base);
   --shadow-nexus-glow: var(--shadow-nexus-glow);
+
+  --opacity-shadow: var(--shadow-opacity);
 }
 
 body {

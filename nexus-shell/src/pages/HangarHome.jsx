@@ -235,11 +235,12 @@ const HangarHome = () => {
 
                         <Link
                             to="/workspace/charter"
-                            className="group/btn relative inline-flex items-center gap-6 bg-nexus-text-primary text-nexus-bg-deep px-12 py-6 rounded-full font-orbitron font-black text-base transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.4)]"
+                            className={`group/btn relative inline-flex items-center gap-6 px-12 py-6 rounded-full font-orbitron font-black text-base transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(34,211,238,0.3)]
+                                ${theme === 'dark' ? 'bg-nexus-cyan text-nexus-navy' : 'bg-nexus-text-primary text-white'}`}
                         >
                             RESUME MISSION
                             <ChevronRight className="w-6 h-6 transition-transform group-hover/btn:translate-x-2" />
-                            <div className="absolute inset-0 rounded-full border-2 border-white group-hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                            <div className="absolute inset-0 rounded-full border-2 border-white/20 group-hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500" />
                         </Link>
                     </div>
                 </motion.div>

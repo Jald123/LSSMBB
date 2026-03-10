@@ -152,8 +152,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isOpen, setIsOpen }) => {
                                                     navigate(`/journey/${target}`);
                                                 }}
                                                 className={`text-[9px] font-black font-orbitron text-center py-1.5 rounded border transition-all duration-300 ${methodology === m
-                                                    ? 'bg-nexus-text-primary text-nexus-bg-deep border-nexus-text-primary shadow-sm'
-                                                    : 'bg-nexus-bg/50 border-nexus-border/50 text-nexus-text-secondary hover:border-nexus-cyan/50 hover:text-nexus-cyan'
+                                                    ? 'bg-nexus-cyan/20 border-nexus-cyan/40 text-nexus-cyan shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                                                    : 'bg-nexus-surface/50 border-nexus-border/50 text-nexus-text-secondary hover:border-nexus-cyan/50 hover:text-nexus-cyan'
                                                     }`}
                                             >
                                                 {m === 'FOCUS' ? 'FOCUS' : m}

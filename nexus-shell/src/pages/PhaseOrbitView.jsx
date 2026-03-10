@@ -128,7 +128,7 @@ const PhaseOrbitView = () => {
                                 <Cpu className="w-5 h-5 text-nexus-cyan" />
                             </div>
                             <div className="flex flex-col items-end">
-                                <span className="text-[9px] font-black font-orbitron text-nexus-text-secondary/40 tracking-tighter uppercase mb-1">Station ID</span>
+                                <span className="text-[9px] font-black font-orbitron text-nexus-text-secondary/60 tracking-tighter uppercase mb-1">Station ID</span>
                                 <span className="text-[10px] text-nexus-text-primary font-black font-orbitron">{tool.id.toUpperCase()}</span>
                             </div>
                         </div>
@@ -159,14 +159,14 @@ const PhaseOrbitView = () => {
                         {/* Status / Priority Footer */}
                         <div className="flex items-center justify-between mt-auto pt-6 border-t border-nexus-border/50">
                             <div className="flex flex-col">
-                                <span className="text-[8px] font-black font-orbitron text-nexus-text-secondary/40 uppercase tracking-widest mb-1">Priority</span>
+                                <span className="text-[8px] font-black font-orbitron text-nexus-text-secondary/60 uppercase tracking-widest mb-1">Priority</span>
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-2 h-2 rounded-full bg-nexus-cyan" />
                                     <span className="text-[10px] font-black font-orbitron text-nexus-text-primary">{tool.priority}</span>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end">
-                                <span className="text-[8px] font-black font-orbitron text-nexus-text-secondary/40 uppercase tracking-widest mb-1">Visual</span>
+                                <span className="text-[8px] font-black font-orbitron text-nexus-text-secondary/60 uppercase tracking-widest mb-1">Visual</span>
                                 <div className="text-[10px] font-black font-orbitron text-nexus-cyan shadow-cyan-300">LAUNCH</div>
                             </div>
                         </div>
@@ -178,8 +178,8 @@ const PhaseOrbitView = () => {
                         <div className="mt-8 flex gap-4 relative z-10">
                             <Link
                                 to={`/workspace/${tool.id}`}
-                                className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-orbitron font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl hover:shadow-nexus-cyan/20
-                                    ${theme === 'dark' ? 'bg-nexus-cyan text-nexus-navy' : 'bg-nexus-text-primary text-nexus-bg-deep'}`}
+                                className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-orbitron font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl
+                                    ${theme === 'dark' ? 'bg-nexus-cyan text-nexus-navy shadow-nexus-cyan/20' : 'bg-nexus-text-primary text-white shadow-nexus-navy/20'}`}
                             >
                                 <Terminal className="w-4 h-4" /> EXECUTE
                             </Link>
