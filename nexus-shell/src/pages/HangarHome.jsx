@@ -20,7 +20,7 @@ import {
 import { useNexus } from '../context/NexusContext';
 
 const HangarHome = () => {
-    const { xp, completedTools, industry, methodology, setMethodology } = useNexus();
+    const { xp, completedTools, industry, methodology, setMethodology, theme } = useNexus();
     const navigate = useNavigate();
     const [activeModal, setActiveModal] = useState(null);
 
