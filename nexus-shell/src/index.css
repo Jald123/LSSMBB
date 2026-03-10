@@ -239,30 +239,36 @@ body {
     0 -1px 3px rgba(0, 0, 0, 0.03);
 }
 
-/* Premium Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* 🚀 NEON GLASS SCROLLBAR */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  transition: all 0.3s ease;
+::-webkit-scrollbar-thumb {
+  background: rgba(34, 211, 238, 0.2);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 5px rgba(34, 211, 238, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(34, 211, 238, 0.4);
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-nexus-cyan);
+  box-shadow: 0 0 15px var(--color-nexus-cyan), inset 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-.light-mode .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.08);
+/* Light mode adaptation for glow */
+.light-mode ::-webkit-scrollbar-thumb {
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.light-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(6, 182, 212, 0.4);
+.light-mode ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-nexus-cyan);
+  box-shadow: 0 0 12px var(--color-nexus-cyan);
 }
