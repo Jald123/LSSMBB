@@ -262,6 +262,16 @@ body {
   box-shadow: 0 0 15px var(--color-nexus-cyan), inset 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Firefox Support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(34, 211, 238, 0.2) transparent;
+}
+
 /* Light mode adaptation for glow */
 .light-mode ::-webkit-scrollbar-thumb {
   background: rgba(6, 182, 212, 0.15);
