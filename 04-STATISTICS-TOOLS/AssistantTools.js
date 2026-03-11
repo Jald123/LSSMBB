@@ -10,6 +10,24 @@
     link.href = 'AssistantTools.css';
     document.head.appendChild(link);
 
+    // HIDE REQUESTED UI ELEMENTS (AI, EXPORT, DASHBOARD)
+    const hideStyle = document.createElement('style');
+    hideStyle.textContent = `
+        .ai-coach-btn, .ai-badge, .ai-rewrite-btn, .ai-magic-btn,
+        .ai-panel, .ai-coach-output,
+        .sticky-export, .btn-export,
+        a.nav-btn-back[href*="Stats_Calculator_Main.html"],
+        a.nav-back[href*="Stats_Calculator_Main.html"],
+        a.nav-back[href*="Tool_LeanLeadership.html"],
+        [onclick*="askAICoach"], [onclick*="askAIData"], [onclick*="askGemini"],
+        [onclick*="showLobby"], [onclick*="downloadPNG"], [onclick*="downloadPDF"],
+        [onclick*="export4K"], button[onclick*="Stats_Calculator_Main.html"],
+        button[onclick*="history.back()"] {
+            display: none !important;
+        }
+    `;
+    document.head.appendChild(hideStyle);
+
     // Ensure Chart.js is loaded
     if (!window.Chart) {
         const script = document.createElement('script');

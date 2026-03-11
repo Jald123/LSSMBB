@@ -165,13 +165,19 @@
             border-radius: 24px;
             overflow: hidden;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: auto 1fr;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: start;
         }
 
         .calc-input-section {
             padding: 40px;
             border-right: 1px solid rgba(255, 255, 255, 0.05);
+            width: fit-content;
+            min-width: 630px;
+            /* 420 * 1.5 */
+            max-width: 900px;
+            /* 600 * 1.5 */
         }
 
         .calc-result-section {
@@ -344,7 +350,7 @@
         <h1>ROI & Business Case</h1>
         <p>Projects die without funding. Learn to translate "Process Improvement" into "EBITDA Impact" (Earnings Before
             Interest, Taxes, Depreciation, and Amortization).</p>
-        <a href="Tool_LeanLeadership.html" class="nav-back">←  Dashboard</a>
+        <a href="Tool_LeanLeadership.html" class="nav-back">← Dashboard</a>
     </div>
 
     <div class="container">
@@ -557,6 +563,7 @@
             }
             calcROI(); // Init
         </script>
-<script src="AssistantTools.js"></script></body>
+        <script src="AssistantTools.js"></script>
+</body>
 
 </html>

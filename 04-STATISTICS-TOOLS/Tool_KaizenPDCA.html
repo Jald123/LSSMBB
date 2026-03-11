@@ -187,8 +187,10 @@
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
             gap: 10px;
-            width: 400px;
-            height: 400px;
+            width: 600px;
+            /* 400 * 1.5 */
+            height: 600px;
+            /* 400 * 1.5 */
             margin: 0 auto;
             position: relative;
         }
@@ -216,12 +218,14 @@
         .pdca-quad h3 {
             font-family: 'Orbitron';
             margin: 0;
-            font-size: 16px;
+            font-size: 24px;
+            /* 16 * 1.5 */
         }
 
         .pdca-quad i {
-            font-size: 30px;
-            margin-bottom: 10px;
+            font-size: 45px;
+            /* 30 * 1.5 */
+            margin-bottom: 15px;
         }
 
         .active-quad {
@@ -234,8 +238,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
+            width: 120px;
+            /* 80 * 1.5 */
+            height: 120px;
+            /* 80 * 1.5 */
             background: #050505;
             border: 4px solid #10b981;
             border-radius: 50%;
@@ -243,7 +249,8 @@
             align-items: center;
             justify-content: center;
             font-family: 'Orbitron';
-            font-size: 12px;
+            font-size: 18px;
+            /* 12 * 1.5 */
             z-index: 20;
             box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
         }
@@ -359,8 +366,9 @@
                 </button>
             </header>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
-                <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
+            <div style="display:grid; grid-template-columns: auto 1fr; gap:30px; align-items: start;">
+                <div class="card fit-card"
+                    style="display:flex; flex-direction:column; justify-content:center; padding: 40px;">
                     <div class="pdca-cycle">
                         <div class="pdca-quad active-quad" id="quad-plan" onclick="activateQuad('plan')">
                             <i class="fas fa-pencil-alt" style="color:#3b82f6;"></i>
@@ -542,6 +550,7 @@
             alert('Cycle Progressive Log Saved!');
         }
     </script>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>
