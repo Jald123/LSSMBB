@@ -820,8 +820,81 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- nDC Example 1 -->
+                <div
+                    style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px; border:1px solid var(--glass-border); margin-top:20px;">
+                    <h4
+                        style="color:var(--text-primary); margin-bottom:15px; font-size:14px; text-transform:uppercase; letter-spacing:1px;">
+                        4. nDC: Machine Part Validation</h4>
+                    <img src="assets/ndc_mechanical.png"
+                        style="width:100%; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <div class="grid-2">
+                        <div style="font-size:12px; line-height:1.7;">
+                            <b style="color:var(--danger); display:block; margin-bottom:5px;">Low nDC (< 5):</b>
+                                    Your tool lacks resolution. Imagine using a crude wooden ruler to measure precision
+                                    engine parts. The tool can only sort parts into 1 or 2 big buckets. It's too blunt
+                                    to tell exactly how much your process is changing.
+                        </div>
+                        <div style="font-size:12px; line-height:1.7;">
+                            <b style="color:var(--success); display:block; margin-bottom:5px;">High nDC (≥ 5):</b>
+                            Your tool has excellent resolution. Using a precision digital micrometer provides multiple
+                            decimal places, splitting the variation into 5 or more distinct data buckets, allowing you
+                            to accurately track tiny process shifts.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- nDC Example 2 -->
+                <div
+                    style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px; border:1px solid var(--glass-border);">
+                    <h4
+                        style="color:var(--text-primary); margin-bottom:15px; font-size:14px; text-transform:uppercase; letter-spacing:1px;">
+                        5. nDC: Measuring Ingredients</h4>
+                    <img src="assets/ndc_baking.png"
+                        style="width:100%; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <div class="grid-2">
+                        <div style="font-size:12px; line-height:1.7;">
+                            <b style="color:var(--danger); display:block; margin-bottom:5px;">Low nDC (< 5):</b>
+                                    A baker guessing weight by holding a vague handful creates only 2-3 categories of
+                                    data ("Too much", "Too little"). The measurement scale is far too coarse to
+                                    consistently follow a precise recipe.
+                        </div>
+                        <div style="font-size:12px; line-height:1.7;">
+                            <b style="color:var(--success); display:block; margin-bottom:5px;">High nDC (≥ 5):</b>
+                            Using a high-precision digital kitchen scale gives you highly distinct categories. The tool
+                            is sensitive enough to catch even a minor deviation before it ruins the batch.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- nDC Example 3 -->
+                <div
+                    style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px; border:1px solid var(--glass-border);">
+                    <h4
+                        style="color:var(--text-primary); margin-bottom:15px; font-size:14px; text-transform:uppercase; letter-spacing:1px;">
+                        6. nDC: Patient Monitoring</h4>
+                    <img src="assets/ndc_healthcare.png"
+                        style="width:100%; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <div class="grid-2">
+                        <div style="font-size:12px; line-height:1.7;">
+                            <b style="color:var(--danger); display:block; margin-bottom:5px;">Low nDC (< 5):</b>
+                                    A crude 3-level face chart forces complex, nuanced patient data into only 3 rigid
+                                    categories. It's impossible to see whether a patient is getting slightly better or
+                                    slightly worse.
+                        </div>
+                        <div style="font-size:12px; line-height:1.7;">
+                            <b style="color:var(--success); display:block; margin-bottom:5px;">High nDC (≥ 5):</b>
+                            A digital monitor provides a continuous, high-definition stream of exact data. It can easily
+                            differentiate between 70 BPM and 74 BPM, providing 5+ clear data buckets for real medical
+                            analysis.
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
+    </div>
     </div>
 
     <div id="magnifyModal" class="modal-overlay" onclick="closeModal(event)">
