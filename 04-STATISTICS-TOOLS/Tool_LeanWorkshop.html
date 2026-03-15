@@ -6138,11 +6138,11 @@ VR interface`
                     };
 
                     const categories = [
-                        { key: 'sort', label: 'Sort', icon: '?', color: '#e74c3c', jp: ' (Seiri)', desc: 'Remove unnecessary items' },
-                        { key: 'set', label: 'Set in Order', icon: '', color: '#f39c12', jp: ' (Seiton)', desc: 'Organize remaining items' },
-                        { key: 'shine', label: 'Shine', icon: '?', color: '#27ae60', jp: ' (Seiso)', desc: 'Clean & inspect daily' },
-                        { key: 'standardize', label: 'Standardize', icon: '', color: '#3498db', jp: ' (Seiketsu)', desc: 'Create visual standards' },
-                        { key: 'sustain', label: 'Sustain', icon: '', color: '#9b59b6', jp: '? (Shitsuke)', desc: 'Maintain & audit' }
+                        { key: 'sort', label: 'Sort', icon: '<i class="fas fa-filter fa-beat" style="--fa-animation-duration: 2s;"></i>', color: '#e74c3c', jp: ' (Seiri)', desc: 'Remove unnecessary items' },
+                        { key: 'set', label: 'Set in Order', icon: '<i class="fas fa-layer-group fa-bounce" style="--fa-animation-duration: 2.5s;"></i>', color: '#f39c12', jp: ' (Seiton)', desc: 'Organize remaining items' },
+                        { key: 'shine', label: 'Shine', icon: '<i class="fas fa-broom fa-shake" style="--fa-animation-duration: 2s;"></i>', color: '#27ae60', jp: ' (Seiso)', desc: 'Clean & inspect daily' },
+                        { key: 'standardize', label: 'Standardize', icon: '<i class="fas fa-check-double fa-flip" style="--fa-animation-duration: 3.5s;"></i>', color: '#3498db', jp: ' (Seiketsu)', desc: 'Create visual standards' },
+                        { key: 'sustain', label: 'Sustain', icon: '<i class="fas fa-sync fa-spin-pulse" style="--fa-animation-duration: 4s;"></i>', color: '#9b59b6', jp: ' (Shitsuke)', desc: 'Maintain & audit' }
                     ];
 
                     const scores = categories.map(c => ({ ...c, ...parseScore(data[c.key]) }));
@@ -6186,18 +6186,23 @@ VR interface`
                         radarAxes += `<line x1="${centerX}" y1="${centerY}" x2="${p.x}" y2="${p.y}" stroke="#ccc" stroke-width="1"/>`;
                     });
 
-                    // Labels
+                    // Labels - Modified to use foreignObject for FontAwesome icons in SVG
                     let radarLabels = '';
                     scores.forEach((s, i) => {
-                        const p = getPoint(i, 5.8);
-                        radarLabels += `<text x="${p.x}" y="${p.y}" text-anchor="middle" font-size="11" font-weight="bold" fill="${s.color}">${s.icon}</text>`;
+                        const p = getPoint(i, 6); // Offset further
+                        radarLabels += `
+                        <foreignObject x="${p.x - 12}" y="${p.y - 12}" width="24" height="24">
+                            <div style="display:flex; align-items:center; justify-content:center; height:100%; font-size:14px; color:${s.color};">
+                                ${s.icon}
+                            </div>
+                        </foreignObject>`;
                     });
 
                     return `
                     <style>
                         @keyframes radarFill { from { opacity: 0; transform: scale(0.5); } to { opacity: 0.6; transform: scale(1); } }
                         .radar-area { animation: radarFill 0.8s ease-out forwards; transform-origin: center; }
-                        .score-gauge { transition: all 0.5s ease; }
+                        .score-gauge { transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
                     </style>
                     <div style="font-family:'Segoe UI',sans-serif; padding:25px; background:linear-gradient(135deg, #e74c3c, #f39c12, #27ae60, #3498db, #9b59b6); border-radius:15px;">
                         <div style="background:white; border-radius:12px; padding:25px; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
