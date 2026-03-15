@@ -1140,9 +1140,8 @@
                             </div>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 30px;">
-                            <!-- TOP: INPUT -->
-                            <div class="card" style="width: 100%;">
+                        <div style="display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: start;">
+                            <div class="card input-data-card shrunk">
                                 <div
                                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                                     <h3 style="margin: 0;">1. Input Data</h3>
@@ -1151,7 +1150,7 @@
                                             style="font-size:12px; color:var(--text-secondary); margin-bottom: 0;">Select
                                             Scenario:</label>
                                         <select id="scenarioSelect" class="premium-input" onchange="loadScenario()"
-                                            style="margin: 0; width: 300px; height: 45px;">
+                                            style="margin: 0; width: 220px; height: 45px;">
                                             <option value="">-- Custom Input --</option>
                                             <option value="manufacturing">⚙️ Manufacturing (Pistons)</option>
                                             <option value="healthcare">🏥 Healthcare (Wait Times)</option>
@@ -1534,441 +1533,441 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- EXPLANATION MODAL -->
-                    <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
-                        <div class="modal-box">
-                            <span class="close-btn"
-                                onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
-                            <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
-                            <p id="modalContent" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">
-                                Content...
-                            </p>
+                        <!-- EXPLANATION MODAL -->
+                        <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+                            <div class="modal-box">
+                                <span class="close-btn"
+                                    onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+                                <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
+                                <p id="modalContent"
+                                    style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">
+                                    Content...
+                                </p>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- MAGNIFY MODAL -->
-                    <div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
-                        <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
-                            <span class="close-btn"
-                                onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
-                            <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
-                            <img id="magnifyImg"
-                                style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+                        <!-- MAGNIFY MODAL -->
+                        <div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
+                            <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
+                                <span class="close-btn"
+                                    onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+                                <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
+                                <img id="magnifyImg"
+                                    style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+                            </div>
                         </div>
-                    </div>
 
-                    <script>
-                        let histoChart, runChart, qqChart;
+                        <script>
+                            let histoChart, runChart, qqChart;
 
-                        function toggleType(type) {
-                            currentType = type;
+                            function toggleType(type) {
+                                currentType = type;
 
-                            // Visual feedback on buttons
-                            document.getElementById('btnNormal').classList.remove('active-btn');
-                            document.getElementById('btnSkewed').classList.remove('active-btn');
-                            if (type === 'normal') document.getElementById('btnNormal').classList.add('active-btn');
-                            else document.getElementById('btnSkewed').classList.add('active-btn');
+                                // Visual feedback on buttons
+                                document.getElementById('btnNormal').classList.remove('active-btn');
+                                document.getElementById('btnSkewed').classList.remove('active-btn');
+                                if (type === 'normal') document.getElementById('btnNormal').classList.add('active-btn');
+                                else document.getElementById('btnSkewed').classList.add('active-btn');
 
-                            if (currentScenario) {
-                                // Load the specific scenario variant
-                                const s = scenarios[currentScenario][type];
-                                document.getElementById('dataInput').value = s.data;
-                                document.getElementById('scenarioDesc').innerHTML = s.desc;
+                                if (currentScenario) {
+                                    // Load the specific scenario variant
+                                    const s = scenarios[currentScenario][type];
+                                    document.getElementById('dataInput').value = s.data;
+                                    document.getElementById('scenarioDesc').innerHTML = s.desc;
+                                    calcStats();
+                                } else {
+                                    // Load generic fallback
+                                    loadGenericExample(type);
+                                }
+                            }
+
+                            function loadScenario() {
+                                const sel = document.getElementById('scenarioSelect').value;
+                                currentScenario = sel;
+                                // Default to normal when switching scenarios
+                                toggleType('normal');
+
+                                if (!sel) {
+                                    currentScenario = null;
+                                    document.getElementById('dataInput').value = "";
+                                    document.getElementById('scenarioDesc').innerHTML = "Custom Input Scenarios.";
+                                    document.getElementById('resultsPanel').style.display = 'none';
+                                }
+                            }
+
+                            function loadGenericExample(type) {
+                                document.getElementById('scenarioDesc').innerHTML = "Reflecting on " + type.charAt(0).toUpperCase() + type.slice(1) + " Data (Generic)";
+                                if (type === 'normal') {
+                                    document.getElementById('dataInput').value = "10, 12, 11, 13, 10, 11, 12, 14, 11, 12, 13, 12, 11, 10, 12, 13, 11, 12, 12, 11";
+                                } else {
+                                    document.getElementById('dataInput').value = "5, 5, 5, 6, 5, 6, 5, 5, 20, 22, 5, 6, 5, 5, 6, 7, 5, 5";
+                                }
                                 calcStats();
-                            } else {
-                                // Load generic fallback
-                                loadGenericExample(type);
-                            }
-                        }
-
-                        function loadScenario() {
-                            const sel = document.getElementById('scenarioSelect').value;
-                            currentScenario = sel;
-                            // Default to normal when switching scenarios
-                            toggleType('normal');
-
-                            if (!sel) {
-                                currentScenario = null;
-                                document.getElementById('dataInput').value = "";
-                                document.getElementById('scenarioDesc').innerHTML = "Custom Input Scenarios.";
-                                document.getElementById('resultsPanel').style.display = 'none';
-                            }
-                        }
-
-                        function loadGenericExample(type) {
-                            document.getElementById('scenarioDesc').innerHTML = "Reflecting on " + type.charAt(0).toUpperCase() + type.slice(1) + " Data (Generic)";
-                            if (type === 'normal') {
-                                document.getElementById('dataInput').value = "10, 12, 11, 13, 10, 11, 12, 14, 11, 12, 13, 12, 11, 10, 12, 13, 11, 12, 12, 11";
-                            } else {
-                                document.getElementById('dataInput').value = "5, 5, 5, 6, 5, 6, 5, 5, 20, 22, 5, 6, 5, 5, 6, 7, 5, 5";
-                            }
-                            calcStats();
-                        }
-
-                        function autoFixData() {
-                            let val = document.getElementById('dataInput').value;
-                            val = val.replace(/,/g, '\n').split('\n').filter(x => x.trim() !== '' && !isNaN(x)).join(', ');
-                            document.getElementById('dataInput').value = val;
-                        }
-
-                        function calcStats() {
-                            let raw = document.getElementById('dataInput').value;
-                            let data = raw.replace(/\n/g, ',').split(',').map(x => parseFloat(x)).filter(x => !isNaN(x));
-
-                            if (data.length < 3) { alert("Please enter at least 3 numbers."); return; }
-
-                            // Sorting for stats
-                            const sorted = [...data].sort((a, b) => a - b);
-                            const n = data.length;
-                            const min = sorted[0];
-                            const max = sorted[n - 1];
-                            const sum = data.reduce((a, b) => a + b, 0);
-                            const mean = sum / n;
-
-                            // Spread
-                            const variance = data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (n - 1);
-                            const stdDev = Math.sqrt(variance);
-                            const cv = (stdDev / mean) * 100;
-                            const range = max - min;
-
-                            // CI
-                            const se = stdDev / Math.sqrt(n);
-                            const ci = 1.96 * se;
-
-                            // Shape
-                            const skewness = data.reduce((a, b) => a + Math.pow(b - mean, 3), 0) / (n * Math.pow(stdDev, 3));
-                            const kurtosis = (data.reduce((a, b) => a + Math.pow(b - mean, 4), 0) / (n * Math.pow(stdDev, 4))) - 3;
-
-                            // Quartiles
-                            const q1 = jStat.percentile(data, 0.25);
-                            const median = jStat.percentile(data, 0.50);
-                            const q3 = jStat.percentile(data, 0.75);
-                            const iqr = q3 - q1;
-
-                            // Fences
-                            const lowerFence = q1 - 1.5 * iqr;
-                            const upperFence = q3 + 1.5 * iqr;
-
-                            // Outliers and Whiskers (Tukey style)
-                            const outliers = data.filter(x => x < lowerFence || x > upperFence);
-
-                            // Whiskers extend to the most extreme data point within fences
-                            let whiskerLow = min;
-                            let whiskerHigh = max;
-                            for (let i = 0; i < n; i++) { if (sorted[i] >= lowerFence) { whiskerLow = sorted[i]; break; } }
-                            for (let i = n - 1; i >= 0; i--) { if (sorted[i] <= upperFence) { whiskerHigh = sorted[i]; break; } }
-
-                            // UI Updates
-                            document.getElementById('resultsPanel').style.display = 'block';
-                            document.getElementById('resN').innerText = n;
-                            document.getElementById('resMean').innerText = mean.toFixed(2);
-                            document.getElementById('resCI').innerText = "± " + ci.toFixed(2) + " (95%)";
-                            document.getElementById('resMedian').innerText = median.toFixed(2);
-                            document.getElementById('resStdDev').innerText = stdDev.toFixed(2);
-                            document.getElementById('resVar').innerText = "Var: " + variance.toFixed(2);
-                            document.getElementById('resCV').innerText = cv.toFixed(1) + "%";
-                            document.getElementById('resRange').innerText = range.toFixed(2);
-                            document.getElementById('resMinMax').innerText = min + " to " + max;
-                            document.getElementById('resSkew').innerText = skewness.toFixed(2);
-                            document.getElementById('skewDesc').innerText = Math.abs(skewness) < 0.5 ? "Symmetric" : (skewness > 0 ? "Right Skewed" : "Left Skewed");
-                            document.getElementById('resKurt').innerText = kurtosis.toFixed(2);
-
-                            const pVal = Math.max(0.001, Math.min(0.99, 1 - Math.abs(skewness)));
-                            document.getElementById('resP').innerText = "P-Value: " + pVal.toFixed(3);
-                            document.getElementById('resAD').innerText = pVal < 0.05 ? "Not Normal" : "Normal";
-                            document.getElementById('resAD').style.color = pVal < 0.05 ? "var(--error)" : "var(--success)";
-                            document.getElementById('resOutliers').innerText = outliers.length;
-                            document.getElementById('resOutliers').style.color = outliers.length > 0 ? "var(--error)" : "white";
-
-                            renderCharts(data, sorted, mean, stdDev, skewness, outliers.length);
-                            drawHighResBoxPlot(min, q1, median, q3, max, whiskerLow, whiskerHigh, outliers);
-                            updateInterpretations(mean, stdDev, skewness, outliers.length, pVal, cv);
-                            generateAutoSummary(n, mean, median, stdDev, cv, skewness, kurtosis, pVal, outliers.length);
-                            updateProgress(100);
-                        }
-
-                        function updateInterpretations(mean, std, skew, outCount, pVal, cv) {
-                            let hText = Math.abs(skew) < 0.5 ? "The data appears <b>Symmetric (Normal)</b>. The Bell curve is centered." : (skew > 0 ? "The data is <b>Positively Skewed</b> (Tail to the right)." : "The data is <b>Negatively Skewed</b> (Tail to the left).");
-                            document.getElementById('interpHisto').innerHTML = hText;
-                            document.getElementById('interpHisto').className = Math.abs(skew) < 0.5 ? "interp-box" : "interp-box interp-warn";
-
-                            let bText = outCount === 0 ? "No statistical outliers detected." : `<b>Warning:</b> ${outCount} outliers detected. Investigate these points.`;
-                            document.getElementById('interpBox').innerHTML = bText;
-                            document.getElementById('interpBox').className = outCount === 0 ? "interp-box" : "interp-box interp-warn";
-
-                            let cvText = cv < 10 ? "<b>Low Variation:</b> (CV < 10%)." : (cv < 30 ? "<b>Moderate Variation.</b>" : "<b>High Variation (CV > 30%).</b>");
-                            document.getElementById('interpRun').innerHTML = "Check for trends. " + cvText;
-
-                            let qText = pVal > 0.05 ? "Points follow the line. <b>Assume Normality</b>." : "Points deviate. <b>Data is NOT Normal</b>.";
-                            document.getElementById('interpQQ').innerHTML = qText;
-                            document.getElementById('interpQQ').className = pVal > 0.05 ? "interp-box" : "interp-box interp-warn";
-                        }
-
-                        function renderCharts(data, sorted, mean, stdDev, skew, outCount) {
-                            // 1. Histogram
-                            const ctxH = document.getElementById('histoCanvas').getContext('2d');
-                            if (histoChart) histoChart.destroy();
-                            const min = sorted[0]; const max = sorted[sorted.length - 1];
-                            const numBins = 10; const binSize = (max - min) / numBins || 1;
-                            const bins = new Array(numBins).fill(0); const labels = []; const bellCurve = [];
-                            for (let i = 0; i < numBins; i++) {
-                                const l = min + (i * binSize); const r = min + ((i + 1) * binSize);
-                                labels.push(l.toFixed(1));
-                                let count = 0; data.forEach(v => { if (v >= l && (i === numBins - 1 ? v <= r : v < r)) count++; });
-                                bins[i] = count;
-                                const pdf = jStat.normal.pdf(l + (binSize / 2), mean, stdDev);
-                                bellCurve.push(pdf * data.length * binSize);
-                            }
-                            histoChart = new Chart(ctxH, {
-                                type: 'bar',
-                                data: {
-                                    labels: labels,
-                                    datasets: [
-                                        { type: 'line', label: 'Normal Curve', data: bellCurve, borderColor: '#F1C40F', borderDash: [5, 5], borderWidth: 2, pointRadius: 0, tension: 0.4 },
-                                        { label: 'Actual Data', data: bins, backgroundColor: '#3498DB', borderRadius: 4 }
-                                    ]
-                                },
-                                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } } }
-                            });
-
-                            // 3. Run Chart
-                            const ctxR = document.getElementById('runCanvas').getContext('2d');
-                            if (runChart) runChart.destroy();
-                            runChart = new Chart(ctxR, {
-                                type: 'line',
-                                data: {
-                                    labels: data.map((_, i) => i + 1),
-                                    datasets: [{ label: 'Value', data: data, borderColor: '#9B59B6', backgroundColor: 'rgba(155, 89, 182, 0.1)', tension: 0.1, pointRadius: 3 }, { label: 'Mean', data: new Array(data.length).fill(mean), borderColor: '#white', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 }]
-                                },
-                                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-                            });
-
-                            // 4. QQ Plot
-                            const ctxQ = document.getElementById('qqCanvas').getContext('2d');
-                            if (qqChart) qqChart.destroy();
-                            const qqData = sorted.map((val, i) => { const p = (i + 0.5) / sorted.length; const z = jStat.normal.inv(p, 0, 1); return { x: z, y: val }; });
-                            qqChart = new Chart(ctxQ, {
-                                type: 'scatter',
-                                data: { datasets: [{ label: 'Data Points', data: qqData, backgroundColor: '#E67E22' }] },
-                                options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: 'Theoretical Quantiles (Z)' } }, y: { title: { display: true, text: 'Sample Data' } } }, plugins: { legend: { display: false } } }
-                            });
-                        }
-
-                        // CUSTOM TEXTBOOK STYLE BOX PLOT DRAWER
-                        function drawHighResBoxPlot(min, q1, med, q3, max, wLow, wHigh, outliers) {
-                            const cvs = document.getElementById('boxCanvasRaw');
-                            const ctx = cvs.getContext('2d');
-
-                            // Adjust resolution
-                            const dpr = window.devicePixelRatio || 1;
-                            const rect = cvs.parentElement.getBoundingClientRect();
-                            cvs.width = rect.width * dpr;
-                            cvs.height = rect.height * dpr;
-                            ctx.scale(dpr, dpr);
-
-                            // Colors
-                            const C_BOX = '#2ECC71'; const C_LINE = '#FFFFFF'; const C_TEXT = '#CCCCCC'; const C_OUTLIER = '#E74C3C';
-
-                            // Scale X
-                            const range = max - min;
-                            const padding = range * 0.1 || 1;
-                            const xMin = min - padding;
-                            const xMax = max + padding;
-                            const finalRange = xMax - xMin;
-
-                            function getX(val) {
-                                return 40 + ((val - xMin) / finalRange) * (rect.width - 80);
                             }
 
-                            const Y_MID = 80;
-                            const BOX_H = 60;
-                            const AXIS_Y = 160;
-
-                            ctx.clearRect(0, 0, rect.width, rect.height);
-
-                            // 1. Draw Axis
-                            ctx.beginPath();
-                            ctx.strokeStyle = C_TEXT; ctx.lineWidth = 1;
-                            ctx.moveTo(40, AXIS_Y); ctx.lineTo(rect.width - 40, AXIS_Y);
-                            ctx.stroke();
-
-                            // Arrows
-                            ctx.beginPath(); ctx.moveTo(rect.width - 45, AXIS_Y - 5); ctx.lineTo(rect.width - 40, AXIS_Y); ctx.lineTo(rect.width - 45, AXIS_Y + 5); ctx.stroke();
-                            ctx.beginPath(); ctx.moveTo(45, AXIS_Y - 5); ctx.lineTo(40, AXIS_Y); ctx.lineTo(45, AXIS_Y + 5); ctx.stroke();
-
-                            // 2. Draw Whiskers
-                            ctx.beginPath(); ctx.strokeStyle = C_LINE; ctx.lineWidth = 2;
-                            ctx.moveTo(getX(wLow), Y_MID); ctx.lineTo(getX(q1), Y_MID); // Low Line
-                            ctx.moveTo(getX(wHigh), Y_MID); ctx.lineTo(getX(q3), Y_MID); // High Line
-                            ctx.stroke();
-
-                            // Whisker Caps
-                            ctx.beginPath();
-                            ctx.moveTo(getX(wLow), Y_MID - 10); ctx.lineTo(getX(wLow), Y_MID + 10);
-                            ctx.moveTo(getX(wHigh), Y_MID - 10); ctx.lineTo(getX(wHigh), Y_MID + 10);
-                            ctx.stroke();
-
-                            // 3. Draw Box
-                            ctx.fillStyle = 'rgba(46, 204, 113, 0.2)';
-                            ctx.strokeStyle = C_BOX; ctx.lineWidth = 2;
-                            ctx.fillRect(getX(q1), Y_MID - BOX_H / 2, getX(q3) - getX(q1), BOX_H);
-                            ctx.strokeRect(getX(q1), Y_MID - BOX_H / 2, getX(q3) - getX(q1), BOX_H);
-
-                            // 4. Median Line
-                            ctx.beginPath(); ctx.strokeStyle = C_LINE; ctx.lineWidth = 2;
-                            ctx.moveTo(getX(med), Y_MID - BOX_H / 2); ctx.lineTo(getX(med), Y_MID + BOX_H / 2);
-                            ctx.stroke();
-
-                            // 5. Draw Outliers
-                            ctx.fillStyle = C_OUTLIER;
-                            ctx.font = '16px Arial';
-                            outliers.forEach(v => {
-                                const x = getX(v);
-                                ctx.fillText('*', x - 4, Y_MID + 6);
-                                ctx.font = '10px Arial'; ctx.fillStyle = C_OUTLIER;
-                                ctx.fillText(v, x - 5, Y_MID - 20);
-                            });
-
-                            // 6. Labels with Arrows/Ticks
-                            ctx.fillStyle = C_TEXT; ctx.textAlign = 'center'; ctx.font = '11px sans-serif';
-
-                            function drawHackLabel(val, label, yOffset = 0) {
-                                const x = getX(val);
-                                ctx.beginPath(); ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
-                                ctx.setLineDash([2, 2]);
-                                ctx.moveTo(x, Y_MID + BOX_H / 2 + 5);
-                                ctx.lineTo(x, AXIS_Y - 5);
-                                ctx.stroke(); ctx.setLineDash([]);
-
-                                // Tick
-                                ctx.beginPath(); ctx.moveTo(x, AXIS_Y - 3); ctx.lineTo(x, AXIS_Y + 3); ctx.stroke();
-
-                                ctx.fillText(label, x, AXIS_Y + 15 + yOffset);
-                                ctx.fillStyle = '#FFF'; ctx.fillText(val.toFixed(1), x, AXIS_Y + 30 + yOffset);
-                                ctx.fillStyle = C_TEXT;
+                            function autoFixData() {
+                                let val = document.getElementById('dataInput').value;
+                                val = val.replace(/,/g, '\n').split('\n').filter(x => x.trim() !== '' && !isNaN(x)).join(', ');
+                                document.getElementById('dataInput').value = val;
                             }
 
-                            drawHackLabel(min, "Min");
-                            drawHackLabel(q1, "Q1");
-                            drawHackLabel(med, "Median", 15);
-                            drawHackLabel(q3, "Q3");
-                            drawHackLabel(max, "Max");
+                            function calcStats() {
+                                let raw = document.getElementById('dataInput').value;
+                                let data = raw.replace(/\n/g, ',').split(',').map(x => parseFloat(x)).filter(x => !isNaN(x));
 
-                            // 7. Middle 50% Text
-                            const w = getX(q3) - getX(q1);
-                            if (w > 60) {
-                                ctx.font = '10px sans-serif'; ctx.fillStyle = C_BOX;
-                                ctx.fillText("IQR (Middle 50%)", getX(q1) + w / 2, Y_MID - BOX_H / 2 - 10);
-                            }
-                        }
+                                if (data.length < 3) { alert("Please enter at least 3 numbers."); return; }
 
-                        // AUTO-GENERATE SUMMARY (SPSS/Minitab Style)
-                        function generateAutoSummary(n, mean, median, stdDev, cv, skew, kurt, pVal, outCount) {
-                            document.getElementById('ai-default').style.display = 'none';
-                            document.getElementById('ai-results').style.display = 'block';
+                                // Sorting for stats
+                                const sorted = [...data].sort((a, b) => a - b);
+                                const n = data.length;
+                                const min = sorted[0];
+                                const max = sorted[n - 1];
+                                const sum = data.reduce((a, b) => a + b, 0);
+                                const mean = sum / n;
 
-                            // Data Quality
-                            let qualityText = n >= 30 ? `<span style="color:#22c55e;">✓ Sample size adequate (n=${n} ≥ 30)</span>` :
-                                n >= 10 ? `<span style="color:#eab308;">⚠ Sample size marginal (n=${n}). Consider more data.</span>` :
-                                    `<span style="color:#ef4444;">✗ Sample too small (n=${n} < 10). Results unreliable.</span>`;
-                            document.getElementById('sum-quality').innerHTML = qualityText;
+                                // Spread
+                                const variance = data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (n - 1);
+                                const stdDev = Math.sqrt(variance);
+                                const cv = (stdDev / mean) * 100;
+                                const range = max - min;
 
-                            // Central Tendency
-                            let centerDiff = Math.abs(mean - median);
-                            let centerText = centerDiff < 0.5 ? `Mean (${mean.toFixed(2)}) ≈ Median (${median.toFixed(2)}). <span style="color:#22c55e;">Process centered.</span>` :
-                                `Mean (${mean.toFixed(2)}) ≠ Median (${median.toFixed(2)}). <span style="color:#eab308;">Possible skew. Use Median.</span>`;
-                            document.getElementById('sum-center').innerHTML = centerText;
+                                // CI
+                                const se = stdDev / Math.sqrt(n);
+                                const ci = 1.96 * se;
 
-                            // Variation
-                            let varText = cv < 10 ? `CV = ${cv.toFixed(1)}%. <span style="color:#22c55e;">✓ Excellent consistency (< 10%)</span>` :
-                                cv < 30 ? `CV = ${cv.toFixed(1)}%. <span style="color:#eab308;">⚠ Moderate variation (10-30%)</span>` :
-                                    `CV = ${cv.toFixed(1)}%. <span style="color:#ef4444;">✗ High variation (> 30%)</span>`;
-                            document.getElementById('sum-variation').innerHTML = varText;
+                                // Shape
+                                const skewness = data.reduce((a, b) => a + Math.pow(b - mean, 3), 0) / (n * Math.pow(stdDev, 3));
+                                const kurtosis = (data.reduce((a, b) => a + Math.pow(b - mean, 4), 0) / (n * Math.pow(stdDev, 4))) - 3;
 
-                            // Normality
-                            let normText = pVal > 0.05 ? `P-Value = ${pVal.toFixed(3)}. <span style="color:#22c55e;">✓ Data is Normal (P > 0.05)</span>` :
-                                `P-Value = ${pVal.toFixed(3)}. <span style="color:#ef4444;">✗ Data NOT Normal (P < 0.05). Use non-parametric tests.</span>`;
-                            document.getElementById('sum-normality').innerHTML = normText;
+                                // Quartiles
+                                const q1 = jStat.percentile(data, 0.25);
+                                const median = jStat.percentile(data, 0.50);
+                                const q3 = jStat.percentile(data, 0.75);
+                                const iqr = q3 - q1;
 
-                            // Outliers
-                            let outText = outCount === 0 ? `<span style="color:#22c55e;">✓ No outliers detected</span>` :
-                                `<span style="color:#ef4444;">✗ ${outCount} outlier(s) detected. Investigate for special cause.</span>`;
-                            document.getElementById('sum-outliers').innerHTML = outText;
+                                // Fences
+                                const lowerFence = q1 - 1.5 * iqr;
+                                const upperFence = q3 + 1.5 * iqr;
 
-                            // Overall Verdict
-                            let issues = 0;
-                            if (n < 10) issues++;
-                            if (cv > 30) issues++;
-                            if (pVal < 0.05) issues++;
-                            if (outCount > 0) issues++;
+                                // Outliers and Whiskers (Tukey style)
+                                const outliers = data.filter(x => x < lowerFence || x > upperFence);
 
-                            const verdictBox = document.getElementById('sum-verdict');
-                            const verdictText = document.getElementById('sum-verdict-text');
-                            const verdictIcon = document.getElementById('sum-verdict-icon');
+                                // Whiskers extend to the most extreme data point within fences
+                                let whiskerLow = min;
+                                let whiskerHigh = max;
+                                for (let i = 0; i < n; i++) { if (sorted[i] >= lowerFence) { whiskerLow = sorted[i]; break; } }
+                                for (let i = n - 1; i >= 0; i--) { if (sorted[i] <= upperFence) { whiskerHigh = sorted[i]; break; } }
 
-                            if (issues === 0) {
-                                verdictText.textContent = 'PASS - Data quality is excellent. Proceed with analysis.';
-                                verdictText.style.color = '#22c55e';
-                                verdictBox.style.borderColor = '#22c55e';
-                                verdictIcon.textContent = '✅';
-                            } else if (issues <= 2) {
-                                verdictText.textContent = 'CAUTION - Some concerns. Review outliers and normality.';
-                                verdictText.style.color = '#eab308';
-                                verdictBox.style.borderColor = '#eab308';
-                                verdictIcon.textContent = '⚠️';
-                            } else {
-                                verdictText.textContent = 'FAIL - Multiple issues detected. Collect more data or investigate process.';
-                                verdictText.style.color = '#ef4444';
-                                verdictBox.style.borderColor = '#ef4444';
-                                verdictIcon.textContent = '❌';
-                            }
+                                // UI Updates
+                                document.getElementById('resultsPanel').style.display = 'block';
+                                document.getElementById('resN').innerText = n;
+                                document.getElementById('resMean').innerText = mean.toFixed(2);
+                                document.getElementById('resCI').innerText = "± " + ci.toFixed(2) + " (95%)";
+                                document.getElementById('resMedian').innerText = median.toFixed(2);
+                                document.getElementById('resStdDev').innerText = stdDev.toFixed(2);
+                                document.getElementById('resVar').innerText = "Var: " + variance.toFixed(2);
+                                document.getElementById('resCV').innerText = cv.toFixed(1) + "%";
+                                document.getElementById('resRange').innerText = range.toFixed(2);
+                                document.getElementById('resMinMax').innerText = min + " to " + max;
+                                document.getElementById('resSkew').innerText = skewness.toFixed(2);
+                                document.getElementById('skewDesc').innerText = Math.abs(skewness) < 0.5 ? "Symmetric" : (skewness > 0 ? "Right Skewed" : "Left Skewed");
+                                document.getElementById('resKurt').innerText = kurtosis.toFixed(2);
 
-                            // Chart Recommendation
-                            let chartRec = '';
-                            if (Math.abs(skew) < 0.5 && outCount === 0) {
-                                chartRec = '📊 <b>Histogram</b> - Best for symmetric normal data. Shows bell curve shape clearly.';
-                            } else if (outCount > 0) {
-                                chartRec = '📦 <b>Box Plot</b> - Best choice when outliers are present. Visually highlights extreme values.';
-                            } else if (Math.abs(skew) >= 0.5) {
-                                chartRec = '📉 <b>Run Chart</b> - Best for detecting trends or shifts in skewed data over time.';
-                            } else {
-                                chartRec = '📈 <b>Normal Probability Plot</b> - Use to confirm or reject normality assumption.';
+                                const pVal = Math.max(0.001, Math.min(0.99, 1 - Math.abs(skewness)));
+                                document.getElementById('resP').innerText = "P-Value: " + pVal.toFixed(3);
+                                document.getElementById('resAD').innerText = pVal < 0.05 ? "Not Normal" : "Normal";
+                                document.getElementById('resAD').style.color = pVal < 0.05 ? "var(--error)" : "var(--success)";
+                                document.getElementById('resOutliers').innerText = outliers.length;
+                                document.getElementById('resOutliers').style.color = outliers.length > 0 ? "var(--error)" : "white";
+
+                                renderCharts(data, sorted, mean, stdDev, skewness, outliers.length);
+                                drawHighResBoxPlot(min, q1, median, q3, max, whiskerLow, whiskerHigh, outliers);
+                                updateInterpretations(mean, stdDev, skewness, outliers.length, pVal, cv);
+                                generateAutoSummary(n, mean, median, stdDev, cv, skewness, kurtosis, pVal, outliers.length);
+                                updateProgress(100);
                             }
 
-                            // Check for scenario recommendation
-                            if (currentScenario && scenarios[currentScenario][currentType].recommendation) {
-                                const rec = scenarios[currentScenario][currentType].recommendation;
-                                chartRec = `📊 <b>${rec.chart}</b> - ${rec.reason}`;
+                            function updateInterpretations(mean, std, skew, outCount, pVal, cv) {
+                                let hText = Math.abs(skew) < 0.5 ? "The data appears <b>Symmetric (Normal)</b>. The Bell curve is centered." : (skew > 0 ? "The data is <b>Positively Skewed</b> (Tail to the right)." : "The data is <b>Negatively Skewed</b> (Tail to the left).");
+                                document.getElementById('interpHisto').innerHTML = hText;
+                                document.getElementById('interpHisto').className = Math.abs(skew) < 0.5 ? "interp-box" : "interp-box interp-warn";
+
+                                let bText = outCount === 0 ? "No statistical outliers detected." : `<b>Warning:</b> ${outCount} outliers detected. Investigate these points.`;
+                                document.getElementById('interpBox').innerHTML = bText;
+                                document.getElementById('interpBox').className = outCount === 0 ? "interp-box" : "interp-box interp-warn";
+
+                                let cvText = cv < 10 ? "<b>Low Variation:</b> (CV < 10%)." : (cv < 30 ? "<b>Moderate Variation.</b>" : "<b>High Variation (CV > 30%).</b>");
+                                document.getElementById('interpRun').innerHTML = "Check for trends. " + cvText;
+
+                                let qText = pVal > 0.05 ? "Points follow the line. <b>Assume Normality</b>." : "Points deviate. <b>Data is NOT Normal</b>.";
+                                document.getElementById('interpQQ').innerHTML = qText;
+                                document.getElementById('interpQQ').className = pVal > 0.05 ? "interp-box" : "interp-box interp-warn";
                             }
 
-                            document.getElementById('sum-chart-rec').innerHTML = chartRec;
-                        }
+                            function renderCharts(data, sorted, mean, stdDev, skew, outCount) {
+                                // 1. Histogram
+                                const ctxH = document.getElementById('histoCanvas').getContext('2d');
+                                if (histoChart) histoChart.destroy();
+                                const min = sorted[0]; const max = sorted[sorted.length - 1];
+                                const numBins = 10; const binSize = (max - min) / numBins || 1;
+                                const bins = new Array(numBins).fill(0); const labels = []; const bellCurve = [];
+                                for (let i = 0; i < numBins; i++) {
+                                    const l = min + (i * binSize); const r = min + ((i + 1) * binSize);
+                                    labels.push(l.toFixed(1));
+                                    let count = 0; data.forEach(v => { if (v >= l && (i === numBins - 1 ? v <= r : v < r)) count++; });
+                                    bins[i] = count;
+                                    const pdf = jStat.normal.pdf(l + (binSize / 2), mean, stdDev);
+                                    bellCurve.push(pdf * data.length * binSize);
+                                }
+                                histoChart = new Chart(ctxH, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: labels,
+                                        datasets: [
+                                            { type: 'line', label: 'Normal Curve', data: bellCurve, borderColor: '#F1C40F', borderDash: [5, 5], borderWidth: 2, pointRadius: 0, tension: 0.4 },
+                                            { label: 'Actual Data', data: bins, backgroundColor: '#3498DB', borderRadius: 4 }
+                                        ]
+                                    },
+                                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } } }
+                                });
 
-                        async function askAICoach() {
-                            const btn = document.getElementById('aiBtn');
-                            const output = document.getElementById('ai-results');
-                            const defaultView = document.getElementById('ai-default');
+                                // 3. Run Chart
+                                const ctxR = document.getElementById('runCanvas').getContext('2d');
+                                if (runChart) runChart.destroy();
+                                runChart = new Chart(ctxR, {
+                                    type: 'line',
+                                    data: {
+                                        labels: data.map((_, i) => i + 1),
+                                        datasets: [{ label: 'Value', data: data, borderColor: '#9B59B6', backgroundColor: 'rgba(155, 89, 182, 0.1)', tension: 0.1, pointRadius: 3 }, { label: 'Mean', data: new Array(data.length).fill(mean), borderColor: '#white', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 }]
+                                    },
+                                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                                });
 
-                            // Get stats values for the prompt
-                            const n = document.getElementById('resN').innerText;
-                            const mean = document.getElementById('resMean').innerText;
-                            const std = document.getElementById('resStdDev').innerText;
-                            const ad = document.getElementById('resAD').innerText;
-
-                            if (document.getElementById('resultsPanel').style.display === 'none') {
-                                alert("Please calculate statistics first.");
-                                return;
+                                // 4. QQ Plot
+                                const ctxQ = document.getElementById('qqCanvas').getContext('2d');
+                                if (qqChart) qqChart.destroy();
+                                const qqData = sorted.map((val, i) => { const p = (i + 0.5) / sorted.length; const z = jStat.normal.inv(p, 0, 1); return { x: z, y: val }; });
+                                qqChart = new Chart(ctxQ, {
+                                    type: 'scatter',
+                                    data: { datasets: [{ label: 'Data Points', data: qqData, backgroundColor: '#E67E22' }] },
+                                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: 'Theoretical Quantiles (Z)' } }, y: { title: { display: true, text: 'Sample Data' } } }, plugins: { legend: { display: false } } }
+                                });
                             }
 
-                            btn.disabled = true;
-                            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+                            // CUSTOM TEXTBOOK STYLE BOX PLOT DRAWER
+                            function drawHighResBoxPlot(min, q1, med, q3, max, wLow, wHigh, outliers) {
+                                const cvs = document.getElementById('boxCanvasRaw');
+                                const ctx = cvs.getContext('2d');
 
-                            // Scroll to results if needed
-                            output.scrollIntoView({ behavior: 'smooth' });
+                                // Adjust resolution
+                                const dpr = window.devicePixelRatio || 1;
+                                const rect = cvs.parentElement.getBoundingClientRect();
+                                cvs.width = rect.width * dpr;
+                                cvs.height = rect.height * dpr;
+                                ctx.scale(dpr, dpr);
 
-                            const prompt = `Act as a Lean Six Sigma Master Black Belt. 
+                                // Colors
+                                const C_BOX = '#2ECC71'; const C_LINE = '#FFFFFF'; const C_TEXT = '#CCCCCC'; const C_OUTLIER = '#E74C3C';
+
+                                // Scale X
+                                const range = max - min;
+                                const padding = range * 0.1 || 1;
+                                const xMin = min - padding;
+                                const xMax = max + padding;
+                                const finalRange = xMax - xMin;
+
+                                function getX(val) {
+                                    return 40 + ((val - xMin) / finalRange) * (rect.width - 80);
+                                }
+
+                                const Y_MID = 80;
+                                const BOX_H = 60;
+                                const AXIS_Y = 160;
+
+                                ctx.clearRect(0, 0, rect.width, rect.height);
+
+                                // 1. Draw Axis
+                                ctx.beginPath();
+                                ctx.strokeStyle = C_TEXT; ctx.lineWidth = 1;
+                                ctx.moveTo(40, AXIS_Y); ctx.lineTo(rect.width - 40, AXIS_Y);
+                                ctx.stroke();
+
+                                // Arrows
+                                ctx.beginPath(); ctx.moveTo(rect.width - 45, AXIS_Y - 5); ctx.lineTo(rect.width - 40, AXIS_Y); ctx.lineTo(rect.width - 45, AXIS_Y + 5); ctx.stroke();
+                                ctx.beginPath(); ctx.moveTo(45, AXIS_Y - 5); ctx.lineTo(40, AXIS_Y); ctx.lineTo(45, AXIS_Y + 5); ctx.stroke();
+
+                                // 2. Draw Whiskers
+                                ctx.beginPath(); ctx.strokeStyle = C_LINE; ctx.lineWidth = 2;
+                                ctx.moveTo(getX(wLow), Y_MID); ctx.lineTo(getX(q1), Y_MID); // Low Line
+                                ctx.moveTo(getX(wHigh), Y_MID); ctx.lineTo(getX(q3), Y_MID); // High Line
+                                ctx.stroke();
+
+                                // Whisker Caps
+                                ctx.beginPath();
+                                ctx.moveTo(getX(wLow), Y_MID - 10); ctx.lineTo(getX(wLow), Y_MID + 10);
+                                ctx.moveTo(getX(wHigh), Y_MID - 10); ctx.lineTo(getX(wHigh), Y_MID + 10);
+                                ctx.stroke();
+
+                                // 3. Draw Box
+                                ctx.fillStyle = 'rgba(46, 204, 113, 0.2)';
+                                ctx.strokeStyle = C_BOX; ctx.lineWidth = 2;
+                                ctx.fillRect(getX(q1), Y_MID - BOX_H / 2, getX(q3) - getX(q1), BOX_H);
+                                ctx.strokeRect(getX(q1), Y_MID - BOX_H / 2, getX(q3) - getX(q1), BOX_H);
+
+                                // 4. Median Line
+                                ctx.beginPath(); ctx.strokeStyle = C_LINE; ctx.lineWidth = 2;
+                                ctx.moveTo(getX(med), Y_MID - BOX_H / 2); ctx.lineTo(getX(med), Y_MID + BOX_H / 2);
+                                ctx.stroke();
+
+                                // 5. Draw Outliers
+                                ctx.fillStyle = C_OUTLIER;
+                                ctx.font = '16px Arial';
+                                outliers.forEach(v => {
+                                    const x = getX(v);
+                                    ctx.fillText('*', x - 4, Y_MID + 6);
+                                    ctx.font = '10px Arial'; ctx.fillStyle = C_OUTLIER;
+                                    ctx.fillText(v, x - 5, Y_MID - 20);
+                                });
+
+                                // 6. Labels with Arrows/Ticks
+                                ctx.fillStyle = C_TEXT; ctx.textAlign = 'center'; ctx.font = '11px sans-serif';
+
+                                function drawHackLabel(val, label, yOffset = 0) {
+                                    const x = getX(val);
+                                    ctx.beginPath(); ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
+                                    ctx.setLineDash([2, 2]);
+                                    ctx.moveTo(x, Y_MID + BOX_H / 2 + 5);
+                                    ctx.lineTo(x, AXIS_Y - 5);
+                                    ctx.stroke(); ctx.setLineDash([]);
+
+                                    // Tick
+                                    ctx.beginPath(); ctx.moveTo(x, AXIS_Y - 3); ctx.lineTo(x, AXIS_Y + 3); ctx.stroke();
+
+                                    ctx.fillText(label, x, AXIS_Y + 15 + yOffset);
+                                    ctx.fillStyle = '#FFF'; ctx.fillText(val.toFixed(1), x, AXIS_Y + 30 + yOffset);
+                                    ctx.fillStyle = C_TEXT;
+                                }
+
+                                drawHackLabel(min, "Min");
+                                drawHackLabel(q1, "Q1");
+                                drawHackLabel(med, "Median", 15);
+                                drawHackLabel(q3, "Q3");
+                                drawHackLabel(max, "Max");
+
+                                // 7. Middle 50% Text
+                                const w = getX(q3) - getX(q1);
+                                if (w > 60) {
+                                    ctx.font = '10px sans-serif'; ctx.fillStyle = C_BOX;
+                                    ctx.fillText("IQR (Middle 50%)", getX(q1) + w / 2, Y_MID - BOX_H / 2 - 10);
+                                }
+                            }
+
+                            // AUTO-GENERATE SUMMARY (SPSS/Minitab Style)
+                            function generateAutoSummary(n, mean, median, stdDev, cv, skew, kurt, pVal, outCount) {
+                                document.getElementById('ai-default').style.display = 'none';
+                                document.getElementById('ai-results').style.display = 'block';
+
+                                // Data Quality
+                                let qualityText = n >= 30 ? `<span style="color:#22c55e;">✓ Sample size adequate (n=${n} ≥ 30)</span>` :
+                                    n >= 10 ? `<span style="color:#eab308;">⚠ Sample size marginal (n=${n}). Consider more data.</span>` :
+                                        `<span style="color:#ef4444;">✗ Sample too small (n=${n} < 10). Results unreliable.</span>`;
+                                document.getElementById('sum-quality').innerHTML = qualityText;
+
+                                // Central Tendency
+                                let centerDiff = Math.abs(mean - median);
+                                let centerText = centerDiff < 0.5 ? `Mean (${mean.toFixed(2)}) ≈ Median (${median.toFixed(2)}). <span style="color:#22c55e;">Process centered.</span>` :
+                                    `Mean (${mean.toFixed(2)}) ≠ Median (${median.toFixed(2)}). <span style="color:#eab308;">Possible skew. Use Median.</span>`;
+                                document.getElementById('sum-center').innerHTML = centerText;
+
+                                // Variation
+                                let varText = cv < 10 ? `CV = ${cv.toFixed(1)}%. <span style="color:#22c55e;">✓ Excellent consistency (< 10%)</span>` :
+                                    cv < 30 ? `CV = ${cv.toFixed(1)}%. <span style="color:#eab308;">⚠ Moderate variation (10-30%)</span>` :
+                                        `CV = ${cv.toFixed(1)}%. <span style="color:#ef4444;">✗ High variation (> 30%)</span>`;
+                                document.getElementById('sum-variation').innerHTML = varText;
+
+                                // Normality
+                                let normText = pVal > 0.05 ? `P-Value = ${pVal.toFixed(3)}. <span style="color:#22c55e;">✓ Data is Normal (P > 0.05)</span>` :
+                                    `P-Value = ${pVal.toFixed(3)}. <span style="color:#ef4444;">✗ Data NOT Normal (P < 0.05). Use non-parametric tests.</span>`;
+                                document.getElementById('sum-normality').innerHTML = normText;
+
+                                // Outliers
+                                let outText = outCount === 0 ? `<span style="color:#22c55e;">✓ No outliers detected</span>` :
+                                    `<span style="color:#ef4444;">✗ ${outCount} outlier(s) detected. Investigate for special cause.</span>`;
+                                document.getElementById('sum-outliers').innerHTML = outText;
+
+                                // Overall Verdict
+                                let issues = 0;
+                                if (n < 10) issues++;
+                                if (cv > 30) issues++;
+                                if (pVal < 0.05) issues++;
+                                if (outCount > 0) issues++;
+
+                                const verdictBox = document.getElementById('sum-verdict');
+                                const verdictText = document.getElementById('sum-verdict-text');
+                                const verdictIcon = document.getElementById('sum-verdict-icon');
+
+                                if (issues === 0) {
+                                    verdictText.textContent = 'PASS - Data quality is excellent. Proceed with analysis.';
+                                    verdictText.style.color = '#22c55e';
+                                    verdictBox.style.borderColor = '#22c55e';
+                                    verdictIcon.textContent = '✅';
+                                } else if (issues <= 2) {
+                                    verdictText.textContent = 'CAUTION - Some concerns. Review outliers and normality.';
+                                    verdictText.style.color = '#eab308';
+                                    verdictBox.style.borderColor = '#eab308';
+                                    verdictIcon.textContent = '⚠️';
+                                } else {
+                                    verdictText.textContent = 'FAIL - Multiple issues detected. Collect more data or investigate process.';
+                                    verdictText.style.color = '#ef4444';
+                                    verdictBox.style.borderColor = '#ef4444';
+                                    verdictIcon.textContent = '❌';
+                                }
+
+                                // Chart Recommendation
+                                let chartRec = '';
+                                if (Math.abs(skew) < 0.5 && outCount === 0) {
+                                    chartRec = '📊 <b>Histogram</b> - Best for symmetric normal data. Shows bell curve shape clearly.';
+                                } else if (outCount > 0) {
+                                    chartRec = '📦 <b>Box Plot</b> - Best choice when outliers are present. Visually highlights extreme values.';
+                                } else if (Math.abs(skew) >= 0.5) {
+                                    chartRec = '📉 <b>Run Chart</b> - Best for detecting trends or shifts in skewed data over time.';
+                                } else {
+                                    chartRec = '📈 <b>Normal Probability Plot</b> - Use to confirm or reject normality assumption.';
+                                }
+
+                                // Check for scenario recommendation
+                                if (currentScenario && scenarios[currentScenario][currentType].recommendation) {
+                                    const rec = scenarios[currentScenario][currentType].recommendation;
+                                    chartRec = `📊 <b>${rec.chart}</b> - ${rec.reason}`;
+                                }
+
+                                document.getElementById('sum-chart-rec').innerHTML = chartRec;
+                            }
+
+                            async function askAICoach() {
+                                const btn = document.getElementById('aiBtn');
+                                const output = document.getElementById('ai-results');
+                                const defaultView = document.getElementById('ai-default');
+
+                                // Get stats values for the prompt
+                                const n = document.getElementById('resN').innerText;
+                                const mean = document.getElementById('resMean').innerText;
+                                const std = document.getElementById('resStdDev').innerText;
+                                const ad = document.getElementById('resAD').innerText;
+
+                                if (document.getElementById('resultsPanel').style.display === 'none') {
+                                    alert("Please calculate statistics first.");
+                                    return;
+                                }
+
+                                btn.disabled = true;
+                                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+
+                                // Scroll to results if needed
+                                output.scrollIntoView({ behavior: 'smooth' });
+
+                                const prompt = `Act as a Lean Six Sigma Master Black Belt. 
                             I have Descriptive Statistics for a process:
                             - Sample Size (N): ${n}
                             - Mean: ${mean}
@@ -1977,94 +1976,94 @@
                             
                             Provide a concise 4-sentence professional interpretation focused on process stability, capability potential, and data quality.`;
 
-                            try {
-                                const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        contents: [{ parts: [{ text: prompt }] }]
-                                    })
-                                });
+                                try {
+                                    const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            contents: [{ parts: [{ text: prompt }] }]
+                                        })
+                                    });
 
-                                const data = await response.json();
-                                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                                    // Add AI Advice to the summary panel
-                                    const adviceText = data.candidates[0].content.parts[0].text;
-                                    const verdictText = document.getElementById('sum-verdict-text');
-                                    verdictText.innerHTML = `<div style="font-weight:normal; font-size:13px; margin-top:10px; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">${adviceText}</div>`;
-                                } else {
-                                    alert("AI Coach failed to provide insights. API Error.");
+                                    const data = await response.json();
+                                    if (data.candidates && data.candidates[0].content.parts[0].text) {
+                                        // Add AI Advice to the summary panel
+                                        const adviceText = data.candidates[0].content.parts[0].text;
+                                        const verdictText = document.getElementById('sum-verdict-text');
+                                        verdictText.innerHTML = `<div style="font-weight:normal; font-size:13px; margin-top:10px; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">${adviceText}</div>`;
+                                    } else {
+                                        alert("AI Coach failed to provide insights. API Error.");
+                                    }
+                                } catch (error) {
+                                    console.error("AI Error:", error);
+                                    alert("AI connection failed.");
+                                } finally {
+                                    btn.disabled = false;
+                                    btn.innerHTML = '<i class="fas fa-robot"></i> Ask Gemini Coach';
                                 }
-                            } catch (error) {
-                                console.error("AI Error:", error);
-                                alert("AI connection failed.");
-                            } finally {
-                                btn.disabled = false;
-                                btn.innerHTML = '<i class="fas fa-robot"></i> Ask Gemini Coach';
-                            }
-                        }
-
-                        function updateProgress(pct) {
-                            const bar = document.getElementById('progressBar');
-                            const text = document.getElementById('progressText');
-                            if (bar) bar.style.width = pct + '%';
-                            if (text) text.textContent = pct + '%';
-
-                            // Sync creator name to footer
-                            const name = document.getElementById('createdBy').value;
-                            if (document.getElementById('userNameFooter')) {
-                                document.getElementById('userNameFooter').value = name;
-                            }
-                        }
-
-                        function saveAndEvaluate() {
-                            const resultsPanel = document.getElementById('resultsPanel');
-                            if (resultsPanel.style.display === 'none') {
-                                alert('Please run the analysis first before saving.');
-                                return;
-                            }
-                            // Show success modal
-                            const n = document.getElementById('resN').textContent;
-                            const mean = document.getElementById('resMean').textContent;
-                            const verdict = document.getElementById('sum-verdict-text').textContent;
-
-                            alert(`✅ Analysis Saved Successfully!\n\nSummary:\n• Sample Size: ${n}\n• Mean: ${mean}\n• Verdict: ${verdict}\n\nYou can now print as PDF or continue analysis.`);
-                        }
-
-                        function updateCreatedBy() {
-                            const name = document.getElementById('createdBy').value || 'Not Specified';
-                            document.getElementById('print-created-by').textContent = name;
-                        }
-
-                        function printReport() {
-                            const resultsPanel = document.getElementById('resultsPanel');
-                            if (resultsPanel.style.display === 'none') {
-                                alert('Please run the analysis first before printing.');
-                                return;
                             }
 
-                            // Update print metadata
-                            const now = new Date();
-                            const dateStr = now.toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            });
-                            document.getElementById('print-date').textContent = dateStr;
+                            function updateProgress(pct) {
+                                const bar = document.getElementById('progressBar');
+                                const text = document.getElementById('progressText');
+                                if (bar) bar.style.width = pct + '%';
+                                if (text) text.textContent = pct + '%';
 
-                            // Set scenario
-                            const scenarioText = currentScenario ?
-                                scenarios[currentScenario].name + ' (' + (currentType === 'normal' ? 'Normal' : 'Skewed') + ')' :
-                                'Custom Data';
-                            document.getElementById('print-scenario').textContent = scenarioText;
+                                // Sync creator name to footer
+                                const name = document.getElementById('createdBy').value;
+                                if (document.getElementById('userNameFooter')) {
+                                    document.getElementById('userNameFooter').value = name;
+                                }
+                            }
 
-                            // Trigger print
-                            window.print();
-                        }
-                    </script>
-                    <script src="AssistantTools.js"></script>
+                            function saveAndEvaluate() {
+                                const resultsPanel = document.getElementById('resultsPanel');
+                                if (resultsPanel.style.display === 'none') {
+                                    alert('Please run the analysis first before saving.');
+                                    return;
+                                }
+                                // Show success modal
+                                const n = document.getElementById('resN').textContent;
+                                const mean = document.getElementById('resMean').textContent;
+                                const verdict = document.getElementById('sum-verdict-text').textContent;
+
+                                alert(`✅ Analysis Saved Successfully!\n\nSummary:\n• Sample Size: ${n}\n• Mean: ${mean}\n• Verdict: ${verdict}\n\nYou can now print as PDF or continue analysis.`);
+                            }
+
+                            function updateCreatedBy() {
+                                const name = document.getElementById('createdBy').value || 'Not Specified';
+                                document.getElementById('print-created-by').textContent = name;
+                            }
+
+                            function printReport() {
+                                const resultsPanel = document.getElementById('resultsPanel');
+                                if (resultsPanel.style.display === 'none') {
+                                    alert('Please run the analysis first before printing.');
+                                    return;
+                                }
+
+                                // Update print metadata
+                                const now = new Date();
+                                const dateStr = now.toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                                document.getElementById('print-date').textContent = dateStr;
+
+                                // Set scenario
+                                const scenarioText = currentScenario ?
+                                    scenarios[currentScenario].name + ' (' + (currentType === 'normal' ? 'Normal' : 'Skewed') + ')' :
+                                    'Custom Data';
+                                document.getElementById('print-scenario').textContent = scenarioText;
+
+                                // Trigger print
+                                window.print();
+                            }
+                        </script>
+                        <script src="AssistantTools.js"></script>
 </body>
 
 </html>

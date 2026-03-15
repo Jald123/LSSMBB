@@ -105,11 +105,16 @@ button[onclick*="Stats_Calculator_Main.html"] {
     max-width: 800px;
 }
 
-/* Standardized Input Data Card - Shrunk by 20% (v2) */
+/* Standardized Input Data Card */
 .input-data-card {
+    width: fit-content !important;
+    min-width: 680px;
+    max-width: 100%;
+}
+
+.input-data-card.shrunk {
     width: 544px !important;
     min-width: unset !important;
-    max-width: 100%;
 }
 
 .input-data-card textarea.premium-input {
