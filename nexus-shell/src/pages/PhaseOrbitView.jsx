@@ -179,7 +179,7 @@ const PhaseOrbitView = () => {
                             <Link
                                 to={`/workspace/${tool.id}`}
                                 className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-orbitron font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl
-                                    ${theme === 'dark' ? 'bg-nexus-cyan text-nexus-navy shadow-nexus-cyan/20' : 'bg-nexus-text-primary text-white shadow-nexus-navy/20'}`}
+                                    ${theme === 'dark' ? 'bg-nexus-cyan text-nexus-navy shadow-nexus-cyan/20' : 'bg-[#1e3a8a] text-white shadow-nexus-navy/20'}`}
                             >
                                 <Terminal className="w-4 h-4" /> EXECUTE
                             </Link>
