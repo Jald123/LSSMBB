@@ -758,7 +758,52 @@
         }
     };
 
-    // 10. TOAST FALLBACK (If not defined elsewhere)
+    // 10. UNIVERSAL FOOTER INJECTION
+    function injectUniversalFooter() {
+        if (document.getElementById('lss-universal-footer')) return;
+
+        const footer = document.createElement('div');
+        footer.id = 'lss-universal-footer';
+        footer.style.cssText = `
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 40px;
+            z-index: 10000;
+            pointer-events: none;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+        `;
+
+        footer.innerHTML = `
+            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end;">
+                <div style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; line-height: 1;">
+                    <span style="color: #f97316;">Hossam AlDhaher</span> <span style="color: #64748b; font-size: 8px; margin-left: 4px; font-weight: 500;">LSSMBB</span>
+                </div>
+                <div style="font-size: 8px; font-weight: 800; color: #22d3ee; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; opacity: 0.9;">
+                    HealthQualityLeader.com LTD
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(footer);
+
+        // Adjust body padding to avoid overlap
+        document.body.style.paddingBottom = "50px";
+    }
+
+    // Force injection after a small delay to ensure body exists
+    setTimeout(injectUniversalFooter, 500);
+
+    // 11. TOAST FALLBACK (If not defined elsewhere)
     if (typeof window.showToast !== 'function') {
         window.showToast = function (msg) {
             let toast = document.getElementById('assistant-toast');
@@ -767,7 +812,7 @@
                 toast.id = 'assistant-toast';
                 toast.style.cssText = `
                     position: fixed;
-                    bottom: 30px;
+                    bottom: 60px;
                     left: 50%;
                     transform: translateX(-50%);
                     background: rgba(15, 23, 42, 0.95);
@@ -788,11 +833,11 @@
             }
             toast.innerText = msg;
             toast.style.opacity = '1';
-            toast.style.bottom = '40px';
+            toast.style.bottom = '70px';
 
             setTimeout(() => {
                 toast.style.opacity = '0';
-                toast.style.bottom = '30px';
+                toast.style.bottom = '60px';
             }, 2500);
         };
     }

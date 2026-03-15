@@ -25,11 +25,11 @@ const Footer = () => {
                 <span className="text-slate-700">C</span>
             </div>
 
-            <div className="text-right">
-                <div className="text-[9px] font-black font-orbitron text-nexus-gold uppercase tracking-tighter leading-none">
-                    Hossam AlDhaher <span className="font-medium text-[7px] opacity-70">LSSMBB</span>
+            <div className="text-right flex flex-col items-end">
+                <div className="text-[10px] font-black font-orbitron uppercase tracking-tighter leading-none mb-1">
+                    <span className="text-[#f97316]">Hossam AlDhaher</span> <span className="text-slate-500 font-medium text-[8px] ml-1">LSSMBB</span>
                 </div>
-                <div className="text-[8px] font-medium text-nexus-cyan opacity-80 uppercase tracking-tighter">
+                <div className="text-[9px] font-black font-orbitron text-nexus-cyan uppercase tracking-widest opacity-90">
                     HealthQualityLeader.com LTD
                 </div>
             </div>
