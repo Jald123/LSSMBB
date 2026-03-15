@@ -94,6 +94,38 @@
             <div style="font-size:10px; color:#aaa; font-family:monospace;">AST-V2</div>
         </div>
 
+        <!-- Premium Footer Signature & Navigation -->
+        <div id="premium-app-footer">
+            <div class="footer-signature left">
+                <img src="images/signature.png" alt="Hossam Aldhaher Signature">
+            </div>
+            
+            <div class="footer-nav-pill">
+                <div class="nav-round-btn home-btn" onclick="window.location.href='Tool_WorkflowHub.html'" title="Return to Hub">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="nav-round-btn back-btn" onclick="history.back()" title="Go Back">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                
+                <div class="nav-wide-btn done-btn" onclick="showToast('Progress Saved!')">
+                    <i class="far fa-circle"></i> MARK DONE
+                </div>
+                
+                <div class="nav-wide-btn next-btn" onclick="showToast('Loading Next Module...')">
+                    NEXT <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="nav-round-btn up-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Scroll to Top">
+                    <i class="fas fa-chevron-up"></i>
+                </div>
+            </div>
+
+            <div class="footer-signature right">
+                <img src="images/signature.png" alt="Hossam Aldhaher Signature">
+            </div>
+        </div>
+
         <!-- Sticky Notes Window (Professional Enterprise Style) - Resizable -->
         <div id="sticky-window" class="assistant-window" style="position:fixed; width:380px; min-width:300px; min-height:300px; top:100px; right:50px; left:auto; background: linear-gradient(180deg, #1e293b, #0f172a); border-radius: 16px; box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08); z-index:10001; border:none; resize:both; overflow:hidden; display:none; flex-direction:column;">
             <!-- Color Selection Bar - More Obvious -->
@@ -758,52 +790,7 @@
         }
     };
 
-    // 10. UNIVERSAL FOOTER INJECTION
-    function injectUniversalFooter() {
-        if (document.getElementById('lss-universal-footer')) return;
-
-        const footer = document.createElement('div');
-        footer.id = 'lss-universal-footer';
-        footer.style.cssText = `
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 40px;
-            z-index: 10000;
-            pointer-events: none;
-            color: white;
-            font-family: 'Orbitron', sans-serif;
-        `;
-
-        footer.innerHTML = `
-            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end;">
-                <div style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; line-height: 1;">
-                    <span style="color: #f97316;">Hossam AlDhaher</span> <span style="color: #64748b; font-size: 8px; margin-left: 4px; font-weight: 500;">LSSMBB</span>
-                </div>
-                <div style="font-size: 8px; font-weight: 800; color: #22d3ee; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; opacity: 0.9;">
-                    HealthQualityLeader.com LTD
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(footer);
-
-        // Adjust body padding to avoid overlap
-        document.body.style.paddingBottom = "50px";
-    }
-
-    // Force injection after a small delay to ensure body exists
-    setTimeout(injectUniversalFooter, 500);
-
-    // 11. TOAST FALLBACK (If not defined elsewhere)
+    // 10. TOAST FALLBACK (If not defined elsewhere)
     if (typeof window.showToast !== 'function') {
         window.showToast = function (msg) {
             let toast = document.getElementById('assistant-toast');
@@ -812,7 +799,7 @@
                 toast.id = 'assistant-toast';
                 toast.style.cssText = `
                     position: fixed;
-                    bottom: 60px;
+                    bottom: 30px;
                     left: 50%;
                     transform: translateX(-50%);
                     background: rgba(15, 23, 42, 0.95);
@@ -833,13 +820,51 @@
             }
             toast.innerText = msg;
             toast.style.opacity = '1';
-            toast.style.bottom = '70px';
+            toast.style.bottom = '40px';
 
             setTimeout(() => {
                 toast.style.opacity = '0';
-                toast.style.bottom = '60px';
+                toast.style.bottom = '30px';
             }, 2500);
         };
     }
+
+    // 11. PREMIUM LSS ICONS FOR BADGES
+    function addLSSIconsToBadges() {
+        document.querySelectorAll('.belt-badge, .belt-y, .belt-g, .belt-b').forEach(badge => {
+            const belt = badge.innerText.trim();
+            let icon = '';
+            if (belt === 'YB') icon = '<i class="fas fa-award" style="margin-right:4px;"></i>';
+            else if (belt === 'GB') icon = '<i class="fas fa-leaf" style="margin-right:4px;"></i>';
+            else if (belt === 'BB' || belt === 'B') icon = '<i class="fas fa-shield-halved" style="margin-right:4px;"></i>';
+            else if (belt === 'MBB') icon = '<i class="fas fa-crown" style="margin-right:4px;"></i>';
+
+            if (icon && !badge.querySelector('i')) {
+                badge.innerHTML = icon + badge.innerHTML;
+            }
+        });
+
+        // Lab labels
+        document.querySelectorAll('.tool-name').forEach(name => {
+            if (name.innerText.toLowerCase().includes('lab') && !name.parentNode.querySelector('.lab-tag')) {
+                const labTag = document.createElement('span');
+                labTag.className = 'lab-tag';
+                labTag.innerHTML = '<i class="fas fa-flask"></i> LAB';
+                labTag.style.cssText = 'font-size:8px; background:rgba(168, 85, 247, 0.1); color:#a855f7; border:1px solid rgba(168, 85, 247, 0.2); padding:1px 5px; border-radius:10px; margin-left:6px; font-weight:bold; vertical-align:middle;';
+                name.parentNode.appendChild(labTag);
+            }
+        });
+    }
+
+    // Initialize additions
+    setTimeout(() => {
+        addLSSIconsToBadges();
+
+        // Hide footer if canvas is present (non-canvas part requirement)
+        const canvas = document.querySelector('canvas, #vsm-canvas, #fishbone-svg');
+        if (canvas && window.innerWidth < 1200) {
+            document.getElementById('premium-app-footer').style.display = 'none';
+        }
+    }, 1000);
 
 })();

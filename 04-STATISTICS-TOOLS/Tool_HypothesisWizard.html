@@ -500,9 +500,9 @@
 
         <!-- TAB 2: CALCULATORS -->
         <div id="tab_calcs" class="tab-content" style="display:none;">
-            <div style="display:grid; grid-template-columns: 1fr 2fr; gap:30px;">
+            <div style="display:grid; grid-template-columns: auto 1fr; gap:30px; align-items: start;">
                 <!-- MENU -->
-                <div class="card">
+                <div class="card input-data-card">
                     <h3>Select Calculator</h3>
                     <div style="display:flex; flex-direction:column; gap:10px;">
                         <button class="btn btn-ghost" onclick="renderCalc('ttest1')">1-Sample T-Test</button>
@@ -933,6 +933,7 @@
             window.print();
         }
     </script>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>

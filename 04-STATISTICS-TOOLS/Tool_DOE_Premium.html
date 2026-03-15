@@ -122,70 +122,64 @@
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+        <div style="display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: start;">
 
             <!-- SIDEBAR: SETUP -->
-            <div>
-                <div class="card">
-                    <h2>1. Design Setup</h2>
+            <div class="card input-data-card">
+                <h2>1. Design Setup</h2>
 
-                    <!-- LEGEND FOR LOW/HIGH -->
-                    <div
-                        style="background:rgba(255,255,255,0.05); padding:10px; border-radius:5px; margin-bottom:15px; font-size:12px; border-left:3px solid var(--accent);">
-                        <b>Legend:</b><br>
-                        🔴 <b>Low (-):</b> Standard / Baseline Setting.<br>
-                        🟢 <b>High (+):</b> Impact / New Setting.<br>
-                        <i style="color:#aaa;">(Check hover tooltips on Run Sheet for specific values)</i>
-                    </div>
-
-                    <label style="font-size:12px; color:var(--text-secondary);">Select MBB Scenario:</label>
-                    <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()">
-                        <option value="">-- Custom Modeling --</option>
-                        <optgroup label="Manufacturing (Improve Phase)">
-                            <option value="manufacturing">⚙️ Yield Optimization (Normal)</option>
-                            <option value="manufacturing_skewed">⚙️ Sensor Malfunction (Outliers)</option>
-                        </optgroup>
-                        <optgroup label="Healthcare (Optimization)">
-                            <option value="healthcare">🏥 Patient Satisfaction (Normal)</option>
-                        </optgroup>
-                        <optgroup label="Service (Precision Tuning)">
-                            <option value="service">🎧 Handle Time Reduction</option>
-                        </optgroup>
-                    </select>
-                    <div id="scenarioDesc"
-                        style="font-size: 12px; color: var(--accent); margin-bottom: 15px; min-height: 35px; line-height: 1.4; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px;">
-                        Select a scenario to load example experimental data.
-                    </div>
-
-                    <div class="form-group">
-                        <label>Experiment Type</label>
-                        <select id="doeType" onchange="initDesign()">
-                            <option value="2">2 Factors (2² = 4 runs)</option>
-                            <option value="3" selected>3 Factors (2³ = 8 runs)</option>
-                        </select>
-                    </div>
-
-                    <div id="factorConfig">
-                        <div class="factor-setup" style="border-left: 3px solid #E91E63;">
-                            <label style="color:#E91E63;">Factor A Name</label>
-                            <input type="text" id="nameA" value="Temperature">
-                        </div>
-                        <div class="factor-setup" style="border-left: 3px solid #2196F3;">
-                            <label style="color:#2196F3;">Factor B Name</label>
-                            <input type="text" id="nameB" value="Pressure">
-                        </div>
-                        <div class="factor-setup" id="setupC" style="border-left: 3px solid #FFC107;">
-                            <label style="color:#FFC107;">Factor C Name</label>
-                            <input type="text" id="nameC" value="Speed">
-                        </div>
-                    </div>
-
+                <!-- LEGEND FOR LOW/HIGH -->
+                <div
+                    style="background:rgba(255,255,255,0.05); padding:10px; border-radius:5px; margin-bottom:15px; font-size:12px; border-left:3px solid var(--accent);">
+                    <b>Legend:</b><br>
+                    🔴 <b>Low (-):</b> Standard / Baseline Setting.<br>
+                    🟢 <b>High (+):</b> Impact / New Setting.<br>
+                    <i style="color:#aaa;">(Check hover tooltips on Run Sheet for specific values)</i>
                 </div>
 
-                <!-- ANALYZE BUTTON -->
-                <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:0;"
-                    onclick="analyzeDOE()">🚀 Optimize Process</button>
+                <label style="font-size:12px; color:var(--text-secondary);">Select MBB Scenario:</label>
+                <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()">
+                    <option value="">-- Custom Modeling --</option>
+                    <optgroup label="Manufacturing (Improve Phase)">
+                        <option value="manufacturing">⚙️ Yield Optimization (Normal)</option>
+                        <option value="manufacturing_skewed">⚙️ Sensor Malfunction (Outliers)</option>
+                    </optgroup>
+                    <optgroup label="Healthcare (Optimization)">
+                        <option value="healthcare">🏥 Patient Satisfaction (Normal)</option>
+                    </optgroup>
+                    <optgroup label="Service (Precision Tuning)">
+                        <option value="service">🎧 Handle Time Reduction</option>
+                    </optgroup>
+                </select>
+                <div id="scenarioDesc"
+                    style="font-size: 12px; color: var(--accent); margin-bottom: 15px; min-height: 35px; line-height: 1.4; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px;">
+                    Select a scenario to load example experimental data.
+                </div>
 
+                <div class="form-group">
+                    <label>Experiment Type</label>
+                    <select id="doeType" onchange="initDesign()">
+                        <option value="2">2 Factors (2² = 4 runs)</option>
+                        <option value="3" selected>3 Factors (2³ = 8 runs)</option>
+                    </select>
+                </div>
+
+                <div id="factorConfig">
+                    <div class="factor-setup" style="border-left: 3px solid #E91E63;">
+                        <label style="color:#E91E63;">Factor A Name</label>
+                        <input type="text" id="nameA" value="Temperature">
+                    </div>
+                    <div class="factor-setup" style="border-left: 3px solid #2196F3;">
+                        <label style="color:#2196F3;">Factor B Name</label>
+                        <input type="text" id="nameB" value="Pressure">
+                    </div>
+                    <div class="factor-setup" id="setupC" style="border-left: 3px solid #FFC107;">
+                        <label style="color:#FFC107;">Factor C Name</label>
+                        <input type="text" id="nameC" value="Speed">
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:20px;"
+                    onclick="analyzeDOE()">🚀 Optimize Process</button>
             </div>
 
             <!-- MAIN: RUN SHEET & ANALYSIS -->
@@ -206,7 +200,8 @@
                         <div id="headB">Factor B</div>
                         <div id="headC">Factor C</div>
                         <div id="headY" style="text-align:center; cursor:help;"
-                            title="Measured Output (Response Variable)">Result (Y) ❓</div>
+                            title="Measured Output (Response Variable)">
+                            Result (Y) ❓</div>
                     </div>
 
                     <div id="runSheet" class="doe-grid">

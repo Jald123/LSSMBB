@@ -241,10 +241,10 @@
 
         <!-- TAB 1: CALCULATOR -->
         <div id="calc" class="tab-content active">
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: start;">
 
                 <!-- INPUTS -->
-                <div class="card">
+                <div class="card input-data-card">
                     <h3>Input Data</h3>
                     <div class="form-group">
                         <label>Total Units Processed (N) <span class="info-tip"
@@ -581,6 +581,7 @@
         // Init
         renderTable();
     </script>
-<script src="AssistantTools.js"></script></body>
+    <script src="AssistantTools.js"></script>
+</body>
 
 </html>
