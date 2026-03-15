@@ -105,11 +105,10 @@ button[onclick*="Stats_Calculator_Main.html"] {
     max-width: 800px;
 }
 
-/* Standardized Input Data Card */
+/* Standardized Input Data Card - Shrunk by 20% (v2) */
 .input-data-card {
-    width: fit-content !important;
-    min-width: 544px;
-    /* ~450 * 1.5 - shrunk by 20% */
+    width: 544px !important;
+    min-width: unset !important;
     max-width: 100%;
 }
 
