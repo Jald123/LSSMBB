@@ -492,10 +492,49 @@
             border-color: transparent;
         }
 
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON v1.1 */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #FF6B35, #FCA311) !important;
+            color: #000 !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(255, 107, 53, 0.8), 0 0 50px rgba(252, 163, 17, 0.3); }
+            100% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: scale(1.05) translateY(-5px);
+            filter: brightness(1.1);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
         /* Report Styles */
         @media print {
 
-            .sidebar,
+            .architecture-intelligence-btn,
+            .btn-ghost,
             header,
             .toolbar-top,
             .summary-panel {
@@ -595,9 +634,8 @@
     <header>
         <div class="logo-group">
             <div class="logo">S.W.I.M. X-TREME</div>
-            <button class="btn" style="background: rgba(59, 130, 246, 0.2); border-color: var(--accent);"
-                onclick="openHowTo()">
-                <i class="fas fa-question-circle"></i> How to Use
+            <button class="architecture-intelligence-btn" onclick="openHowTo()">
+                <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
             </button>
         </div>
 

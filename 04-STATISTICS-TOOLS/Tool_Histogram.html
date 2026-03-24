@@ -233,6 +233,42 @@
         transform: translateY(-2px) scale(1.05);
         box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
     }
+
+    /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+    .architecture-intelligence-btn {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+        color: white !important;
+        padding: 10px 24px !important;
+        border-radius: 50px !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.4) !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        animation: architecturePulse 2s infinite ease-in-out;
+    }
+
+    @keyframes architecturePulse {
+        0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 40px rgba(59, 130, 246, 0.3); }
+        100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+    }
+
+    .architecture-intelligence-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        filter: brightness(1.1);
+    }
+
+    .architecture-intelligence-btn i {
+        font-size: 16px;
+        filter: drop-shadow(0 0 5px white);
+    }
 </style>
 
 <body>
@@ -244,15 +280,14 @@
             <div
                 style="background:#0f172a; padding:20px; border-radius:12px; border:1px solid #1e293b; color:white; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <div>
-                    <div style="display:flex; align-items:center; gap:15px;">
+                    <div style="display:flex; align-items:center; gap:25px;">
                         <h1 style="margin:0; font-family:'Orbitron',sans-serif; font-size:32px; color:white;">Frequency
                             Histogram</h1>
                         <span
                             style="background:#2563eb; color:white; padding:4px 12px; border-radius:6px; font-size:12px; font-weight:bold;">MEASURE
                             PHASE</span>
-                        <button class="btn btn-sm btn-ghost" onclick="openInfographic()"
-                            style="margin-left:10px; color:#facc15; border:1px solid #facc15; padding:4px 12px; font-size:12px; border-radius:12px; cursor:pointer;">
-                            💡 Simple Explanation
+                        <button class="architecture-intelligence-btn" onclick="openInfographic()">
+                            <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
                         </button>
                     </div>
                     <div style="color:#94a3b8; font-style:italic; font-size:14px; margin-top:5px;">"A picture is worth a

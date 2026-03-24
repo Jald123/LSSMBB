@@ -617,6 +617,45 @@
         .metric-card {
             cursor: help;
         }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+            color: white !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+            margin-top: 25px;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.7), 0 0 40px rgba(239, 68, 68, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
     </style>
 </head>
 
@@ -627,8 +666,8 @@
         <h1>8 Wastes (DOWNTIME)</h1>
         <p>Value is what the patient is willing to pay for. Everything else is Waste (Muda). Use the DOWNTIME mnemonic
             to identify it.</p>
-        <button class="waste-viz-btn" onclick="toggleModal(true)">
-            🚀 Open Waste Visualizer
+        <button class="architecture-intelligence-btn" onclick="toggleModal(true)">
+            <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
         </button>
         <br>
         <a href="Tool_LeanLeadership.html" class="nav-back">←  Dashboard</a>

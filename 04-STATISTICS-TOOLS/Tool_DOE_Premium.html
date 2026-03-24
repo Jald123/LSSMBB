@@ -122,8 +122,7 @@
             </div>
         </div>
 
-        <div style="display: block; max-width: 1200px; margin: 0 auto;">
-            <!-- PHASE BADGE & TITLE ALREADY IN HEADER -->
+        <div style="display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: start;">
 
             <!-- SIDEBAR: SETUP -->
             <div class="card input-data-card">
@@ -179,11 +178,9 @@
                         <input type="text" id="nameC" value="Speed">
                     </div>
                 </div>
-                <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:20px; font-weight:800;"
-                    onclick="analyzeDOE()">🚀 RUN FULL MBB ANALYSIS</button>
+                <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:20px;"
+                    onclick="analyzeDOE()">🚀 Optimize Process</button>
             </div>
-
-            <div style="height:30px;"></div>
 
             <!-- MAIN: RUN SHEET & ANALYSIS -->
             <div>
@@ -213,14 +210,9 @@
                 </div>
 
                 <!-- RESULTS -->
-                    <!-- RESULTS HEADER -->
-                    <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; border-left:4px solid var(--accent); margin-bottom:20px;">
-                        <h3 style="margin:0; color:var(--accent);">📈 Analysis Result Portfolio</h3>
-                        <p style="margin:5px 0 0; font-size:14px; color:var(--text-secondary);">Direct mathematical modeling of process factors and interactions.</p>
-                    </div>
+                <div id="resultsPanel" style="display:none;">
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                        <!-- PARETO CHART -->
+                    <!-- PARETO CHART -->
                     <div class="card" style="height:350px;">
                         <div class="flex-between">
                             <h3>📊 Pareto of Effects</h3>
@@ -234,6 +226,10 @@
                         </div>
                         <div class="chart-container" style="position:relative;">
                             <canvas id="paretoChart"></canvas>
+                            <div class="canvas-branding"
+                                style="position: absolute; bottom: 10px; right: 20px; pointer-events: none; opacity: 0.6;">
+                                <img src="images/hql_logo_footer.png" style="height: 30px;">
+                            </div>
                         </div>
                         <div id="paretoExplain" style="font-size:12px; color:#aaa; margin-top:5px; text-align:center;">
                             Bars crossing the line are significant.</div>
@@ -242,23 +238,9 @@
                         </div>
                     </div>
 
-                    <!-- INTERACTION PLOTS (RESTORED ORIGINALITY) -->
-                    <div class="card" style="grid-column: span 2;">
-                        <div class="flex-between">
-                            <h3>🔗 Interaction Matrix (Crossing Patterns)</h3>
-                            <div style="font-size:11px; color:var(--accent);">Detecting Synery & Conflict</div>
-                        </div>
-                        <div id="interactionGrid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; margin-top:15px;">
-                            <div style="background:rgba(0,0,0,0.2); height:200px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#444;">AB INTERACTION</div>
-                            <div style="background:rgba(0,0,0,0.2); height:200px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#444;">AC INTERACTION</div>
-                            <div style="background:rgba(0,0,0,0.2); height:200px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#444;">BC INTERACTION</div>
-                        </div>
-                        <p style="font-size:12px; color:#aaa; margin-top:10px; text-align:center;">Parallel lines = No Interaction. Crossing/Non-parallel lines = Strong Interaction.</p>
-                    </div>
-
                     <!-- AI OPTIMIZER -->
                     <div class="card"
-                        style="grid-column: span 2; border-left: 4px solid var(--success); background: linear-gradient(90deg, rgba(46, 204, 113, 0.1), rgba(0,0,0,0));">
+                        style="border-left: 4px solid var(--success); background: linear-gradient(90deg, rgba(46, 204, 113, 0.1), rgba(0,0,0,0));">
                         <div class="flex-between">
                             <h3 style="color: var(--success);">🏆 Optimal Settings</h3>
                             <button class="btn btn-ghost" onclick="askAIOptimizer()" id="aiBtn">Ask AI Coach</button>
@@ -277,10 +259,26 @@
 
     </div>
 
-    <!-- REMOVED STANDARDIZED FOOTER (RESTORED ORIGINALITY) -->
-    <div class="no-print" style="margin:40px; text-align:center;">
-         <button class="btn btn-primary" onclick="analyzeDOE()" style="padding:15px 40px; font-size:16px;">🚀 Run Process Optimization</button>
-         <button class="btn btn-ghost" onclick="printReport()" style="padding:15px 40px; font-size:16px; margin-left:15px;">🖨️ Create Detailed MBB Report</button>
+    <!-- STANDARDIZED FOOTER -->
+    <div class="workspace-footer no-print neu-panel"
+        style="margin: 20px; position: static; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+        <div class="footer-input-group">
+            <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+            <input type="text" id="userNameFooter" class="footer-input" placeholder="Enter Your Name"
+                oninput="document.getElementById('analystName').value = this.value;">
+        </div>
+        <button class="action-btn btn-save" onclick="analyzeDOE()">
+            <i class="fas fa-magic"></i> Run Analysis
+        </button>
+        <button class="action-btn btn-print" onclick="printReport()">
+            <i class="fas fa-print"></i> Print Report
+        </button>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+            <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+            <img src="images/hql_logo_footer.png"
+                style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                alt="HQL Logo">
+        </div>
     </div>
 
     <input type="hidden" id="analystName">

@@ -172,29 +172,43 @@
             animation: fadeInUp 0.5s ease;
         }
 
-        .lss-guide-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #E74C3C, #C0392B);
-            color: white;
-            font-weight: 800;
-            padding: 16px 32px;
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.5);
-            cursor: pointer;
-            z-index: 999;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            font-family: 'Orbitron', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s ease;
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+            color: white !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+            border: none;
         }
 
-        .lss-guide-btn:hover {
-            transform: scale(1.05) translateY(-5px);
-            box-shadow: 0 15px 40px rgba(231, 76, 60, 0.7);
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(231, 76, 60, 0.7), 0 0 40px rgba(231, 76, 60, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
         }
 
         /* MODAL */
@@ -447,8 +461,9 @@
                     Effects Analysis</p>
             </div>
             <div>
-                <button class="btn btn-primary" onclick="openFMEAInfo()" style="margin-right:10px;">💡 Simple
-                    Explanation</button>
+                <button class="architecture-intelligence-btn" onclick="openFMEAInfo()" style="margin-right:15px;">
+                    <i class="fas fa-shield-alt"></i> Architecture Intelligence
+                </button>
                 <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
                     Hub</button>
             </div>
@@ -484,8 +499,7 @@
             </div>
         </div>
 
-        <!-- MBB GUIDE BUTTON -->
-        <button class="lss-guide-btn" onclick="showGuide()"><i>💡</i> MBB PRO TIPS</button>
+
 
         <!-- GUIDE MODAL -->
         <div class="guide-modal" id="guideModal" onclick="closeModal(event)">

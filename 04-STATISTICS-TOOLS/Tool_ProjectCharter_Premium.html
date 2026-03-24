@@ -1431,6 +1431,47 @@
             text-align: center;
         }
 
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+            color: white !important;
+            padding: 10px 20px !important;
+            border-radius: 8px !important;
+            font-size: 11px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            border: none;
+            font-family: 'Orbitron', sans-serif !important;
+            width: 100% !important;
+            justify-content: flex-start !important;
+            margin-bottom: 10px !important;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 40px rgba(59, 130, 246, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-2px) scale(1.02) !important;
+            filter: brightness(1.1);
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 14px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
         /* MODERN STANDARDIZED FOOTER */
         .workspace-footer {
             margin-top: 50px;
@@ -2230,8 +2271,9 @@
                     class="fas fa-file-signature"></i> Project Charter</button>
             <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; margin-bottom:10px;"
                 onclick="showGuide()"><i class="fas fa-book"></i> Project Guide</button>
-            <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; margin-bottom:10px;"
-                onclick="openPremiumInfo('charter')"><i class="fas fa-brain"></i> Strategic Lab</button>
+            <button class="architecture-intelligence-btn" onclick="openPremiumInfo('charter')">
+                <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+            </button>
 
             <!-- TOOLS & SIMULATION (MOVED FROM HEADER) -->
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
@@ -2276,9 +2318,7 @@
                     <h1>Project Charter MASTER</h1>
                 </div>
                 <div class="header-controls-container">
-                    <button class="btn-header-info" onclick="printReport()">
-                         <i class="fas fa-file-pdf"></i> Generate PDF
-                    </button>
+                    <!-- CONTROLS MOVED TO SIDEBAR -->
                 </div>
             </header>
 

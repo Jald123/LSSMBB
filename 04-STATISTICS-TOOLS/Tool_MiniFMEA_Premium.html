@@ -172,6 +172,44 @@
             color: var(--accent);
             background: rgba(255, 255, 255, 0.1);
         }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #f39c12, #e67e22) !important;
+            color: white !important;
+            padding: 10px 24px !important;
+            border-radius: 50px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(243, 156, 18, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(243, 156, 18, 0.7), 0 0 40px rgba(243, 156, 18, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(243, 156, 18, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(243, 156, 18, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 16px;
+            filter: drop-shadow(0 0 5px white);
+        }
     </style>
 </head>
 
@@ -191,9 +229,9 @@
                 </p>
             </div>
             <div style="text-align: right;">
-                <button class="btn btn-primary"
-                    onclick="alert('RPN = Severity x Likelihood x Detection. Focus on tasks with RPN > 80.')">💡 Scoring
-                    Guide</button>
+                <button class="architecture-intelligence-btn" onclick="explain('rpn')">
+                    <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+                </button>
                 <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
                     Hub</button>
             </div>

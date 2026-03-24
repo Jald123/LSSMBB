@@ -243,33 +243,63 @@
             border-bottom-color: var(--accent);
         }
 
-        /* Modal Popup */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            overflow-y: auto;
-            padding: 20px;
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+            color: white !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+            border: none;
+            margin-left: 20px;
         }
 
-        .modal-content {
-            background: #1e293b;
-            padding: 40px;
-            border-radius: 16px;
-            max-width: 800px;
-            width: 95%;
-            border: 1px solid var(--accent);
-            box-shadow: 0 0 50px rgba(155, 89, 182, 0.3);
-            text-align: left;
-            max-height: 90vh;
-            overflow-y: auto;
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 40px rgba(59, 130, 246, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        .info-trigger-icon {
+            cursor: pointer;
+            color: var(--accent);
+            font-size: 16px;
+            transition: 0.3s;
+            animation: float 3s infinite ease-in-out;
+            margin-left: 10px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-3px) scale(1.2); text-shadow: 0 0 10px var(--accent); }
+        }
+
+        .info-trigger-icon:hover {
+            color: white;
+            filter: drop-shadow(0 0 8px var(--accent));
         }
 
         .modal-content h2 {
@@ -348,6 +378,13 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 20px;
             }
+
+            /* Hide AI infrastructure on print */
+            .architecture-intelligence-btn, 
+            .no-print,
+            .info-trigger-icon {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -364,14 +401,12 @@
                     <div style="display:flex; align-items:center; gap:15px; margin-bottom:5px;">
                         <h1 style="margin:0; font-family:'Orbitron',sans-serif; font-size:32px; color:white;">
                             Distribution & Power Lab</h1>
-                        <span onclick="showPopup('simple')"
-                            style="cursor:pointer; background:#2563eb; color:white; padding:4px 12px; border-radius:6px; font-size:12px; font-weight:bold; margin-left:10px; border:1px solid rgba(255,255,255,0.3);">
-                            Simple Explanation 💡</span>
+                        <button onclick="showPopup('simple')" class="architecture-intelligence-btn">
+                            <i class="fas fa-microchip"></i> Architecture Intelligence
+                        </button>
                         <span
                             style="background:#334155; color:#94a3b8; padding:4px 12px; border-radius:6px; font-size:12px; font-weight:bold;">ANALYZE
                             PHASE</span>
-                        <button onclick="showGuide()" class="btn btn-secondary-card"
-                            style="margin-left:20px; border-color:#9B59B6; color:#9B59B6;">🔋 Guide</button>
                     </div>
                     <div style="color:#94a3b8; font-style:italic; font-size:16px;">"The shape of your data tells the
                         story of your process."</div>
@@ -505,6 +540,7 @@
                             <span
                                 style="background: rgba(155, 89, 182, 0.1); padding: 8px; border-radius: 8px;">📊</span>
                             Probability Distributions
+                            <i class="fas fa-info-circle info-trigger-icon" onclick="showPopup('pop_dist')"></i>
                         </h2>
                         <div id="tab_dist" class="tab-content" style="display: block;">
                             <div class="section-grid">
@@ -600,6 +636,7 @@
                                 <span
                                     style="background: rgba(234, 88, 12, 0.1); padding: 8px; border-radius: 8px;">🔋</span>
                                 Sample Size & Power
+                                <i class="fas fa-info-circle info-trigger-icon" onclick="showPopup('pop_power')" style="color:#ea580c;"></i>
                             </h2>
                             <div id="tab_power" class="tab-content" style="display:block;">
                                 <div class="section-grid">
@@ -681,6 +718,7 @@
                                 <span
                                     style="background: rgba(59, 130, 246, 0.1); padding: 8px; border-radius: 8px;">📉</span>
                                 Anderson-Darling Test
+                                <i class="fas fa-info-circle info-trigger-icon" onclick="showPopup('pop_adtest')" style="color:#3b82f6;"></i>
                             </h2>
                             <div id="tab_adtest" class="tab-content" style="display:block;">
                                 <div class="section-grid">
@@ -1314,6 +1352,7 @@
 
                 <div class="modal-section" style="border-bottom:none;">
                     <h3 style="color:#95a5a6;">👮 Strict Role Definitions</h3>
+                    <h3 style="color:#95a5a6;">👮 Strict Role Definitions <button class="ai-trigger-button" onclick="showPopup('pop_adtest')">AI</button></h3>
                     <ul class="modal-list">
                         <li>🕵️ <strong>Green Belt:</strong> Runs Normality Tests on limited interactions.</li>
                         <li>🧙‍♂️ <strong>Black Belt:</strong> Determines Sample Size Strategies for complex DOE.</li>
@@ -1326,6 +1365,88 @@
 
             // POPUP LOGIC WITH RICH VISUALS
             const popupContent = {
+                simple: {
+                    title: "Lab Strategy Architecture",
+                    html: `
+                        <div class="modal-section">
+                            <h4>The Core Philosophy</h4>
+                            <p>Data isn't just numbers; it has a signature. The <b>Distribution Lab</b> helps you identify that signature so you can apply the right mathematical tools. Using the wrong distribution is like trying to use a map of London to navigate New York.</p>
+                        </div>
+                        <div class="modal-section">
+                            <h4>Why Power Matters?</h4>
+                            <p>Statistical Power is your certainty. It tells you the probability that you will find a shift if one actually exists. <b>Power < 80%</b> means you are likely guessing, not proving.</p>
+                        </div>
+                    `
+                },
+                pop_dist: {
+                    title: "Architecture Intelligence: Probability Distributions",
+                    html: `
+                        <div class="modal-section">
+                            <h4>Interesting Info</h4>
+                            <p>Distributions are the "DNA" of your process. They describe the likelihood of every possible outcome, allowing you to predict future performance based on past behavior.</p>
+                        </div>
+                        <div class="modal-section">
+                            <h4 style="color:#10b981;">Daily Life Example</h4>
+                            <p><b>Heights of people:</b> If you measure 1,000 people, the distribution will naturally form a Bell Curve (Normal). Most are around the average (5'7"-5'10"), with very few giants or very short individuals.</p>
+                        </div>
+                        <div class="modal-section">
+                            <h4 style="color:#3b82f6;">Healthcare Example</h4>
+                            <p><b>Medication Delivery:</b> A nurse aims to deliver treatment at exactly 8:00 AM. Most deliveries happen between 7:55 and 8:05 (Normal). If a outlier appears at 9:00 AM, it's a "Special Cause" signal.</p>
+                        </div>
+                        <div class="modal-section">
+                             <h4>Standard & Normality</h4>
+                             <ul class="modal-list">
+                                <li><b>Normal:</b> Symmetric, p-value > 0.05. Safe to use standard stats.</li>
+                                <li><b>Abnormal:</b> Skewed or multi-modal. Indicates instability or mixed data sources.</li>
+                             </ul>
+                        </div>
+                    `
+                },
+                pop_power: {
+                    title: "Architecture Intelligence: Sample Size & Power",
+                    html: `
+                        <div class="modal-section">
+                            <h4>Interesting Info</h4>
+                            <p>Statistical Power (1 - Beta) is your "Microscope." The more Power you have, the smaller the changes you can detect without extra noise.</p>
+                        </div>
+                        <div class="modal-section">
+                            <h4 style="color:#10b981;">Daily Life Example</h4>
+                            <p><b>Searching in the Dark:</b> If you lose your keys in a dark room and use a tiny penlight (Low Power), you might miss them even if they are right there. A high-beam floodlight (High Power) ensures you find them if they exist.</p>
+                        </div>
+                        <div class="modal-section">
+                            <h4 style="color:#3b82f6;">Healthcare Example</h4>
+                            <p><b>Clinical Trials:</b> When testing a new heart medication, if you only test 5 patients (Low Power), you might conclude the drug doesn't work simply because you didn't have a large enough "microscope" to see the improvement.</p>
+                        </div>
+                        <div class="modal-section">
+                             <h4>Why This is Critical</h4>
+                             <p>Using too many samples wastes budget; using too few wastes the entire study by missing real breakthroughs. <b>Aim for 80% Power.</b></p>
+                        </div>
+                    `
+                },
+                pop_adtest: {
+                    title: "Architecture Intelligence: Anderson-Darling",
+                    html: `
+                        <div class="modal-section">
+                            <h4>Interesting Info</h4>
+                            <p>The AD Test is the "Gatekeeper" of Statistics. It is extra sensitive to the <b>tails</b> of a distribution—which is where the most dangerous process failures occur.</p>
+                        </div>
+                        <div class="modal-section">
+                            <h4 style="color:#10b981;">Daily Life Example</h4>
+                            <p><b>Cookie Baking:</b> You want every cookie to weigh 50g. The AD Test identifies if the "burnt" ones or "underfilled" ones are outside the allowed variation for a premium brand.</p>
+                        </div>
+                        <div class="modal-section">
+                            <h4 style="color:#3b82f6;">Healthcare Example</h4>
+                            <p><b>Patient Lab Results:</b> In blood glucose testing, results must fit a specific distribution to be compared to "Normal Range" baselines. If data isn't Normal, the "Standard Deviation" we use for diagnosis might be technically incorrect.</p>
+                        </div>
+                        <div class="modal-section">
+                             <h4>When to Consider Normal</h4>
+                             <ul class="modal-list">
+                                <li><b>Normal (P > 0.05):</b> Proceed with T-Tests, ANOVA, and Capability studies.</li>
+                                <li><b>Abnormal (P ≤ 0.05):</b> Data is skewed or has outliers; use Non-Parametric tools or transform data.</li>
+                             </ul>
+                        </div>
+                    `
+                },
                 'origin': {
                     title: 'Origin & Power',
                     html: `

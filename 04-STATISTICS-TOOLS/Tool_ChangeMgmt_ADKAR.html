@@ -329,6 +329,45 @@
                 display: none;
             }
         }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+            color: white !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+            margin-top: 25px;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 40px rgba(139, 92, 246, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
     </style>
 </head>
 
@@ -339,6 +378,10 @@
         <h1>ADKAR Change Management</h1>
         <p>Common mistake: Teaching people "How" (Knowledge) before they agree to the "Why" (Desire). Follow the
             sequential gate model.</p>
+        <button class="architecture-intelligence-btn" onclick="alert('ADKAR Gate Progression: Ensure scores are > 3 before moving to the next gate.')">
+            <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+        </button>
+        <br>
         <a href="Tool_LeanLeadership.html" class="nav-back">←  Dashboard</a>
     </div>
 

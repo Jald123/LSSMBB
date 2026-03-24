@@ -281,6 +281,166 @@
             cursor: pointer;
         }
 
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON v1.1 */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #FF6B35, #FCA311) !important;
+            color: #000 !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(255, 107, 53, 0.8), 0 0 50px rgba(252, 163, 17, 0.3); }
+            100% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: scale(1.05) translateY(-5px);
+            filter: brightness(1.1);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
+
+
+        /* INFOGRAPHIC MODAL */
+        .info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.98);
+            display: none;
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .info-box-premium {
+            width: 95%;
+            max-width: 1000px;
+            background: #0f172a;
+            border-radius: 32px;
+            border: 2px solid #10b981;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(16, 185, 129, 0.2);
+            color: white;
+        }
+
+        .info-header-pro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .info-title-pro {
+            font-family: 'Orbitron';
+            color: #10b981;
+            font-size: 28px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .info-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .info-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .info-tab-btn.active {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .info-grid-pro {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-card-pro {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid #10b981;
+        }
+
+        .info-card-pro h4 {
+            color: #10b981;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin: 0 0 10px;
+        }
+
+        .info-card-pro p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .example-box {
+            grid-column: span 2;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            display: none;
+        }
+
+        .example-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .close-pro {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 30px;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-pro:hover {
+            color: white;
+        }
+
 
         /* RESULT SECTION */
         .result-row {
@@ -345,13 +505,18 @@
 
 <body>
 
-    <div class="hero">
-        <div class="hero-badge">Financial Intelligence Module</div>
-        <h1>ROI & Business Case</h1>
-        <p>Projects die without funding. Learn to translate "Process Improvement" into "EBITDA Impact" (Earnings Before
-            Interest, Taxes, Depreciation, and Amortization).</p>
-        <a href="Tool_LeanLeadership.html" class="nav-back">← Dashboard</a>
-    </div>
+        <div class="hero">
+            <div class="hero-badge">Financial Impact Lab</div>
+            <h1>Financial Analysis (ROI)</h1>
+            <p style="color: var(--text-secondary); font-size: 18px; max-width: 600px; margin: 0 auto 30px auto;">
+                Calculating the "Power of Improvement" in currency. Justify your project with hard data.
+            </p>
+            <button class="architecture-intelligence-btn" onclick="openInfo()">
+                <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+            </button>
+            <br>
+            <a href="Stats_Calculator_Main.html" class="nav-back">← Back to Hub</a>
+        </div>
 
     <div class="container">
 
@@ -507,7 +672,40 @@
                 </p>
             </div>
 
+    </div>
+
+    <!-- STRATEGIC INFO POPUP -->
+    <div id="infoModal" class="info-overlay">
+        <div class="info-box-premium">
+            <span class="close-pro" onclick="closeInfo()">&times;</span>
+            <div class="info-header-pro">
+                <div class="info-title-pro">Financial Impact Philosophy</div>
+                <div class="info-tabs">
+                    <button class="info-tab-btn active" onclick="switchExample('general')">🍎 Global Principle</button>
+                    <button class="info-tab-btn" onclick="switchExample('healthcare')">🏥 Healthcare Context</button>
+                </div>
+            </div>
+            <div class="info-grid-pro">
+                <div class="info-card-pro">
+                    <h4>What is it?</h4>
+                    <p>ROI (Return on Investment) measures the gain or loss generated on an investment relative to the amount of money invested. It is expressed as a percentage.</p>
+                </div>
+                <div class="info-card-pro">
+                    <h4>Why use it?</h4>
+                    <p>To prioritize projects based on their financial viability and to secure executive sponsorship by proving the value of Lean Six Sigma initiatives.</p>
+                </div>
+                <!-- Examples -->
+                <div class="example-box active" id="ex-general">
+                    <h4 style="color:#10b981; margin-bottom:10px;">General Example: Manufacturing</h4>
+                    <p style="font-size:13px; color:#cbd5e1;">A plant invests $200k in a new automated sorting machine. The machine saves $100k/year in labor and reduces scrap by $50k/year. Over 3 years, the total benefit is $450k. ROI = ($450k - $200k) / $200k = 125%.</p>
+                </div>
+                <div class="example-box" id="ex-healthcare">
+                    <h4 style="color:#10b981; margin-bottom:10px;">Healthcare Example: OR Turnaround</h4>
+                    <p style="font-size:13px; color:#cbd5e1;">A hospital spends $50k on a Lean workshop to reduce OR turnaround time. The time saved allows for 1 extra surgery per day, generating $5k in additional margin. Over 250 days, this is $1.25M in new revenue. ROI = ($1.25M - $50k) / $50k = 2400%.</p>
+                </div>
+            </div>
         </div>
+    </div>
 
         <script>
             const scenarios = {
@@ -525,6 +723,21 @@
                 document.getElementById('benefit').value = s.benefit;
                 document.getElementById('years').value = s.years;
                 calcROI();
+            }
+
+            function openInfo() {
+                document.getElementById('infoModal').style.display = 'flex';
+            }
+
+            function closeInfo() {
+                document.getElementById('infoModal').style.display = 'none';
+            }
+
+            function switchExample(type) {
+                document.querySelectorAll('.info-tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.example-box').forEach(e => e.classList.remove('active'));
+                event.target.classList.add('active');
+                document.getElementById('ex-' + type).classList.add('active');
             }
 
             function calcROI() {

@@ -399,14 +399,52 @@
         }
 
         @keyframes msaPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+            50% { box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.1); }
+        }
 
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
-            }
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #f97316, #8b5cf6) !important;
+            color: white !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+            border: none;
+        }
 
-            50% {
-                box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.1);
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(249, 115, 22, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 40px rgba(249, 115, 22, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(249, 115, 22, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        @media print {
+            .architecture-intelligence-btn, .no-print {
+                display: none !important;
             }
         }
     </style>
@@ -433,9 +471,9 @@
                             MSA?</span>
                     </p>
                 </div>
-                <div style="display:flex; gap:12px;">
-                    <button class="btn btn-ghost" onclick="showInfographic()">
-                        <i class="fas fa-info-circle"></i> Training Brief
+                <div style="display:flex; align-items:center; gap:20px;">
+                    <button class="architecture-intelligence-btn" onclick="showInfographic()">
+                        <i class="fas fa-microchip"></i> Architecture Intelligence
                     </button>
                     <img src="./assets/accuracy_precision.png" alt="Accuracy vs Precision"
                         style="height:60px; border-radius:8px; border:1px solid var(--glass-border); cursor:pointer; transition:0.3s;"

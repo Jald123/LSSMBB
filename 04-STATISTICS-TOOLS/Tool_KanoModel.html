@@ -471,6 +471,45 @@
             color: white;
             box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
         }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #ec4899, #db2777) !important;
+            color: white !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+            margin-top: 25px;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(236, 72, 153, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(236, 72, 153, 0.7), 0 0 40px rgba(236, 72, 153, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(236, 72, 153, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
     </style>
 </head>
 
@@ -481,8 +520,8 @@
         <h1>The Kano Model Analysis</h1>
         <p>Patient satisfaction isn't linear. Distinguish between what patients expect, what they want, and what truly
             wows them.</p>
-        <button class="btn-definitions" onclick="toggleModal(true)">
-            📚 View Definitions Framework
+        <button class="architecture-intelligence-btn" onclick="toggleModal(true)">
+            <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
         </button>
         <br>
         <a href="Tool_LeanLeadership.html" class="nav-back">←  Dashboard</a>

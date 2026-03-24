@@ -434,6 +434,43 @@
             font-size: 18px;
             text-align: center;
         }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+            color: white !important;
+            padding: 8px 20px !important;
+            border-radius: 50px !important;
+            font-size: 11px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            white-space: nowrap;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 40px rgba(59, 130, 246, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 14px;
+            filter: drop-shadow(0 0 5px white);
+        }
     </style>
 </head>
 
@@ -611,8 +648,9 @@
         <div class="dock-sep"></div>
         <div class="nav-icon" onclick="document.getElementById('fileModal').style.display='flex'" title="Load Examples">
             📂</div>
-        <div class="nav-icon" onclick="document.getElementById('guideModal').style.display='flex'" title="Guide">👧
-        </div>
+        <button class="architecture-intelligence-btn" onclick="document.getElementById('guideModal').style.display='flex'">
+            <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+        </button>
         <div class="dock-sep"></div>
         <div class="nav-icon" onclick="window.print()" title="Export Report">↑</div>
     </div>

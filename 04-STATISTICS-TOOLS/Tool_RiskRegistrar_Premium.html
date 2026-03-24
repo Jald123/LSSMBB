@@ -630,7 +630,11 @@
                     <span class="phase-glow"
                         style="background:#f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);">DEFINE &
                         CONTROL</span>
-                    <h1>Risk Registrar</h1>
+                    <h1 style="display: flex; align-items: center; gap: 15px;">Risk Registrar
+                        <button class="btn btn-ghost" style="font-size: 11px; padding: 6px 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;" onclick="document.getElementById('visualExplModal').style.display='flex'">
+                            <i class="fas fa-image"></i> Visual Expl.
+                        </button>
+                    </h1>
                     <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">Predicting failure modes and
                         implementing strategic controls.</p>
                 </div>
@@ -1072,7 +1076,12 @@
             }));
         }
     </script>
-    <script src="AssistantTools.js"></script>
+    <div id="visualExplModal" class="info-overlay" style="z-index: 9999; display: none;">
+        <div class="info-box-premium" style="max-width: 90%; max-height: 90vh; overflow-y: auto; padding: 20px; text-align: center; border-color: #f59e0b;">
+            <span class="close-pro" onclick="document.getElementById('visualExplModal').style.display='none'" style="top: 15px; right: 20px;">&times;</span>
+            <img src="images/risk_registrar_info.png" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        </div>
+    </div>
 </body>
 
 </html>

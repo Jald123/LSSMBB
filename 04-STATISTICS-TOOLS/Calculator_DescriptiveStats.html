@@ -665,6 +665,44 @@
             color: var(--accent);
         }
 
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON v1.1 */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #FF6B35, #FCA311) !important;
+            color: #000 !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(255, 107, 53, 0.8), 0 0 50px rgba(252, 163, 17, 0.3); }
+            100% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: scale(1.05) translateY(-5px);
+            filter: brightness(1.1);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
         .slide-panel {
             position: fixed;
             top: 0;
@@ -977,8 +1015,6 @@
         </div>
     </nav>
 
-    <!-- HELP BUTTON & PANEL -->
-    <button class="help-btn" onclick="document.getElementById('slidePanel').classList.toggle('open')">?</button>
     <div id="slidePanel" class="slide-panel">
         <span class="slide-close"
             onclick="document.getElementById('slidePanel').classList.toggle('open')">&times;</span>
@@ -1088,10 +1124,15 @@
                             <p style="color: #94a3b8; font-style:italic; font-size:14px; margin-top:5px;">Master Your
                                 Data. Start Summarizing. Reveal the "Unknowns".</p>
                         </div>
-                        <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'"
-                            style="border:1px solid rgba(255,255,255,0.1);">
-                            <i class="fas fa-th"></i> DASHBOARD
-                        </button>
+                        <div style="text-align: right; display: flex; flex-direction: column; gap: 15px; align-items: flex-end;">
+                            <button class="architecture-intelligence-btn" onclick="toggleSlidePanel()">
+                                <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+                            </button>
+                            <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'"
+                                style="border:1px solid rgba(255,255,255,0.1);">
+                                <i class="fas fa-th"></i> DASHBOARD
+                            </button>
+                        </div>
                     </div>
 
                     <!-- EDUCATIONAL GRID -->

@@ -344,6 +344,43 @@
                 text-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
             }
         }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+            color: white !important;
+            padding: 10px 24px !important;
+            border-radius: 50px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            border: none;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 40px rgba(59, 130, 246, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 16px;
+            filter: drop-shadow(0 0 5px white);
+        }
     </style>
 </head>
 
@@ -369,12 +406,12 @@
                     truly affect your Y?
                 </p>
             </div>
-            <div style="text-align: right; display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn btn-primary" onclick="openChiInfo()"
-                    style="padding: 10px 20px; font-weight: 700; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">💡
-                    Simple Explanation</button>
+            <div style="text-align: right; display: flex; flex-direction: column; gap: 15px; align-items: flex-end;">
+                <button class="architecture-intelligence-btn" onclick="openChiInfo()">
+                    <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+                </button>
                 <button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'"
-                    style="font-size: 12px;">← Tools Hub</button>
+                    style="font-size: 12px; padding: 4px 12px;">← Tools Hub</button>
             </div>
         </div>
 
