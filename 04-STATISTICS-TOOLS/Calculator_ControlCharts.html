@@ -217,7 +217,7 @@
             <div>
                 <span class="phase-glow">PHASE: CONTROL</span>
                 <div style="height: 15px;"></div>
-                <h1>I-MR Control Charts <span class="ai-badge">SPC ENGINE</span></h1>
+                <h1 style="display: flex; align-items: center; gap: 15px;">I-MR Control Charts <span class="ai-badge">SPC ENGINE</span> <button class="btn btn-ghost" style="font-size: 11px; padding: 4px 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;" onclick="document.getElementById('visualExplModal').style.display='flex'"><i class="fas fa-image"></i> Visual Expl.</button></h1>
                 <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
                     Monitor Stability. <span style="color: var(--accent);">Detect Signals.</span> Differentiate Signal
                     from Noise.
@@ -865,7 +865,12 @@
         }
     </script>
 
-    <script src="AssistantTools.js"></script>
+    <div id="visualExplModal" class="modal-overlay" style="z-index: 9999; display: none; align-items: center; justify-content: center; background: rgba(2,6,23,0.95); backdrop-filter: blur(10px);">
+        <div class="modal-box" style="max-width: 90%; max-height: 90vh; overflow-y: auto; padding: 20px; text-align: center; background: #0f172a; border: 2px solid #3b82f6; position: relative;">
+            <span class="close-btn" onclick="document.getElementById('visualExplModal').style.display='none'" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer;">&times;</span>
+            <img src="images/imr_control_charts_info.jpg" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        </div>
+    </div>
 </body>
 
 </html>

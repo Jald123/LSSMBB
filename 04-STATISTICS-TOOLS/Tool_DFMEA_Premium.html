@@ -461,6 +461,9 @@
                     Effects Analysis</p>
             </div>
             <div>
+                <button class="architecture-intelligence-btn" onclick="openVisualExpl()" style="margin-right:15px; background: linear-gradient(135deg, #FFD700, #FFA500) !important; color: #000 !important; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;">
+                    <i class="fas fa-eye" style="filter:none !important; color:#000;"></i> Visual Expl.
+                </button>
                 <button class="architecture-intelligence-btn" onclick="openFMEAInfo()" style="margin-right:15px;">
                     <i class="fas fa-shield-alt"></i> Architecture Intelligence
                 </button>
@@ -1277,6 +1280,23 @@
     </script>
 
     <script src="AssistantTools.js"></script>
+    <script>
+        function openVisualExpl() {
+            document.getElementById('visualExplModal').style.display = 'flex';
+        }
+    </script>
+
+    <!-- VISUAL EXPLANATION MODAL -->
+    <div class="modal-overlay" id="visualExplModal" onclick="if(event.target===this) this.style.display='none'" style="z-index:5000; backdrop-filter: blur(15px); background: rgba(0,0,0,0.9);">
+        <div class="modal-box" style="max-width:1000px; width:95%; background:transparent; border:none; padding:0; box-shadow:none;">
+            <div style="position:relative;">
+                <span style="position:absolute; top:-40px; right:0; cursor:pointer; font-size:32px; color:white; font-weight:bold; z-index:10;" onclick="document.getElementById('visualExplModal').style.display='none'">&times;</span>
+                <div style="border-radius:20px; overflow:hidden; border:2px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+                    <img src="images/dfmea_info.png" style="width:100%; display:block;" alt="DFMEA Manager Infographic">
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
