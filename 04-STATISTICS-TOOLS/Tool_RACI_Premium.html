@@ -479,19 +479,17 @@
     <style>
         /* MODERN LAYOUT EXTENSIONS */
         .workspace {
-            display: grid;
-            grid-template-columns: 1fr 240px;
+            display: flex;
+            flex-direction: column;
             gap: 30px;
         }
 
-        .report-sidebar {
+        .report-bottom {
             background: rgba(15, 23, 42, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 30px;
-            height: fit-content;
-            position: sticky;
-            top: 20px;
+            margin-top: 30px;
             backdrop-filter: blur(20px);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
@@ -891,40 +889,48 @@
             </div>
         </div>
 
-        <!-- THE PREMIUM SIDEBAR -->
-        <div class="report-sidebar">
-            <h2 class="sidebar-title">Report & Export</h2>
+    </div>
 
-            <div class="input-group">
-                <label>Analyst / Lead:</label>
-                <input type="text" class="premium-input" placeholder="Enter name...">
-            </div>
+    <!-- REPOSITIONED REPORT & EXPORT SECTION -->
+    <div class="report-bottom no-print">
+        <h2 class="sidebar-title">Report & Export</h2>
 
-            <div class="input-group" style="background: rgba(0,0,0,0.2); padding:15px; border-radius:12px;">
-                <label><i class="fas fa-microscope"></i> Live Audit Engine</label>
-                <div id="auditResults" style="margin-top:10px;"></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+            <div>
+                <div class="input-group">
+                    <label>Analyst / Lead:</label>
+                    <input type="text" id="candidateNameInput" class="premium-input" placeholder="Enter name..."
+                        oninput="document.querySelectorAll('.report-bottom .premium-input')[0].value = this.value">
+                </div>
 
-                <div class="progress-container" style="margin-top:15px;">
-                    <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px;">
-                        <span>Quality Score</span>
-                        <span id="progressText">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
+                <div class="input-group" style="background: rgba(0,0,0,0.2); padding:15px; border-radius:12px;">
+                    <label><i class="fas fa-microscope"></i> Live Audit Engine</label>
+                    <div id="auditResults" style="margin-top:10px;"></div>
+
+                    <div class="progress-container" style="margin-top:15px;">
+                        <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px;">
+                            <span>Quality Score</span>
+                            <span id="progressText">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="input-group">
-                <label>Interpretation & Governance Summary:</label>
-                <textarea id="interpretationText" class="premium-input" style="height:120px; resize:none;"
-                    placeholder="Describe the governance logic and key decision nodes here..."></textarea>
-            </div>
+            <div>
+                <div class="input-group">
+                    <label>Interpretation & Governance Summary:</label>
+                    <textarea id="interpretationText" class="premium-input" style="height:120px; resize:none;"
+                        placeholder="Describe the governance logic and key decision nodes here..."></textarea>
+                </div>
 
-            <div style="display:grid; grid-template-columns: 1fr; gap:12px; margin-top:20px;">
-                <button class="btn" style="background: #3b82f6;"><i class="fas fa-save"></i> Save Governance</button>
-                <button class="btn btn-ghost" onclick="window.print()"><i class="fas fa-file-pdf"></i> Export as
-                    PDF</button>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:20px;">
+                    <button class="btn" style="background: #3b82f6;"><i class="fas fa-save"></i> Save Governance</button>
+                    <button class="btn btn-ghost" onclick="window.print()"><i class="fas fa-file-pdf"></i> Export as
+                        PDF</button>
+                </div>
             </div>
         </div>
     </div>

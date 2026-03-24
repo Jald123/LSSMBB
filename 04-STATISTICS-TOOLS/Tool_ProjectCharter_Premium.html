@@ -2224,8 +2224,7 @@
     <div class="app-container">
         <!-- TOOLKIT SELECTOR (LEFT) -->
         <div class="sidebar-left">
-            <div
-                style="font-family:'Orbitron'; font-size:16px; color:var(--accent); margin-bottom:30px; text-align:center;">
+            <div style="font-family:'Orbitron'; font-size:16px; color:var(--accent); margin-bottom:30px; text-align:center;">
                 DMAIC SUITE</div>
             <button class="btn btn-primary" style="width:100%; justify-content:flex-start; margin-bottom:10px;"><i
                     class="fas fa-file-signature"></i> Project Charter</button>
@@ -2233,6 +2232,37 @@
                 onclick="showGuide()"><i class="fas fa-book"></i> Project Guide</button>
             <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; margin-bottom:10px;"
                 onclick="openPremiumInfo('charter')"><i class="fas fa-brain"></i> Strategic Lab</button>
+
+            <!-- TOOLS & SIMULATION (MOVED FROM HEADER) -->
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                <span class="sidebar-label">Simulation Case</span>
+                <select id="scenarioSelect" onchange="loadScenario()" class="premium-select-box" style="width:100%; margin-bottom:15px; font-size:11px;">
+                    <option value="">-- CUSTOM CHARTER --</option>
+                    <optgroup label="Manufacturing">
+                        <option value="manufacturing">⚙️ Case: Mfg Scrap</option>
+                        <option value="mfg_poor_baseline">⚠️ [POOR] Baseline</option>
+                        <option value="mfg_poor_scope">⚠️ [POOR] Scope</option>
+                    </optgroup>
+                    <optgroup label="Healthcare">
+                        <option value="healthcare">🏥 Case: Patient Flow</option>
+                        <option value="hc_med_errors">💉 Case: Accuracy</option>
+                        <option value="hc_readmission">🛌 Case: Readmission</option>
+                        <option value="hc_poor_broad">⚠️ [POOR] Quality</option>
+                        <option value="hc_poor_subjective">⚠️ [POOR] Staff</option>
+                        <option value="hc_poor_vague">⚠️ [POOR] Vague</option>
+                    </optgroup>
+                    <optgroup label="Service & IT">
+                        <option value="service">🖥️ Case: IT Service</option>
+                        <option value="service_churn">📉 Case: Churn</option>
+                        <option value="service_poor_time">⚠️ [POOR] Portal</option>
+                        <option value="service_poor_subjective">⚠️ [POOR] Unhappy</option>
+                    </optgroup>
+                </select>
+
+                <button class="btn-header-alert" onclick="openScopeCreepModal()" style="width:100%; justify-content:center; padding: 10px; font-size: 11px;">
+                    <i class="fas fa-exclamation-triangle"></i> SCOPE CREEP?
+                </button>
+            </div>
 
             <button class="btn btn-ghost" style="width:100%; margin-top:auto;"
                 onclick="window.location.href='Tool_WorkflowHub.html'"><i class="fas fa-home"></i> Main Hub</button>
@@ -2246,37 +2276,8 @@
                     <h1>Project Charter MASTER</h1>
                 </div>
                 <div class="header-controls-container">
-                    <span class="scenario-label">Simulation Case:</span>
-                    <select id="scenarioSelect" onchange="loadScenario()" class="premium-select-box">
-                        <option value="">-- CUSTOM CHARTER --</option>
-                        <optgroup label="Manufacturing">
-                            <option value="manufacturing">⚙️ Case: Manufacturing Scrap</option>
-                            <option value="mfg_poor_baseline">⚠️ [POOR] Fix the Machines</option>
-                            <option value="mfg_poor_scope">⚠️ [POOR] Improve Production</option>
-                        </optgroup>
-                        <optgroup label="Healthcare (Medical)">
-                            <option value="healthcare">🏥 Case: Patient Flow</option>
-                            <option value="hc_med_errors">💉 Case: Medication Accuracy</option>
-                            <option value="hc_readmission">🛌 Case: 30-Day Readmission</option>
-                            <option value="hc_poor_broad">⚠️ [POOR] Improve Hospital Quality</option>
-                            <option value="hc_poor_subjective">⚠️ [POOR] Happy Nursing Staff</option>
-                            <option value="hc_poor_vague">⚠️ [POOR] Better Patient Care</option>
-                        </optgroup>
-                        <optgroup label="Service & IT">
-                            <option value="service">🖥️ Case: IT Service Resolution</option>
-                            <option value="service_churn">📉 Case: Customer Churn</option>
-                            <option value="service_poor_time">⚠️ [POOR] Portal Update</option>
-                            <option value="service_poor_subjective">⚠️ [POOR] Unhappy Customers</option>
-                        </optgroup>
-                    </select>
-
-                    <div style="width: 1px; height: 25px; background: rgba(255,255,255,0.1); margin: 0 5px;"></div>
-
-                    <button class="btn-header-alert" onclick="openScopeCreepModal()">
-                        <i class="fas fa-exclamation-triangle"></i> SCOPE CREEP?
-                    </button>
-                    <button class="btn-header-info" onclick="openPremiumInfo('charter')">
-                        <i class="fas fa-info-circle"></i> STRATEGY
+                    <button class="btn-header-info" onclick="printReport()">
+                         <i class="fas fa-file-pdf"></i> Generate PDF
                     </button>
                 </div>
             </header>

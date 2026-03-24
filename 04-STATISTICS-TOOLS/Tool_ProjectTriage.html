@@ -758,25 +758,6 @@
         <h1>Problem Alignment & Project Triage</h1>
         <p>Before you "Fix", you must "Define". Use this tool to validate potential projects and scope them for the
             correct Belt Level.</p>
-
-        <!-- NEW ACTION HEADER -->
-        <div style="display: flex; gap: 20px; justify-content: center; align-items: center; margin-top: 30px;">
-            <div style="text-align:right; width: 250px;">
-                <input type="text" id="candidateNameInput" placeholder="Enter Your Name"
-                    style="width: 100%; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); padding:10px 15px; color:white; border-radius:8px; font-size:14px; text-align:center;"
-                    oninput="updatePrintName(this.value)">
-                <div class="progress-container">
-                    <div id="screen-progress-bar" class="progress-bar"></div>
-                </div>
-            </div>
-
-            <button onclick="checkProgress()"
-                style="width: auto; padding: 12px 24px; margin:0; background: #10b981; border: 1px solid rgba(255,255,255,0.2);">💾
-                Save & Evaluate</button>
-            <button onclick="window.print()"
-                style="width: auto; padding: 12px 24px; margin:0; background: #3b82f6; border: 1px solid rgba(255,255,255,0.2);">🖨️
-                Print Report</button>
-        </div>
     </div>
 
     <div class="container">
@@ -1081,6 +1062,25 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- REPOSITIONED ACTION CONTROLS -->
+    <div style="background: rgba(15, 23, 42, 0.9); border-top: 1px solid rgba(255,255,255,0.1); padding: 15px 0; margin-top: 40px; margin-bottom: 20px;" class="no-print">
+        <div style="max-width: 1560px; margin: 0 auto; padding: 0 20px; display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <div style="width: 200px;">
+                <input type="text" id="candidateNameInput" placeholder="Enter Your Name"
+                    style="width: 100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding:8px 12px; color:white; border-radius:6px; font-size:13px; text-align:center;"
+                    oninput="updatePrintName(this.value)">
+                <div class="progress-container" style="height: 6px; margin-top: 5px;">
+                    <div id="screen-progress-bar" class="progress-bar"></div>
+                </div>
+            </div>
+
+            <button onclick="checkProgress()"
+                style="width: auto; padding: 8px 16px; margin:0; background: #10b981; border: 1px solid rgba(255,255,255,0.1); font-size: 13px; border-radius: 6px;">💾 Save & Evaluate</button>
+            <button onclick="window.print()"
+                style="width: auto; padding: 8px 16px; margin:0; background: #3b82f6; border: 1px solid rgba(255,255,255,0.1); font-size: 13px; border-radius: 6px;">🖨️ Print Report</button>
+        </div>
     </div>
 
     <!-- BOTTOM NAVIGATION -->
