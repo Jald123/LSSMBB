@@ -11,13 +11,7 @@ import {
     AlertCircle,
     Zap,
     ShieldCheck,
-    Lock,
-    Award,
-    Shield,
-    Crown,
-    Leaf,
-    Star,
-    FlaskConical
+    Lock
 } from 'lucide-react';
 import { methodologyData } from '../data/journeyData';
 import { useNexus } from '../context/NexusContext';
@@ -116,7 +110,6 @@ const PhaseOrbitView = () => {
             </div>
 
 
-
             {/* 🛠️ TOOL GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {phase?.tools?.map((tool) => (
@@ -129,19 +122,13 @@ const PhaseOrbitView = () => {
                           hover:border-nexus-cyan/40 hover:bg-nexus-surface/60
                         `}
                     >
+                        {/* Tool Header */}
                         <div className="flex justify-between items-start mb-6">
-                            <div className={`p-3 rounded-2xl border transition-colors ${theme === 'dark' ? 'bg-black/40 border-white/10' : 'bg-white border-nexus-border shadow-sm'} group-hover:border-nexus-cyan/30`}>
+                            <div className="p-3 rounded-2xl bg-black/40 border border-white/10 group-hover:border-nexus-cyan/30 transition-colors">
                                 <Cpu className="w-5 h-5 text-nexus-cyan" />
                             </div>
                             <div className="flex flex-col items-end">
-                                <div className="flex items-center gap-2 mb-1">
-                                    {tool.name.toLowerCase().includes('lab') && (
-                                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-nexus-purple/10 border border-nexus-purple/20 text-nexus-purple text-[8px] font-black font-orbitron">
-                                            <FlaskConical className="w-2.5 h-2.5" /> LAB
-                                        </span>
-                                    )}
-                                    <span className="text-[9px] font-black font-orbitron text-nexus-text-secondary/60 tracking-tighter uppercase">Station ID</span>
-                                </div>
+                                <span className="text-[9px] font-black font-orbitron text-nexus-text-secondary/60 tracking-tighter uppercase mb-1">Station ID</span>
                                 <span className="text-[10px] text-nexus-text-primary font-black font-orbitron">{tool.id.toUpperCase()}</span>
                             </div>
                         </div>
@@ -152,17 +139,11 @@ const PhaseOrbitView = () => {
                                 <span className="text-[10px] text-nexus-gold font-orbitron font-black tracking-[0.2em] uppercase">{tool.category}</span>
                                 <div className="h-px flex-1 bg-nexus-border" />
                                 <span className={`
-                                    flex items-center gap-1.5 px-2 py-0.5 rounded text-[8px] font-black font-orbitron border
+                                    px-2 py-0.5 rounded text-[8px] font-black font-orbitron border
                                     ${tool.belt === 'YB' ? 'border-nexus-gold/30 text-nexus-gold bg-nexus-gold/5' :
                                         tool.belt === 'GB' ? 'border-nexus-cyan/30 text-nexus-cyan bg-nexus-cyan/5' :
-                                            tool.belt === 'BB' ? 'border-nexus-purple/30 text-nexus-purple bg-nexus-purple/5' :
-                                                'border-nexus-gold/30 text-nexus-gold bg-nexus-gold/5'}
+                                            'border-nexus-purple/30 text-nexus-purple bg-nexus-purple/5'}
                                 `}>
-                                    {tool.belt === 'YB' && <Award className="w-2.5 h-2.5" />}
-                                    {tool.belt === 'GB' && <Leaf className="w-2.5 h-2.5" />}
-                                    {tool.belt === 'BB' && <Shield className="w-2.5 h-2.5" />}
-                                    {tool.belt === 'MBB' && <Crown className="w-2.5 h-2.5" />}
-                                    {!['YB', 'GB', 'BB', 'MBB'].includes(tool.belt) && <Star className="w-2.5 h-2.5" />}
                                     {tool.belt}
                                 </span>
                             </div>
@@ -198,7 +179,7 @@ const PhaseOrbitView = () => {
                             <Link
                                 to={`/workspace/${tool.id}`}
                                 className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-orbitron font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl
-                                    ${theme === 'dark' ? 'bg-nexus-cyan text-nexus-navy shadow-nexus-cyan/20' : 'bg-[#0f172a] text-white shadow-nexus-navy/20'}`}
+                                    ${theme === 'dark' ? 'bg-nexus-cyan text-nexus-navy shadow-nexus-cyan/20' : 'bg-nexus-dark-blue text-white shadow-nexus-dark-blue/20'}`}
                             >
                                 <Terminal className="w-4 h-4" /> EXECUTE
                             </Link>
@@ -206,7 +187,7 @@ const PhaseOrbitView = () => {
                             <Link
                                 to={`/workspace/${tool.id}`}
                                 state={{ mode: 'learn' }}
-                                className={`w-14 h-14 rounded-2xl border flex items-center justify-center group/btn transition-all ${theme === 'dark' ? 'bg-black/40 border-white/10 hover:border-nexus-purple hover:bg-nexus-purple/5' : 'bg-white border-nexus-border shadow-sm hover:border-nexus-purple hover:bg-nexus-purple/5'}`}
+                                className="w-14 h-14 rounded-2xl bg-black/40 border border-nexus-border flex items-center justify-center group/btn hover:border-nexus-purple hover:bg-nexus-purple/5 transition-all"
                             >
                                 <BookOpen className="w-5 h-5 text-nexus-text-secondary/40 group-hover/btn:text-nexus-purple transition-colors" />
                             </Link>

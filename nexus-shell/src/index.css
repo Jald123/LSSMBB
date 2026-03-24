@@ -28,6 +28,7 @@
   --color-nexus-success-base: #10b981;
   --color-nexus-warn-base: #f59e0b;
   --color-nexus-error-base: #ef4444;
+  --color-nexus-dark-blue-base: #1e3a8a;
 
   /* --- UTILITIES --- */
   --nexus-glass-base: rgba(15, 23, 42, 0.7);
@@ -116,6 +117,7 @@
   --color-nexus-success: var(--color-nexus-success-base);
   --color-nexus-warn: var(--color-nexus-warn-base);
   --color-nexus-error: var(--color-nexus-error-base);
+  --color-nexus-dark-blue: var(--color-nexus-dark-blue-base);
 
   --color-nexus-text-primary: var(--nexus-text-primary-base);
   --color-nexus-text-secondary: var(--nexus-text-secondary-base);
