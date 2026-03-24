@@ -21,10 +21,8 @@ const AuthorityBar = () => {
                 <span className="text-slate-700">C</span>
             </div>
 
-            <div className="text-right">
-                <div className="text-[10px] font-black font-orbitron text-nexus-gold uppercase tracking-tighter">Hossam AlDhaher <span className="font-medium text-[8px] opacity-70">LSSMBB</span></div>
-                <div className="text-[9px] font-medium text-nexus-cyan opacity-80">HealthQualityLeader.com LTD</div>
-            </div>
+            {/* Branding removed per user request */}
+            <div className="flex-1"></div>
         </footer>
     );
 };

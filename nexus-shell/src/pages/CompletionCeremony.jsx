@@ -20,11 +20,11 @@ const CompletionCeremony = () => {
     const [copied, setCopied] = useState(false);
 
     const certData = {
-        recipient: "Hossam ALDhaher",
+        recipient: "STUDENT NAME",
         title: "Lean Six Sigma Master Black Belt (LSSMBB)",
         date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
         credentialId: "NEX-MBB-2026-X77",
-        verificationLink: "https://healthqualityleader.com/verify/NEX-MBB-2026-X77"
+        verificationLink: "https://nexus-os.io/verify/NEX-MBB-2026-X77"
     };
 
     const handleCopyLink = () => {

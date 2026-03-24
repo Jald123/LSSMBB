@@ -1042,7 +1042,7 @@
                         <div style="grid-column: span 2;">
                             <label style="display:block; font-size:10px; color:#aaa; margin-bottom:5px;">STUDENT
                                 NAME</label>
-                            <input type="text" id="input-cert-name" value="HOSSAM ALDHAHER" oninput="updateCertLive()"
+                            <input type="text" id="input-cert-name" value="STUDENT NAME" oninput="updateCertLive()"
                                 style="width:100%; background:#111; border:1px solid #333; color:white; padding:8px; border-radius:4px;">
                         </div>
                         <div>
@@ -1146,7 +1146,7 @@
                 <!-- Name Strip -->
                 <div class="cert-name-strip">
                     <div class="name-label">THIS IS TO CERTIFY THAT:</div>
-                    <div class="name-value" id="cert-student-name">HOSSAM ALDHAHER</div>
+                    <div class="name-value" id="cert-student-name">STUDENT NAME</div>
                 </div>
 
                 <!-- Description -->
@@ -1371,7 +1371,7 @@
             const inputCode = document.getElementById('input-cert-code');
 
             const certId = inputCode ? inputCode.value : ("LS-" + new Date().getFullYear() + "-" + Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
-            const studentName = inputName ? inputName.value : "HOSSAM ALDHAHER";
+            const studentName = inputName ? inputName.value : "STUDENT NAME";
             const certDate = inputDate ? inputDate.value : new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase();
 
             if (typeof BADGE_IMAGES !== 'undefined') {

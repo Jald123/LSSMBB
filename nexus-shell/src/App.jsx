@@ -31,8 +31,8 @@ const NexusOS_Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile drawer
   const location = useLocation();
 
-  // Determine if we are in a Workspace route
-  const isWorkspace = location.pathname.startsWith('/workspace');
+  // Determine if we are in an immersive tool workspace or armory mission
+  const isImmersive = location.pathname.startsWith('/workspace') || location.pathname.includes('/mission/');
 
   return (
     <div className="nexus-os-shell min-h-screen bg-nexus-navy text-nexus-text-primary selection:bg-nexus-cyan selection:text-nexus-text-primary overflow-hidden flex flex-col">
@@ -46,11 +46,11 @@ const NexusOS_Layout = () => {
       <OnboardingTour />
 
       {/* 🔝 HEADER */}
-      {!isWorkspace && <Header onMenuClick={() => setIsSidebarOpen(true)} />}
+      {!isImmersive && <Header onMenuClick={() => setIsSidebarOpen(true)} />}
 
-      <div className={`flex flex-1 h-full ${!isWorkspace ? 'pt-16' : ''}`}>
+      <div className={`flex flex-1 h-full ${!isImmersive ? 'pt-16' : ''}`}>
         {/* ⬅️ LEFT SIDEBAR */}
-        {!isWorkspace && (
+        {!isImmersive && (
           <Sidebar
             isCollapsed={isSidebarCollapsed}
             setIsCollapsed={toggleSidebar}
@@ -63,7 +63,7 @@ const NexusOS_Layout = () => {
         <main
           className={`
             flex-1 relative z-10 w-full h-full transition-all duration-300
-            ${!isWorkspace ? (isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-60') : ''}
+            ${!isImmersive ? (isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-60') : ''}
           `}
         >
           <div className="h-full overflow-y-auto">
@@ -72,11 +72,11 @@ const NexusOS_Layout = () => {
         </main>
 
         {/* ➡️ RIGHT CONTEXT PANEL */}
-        {!isWorkspace && isRightPanelOpen && <RightPanel />}
+        {!isImmersive && isRightPanelOpen && <RightPanel />}
       </div>
 
       {/* 🏷️ FOOTER */}
-      {!isWorkspace && <Footer />}
+      {!isImmersive && <Footer />}
     </div>
   );
 };

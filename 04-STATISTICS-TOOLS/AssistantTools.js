@@ -94,38 +94,6 @@
             <div style="font-size:10px; color:#aaa; font-family:monospace;">AST-V2</div>
         </div>
 
-        <!-- Premium Footer Signature & Navigation -->
-        <div id="premium-app-footer">
-            <div class="footer-signature left">
-                <img src="images/signature.png" alt="Hossam Aldhaher Signature">
-            </div>
-            
-            <div class="footer-nav-pill">
-                <div class="nav-round-btn home-btn" onclick="window.location.href='Tool_WorkflowHub.html'" title="Return to Hub">
-                    <i class="fas fa-home"></i>
-                </div>
-                <div class="nav-round-btn back-btn" onclick="history.back()" title="Go Back">
-                    <i class="fas fa-chevron-left"></i>
-                </div>
-                
-                <div class="nav-wide-btn done-btn" onclick="showToast('Progress Saved!')">
-                    <i class="far fa-circle"></i> MARK DONE
-                </div>
-                
-                <div class="nav-wide-btn next-btn" onclick="showToast('Loading Next Module...')">
-                    NEXT <i class="fas fa-chevron-right"></i>
-                </div>
-                
-                <div class="nav-round-btn up-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Scroll to Top">
-                    <i class="fas fa-chevron-up"></i>
-                </div>
-            </div>
-
-            <div class="footer-signature right">
-                <img src="images/signature.png" alt="Hossam Aldhaher Signature">
-            </div>
-        </div>
-
         <!-- Sticky Notes Window (Professional Enterprise Style) - Resizable -->
         <div id="sticky-window" class="assistant-window" style="position:fixed; width:380px; min-width:300px; min-height:300px; top:100px; right:50px; left:auto; background: linear-gradient(180deg, #1e293b, #0f172a); border-radius: 16px; box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08); z-index:10001; border:none; resize:both; overflow:hidden; display:none; flex-direction:column;">
             <!-- Color Selection Bar - More Obvious -->
@@ -828,43 +796,5 @@
             }, 2500);
         };
     }
-
-    // 11. PREMIUM LSS ICONS FOR BADGES
-    function addLSSIconsToBadges() {
-        document.querySelectorAll('.belt-badge, .belt-y, .belt-g, .belt-b').forEach(badge => {
-            const belt = badge.innerText.trim();
-            let icon = '';
-            if (belt === 'YB') icon = '<i class="fas fa-award" style="margin-right:4px;"></i>';
-            else if (belt === 'GB') icon = '<i class="fas fa-leaf" style="margin-right:4px;"></i>';
-            else if (belt === 'BB' || belt === 'B') icon = '<i class="fas fa-shield-halved" style="margin-right:4px;"></i>';
-            else if (belt === 'MBB') icon = '<i class="fas fa-crown" style="margin-right:4px;"></i>';
-
-            if (icon && !badge.querySelector('i')) {
-                badge.innerHTML = icon + badge.innerHTML;
-            }
-        });
-
-        // Lab labels
-        document.querySelectorAll('.tool-name').forEach(name => {
-            if (name.innerText.toLowerCase().includes('lab') && !name.parentNode.querySelector('.lab-tag')) {
-                const labTag = document.createElement('span');
-                labTag.className = 'lab-tag';
-                labTag.innerHTML = '<i class="fas fa-flask"></i> LAB';
-                labTag.style.cssText = 'font-size:8px; background:rgba(168, 85, 247, 0.1); color:#a855f7; border:1px solid rgba(168, 85, 247, 0.2); padding:1px 5px; border-radius:10px; margin-left:6px; font-weight:bold; vertical-align:middle;';
-                name.parentNode.appendChild(labTag);
-            }
-        });
-    }
-
-    // Initialize additions
-    setTimeout(() => {
-        addLSSIconsToBadges();
-
-        // Hide footer if canvas is present (non-canvas part requirement)
-        const canvas = document.querySelector('canvas, #vsm-canvas, #fishbone-svg');
-        if (canvas && window.innerWidth < 1200) {
-            document.getElementById('premium-app-footer').style.display = 'none';
-        }
-    }, 1000);
 
 })();

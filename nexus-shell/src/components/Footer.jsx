@@ -25,14 +25,8 @@ const Footer = () => {
                 <span className="text-slate-700">C</span>
             </div>
 
-            <div className="text-right">
-                <div className="text-[9px] font-black font-orbitron text-nexus-gold uppercase tracking-tighter leading-none">
-                    Hossam AlDhaher <span className="font-medium text-[7px] opacity-70">LSSMBB</span>
-                </div>
-                <div className="text-[8px] font-medium text-nexus-cyan opacity-80 uppercase tracking-tighter">
-                    HealthQualityLeader.com LTD
-                </div>
-            </div>
+            {/* Branding removed per user request */}
+            <div className="flex-1"></div>
         </footer>
     );
 };
