@@ -630,10 +630,16 @@
                 convert "Blockers" into "Champions". <br>
                 <strong>Tip:</strong> Drag the dots on the matrix to update their strategy in real-time.
             </p>
-            <button onclick="openInfluenceModal()"
-                style="margin-top:15px; width:auto; padding:10px 18px; background:rgba(255,107,53,0.1); border:1px solid var(--accent); color:var(--accent); border-radius:8px; cursor:pointer; font-family:'Orbitron'; font-size:10px; font-weight:700; display:flex; align-items:center; gap:10px; transition: all 0.3s ease;">
-                <i class="fas fa-brain"></i> VIEW LOGIC VS. EMOTION FRAMEWORK
-            </button>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button onclick="openInfluenceModal()"
+                    style="width:auto; padding:10px 18px; background:rgba(255,107,53,0.1); border:1px solid var(--accent); color:var(--accent); border-radius:8px; cursor:pointer; font-family:'Orbitron'; font-size:10px; font-weight:700; display:flex; align-items:center; gap:10px; transition: all 0.3s ease;">
+                    <i class="fas fa-brain"></i> VIEW LOGIC VS. EMOTION FRAMEWORK
+                </button>
+                <button onclick="openDistModal()"
+                    style="width:auto; padding:10px 18px; background:rgba(124,58,237,0.1); border:1px solid #7c3aed; color:#a78bfa; border-radius:8px; cursor:pointer; font-family:'Orbitron'; font-size:10px; font-weight:700; display:flex; align-items:center; gap:10px; transition: all 0.3s ease;">
+                    <i class="fas fa-chart-pie"></i> VIEW IDEAL % TARGETS
+                </button>
+            </div>
         </section>
 
         <div class="ehr-container">
@@ -648,6 +654,8 @@
                         <option value="hc">🏥 Healthcare: Merger (Board vs Staff)</option>
                         <option value="gen">🏭 Mfg: New Robot (Union vs CFO)</option>
                         <option value="ideal">⭐ Ideal Project State (Champions)</option>
+                        <option value="perfect">✅ Perfect Execution (Balanced)</option>
+                        <option value="poor">❌ Poor Planning (High Risk)</option>
                     </select>
                 </div>
 
@@ -770,8 +778,6 @@
                 style="width: auto; padding: 8px 16px; margin:0; background: #10b981; border: 1px solid rgba(255,255,255,0.1); font-size: 13px; border-radius: 6px;">💾 Save & Evaluate</button>
             <button onclick="window.print()"
                 style="width: auto; padding: 8px 16px; margin:0; background: #3b82f6; border: 1px solid rgba(255,255,255,0.1); font-size: 13px; border-radius: 6px;">🖨️ Print Report</button>
-            <button onclick="openDistModal()"
-                style="width: auto; padding: 8px 16px; margin:0; background: #7c3aed; border: 1px solid rgba(255,255,255,0.1); font-size: 13px; border-radius: 6px;">📊 Ideal %</button>
         </div>
     </div>
 
@@ -881,10 +887,12 @@
         // SCENARIOS
         const scenarios = {
             hc: [
-                { name: "Board of Directors", pow: 90, int: 20, urg: 30 }, // Keep Satisfied
-                { name: "Frontline Nurses", pow: 20, int: 90, urg: 85 },  // Keep Informed (High Urgency)
+                { name: "Board of Directors", pow: 95, int: 15, urg: 30 }, // Keep Satisfied (Sleeping Giant)
+                { name: "Frontline Nurses", pow: 20, int: 90, urg: 95 },  // Keep Informed (High Urgency)
                 { name: "Medical Director", pow: 85, int: 85, urg: 60 },  // Manage Closely
-                { name: "IT Support", pow: 30, int: 30, urg: 10 }         // Monitor
+                { name: "IT Infrastructure Lead", pow: 40, int: 60, urg: 40 }, // Keep Informed
+                { name: "CFO (Healthcare Group)", pow: 90, int: 40, urg: 25 }, // Keep Satisfied
+                { name: "Patient Advocacy Group", pow: 15, int: 70, urg: 10 }  // Monitor
             ],
             gen: [
                 { name: "Union Rep", pow: 90, int: 90, urg: 80 },         // Manage Closely
@@ -897,6 +905,20 @@
                 { name: "Process Owner", pow: 80, int: 90, urg: 60 },     // Champion
                 { name: "Finance Lead", pow: 80, int: 60, urg: 40 },      // Supportive
                 { name: "Team Lead", pow: 60, int: 90, urg: 90 }          // Supportive (Very Urgent)
+            ],
+            perfect: [
+                { name: "Active Sponsor", pow: 95, int: 90, urg: 60 },    // Manage Closely
+                { name: "Core Project Team", pow: 85, int: 95, urg: 80 }, // Manage Closely
+                { name: "Finance / Audit", pow: 85, int: 30, urg: 20 },   // Keep Satisfied
+                { name: "End-User Reps", pow: 30, int: 90, urg: 85 },     // Keep Informed
+                { name: "Broad Workforce", pow: 20, int: 25, urg: 15 }    // Monitor
+            ],
+            poor: [
+                { name: "Ghost Sponsor", pow: 95, int: 10, urg: 10 },     // Keep Satisfied (Neglected)
+                { name: "Hostile Management", pow: 85, int: 10, urg: 95 },// Keep Satisfied (High Risk)
+                { name: "Confused Workers", pow: 15, int: 90, urg: 95 },  // Keep Informed (Panic)
+                { name: "Overworked PM", pow: 30, int: 100, urg: 100 },   // Keep Informed (Burnout)
+                { name: "Vocal Critic", pow: 70, int: 80, urg: 80 }       // Manage Closely
             ]
         };
 
@@ -1135,67 +1157,96 @@
             <span style="color:#7c3aed">Ideal</span> Stakeholder Distribution
         </h2>
 
-        <div style="font-size:13px; color:#cbd5e1; margin-bottom:20px;">
-            <strong>Why this matters:</strong> You have limited time and energy. You cannot manage everyone closely.
-            A healthy project follows a <strong>Pareto Distribution</strong> of effort.
+        <!-- TABS FOR DISTRIBUTION -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button onclick="switchDistTab('targets', this)" class="sh-tab active" style="border-color:#7c3aed">1. IDEAL TARGETS</button>
+            <button onclick="switchDistTab('logic', this)" class="sh-tab" style="border-color:#7c3aed">2. ARCHITECTURE LOGIC</button>
         </div>
 
+        <div id="dist_targets" class="dist-content active">
+            <div style="font-size:15px; color:#cbd5e1; margin-bottom:25px; line-height:1.6;">
+                <strong>Why this matters:</strong> You have limited time and energy. You cannot manage everyone closely.
+                A healthy project follows a <strong>Pareto Distribution</strong> of effort.
+            </div>
+
         <!-- THE QUADRANTS INFOGRAPHIC -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:25px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:30px;">
             <!-- Keep Satisfied -->
-            <div class="dist-card" style="border-left:4px solid #f59e0b; background:rgba(245, 158, 11, 0.1);">
-                <div style="font-size:10px; font-weight:bold; color:#f59e0b; text-transform:uppercase;">Keep Satisfied
+            <div class="dist-card" style="border-left:4px solid #f59e0b; background:rgba(245, 158, 11, 0.1); padding:20px;">
+                <div style="font-size:11px; font-weight:bold; color:#f59e0b; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Keep Satisfied
                 </div>
-                <div style="font-size:24px; font-weight:bold; color:white;">20-25%</div>
-                <div style="font-size:11px; opacity:0.7;">High Power / Low Interest</div>
-                <div style="font-size:10px; margin-top:5px; color:#cbd5e1;"><em>"The Sleeping Giants"</em></div>
+                <div style="font-size:28px; font-weight:bold; color:white; margin-bottom:4px;">20-25%</div>
+                <div style="font-size:13px; color:#cbd5e1;">High Power / Low Interest</div>
+                <div style="font-size:11px; margin-top:10px; color:#94a3b8;"><em>"The Sleeping Giants"</em></div>
             </div>
 
             <!-- Manage Closely -->
-            <div class="dist-card" style="border-left:4px solid #ef4444; background:rgba(239, 68, 68, 0.1);">
-                <div style="font-size:10px; font-weight:bold; color:#ef4444; text-transform:uppercase;">Manage Closely
+            <div class="dist-card" style="border-left:4px solid #ef4444; background:rgba(239, 68, 68, 0.1); padding:20px;">
+                <div style="font-size:11px; font-weight:bold; color:#ef4444; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Manage Closely
                 </div>
-                <div style="font-size:24px; font-weight:bold; color:white;">10-15%</div>
-                <div style="font-size:11px; opacity:0.7;">High Power / High Interest</div>
-                <div style="font-size:10px; margin-top:5px; color:#cbd5e1;"><em>"The Key Players" (Max 6-8 usually)</em>
+                <div style="font-size:28px; font-weight:bold; color:white; margin-bottom:4px;">10-15%</div>
+                <div style="font-size:13px; color:#cbd5e1;">High Power / High Interest</div>
+                <div style="font-size:11px; margin-top:10px; color:#94a3b8;"><em>"The Key Players" (Max 6-8)</em>
                 </div>
             </div>
 
             <!-- Monitor -->
-            <div class="dist-card" style="border-left:4px solid #94a3b8; background:rgba(148, 163, 184, 0.1);">
-                <div style="font-size:10px; font-weight:bold; color:#94a3b8; text-transform:uppercase;">Monitor</div>
-                <div style="font-size:24px; font-weight:bold; color:white;">35-50%</div>
-                <div style="font-size:11px; opacity:0.7;">Low Power / Low Interest</div>
-                <div style="font-size:10px; margin-top:5px; color:#cbd5e1;"><em>"The Crowd"</em></div>
+            <div class="dist-card" style="border-left:4px solid #94a3b8; background:rgba(148, 163, 184, 0.1); padding:20px;">
+                <div style="font-size:11px; font-weight:bold; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Monitor</div>
+                <div style="font-size:28px; font-weight:bold; color:white; margin-bottom:4px;">35-50%</div>
+                <div style="font-size:13px; color:#cbd5e1;">Low Power / Low Interest</div>
+                <div style="font-size:11px; margin-top:10px; color:#94a3b8;"><em>"The Crowd"</em></div>
             </div>
 
             <!-- Keep Informed -->
-            <div class="dist-card" style="border-left:4px solid #3b82f6; background:rgba(59, 130, 246, 0.1);">
-                <div style="font-size:10px; font-weight:bold; color:#3b82f6; text-transform:uppercase;">Keep Informed
+            <div class="dist-card" style="border-left:4px solid #3b82f6; background:rgba(59, 130, 246, 0.1); padding:20px;">
+                <div style="font-size:11px; font-weight:bold; color:#3b82f6; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Keep Informed
                 </div>
-                <div style="font-size:24px; font-weight:bold; color:white;">20-25%</div>
-                <div style="font-size:11px; opacity:0.7;">Low Power / High Interest</div>
-                <div style="font-size:10px; margin-top:5px; color:#cbd5e1;"><em>"The Cheerleaders / Reviewers"</em>
+                <div style="font-size:28px; font-weight:bold; color:white; margin-bottom:4px;">20-25%</div>
+                <div style="font-size:13px; color:#cbd5e1;">Low Power / High Interest</div>
+                <div style="font-size:11px; margin-top:10px; color:#94a3b8;"><em>"The Cheerleaders"</em>
                 </div>
             </div>
         </div>
 
-        <!-- SCENARIOS -->
-        <h3 style="font-size:14px; color:#7c3aed; margin-bottom:10px;">Scenario Deviations</h3>
-        <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:5px;">
-            <div class="scenario-pill">
-                <strong>🚀 Standard Project</strong><br>
-                Balanced pyramid. Most people in "Monitor", fewest in "Manage Closely".
             </div>
-            <div class="scenario-pill">
-                <strong>🌪️ Crisis / Turnaround</strong><br>
-                "Manage Closely" swells to 30%+. Executives want hands-on control. <br>
-                <em>Action: Appoint gatekeepers.</em>
-            </div>
-            <div class="scenario-pill">
-                <strong>🔄 Change Mgmt</strong><br>
-                "Keep Satisfied" (Resistors) swells. Powerful people who don't want change.<br>
-                <em>Action: Convert to "Informed" or Neutralize.</em>
+        </div>
+
+        <!-- NEW LOGIC TAB -->
+        <div id="dist_logic" class="dist-content" style="display:none;">
+            <div style="background:rgba(0,0,0,0.3); padding:30px; border-radius:15px; border:1px solid rgba(255,255,255,0.05); margin-bottom:20px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; height: 160px; align-items: end; margin-bottom:30px; padding: 0 10px;">
+                    <div style="height:100%; display:flex; flex-direction:column; justify-content:end; align-items:center;">
+                        <div style="width:100%; height:15%; background:var(--accent); border-radius:8px 8px 0 0; box-shadow:0 0 20px var(--accent);"></div>
+                        <span style="font-size:14px; color:var(--accent); margin-top:10px; font-weight:800; font-family:'Orbitron'">15%</span>
+                    </div>
+                    <div style="height:100%; display:flex; flex-direction:column; justify-content:end; align-items:center;">
+                        <div style="width:100%; height:50%; background:#3b82f6; border-radius:8px 8px 0 0; box-shadow:0 0 20px #3b82f6;"></div>
+                        <span style="font-size:14px; color:#3b82f6; margin-top:10px; font-weight:800; font-family:'Orbitron'">50%</span>
+                    </div>
+                    <div style="height:100%; display:flex; flex-direction:column; justify-content:end; align-items:center;">
+                        <div style="width:100%; height:25%; background:#f59e0b; border-radius:8px 8px 0 0; box-shadow:0 0 20px #f59e0b;"></div>
+                        <span style="font-size:14px; color:#f59e0b; margin-top:10px; font-weight:800; font-family:'Orbitron'">25%</span>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:20px;">
+                    <div style="border-left:4px solid var(--accent); padding-left:20px;">
+                        <h4 style="font-size:16px; margin:0 0 8px 0; color:white; font-family:'Orbitron'; letter-spacing:0.5px;">1. The "Manage Closely" Cap (10–15%)</h4>
+                        <p style="font-size:13px; color:#cbd5e1; margin:8px 0; line-height:1.6;"><strong>The Logic:</strong> You physically cannot "manage closely" 50% of your stakeholders. Avoid "Death by Meetings".</p>
+                        <p style="font-size:13px; color:var(--accent); margin:0; font-weight:600;"><strong>The Goal:</strong> Restrict to 6–8 key decision-makers who can fund or kill the project.</p>
+                    </div>
+                    <div style="border-left:4px solid #3b82f6; padding-left:20px;">
+                        <h4 style="font-size:16px; margin:0 0 8px 0; color:white; font-family:'Orbitron'; letter-spacing:0.5px;">2. The "Monitor" Foundation (35–50%)</h4>
+                        <p style="font-size:13px; color:#cbd5e1; margin:8px 0; line-height:1.6;"><strong>The Logic:</strong> Pareto Principle (80/20 rule). The majority have no power to change the project course.</p>
+                        <p style="font-size:13px; color:#3b82f6; margin:0; font-weight:600;"><strong>The Strategy:</strong> Use "passive" communication (newsletters).</p>
+                    </div>
+                    <div style="border-left:4px solid #f59e0b; padding-left:20px;">
+                        <h4 style="font-size:16px; margin:0 0 8px 0; color:white; font-family:'Orbitron'; letter-spacing:0.5px;">3. The "Keep Satisfied" / Sleeping Giants (20–25%)</h4>
+                        <p style="font-size:13px; color:#cbd5e1; margin:8px 0; line-height:1.6;"><strong>The Logic:</strong> Where "Silent Assassins" live. They only care when inconvenienced.</p>
+                        <p style="font-size:13px; color:#f59e0b; margin:0; font-weight:600;"><strong>The Strategy:</strong> do enough "political" work to prevent a veto.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1223,10 +1274,20 @@
         border-radius: 16px;
         width: 90%;
         max-width: 600px;
+        max-height: 85vh;
+        overflow-y: auto;
         border: 1px solid #7c3aed;
         box-shadow: 0 0 50px rgba(124, 58, 237, 0.3);
         position: relative;
         animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-box::-webkit-scrollbar {
+        width: 6px;
+    }
+    .modal-box::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.1);
+        border-radius: 10px;
     }
 
     .close-btn {
@@ -1335,7 +1396,7 @@
 
         <!-- CONTENT 1: MAPPING -->
         <div id="sh_mapping" class="sh-content active">
-            <img src="images/stakeholder_framework_mapping.jpg" alt="Stakeholder Analysis Matrix Strategy Map"
+            <img src="stakeholder_influence_logic.png" alt="Stakeholder Analysis Matrix Strategy Map"
                 style="width:100%; display:block;">
         </div>
 
@@ -1373,12 +1434,22 @@
     }
     function switchInfluenceTab(tabId, btn) {
         // Toggle Buttons
-        document.querySelectorAll('.sh-tab').forEach(b => b.classList.remove('active'));
+        btn.parentElement.querySelectorAll('.sh-tab').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
         // Toggle Content
-        document.querySelectorAll('.sh-content').forEach(c => c.classList.remove('active'));
+        btn.parentElement.parentElement.querySelectorAll('.sh-content').forEach(c => c.classList.remove('active'));
         document.getElementById('sh_' + tabId).classList.add('active');
+    }
+
+    function switchDistTab(tabId, btn) {
+        // Toggle Buttons
+        btn.parentElement.querySelectorAll('.sh-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Toggle Content
+        document.getElementById('dist_targets').style.display = (tabId === 'targets') ? 'block' : 'none';
+        document.getElementById('dist_logic').style.display = (tabId === 'logic') ? 'block' : 'none';
     }
 </script>
 

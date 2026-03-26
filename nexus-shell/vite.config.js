@@ -46,7 +46,7 @@ export default defineConfig({
     }
   ],
   server: {
-    port: 8080,
+    port: 7005,
     fs: {
       // Allow serving files from one level up to access 04-STATISTICS-TOOLS and 02-TEMPLATES
       allow: ['..'],

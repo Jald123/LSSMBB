@@ -104,6 +104,7 @@
   --shadow-opacity: 0.15;
 }
 
+/* Tailwind CSS v4 Theme Configuration */
 @theme {
   --color-nexus-navy: var(--color-nexus-navy-base);
   --color-nexus-surface: var(--color-nexus-surface-base);

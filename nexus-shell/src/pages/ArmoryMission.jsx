@@ -243,112 +243,136 @@ const GameRenderer = ({ type, round, setRound, setScore, setIsComplete, setHover
 // 1. CHARTER GAME (SCOPE CREEP DEFENDER)
 // ----------------------------------------------------------------------------
 
-const CharterGame = ({ round, setRound, setScore, setIsComplete }) => {
-    const scenarios = [
-        { scenario: "Coffee Shop", fact: "Temp 185°F", bias: "Rude barista" },
-        { scenario: "IT Support", fact: "Ping 42ms", bias: "User is annoying" },
-        { scenario: "Hospital Ward", fact: "HR 72 bpm", bias: "Patient is picky" },
-        { scenario: "Call Center", fact: "AHT 240 sec", bias: "Old software" },
-        { scenario: "Manufacturing", fact: "Yield 92%", bias: "Night shift laziness" }
-    ];
-
-    const currentScenario = scenarios[round - 1];
-    const [captured, setCaptured] = useState(0);
-
-    const words = [
-        { t: currentScenario.fact, v: true },
-        { t: "Objective Data", v: true },
-        { t: "Measured Value", v: true },
-        { t: currentScenario.bias, v: false },
-        { t: "Assumption", v: false },
-        { t: "Solution Jump", v: false },
-        { t: "I heard...", v: false },
-        { t: "Fixed Scope", v: true },
-        { t: "Root Cause?", v: false }
-    ];
-
-    const handleWordClick = (w) => {
-        if (w.v) {
-            setScore(s => s + 20);
-            setCaptured(c => c + 1);
-            setHoverText("PRIMARY DATA CAPTURED (+20)");
-        } else {
-            setScore(s => Math.max(0, s - 15));
-            setHoverText("WARNING: SUBJECTIVE BIAS DETECTED (-15)");
+const CharterGame = ({ round, setRound, setScore, setIsComplete, setHoverText }) => {
+    const rawRounds = [
+        { 
+            scenario: "The Coffee Shop", 
+            items: [
+                { t: "Wait time: 4m", v: true },
+                { t: "Barista is slow", v: false },
+                { t: "Temp: 185°F", v: true },
+                { t: "Milk is bad", v: false },
+                { t: "Revenue: $450", v: true },
+                { t: "Rude customers", v: false }
+            ]
+        },
+        { 
+            scenario: "IT Support Desk", 
+            items: [
+                { t: "Ping: 42ms", v: true },
+                { t: "Users are late", v: false },
+                { t: "Tickets: 120", v: true },
+                { t: "Legacy crap", v: false },
+                { t: "Uptime: 99.9%", v: true },
+                { t: "Lazy night shift", v: false }
+            ]
         }
-    };
+    ];
 
-    useEffect(() => {
-        if (captured >= 3) {
-            if (round < 5) {
+    const currentData = rawRounds[Math.min(round - 1, 1)];
+    const [items, setItems] = useState(currentData.items);
+    const [sortedCount, setSortedCount] = useState(0);
+
+    const handleSort = (type, item) => {
+        const isSignal = item.v;
+        const isCorrectTarget = (type === 'file' && isSignal) || (type === 'garbage' && !isSignal);
+
+        if (isCorrectTarget) {
+            setScore(s => s + 20);
+            setHoverText(`VALIDATED: ${item.t} correctly classified.`);
+        } else {
+            setScore(s => Math.max(0, s - 10));
+            setHoverText(`REJECTED: ${item.t} is ${isSignal ? 'a valid signal' : 'subjective noise'}.`);
+        }
+
+        setItems(prev => prev.filter(i => i.t !== item.t));
+        setSortedCount(prev => prev + 1);
+
+        if (sortedCount + 1 >= 6) {
+            if (round < 2) {
                 setTimeout(() => {
                     setRound(r => r + 1);
-                    setCaptured(0);
+                    setSortedCount(0);
+                    setItems(rawRounds[1].items);
+                    setHoverText(null);
                 }, 1000);
             } else {
                 setTimeout(() => setIsComplete(true), 1000);
             }
         }
-    }, [captured]);
+    };
 
     return (
-        <div className="w-full min-h-[550px] relative border-2 border-cyan-500/20 rounded-[2rem] bg-black/40 overflow-hidden shadow-inner">
-            <div className="absolute top-4 left-0 right-0 text-center font-black font-orbitron text-[10px] text-slate-500 tracking-widest uppercase py-4">
-                SCENARIO: {currentScenario.scenario}
+        <div className="w-full flex flex-col items-center">
+            <div className="text-center font-black font-orbitron text-[10px] text-slate-500 tracking-[0.3em] uppercase mb-10">
+                SCENARIO: {currentData.scenario}
             </div>
 
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={round}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="w-full min-h-[500px] relative"
+            <div className="w-full flex justify-between items-stretch px-10 gap-10">
+                <div 
+                    onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
+                    onDrop={(e) => {
+                        try {
+                            const data = JSON.parse(e.dataTransfer.getData("application/json"));
+                            handleSort('garbage', data);
+                        } catch(err) {}
+                    }}
+                    className="w-48 min-h-[400px] border-2 border-dashed border-red-500/30 bg-red-500/5 rounded-3xl flex flex-col items-center justify-center gap-4 transition-all hover:border-red-500 hover:bg-red-500/10 shrink-0"
                 >
-                    {words.map((w, i) => (
-                        <Bubble
-                            key={i}
-                            word={w}
-                            onClick={() => handleWordClick(w)}
-                            onMouseEnter={() => setHoverText(w.v ? "Objective Signal: Hard Fact" : "Subjective Noise: Logical Fallacy")}
-                            onMouseLeave={() => setHoverText(null)}
-                        />
-                    ))}
-                </motion.div>
-            </AnimatePresence>
+                    <i className="fas fa-trash-alt text-4xl text-red-500 opacity-40"></i>
+                    <span className="text-[10px] font-black font-orbitron text-red-500/60 uppercase tracking-widest text-center px-4">Garbage Bin:<br/>Subjective Noise</span>
+                </div>
+
+                <div className="flex-1 flex flex-wrap justify-center content-center gap-6 min-h-[400px] bg-black/20 rounded-[3rem] border border-white/5 p-10">
+                    <AnimatePresence>
+                        {items.map((it, idx) => (
+                            <SortingItem key={it.t + idx} item={it} setHoverText={setHoverText} />
+                        ))}
+                    </AnimatePresence>
+                </div>
+
+                <div 
+                    onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
+                    onDrop={(e) => {
+                        try {
+                            const data = JSON.parse(e.dataTransfer.getData("application/json"));
+                            handleSort('file', data);
+                        } catch(err) {}
+                    }}
+                    className="w-48 min-h-[400px] border-2 border-dashed border-cyan-500/30 bg-cyan-500/5 rounded-3xl flex flex-col items-center justify-center gap-4 transition-all hover:border-cyan-500 hover:bg-cyan-500/10 shrink-0"
+                >
+                    <i className="fas fa-file-invoice text-4xl text-cyan-400 opacity-40"></i>
+                    <span className="text-[10px] font-black font-orbitron text-cyan-400/60 uppercase tracking-widest text-center px-4">Project File:<br/>Objective Signal</span>
+                </div>
+            </div>
+            <div className="text-[10px] font-bold font-orbitron text-slate-600 uppercase tracking-[0.2em] mt-10 italic opacity-50">Drag items to classification targets</div>
         </div>
     );
 };
 
-const Bubble = ({ word, onClick, onMouseEnter, onMouseLeave }) => {
-    const [isHit, setIsHit] = useState(false);
-    const [pos] = useState({
-        top: Math.random() * 65 + 15 + '%',
-        left: Math.random() * 75 + 10 + '%',
-    });
-
-    if (isHit) return null;
-
+const SortingItem = ({ item, setHoverText }) => {
     return (
-        <motion.button
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            whileHover={{ scale: 1.1 }}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onClick={() => {
-                setIsHit(true);
-                onClick();
+        <motion.div
+            draggable
+            onDragStart={(e) => {
+                e.dataTransfer.setData("application/json", JSON.stringify(item));
+                e.dataTransfer.effectAllowed = "move";
             }}
-            style={{ top: pos.top, left: pos.left }}
-            className={`absolute px-6 py-3 rounded-full border shadow-lg font-black font-orbitron text-[10px] tracking-widest transition-all duration-300
-                ${word.v
-                    ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-400 hover:bg-cyan-400 hover:text-black hover:border-cyan-400'
-                    : 'bg-red-500/10 border-red-500/40 text-red-400 hover:bg-red-400 hover:text-black hover:border-red-400'
-                }`}
+            initial={{ scale: 0, rotate: -10 }}
+            animate={{ scale: 1, rotate: 0 }}
+            exit={{ scale: 0, opacity: 0 }}
+            whileHover={{ scale: 1.05, rotate: 2 }}
+            onMouseEnter={() => setHoverText(`CLASSIFY: ${item.t}`)}
+            onMouseLeave={() => setHoverText(null)}
+            className={`px-6 py-4 rounded-xl border-2 cursor-grab active:cursor-grabbing shadow-xl font-bold font-orbitron text-[10px] tracking-widest text-center
+                ${item.v 
+                    ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 rounded-tr-[40px]' 
+                    : 'bg-red-500/10 border-red-500/30 text-red-400 rounded-bl-[40px]'
+                }
+            `}
         >
-            {word.t}
-        </motion.button>
+            {item.t}
+        </motion.div>
     );
 };
 
@@ -430,10 +454,13 @@ const DraggableItem = ({ name, onMouseEnter, onMouseLeave }) => {
     return (
         <div
             draggable
-            onDragStart={(e) => e.dataTransfer.setData("text", name)}
+            onDragStart={(e) => {
+                e.dataTransfer.setData("text/plain", name);
+                e.dataTransfer.effectAllowed = "move";
+            }}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            className="px-6 py-3 bg-nexus-surface border border-nexus-border rounded-xl text-nexus-text-primary font-black font-orbitron text-[10px] tracking-widest cursor-grab active:cursor-grabbing shadow-xl"
+            className="px-6 py-3 bg-nexus-surface border border-nexus-border rounded-xl text-nexus-text-primary font-black font-orbitron text-[10px] tracking-widest cursor-grab active:cursor-grabbing shadow-xl hover:border-cyan-400/50 transition-colors"
         >
             {name}
         </div>
@@ -443,15 +470,22 @@ const DraggableItem = ({ name, onMouseEnter, onMouseLeave }) => {
 const Bucket = ({ label, content, onDrop }) => {
     return (
         <div
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => onDrop(e.dataTransfer.getData("text"))}
+            onDragOver={(e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+            }}
+            onDrop={(e) => {
+                e.preventDefault();
+                const data = e.dataTransfer.getData("text/plain");
+                onDrop(data);
+            }}
             className={`flex-1 min-h-[140px] rounded-2xl border-2 flex flex-col items-center justify-center relative transition-all duration-300
-                ${content ? 'border-cyan-500 bg-cyan-500/10 shadow-[0_0_20px_rgba(34,211,238,0.2)]' : 'border-nexus-border bg-nexus-surface/10'}
+                ${content ? 'border-cyan-500 bg-cyan-500/10 shadow-[0_0_20px_rgba(34,211,238,0.2)]' : 'border-nexus-border bg-nexus-surface/10 hover:border-white/20'}
             `}
         >
-            <div className="text-3xl font-black font-orbitron text-nexus-text-primary opacity-5 absolute top-2 left-4">{label}</div>
+            <div className="text-3xl font-black font-orbitron text-nexus-text-primary opacity-5 absolute top-2 left-4 pointer-events-none">{label}</div>
             {content && (
-                <div className="text-[10px] font-black font-orbitron text-cyan-400 text-center px-2 animate-in fade-in zoom-in duration-300">
+                <div className="text-[10px] font-black font-orbitron text-cyan-400 text-center px-2 animate-in fade-in zoom-in duration-300 pointer-events-none">
                     {content}
                 </div>
             )}
@@ -885,7 +919,7 @@ const ParetoGame = ({ round, setRound, setScore, setIsComplete }) => {
 // 6. FISHBONE GAME (THE ANATOMY)
 // ----------------------------------------------------------------------------
 
-const FishboneGame = ({ round, setRound, setScore, setIsComplete }) => {
+const FishboneGame = ({ round, setRound, setScore, setIsComplete, setHoverText }) => {
     const clues = [
         { t: "Barista didn't sleep", c: "MAN" },
         { t: "Oven thermostat is broken", c: "MACHINE" },
@@ -896,47 +930,69 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete }) => {
     ];
 
     const currentClue = clues[round - 1];
+    const [selected, setSelected] = useState(null);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const handleCategory = (cat) => {
-        if (cat === currentClue.c) {
-            setScore(s => s + 25);
-            setHoverText("ROOT CAUSE IDENTIFIED.");
-            if (round < clues.length) {
-                setRound(r => r + 1);
+        if (isProcessing) return;
+        setSelected(cat);
+        setIsProcessing(true);
+
+        setTimeout(() => {
+            if (cat === currentClue.c) {
+                setScore(s => s + 25);
+                setHoverText("ROOT CAUSE IDENTIFIED: VALID CATEGORY MATCH.");
+                if (round < clues.length) {
+                    setRound(r => r + 1);
+                    setSelected(null);
+                    setIsProcessing(false);
+                } else {
+                    setIsComplete(true);
+                }
             } else {
-                setIsComplete(true);
+                setScore(s => Math.max(0, s - 15));
+                setHoverText(`INVESTIGATION FAILED: Evidence does not fit ${cat}.`);
+                setSelected(null);
+                setIsProcessing(false);
             }
-        } else {
-            setScore(s => Math.max(0, s - 10));
-            setHoverText("CATEGORY MISMATCH: Evidence does not fit this classification.");
-        }
+        }, 800);
     };
 
     return (
         <div className="w-full flex flex-col items-center">
-            <div className="bg-pink-500/5 border-2 border-pink-500/30 p-12 rounded-[2.5rem] w-full max-w-lg text-center mb-12 shadow-[0_0_50px_rgba(236,72,153,0.1)]">
-                <div className="text-[10px] font-black font-orbitron text-pink-500 uppercase tracking-[0.3em] mb-3">Detective Evidence</div>
-                <div className="text-2xl font-black font-orbitron text-white uppercase tracking-wider">{currentClue.t}</div>
+            <div className="bg-pink-500/5 border-2 border-pink-500/30 p-12 rounded-[2.5rem] w-full max-w-2xl text-center mb-12 shadow-[0_0_50px_rgba(236,72,153,0.1)] relative overflow-hidden group">
+                <div className="absolute inset-0 bg-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="text-[10px] font-black font-orbitron text-pink-500 uppercase tracking-[0.3em] mb-4">Evidence Analysis Board</div>
+                <div className="text-3xl font-black font-orbitron text-white uppercase tracking-wider">{currentClue.t}</div>
             </div>
 
-            <div className="grid grid-cols-2 gap-5 w-full max-w-lg">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
                 {[
-                    { label: 'Personnel', cat: 'MAN' },
-                    { label: 'Equipment', cat: 'MACHINE' },
-                    { label: 'Supplies', cat: 'MATERIAL' },
-                    { label: 'Process', cat: 'METHOD' },
-                    { label: 'Environment', cat: 'MOTHER NATURE' },
-                    { label: 'Inspection', cat: 'MEASUREMENT' }
+                    { label: 'Personnel', cat: 'MAN', icon: 'fa-users' },
+                    { label: 'Equipment', cat: 'MACHINE', icon: 'fa-cog' },
+                    { label: 'Supplies', cat: 'MATERIAL', icon: 'fa-box-open' },
+                    { label: 'Process', cat: 'METHOD', icon: 'fa-project-diagram' },
+                    { label: 'Environment', cat: 'MOTHER NATURE', icon: 'fa-leaf' },
+                    { label: 'Inspection', cat: 'MEASUREMENT', icon: 'fa-ruler-combined' }
                 ].map(opt => (
                     <button
                         key={opt.cat}
                         onClick={() => handleCategory(opt.cat)}
-                        className="bg-slate-900 border border-white/5 p-8 rounded-2xl font-black font-orbitron text-[10px] tracking-[0.2em] text-slate-500 hover:bg-pink-500 hover:text-white hover:border-pink-500 hover:shadow-[0_0_30px_rgba(236,72,153,0.3)] transition-all uppercase"
+                        disabled={isProcessing}
+                        className={`group relative p-8 rounded-3xl font-black font-orbitron text-[10px] tracking-[0.2em] transition-all duration-300 flex flex-col items-center gap-4 border-2
+                            ${selected === opt.cat 
+                                ? (opt.cat === currentClue.c ? 'bg-green-500 border-green-400 text-black' : 'bg-red-500 border-red-400 text-white')
+                                : 'bg-slate-900 border-white/5 text-slate-500 hover:border-pink-500/50 hover:bg-pink-500/5 hover:text-white hover:scale-105 active:scale-95'
+                            }
+                        `}
                     >
-                        {opt.label} ({opt.cat})
+                        <i className={`fas ${opt.icon} text-2xl ${selected === opt.cat ? 'opacity-100' : 'opacity-20 group-hover:opacity-100 transition-opacity'}`}></i>
+                        <span>{opt.label}</span>
+                        <div className="text-[8px] opacity-40 uppercase tracking-tighter mt-1">({opt.cat})</div>
                     </button>
                 ))}
             </div>
+            <div className="text-[10px] font-bold font-orbitron text-slate-600 uppercase tracking-[0.2em] mt-12 opacity-50">Select the correct Fishbone category for the evidence</div>
         </div>
     );
 };

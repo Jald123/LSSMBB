@@ -198,9 +198,8 @@
             <div style="height: 10px;"></div>
             <h1
                 style="font-family: 'Orbitron', sans-serif; font-size: 32px; letter-spacing: -1px; margin: 0; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
-                Box & Whisker Plot <span
-                    style="font-size: 14px; -webkit-text-fill-color: #3b82f6; vertical-align: middle; margin-left:10px; letter-spacing: 1px;">AI
-                    COACH ENABLED</span></h1>
+                Box & Whisker Plot <span onclick="showPopup('examples')"
+                    style="font-size: 14px; background: rgba(59,130,246,0.2); padding: 4px 10px; border-radius: 12px; cursor: pointer; border: 1px solid #3b82f6; -webkit-text-fill-color: #60a5fa; vertical-align: middle; margin-left:10px; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(59,130,246,0.3);">🏥 REAL EXAMPLES</span></h1>
             <p style="color: #94a3b8; font-size: 14px; margin-top: 8px; font-family: 'Inter', sans-serif;">
                 Analyze Variation. <span style="color: #60a5fa; font-weight: 600;">Identify Outliers.</span> The
                 quickest way to spot a pattern.
@@ -313,8 +312,8 @@
             <div class="card">
                 <div class="flex-between" style="margin-bottom: 20px;">
                     <h3 style="margin:0;">Visual Comparison</h3>
-                    <button class="ai-coach-btn" onclick="askAICoach()" id="aiBtn">
-                        <i class="fas fa-robot"></i> Ask Gemini Coach
+                    <button class="ai-coach-btn" onclick="showPopup('examples')">
+                        <i class="fas fa-stethoscope"></i> Real Healthcare Examples
                     </button>
                 </div>
                 <div class="chart-container"
@@ -391,6 +390,31 @@
         'what': {
             title: 'What is it? 🤔',
             html: `<p>A standardized way of displaying the distribution of data based on a five-number summary: <strong>Minimum, First Quartile (Q1), Median, Third Quartile (Q3), and Maximum</strong>.</p>`
+        },
+        'examples': {
+            title: 'Real Healthcare Examples 🏥',
+            html: `
+            <div style="border-bottom: 1px solid #334155; margin-bottom: 15px; display:flex; gap:10px;">
+                <button onclick="document.getElementById('tab1').style.display='block'; document.getElementById('tab2').style.display='none'; document.getElementById('tab3').style.display='none';" style="background:transparent; color:#60a5fa; border:none; padding:10px; cursor:pointer; font-weight:bold; border-bottom:2px solid #3b82f6;">1. ED Wait Times</button>
+                <button onclick="document.getElementById('tab1').style.display='none'; document.getElementById('tab2').style.display='block'; document.getElementById('tab3').style.display='none';" style="background:transparent; color:#94a3b8; border:none; padding:10px; cursor:pointer; font-weight:bold;">2. Medication Errors</button>
+                <button onclick="document.getElementById('tab1').style.display='none'; document.getElementById('tab2').style.display='none'; document.getElementById('tab3').style.display='block';" style="background:transparent; color:#94a3b8; border:none; padding:10px; cursor:pointer; font-weight:bold;">3. Length of Stay</button>
+            </div>
+            <div id="tab1" style="display:block;">
+                <h4 style="color:#facc15; margin-top:0;">Emergency Department Triage-to-Provider Time</h4>
+                <p><strong>Shape:</strong> Right-Skewed (Long upper whisker / many outliers above maximum fence).</p>
+                <p><strong>Interpretation:</strong> Most patients are seen within 45 mins (compact box), but outliers wait up to 4 hours due to sudden trauma influxes or boarding issues.</p>
+            </div>
+            <div id="tab2" style="display:none;">
+                <h4 style="color:#facc15; margin-top:0;">Medication Administration Delays</h4>
+                <p><strong>Shape:</strong> Symmetrical Box with tight IQR.</p>
+                <p><strong>Interpretation:</strong> Nursing staff consistently deliver meds within a 15-minute window around the scheduled time, showing high process stability despite a few outliers during shift changes.</p>
+            </div>
+            <div id="tab3" style="display:none;">
+                <h4 style="color:#facc15; margin-top:0;">Inpatient Length of Stay (Pneumonia)</h4>
+                <p><strong>Shape:</strong> Bimodal appearance or wide IQR.</p>
+                <p><strong>Interpretation:</strong> The "box" is very wide. This suggests two different patient populations might be mixed together (e.g., uncomplicated vs. complex with comorbidities). Needs stratification!</p>
+            </div>
+            `
         },
         'standard': {
             title: 'The Standard 📏',

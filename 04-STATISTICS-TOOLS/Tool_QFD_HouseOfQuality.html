@@ -1089,8 +1089,11 @@
     </div>
 
     <nav class="builder-nav">
-        <h3 style="font-family:'Orbitron'; color:white; margin:0 20px 0 0; font-size:18px;">QFD<span
-                style="color:var(--c-step2)">MASTER</span></h3>
+        <div style="font-family:'Orbitron'; font-weight:700; font-size:16px; margin-right:20px; color:#0f172a;">QFD STUDIO</div>
+        
+        <button class="architecture-intelligence-btn" onclick="openQFDInfo()" style="margin-left: auto; margin-right: 15px;">
+            <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+        </button>
 
         <!-- STEP 1 -->
         <div style="position:relative;">
@@ -1112,8 +1115,7 @@
                 <div class="sd-title" style="color:var(--c-step2)">2. Eng. Specifications</div>
                 <div class="sd-row"><strong>🤔 What:</strong> Technical metrics we can measure and control.</div>
                 <div class="sd-row"><strong>💡 Why:</strong> Translates vague "wants" into concrete "buildables".</div>
-                <div class="sd-row"><strong>🛠️ How:</strong> Add columns. Set Direction (▲ Maximize, ▼ Minimize, ●
-                    Target).</div>
+                <div class="sd-row"><strong>🛠️ How:</strong> Add columns. Set Direction (▲ Maximize, ▼ Minimize, ◎ Target).</div>
             </div>
         </div>
 
@@ -1126,7 +1128,7 @@
                 </div>
                 <div class="sd-row"><strong>💡 Why:</strong> Identifies which technical specs actually drive
                     satisfaction.</div>
-                <div class="sd-row"><strong>🛠️ How:</strong> Click grid cells: ● Strong (9), ○ Medium (3), △ Weak (1).
+                <div class="sd-row"><strong>🛠️ How:</strong> Click grid cells: ◎ Strong (9), ○ Medium (3), △ Weak (1).
                 </div>
             </div>
         </div>
@@ -1410,7 +1412,7 @@
                     <div class="lg-title">3. Relationship Matrix</div>
                     <div class="lg-grid">
                         <div class="lg-item">
-                            <div class="leg-sym" style="color:#0891b2; border-color:#0891b2;">●</div>Strong(9)
+                            <div class="leg-sym" style="color:#0891b2; border-color:#0891b2;">◎</div>Strong(9)
                         </div>
                         <div class="lg-item">
                             <div class="leg-sym" style="color:#16a34a; border-color:#16a34a;">○</div>Medium(3)
@@ -1575,7 +1577,7 @@
             mz.style.gridTemplateColumns = `repeat(${COLS}, ${COL_WIDTH}px)`;
             mz.style.gridTemplateRows = `repeat(${ROWS}, ${ROW_HEIGHT}px)`;
             mz.innerHTML = data.matrix.map((row, r) => row.map((val, c) => {
-                let sym = val === 9 ? '●' : val === 3 ? '○' : val === 1 ? '△' : '';
+                let sym = val === 9 ? '◎' : val === 3 ? '○' : val === 1 ? '△' : '';
                 let cls = val === 9 ? 'sym-strong' : val === 3 ? 'sym-med' : val === 1 ? 'sym-weak' : '';
                 return `<div class="rel-cell ${cls}" onclick="toggleMatrix(${r},${c})">${sym}</div>`
             }).join('')).join('');
@@ -1648,7 +1650,7 @@
             calc();
         }
         function toggleDir(i) {
-            const ds = ['▲', '▼', '●']; data.specs[i].dir = ds[(ds.indexOf(data.specs[i].dir) + 1) % 3]; renderHouse();
+            const ds = ['▲', '▼', '◎']; data.specs[i].dir = ds[(ds.indexOf(data.specs[i].dir) + 1) % 3]; renderHouse();
         }
         function toggleMatrix(r, c) {
             const vs = [0, 1, 3, 9]; data.matrix[r][c] = vs[(vs.indexOf(data.matrix[r][c]) + 1) % 4]; renderHouse(); calc();
@@ -1756,7 +1758,7 @@
             if (!confirm('Clear all data from the house?')) return;
             ROWS = 8; COLS = 8;
             data.reqs = Array(ROWS).fill().map((_, i) => ({ imp: 3, text: `Req ${i + 1}` }));
-            data.specs = Array(COLS).fill().map((_, i) => ({ dir: '●', text: `Spec ${i + 1}`, target: '-' }));
+            data.specs = Array(COLS).fill().map((_, i) => ({ dir: '◎', text: `Spec ${i + 1}`, target: '-' }));
             data.matrix = Array(ROWS).fill().map(() => Array(COLS).fill(0));
             data.comp = Array(ROWS).fill().map(() => ({ us: 3, them: 3 }));
             data.diff = Array(COLS).fill(3);
@@ -1882,7 +1884,57 @@
         init();
         activateStep(1);
 
+        function openQFDInfo() {
+            document.getElementById('qfdInfoModal').style.display = 'flex';
+        }
+
+        function closeQFDInfo() {
+            document.getElementById('qfdInfoModal').style.display = 'none';
+        }
     </script>
-<script src="AssistantTools.js"></script></body>
+
+    <!-- PREMIUM QFD INFO MODAL -->
+    <div id="qfdInfoModal" class="premium-info-overlay">
+        <div class="premium-info-box">
+            <span class="premium-modal-close" onclick="closeQFDInfo()">&times;</span>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="font-family: 'Orbitron', sans-serif; color: #3b82f6; font-size: 32px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px;">
+                    HOUSE OF QUALITY STRATEGY</h1>
+                <p style="color:var(--text-secondary); font-size:14px;">The Ultimate Bridge between Customer Needs and Technical Reality.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px;">
+                <div style="grid-column: span 2; background: rgba(59, 130, 246, 0.05); border-left: 4px solid #3b82f6; padding: 25px; border-radius: 16px;">
+                    <h3 style="color: #3b82f6; margin-top: 0; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; margin-bottom: 10px;">
+                        History of QFD</h3>
+                    <p style="font-size: 13px; line-height: 1.6; color: #475569; margin: 0;">
+                        Quality Function Deployment (QFD) was developed by <b>Yoji Akao</b> in 1966. It was designed to ensure that quality is built into the product from the design phase, rather than just inspected at the end. It ensures "The Voice of the Customer" is never lost in translation.
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px; color:white;">
+                    <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHAT IS IT?</h4>
+                    <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
+                        A structured methodology for translating customer requirements (WHATs) into specific technical specifications (HOWs).
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px; color:white;">
+                    <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHY USE IT?</h4>
+                    <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
+                        It prevents scope creep, reduces development time, and ensures the highest customer satisfaction by focusing on critical drivers.
+                    </p>
+                </div>
+
+                <div style="grid-column: span 2; background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px; color:white;">
+                    <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">THE ROOF?</h4>
+                    <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
+                        The "Roof" of the House identifies <b>Engineering Trade-offs</b>. It shows how improving one spec might negatively impact another.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="AssistantTools.js"></script></body>
 
 </html>

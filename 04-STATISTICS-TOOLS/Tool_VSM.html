@@ -955,6 +955,7 @@
                         <button class="btn-mini btn-ghost" onclick="loadExample('hc3')">💊 Pharmacy</button>
                         <button class="btn-mini btn-ghost" onclick="loadExample('mfg')">🏭 Factory</button>
                         <button class="btn-mini btn-ghost" onclick="loadExample('ser1')">💳 Claim Proc</button>
+                        <button class="btn-mini" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: 1px solid #34d399; font-weight: 800; animation: architecturePulse 2s infinite; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); border-radius: 4px; padding: 4px 10px; cursor: pointer;" onclick="document.getElementById('vsmDictModal').style.display='flex'">📚 VSM Dictionary</button>
                     </div>
                 </div>
 
@@ -2028,6 +2029,63 @@
         function openValueTypesModal(type) { openMetricInsight(type); }
     </script>
     <script src="AssistantTools.js"></script>
+
+    <!-- VSM DICTIONARY MODAL -->
+    <div class="modal-overlay" id="vsmDictModal" onclick="if(event.target===this) this.style.display='none'" style="z-index:5000; backdrop-filter: blur(15px); background: rgba(0,0,0,0.9);">
+        <div class="modal-box" style="max-width:1000px; width:95%; background:transparent; border:none; padding:0; box-shadow:none;">
+            <div style="position:relative;">
+                <span style="position:absolute; top:-40px; right:0; cursor:pointer; font-size:32px; color:white; font-weight:bold; z-index:10;" onclick="document.getElementById('vsmDictModal').style.display='none'">&times;</span>
+                <div style="border-radius:20px; overflow-y:auto; max-height:85vh; border:2px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8); background:#0f172a; padding:40px; color:white;">
+                    <h2 style="color:#10b981; font-family:'Orbitron'; text-align:center; font-size:28px; margin-top:0;">📚 VSM DICTIONARY & GUIDE</h2>
+                    <p style="text-align:center; color:#94a3b8; margin-bottom:40px;">Your guide to Value Stream Mapping shapes, metrics, and terminologies.</p>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px;">
+                        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:12px; border-left:4px solid #3b82f6;">
+                            <h3 style="color:#3b82f6; margin-top:0;"><i class="fas fa-shapes"></i> Core Shapes</h3>
+                            <ul style="padding-left:20px; color:#cbd5e1; line-height:1.6; font-size:14px;">
+                                <li><b>Process Box:</b> A step where work/value is added (e.g., "Assemble Part").</li>
+                                <li><b>Supplier/Customer (Factory Icon):</b> Starting/ending point of the value stream.</li>
+                                <li><b>Data Box:</b> Contains metrics like CT (Cycle Time), CO (Changeover), Uptime.</li>
+                                <li><b>Inventory Triangle:</b> A yellow triangle showing where materials/info pile up waiting.</li>
+                            </ul>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:12px; border-left:4px solid #facc15;">
+                            <h3 style="color:#facc15; margin-top:0;"><i class="fas fa-arrows-alt-h"></i> Arrows & Flow</h3>
+                            <ul style="padding-left:20px; color:#cbd5e1; line-height:1.6; font-size:14px;">
+                                <li><b>Push Arrow (Striped):</b> Work is "pushed" to the next step regardless of capacity (creates waste).</li>
+                                <li><b>Pull Arrow (Dashed):</b> Work is "pulled" only when the next step is ready (Lean ideal).</li>
+                                <li><b>Manual Info Flow (Straight):</b> Hand-delivered reports, verbal comms.</li>
+                                <li><b>Electronic Info Flow (Lightning):</b> Emails, ERP/MRP system signals.</li>
+                            </ul>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:12px; border-left:4px solid #f97316;">
+                            <h3 style="color:#f97316; margin-top:0;"><i class="fas fa-chart-line"></i> Key Metrics & Abbreviations</h3>
+                            <ul style="padding-left:20px; color:#cbd5e1; line-height:1.6; font-size:14px;">
+                                <li><b>CT (Cycle Time):</b> How often a part is completed by a process.</li>
+                                <li><b>CO / C/O (Changeover Time):</b> Time to switch from making one product to another.</li>
+                                <li><b>LT (Lead Time):</b> Total time it takes for one piece to move all the way through the process (Wait + Work).</li>
+                                <li><b>VA (Value Add Time):</b> Time spent actually transforming the product/service.</li>
+                                <li><b>PCE (Process Cycle Efficiency):</b> VA / Total LT. Usually shockingly low (< 5%).</li>
+                            </ul>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:12px; border-left:4px solid #10b981;">
+                            <h3 style="color:#10b981; margin-top:0;"><i class="fas fa-lightbulb"></i> Simple Example</h3>
+                            <p style="color:#cbd5e1; font-size:14px; line-height:1.6;">
+                                <b>Making Coffee:</b><br>
+                                <i>Supplier:</i> Grocery Store.<br>
+                                <i>Inventory:</i> Beans in pantry (days of supply wait time).<br>
+                                <i>Process 1:</i> Grind beans (CT: 20s).<br>
+                                <i>Push Arrow:</i> Grounds wait in filter.<br>
+                                <i>Process 2:</i> Brew (CT: 4 mins).<br>
+                                <i>Customer:</i> You!<br>
+                                <b>LT:</b> 5 Days (waiting). <b>VA time:</b> 4m 20s. <b>Goal:</b> Buy smaller batches to reduce inventory waste!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

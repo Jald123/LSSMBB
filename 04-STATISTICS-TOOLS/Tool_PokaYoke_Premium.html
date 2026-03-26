@@ -8,303 +8,6 @@
     <link rel="stylesheet" href="twilight_theme.css">
     <script src="config.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* MODERN SUITE LAYOUT */
-        .app-container {
-            display: grid;
-            grid-template-columns: 280px 1fr 340px;
-            height: 100vh;
-            overflow: hidden;
-            background: #050505;
-        }
-
-        .sidebar-left {
-            background: #0a0a0a;
-            border-right: 1px solid var(--glass-border);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .main-workspace {
-            flex-grow: 1;
-            padding: 40px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .report-sidebar {
-            background: #0a0a0a;
-            border-left: 1px solid var(--glass-border);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            overflow-y: auto;
-        }
-
-        .sidebar-title {
-            color: #f472b6;
-            font-family: 'Orbitron';
-            font-size: 18px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .sidebar-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        /* INFOGRAPHIC MODAL */
-        .info-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(2, 6, 23, 0.98);
-            display: none;
-            z-index: 5000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(20px);
-        }
-
-        .info-box-premium {
-            width: 95%;
-            max-width: 1000px;
-            background: #0f172a;
-            border-radius: 32px;
-            border: 2px solid #f472b6;
-            padding: 40px;
-            position: relative;
-            box-shadow: 0 0 60px rgba(244, 114, 182, 0.2);
-        }
-
-        .info-header-pro {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .info-title-pro {
-            font-family: 'Orbitron';
-            color: #f472b6;
-            font-size: 28px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .info-tabs {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .info-tab-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #94a3b8;
-            padding: 8px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: 0.3s;
-        }
-
-        .info-tab-btn.active {
-            background: #f472b6;
-            color: white;
-            border-color: #f472b6;
-        }
-
-        .info-grid-pro {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .info-card-pro {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 20px;
-            border-left: 5px solid #f472b6;
-        }
-
-        .info-card-pro h4 {
-            color: #f472b6;
-            font-size: 12px;
-            text-transform: uppercase;
-            margin: 0 0 10px;
-        }
-
-        .info-card-pro p {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #94a3b8;
-            margin: 0;
-        }
-
-        .example-box {
-            grid-column: span 2;
-            background: rgba(244, 114, 182, 0.05);
-            border: 1px solid rgba(244, 114, 182, 0.2);
-            border-radius: 20px;
-            padding: 25px;
-            display: none;
-        }
-
-        .example-box.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .close-pro {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            font-size: 30px;
-            color: #475569;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .close-pro:hover {
-            color: white;
-        }
-
-        /* POKA-YOKE INPUTS */
-        .poka-type-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .poka-option {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            position: relative;
-        }
-
-        .poka-option:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .poka-option.selected {
-            border-color: #f472b6;
-            background: rgba(244, 114, 182, 0.05);
-        }
-
-        .poka-option i {
-            font-size: 24px;
-            color: #94a3b8;
-        }
-
-        .poka-option.selected i {
-            color: #f472b6;
-        }
-
-        .poka-check {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            color: #f472b6;
-            display: none;
-        }
-
-        .poka-option.selected .poka-check {
-            display: block;
-        }
-
-        .premium-textarea {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ddd;
-            padding: 15px;
-            border-radius: 12px;
-            font-family: 'Inter';
-            line-height: 1.6;
-            resize: vertical;
-            margin-bottom: 15px;
-        }
-
-        .premium-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            font-family: 'Inter';
-            margin-bottom: 15px;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
-        .architecture-intelligence-btn {
-            background: linear-gradient(135deg, #f472b6, #ec4899) !important;
-            color: white !important;
-            padding: 10px 24px !important;
-            border-radius: 50px !important;
-            font-size: 13px !important;
-            font-weight: 800 !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.4) !important;
-            cursor: pointer !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 10px !important;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1.5px !important;
-            animation: architecturePulse 2s infinite ease-in-out;
-            font-family: 'Orbitron', sans-serif !important;
-        }
-
-        @keyframes architecturePulse {
-            0% { box-shadow: 0 0 10px rgba(244, 114, 182, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(244, 114, 182, 0.7), 0 0 40px rgba(244, 114, 182, 0.3); }
-            100% { box-shadow: 0 0 10px rgba(244, 114, 182, 0.4); }
-        }
-
-        .architecture-intelligence-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            filter: brightness(1.1);
-            box-shadow: 0 10px 25px rgba(244, 114, 182, 0.6) !important;
-        }
-
-        .architecture-intelligence-btn i {
-            font-size: 16px;
-            filter: drop-shadow(0 0 5px white);
-        }
     </style>
 </head>
 
@@ -448,22 +151,21 @@
     </div>
 
     <!-- STRATEGIC INFO POPUP -->
-    <div id="infoModal" class="info-overlay">
-        <div class="info-box-premium" style="border-color: #ec4899; box-shadow: 0 0 60px rgba(236, 72, 153, 0.2);">
-            <span class="close-pro" onclick="closeInfo()" style="color: #ec4899;">&times;</span>
+    <div id="infoModal" class="premium-info-overlay">
+        <div class="premium-info-box">
+            <span class="premium-modal-close" onclick="closeInfo()">&times;</span>
 
             <!-- HEADER -->
             <div style="text-align: center; margin-bottom: 30px;">
                 <h1
-                    style="font-family: 'Times New Roman', serif; color: #ec4899; font-size: 32px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px;">
+                    style="font-family: 'Orbitron', sans-serif; color: #3b82f6; font-size: 32px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px;">
                     POKA-YOKE STRATEGY</h1>
 
                 <div style="display: flex; justify-content: center; gap: 10px;">
                     <button class="info-tab-btn active" onclick="switchExample('general')"
-                        style="background: #ec4899; color: white; border: none; padding: 8px 25px; border-radius: 50px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);">🍎
+                        style="background: #3b82f6; color: white;">🍎
                         General Principle</button>
-                    <button class="info-tab-btn" onclick="switchExample('explore')"
-                        style="background: #334155; color: #94a3b8; border: none; padding: 8px 25px; border-radius: 50px; font-size: 12px; cursor: default;">🚀
+                    <button class="info-tab-btn" onclick="switchExample('explore')">🚀
                         Explore more</button>
                 </div>
             </div>
@@ -477,7 +179,7 @@
                         style="grid-column: span 2; background: rgba(236, 72, 153, 0.05); border-left: 4px solid #ec4899; padding: 25px; border-radius: 16px; display: flex; gap: 20px; align-items: center;">
                         <div style="flex: 2;">
                             <h3
-                                style="color: #ec4899; margin-top: 0; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; margin-bottom: 10px;">
+                                style="color: #3b82f6; margin-top: 0; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; margin-bottom: 10px;">
                                 History of Origin</h3>
                             <p style="font-size: 13px; line-height: 1.6; color: #cbd5e1; margin: 0;">
                                 Coined by <b>Shigeo Shingo</b> in the 1960s at Toyota. Originally called "Baka-Yoke"
@@ -488,7 +190,7 @@
                         </div>
                         <div style="flex: 1; display: flex; gap: 10px; justify-content: flex-end;">
                             <!-- Shigeo Shingo Portrait -->
-                            <div style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid #ec4899; overflow: hidden; background: #fff;"
+                            <div style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid #3b82f6; overflow: hidden; background: #fff;"
                                 title="Shigeo Shingo">
                                 <img src="./assets/shigeo_shingo.png"
                                     style="width: 100%; height: 100%; object-fit: cover;" alt="Shingo">
@@ -504,8 +206,8 @@
 
                     <!-- WHAT IS IT? -->
                     <div
-                        style="background: rgba(30, 41, 59, 0.4); border: 1px solid #ec4899; border-radius: 16px; border-left-width: 6px; padding: 20px;">
-                        <h4 style="color: #ec4899; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHAT IS IT?
+                        style="background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px;">
+                        <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHAT IS IT?
                         </h4>
                         <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
                             Poka-Yoke is a Japanese term that means "mistake-proofing" or "error-proofing". It involves
@@ -515,8 +217,8 @@
 
                     <!-- WHY USE IT? -->
                     <div
-                        style="background: rgba(30, 41, 59, 0.4); border: 1px solid #ec4899; border-radius: 16px; border-left-width: 6px; padding: 20px;">
-                        <h4 style="color: #ec4899; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHY USE IT?
+                        style="background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px;">
+                        <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHY USE IT?
                         </h4>
                         <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
                             Human vigilance is unreliable. Poka-Yoke ensures zero defects by removing the human factor
@@ -527,8 +229,8 @@
 
                     <!-- WHEN TO ADD? (Full width or Grid End) -->
                     <div
-                        style="grid-column: span 2; background: rgba(30, 41, 59, 0.4); border: 1px solid #ec4899; border-radius: 16px; border-left-width: 6px; padding: 20px;">
-                        <h4 style="color: #ec4899; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHEN TO ADD?
+                        style="grid-column: span 2; background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px;">
+                        <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHEN TO ADD?
                         </h4>
                         <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
                             Essential during the <b>Improve</b> phase to "lock in" standard work and prevent the process
