@@ -1282,24 +1282,73 @@
 <!-- INFLUENCE MODAL -->
 <div id="influenceModal" class="modal-overlay" onclick="closeInfluenceModal(event)">
     <div class="modal-box"
-        style="max-width: 850px; border-color: var(--accent); box-shadow: 0 0 50px rgba(255, 107, 53, 0.2);">
+        style="max-width: 900px; border-color: var(--accent); box-shadow: 0 0 50px rgba(255, 107, 53, 0.2); background: #0f172a;">
         <span class="close-btn" onclick="document.getElementById('influenceModal').style.display='none'">&times;</span>
-        <h2
-            style="color:white; margin-top:0; border-bottom:1px solid #334155; padding-bottom:15px; font-family:'Orbitron'">
-            <span style="color:var(--accent)">Influence Psychology</span>: Logic vs Emotion
+        
+        <h2 style="color:white; margin-top:0; border-bottom:1px solid #334155; padding-bottom:15px; font-family:'Orbitron'; font-size: 20px;">
+            <span style="color:var(--accent)">Influence Psychology</span>: Strategy & Risk
         </h2>
 
-        <div
-            style="margin-top:20px; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); background: #000;">
-            <img src="stakeholder_influence_logic.png" alt="Logic vs Emotion in Influence"
+        <!-- TABS -->
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="switchInfluenceTab('mapping', this)" class="sh-tab active">1. STRATEGY MAP</button>
+            <button onclick="switchInfluenceTab('derailment', this)" class="sh-tab">2. THE DERAILMENT MATRIX</button>
+        </div>
+
+        <style>
+            .sh-tab {
+                flex: 1;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: #94a3b8;
+                padding: 12px;
+                border-radius: 8px;
+                font-family: 'Orbitron';
+                font-size: 11px;
+                cursor: pointer;
+                transition: all 0.3s;
+                margin-top: 0;
+            }
+            .sh-tab.active {
+                background: var(--accent);
+                color: white;
+                border-color: var(--accent);
+                box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+            }
+            .sh-content {
+                display: none;
+                margin-top: 20px;
+                border-radius: 12px;
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                background: #000;
+                animation: fadeIn 0.4s ease;
+            }
+            .sh-content.active {
+                display: block;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        </style>
+
+        <!-- CONTENT 1: MAPPING -->
+        <div id="sh_mapping" class="sh-content active">
+            <img src="images/stakeholder_framework_mapping.jpg" alt="Stakeholder Analysis Matrix Strategy Map"
                 style="width:100%; display:block;">
         </div>
 
-        <div
-            style="margin-top:20px; font-size:14px; color:#cbd5e1; line-height:1.6; background: rgba(255,107,53,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,107,53,0.1);">
+        <!-- CONTENT 2: DERAILMENT -->
+        <div id="sh_derailment" class="sh-content">
+            <img src="images/stakeholder_framework_derailment.jpg" alt="The Derailment Matrix Case Study"
+                style="width:100%; display:block;">
+        </div>
+
+        <div style="margin-top:20px; font-size:13px; color:#cbd5e1; line-height:1.6; background: rgba(255,107,53,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,107,53,0.1);">
             <p style="margin:0;"><strong>Master Black Belt Insight:</strong> Data satisfies the mind, but stories move
-                the feet. Use the <strong>Logic</strong> to justify the decision, but use <strong>Emotion</strong> to
-                ignite the action. Every "Blocker" is simply a stakeholder whose emotional connection to the current
+                the feet. Use the <strong>Logic</strong> to justify the decision (Strategy Map), but use <strong>Emotion</strong> to
+                ignite the action (Scenario Risks). Every "Blocker" is simply a stakeholder whose emotional connection to the current
                 state is stronger than their trust in your future state.</p>
         </div>
     </div>
@@ -1321,6 +1370,15 @@
         if (e.target.id === 'influenceModal') {
             document.getElementById('influenceModal').style.display = 'none';
         }
+    }
+    function switchInfluenceTab(tabId, btn) {
+        // Toggle Buttons
+        document.querySelectorAll('.sh-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Toggle Content
+        document.querySelectorAll('.sh-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('sh_' + tabId).classList.add('active');
     }
 </script>
 
