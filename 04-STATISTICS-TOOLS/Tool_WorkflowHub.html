@@ -869,7 +869,12 @@
             <a href="Tool_BlackBeltCommandCenter.html" class="nav-link"
                 style="color: #22d3ee; font-weight: 800; border: 1px solid rgba(34, 211, 238, 0.3); background: rgba(34, 211, 238, 0.05);">🛸
                 COMMAND CENTER</a>
-            <a href="Stats_Calculator_Main.html" class="nav-btn-back">← Dashboard</a>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="architecture-intelligence-btn" onclick="openArchitectureIntelligenceModal()">
+                    <i class="fas fa-brain"></i> Architecture Intelligence
+                </button>
+                <a href="Stats_Calculator_Main.html" class="nav-btn-back">← Dashboard</a>
+            </div>
         </div>
     </nav>
 
@@ -5035,6 +5040,63 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeVideoModal();
         });
+        function openArchitectureIntelligenceModal() {
+            const modal = document.createElement('div');
+            modal.className = 'premium-info-overlay';
+            modal.style.display = 'flex';
+            modal.id = 'premiumInfoModal';
+            
+            modal.innerHTML = `
+                <div class="premium-info-box">
+                    <span class="premium-modal-close" onclick="document.getElementById('premiumInfoModal').remove()">&times;</span>
+                    <h2 style="font-family:'Orbitron', sans-serif; color:var(--accent); margin-bottom:10px; text-transform:uppercase; letter-spacing:2px; display:flex; align-items:center; gap:15px;">
+                        <i class="fas fa-brain"></i> Nexus Strategic Hub
+                    </h2>
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:12px; border-left:4px solid var(--primary); margin-bottom:25px;">
+                        <p style="margin:0; font-style:italic; color:white; font-size:16px;">"Your central nexus for Lean Six Sigma project methodology and visual execution architecture."</p>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px; margin-bottom:30px;">
+                        <div>
+                            <h3 style="color:var(--primary); font-size:14px; text-transform:uppercase; letter-spacing:1px; margin-bottom:15px;">📊 Studio Philosophy</h3>
+                            <p style="color:#cbd5e1; font-size:14px; line-height:1.7;">The Nexus Workflow Hub is designed to mirror the rigor of Black Belt project management. It provides a structured environment where methodology (DMAIC, Kaizen, etc.) meets visual clarity.</p>
+                            
+                            <h3 style="color:var(--primary); font-size:14px; text-transform:uppercase; letter-spacing:1px; margin-top:25px; margin-bottom:15px;">🎯 Core Objective</h3>
+                            <p style="color:#cbd5e1; font-size:14px; line-height:1.7;">To guide practitioners through the complex landscape of LEAN & SIX SIGMA using a logical, high-performance visual interface that ensures no critical tool is forgotten during the project lifecycle.</p>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.03); padding:25px; border-radius:20px; border:1px solid rgba(255,255,255,0.05);">
+                            <h3 style="color:var(--accent); font-size:14px; text-transform:uppercase; letter-spacing:1px; margin-bottom:15px;">🛡️ The Standard</h3>
+                            <div style="color:white; font-size:14px; line-height:1.6; padding:15px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid rgba(255,107,53,0.2);">
+                                ISO 13053 / Lean Manufacturing Best Practices.
+                            </div>
+                            <div style="margin-top:20px;">
+                                <h4 style="color:var(--primary); font-size:12px; text-transform:uppercase; margin-bottom:10px;">Platform Readiness</h4>
+                                <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;">
+                                    <div style="width:100%; height:100%; background:linear-gradient(90deg, var(--primary), var(--accent));"></div>
+                                </div>
+                                <p style="font-size:11px; color:#64748b; margin-top:5px; text-align:right;">Nexus Core Active</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; margin-bottom:30px;">
+                        <div style="background:rgba(59, 130, 246, 0.05); padding:15px; border-radius:12px; border:1px solid rgba(59, 130, 246, 0.1);">
+                            <strong style="color:var(--primary); font-size:11px; display:block; margin-bottom:5px;">DMAIC FLOW</strong>
+                            <span style="font-size:13px; color:white;">Define through Control lifecycle.</span>
+                        </div>
+                        <div style="background:rgba(255, 107, 53, 0.05); padding:15px; border-radius:12px; border:1px solid rgba(255, 107, 53, 0.1);">
+                            <strong style="color:var(--accent); font-size:11px; display:block; margin-bottom:5px;">KAIZEN EVENTS</strong>
+                            <span style="font-size:12px; color:white;">Rapid improvement sprint cycles.</span>
+                        </div>
+                        <div style="background:rgba(34, 197, 94, 0.05); padding:15px; border-radius:12px; border:1px solid rgba(34, 197, 94, 0.1);">
+                            <strong style="color:#22c55e; font-size:11px; display:block; margin-bottom:5px;">PREMIUM ASSETS</strong>
+                            <span style="font-size:12px; color:white;">Golden-standard visual studio.</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
     </script>
 
     <!-- VIDEO MODAL STRUCTURE -->
