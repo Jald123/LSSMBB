@@ -372,12 +372,12 @@
                         <select id="scenarioSelect" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;"
                             onchange="loadScenario()">
                             <option value="">-- Custom --</option>
-                            <optgroup label="ðŸ¥ Medical Scenarios">
+                            <optgroup label="🏥 Medical Scenarios">
                                 <option value="med_pump">Infusion Pump Selection</option>
                                 <option value="med_monitor">Patient Monitoring System</option>
                                 <option value="med_tele">Telehealth Platform</option>
                             </optgroup>
-                            <optgroup label="ðŸ­ General Scenarios">
+                            <optgroup label="🌎 General Scenarios">
                                 <option value="gen_fleet">Delivery Fleet Vehicle</option>
                                 <option value="gen_erp">ERP Software Suite</option>
                                 <option value="gen_office">Office Space Layout</option>
@@ -466,8 +466,8 @@
                     </tfoot>
                 </table>
                 <div style="margin-top: 15px; display:flex; gap: 10px;"> <button class="btn btn-ghost"
-                        onclick="addRow()">âž• Add Criterion</button> <button class="btn btn-primary"
-                        onclick="calculatePugh()">ðŸš€ Refresh Totals</button> </div>
+                        onclick="addRow()">➕ Add Criterion</button> <button class="btn btn-primary"
+                        onclick="calculatePugh()">🚀 Refresh Totals</button> </div>
             </div>
             <div class="stat-grid">
                 <div class="stat-box">
@@ -493,7 +493,7 @@
             </div>
         </div>
     </div>
-    < !-- EDUCATIONAL MODAL -->
+    <!-- EDUCATIONAL MODAL -->
         <div class="modal-overlay" id="infoModal" onclick="if(event.target.id==='infoModal') this.style.display='none'">
             <div class="modal-box"> <span class="close-btn"
                     onclick="document.getElementById('infoModal').style.display='none'">&times;
@@ -502,7 +502,7 @@
                     <h2 style="color:var(--accent); margin:0;" id="conceptTitle">Pugh Methodology</h2>
                 </div>
                 <div id="conceptContent" style="min-height:150px; color:#ccc; line-height:1.6; font-size:14px;">
-                    < !-- Content Injected via JS -->
+                    <!-- Content Injected via JS -->
                 </div>
             </div>
         </div>
@@ -726,11 +726,7 @@
                 s.criteria.forEach(c => {
                     const row = document.createElement('tr');
 
-                    row.innerHTML = ` <td class="criteria-cell" contenteditable="true" >$ {
-                        c.name
-                    }
-
-                    </td> <td><input type="number" class="score-input weight-in" value="${c.weight}" oninput="calculatePugh()" ></td> <td class="baseline-cell" >0</td> <td><input type="number" class="score-input score-in" data-col="0" value="${c.scores[0]}" oninput="calculatePugh()" ></td> <td><input type="number" class="score-input score-in" data-col="1" value="${c.scores[1]}" oninput="calculatePugh()" ></td> <td><input type="number" class="score-input score-in" data-col="2" value="${c.scores[2]}" oninput="calculatePugh()" ></td> `;
+                    row.innerHTML = `<td class="criteria-cell" contenteditable="true">${c.name}</td><td><input type="number" class="score-input weight-in" value="${c.weight}" oninput="calculatePugh()"></td><td class="baseline-cell">0</td><td><input type="number" class="score-input score-in" data-col="0" value="${c.scores[0]}" oninput="calculatePugh()"></td><td><input type="number" class="score-input score-in" data-col="1" value="${c.scores[1]}" oninput="calculatePugh()"></td><td><input type="number" class="score-input score-in" data-col="2" value="${c.scores[2]}" oninput="calculatePugh()"></td>`;
                     tbody.appendChild(row);
                 });
 
@@ -784,11 +780,7 @@
                 scoreMap.forEach((item, index) => {
                     const rank = index + 1;
 
-                    rankCells[item.id].innerHTML = `<span class="rank-badge rank-${rank}" >#$ {
-                    rank
-                }
-
-                </span>`;
+                    rankCells[item.id].innerHTML = `<span class="rank-badge rank-${rank}">#${rank}</span>`;
                 });
 
                 // Winning Summary
@@ -858,26 +850,26 @@
             const glossary = {
 
                 methodology: {
-                    title: ' Pugh Matrix Methodology ðŸš€',
-                    text: 'The  Pugh Matrix is a qualitative decision-making tool. <br><br><b>Step 1:</b> Define a Baseline (Current State).<br><b>Step 2:</b> Score Alternatives as +1, 0, or -1.<br><b>Step 3:</b> Weight the criteria.<br><b>Step 4:</b> The highest weighted total is your winner.'
+                    title: 'Pugh Matrix Methodology 🚀',
+                    text: 'The Pugh Matrix is a qualitative decision-making tool. <br><br><b>Step 1:</b> Define a Baseline (Current State).<br><b>Step 2:</b> Score Alternatives as +1, 0, or -1.<br><b>Step 3:</b> Weight the criteria.<br><b>Step 4:</b> The highest weighted total is your winner.'
                 }
 
                 ,
                 weight: {
-                    title: "Criteria Weighting âš–ï¸",
+                    title: "Criteria Weighting ⚖️",
                     text: "Not all criteria are equal. <br><br><b>Scale (1-5):</b><br>1: Nice to have (Secondary).<br>5: Critical to Quality (CTQ).<br><br>Multiplying your score by weight ensures that the most important features drive the final decision."
                 }
 
                 ,
                 baseline: {
-                    title: "Baseline Reference ðŸ",
+                    title: "Baseline Reference 🏠",
                     text: "The 'Baseline' is usually your current process or the industry standard. <br><br><b>Logic:</b> We assign the baseline a score of 0. Alternatives are then judged relative to this anchor. This forces objectivity by asking: 'Is Concept A better or worse than what we have today?'"
                 }
 
                 ,
                 chart: {
-                    title: "Convergence Visualization ðŸ“ˆ",
-                    text: "The bar chart represents the net value of each concept. <br><br><b>MBB Strategy:</b> If scores are close, don't just pick the winner. Look for 'Hybridization'â€”take the best features from Concept B and merge them into Concept A to create a Super-Concept."
+                    title: "Convergence Visualization 📈",
+                    text: "The bar chart represents the net value of each concept. <br><br><b>MBB Strategy:</b> If scores are close, don't just pick the winner. Look for 'Hybridization'—take the best features from Concept B and merge them into Concept A to create a Super-Concept."
                 }
             }
 
@@ -889,11 +881,7 @@
                 if (item) {
                     document.getElementById('conceptTitle').innerText = item.title;
 
-                    document.getElementById('conceptContent').innerHTML = `<div style="padding:15px; background:rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.1);">$ {
-                    item.text
-                }
-
-                </div>`;
+                    document.getElementById('conceptContent').innerHTML = `<div style="padding:15px; background:rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.1);">${item.text}</div>`;
                     document.getElementById('infoModal').style.display = 'flex';
                 }
             }
