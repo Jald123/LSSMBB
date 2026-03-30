@@ -394,25 +394,104 @@
         'examples': {
             title: 'Real Healthcare Examples 🏥',
             html: `
-            <div style="border-bottom: 1px solid #334155; margin-bottom: 15px; display:flex; gap:10px;">
-                <button onclick="document.getElementById('tab1').style.display='block'; document.getElementById('tab2').style.display='none'; document.getElementById('tab3').style.display='none';" style="background:transparent; color:#60a5fa; border:none; padding:10px; cursor:pointer; font-weight:bold; border-bottom:2px solid #3b82f6;">1. ED Wait Times</button>
-                <button onclick="document.getElementById('tab1').style.display='none'; document.getElementById('tab2').style.display='block'; document.getElementById('tab3').style.display='none';" style="background:transparent; color:#94a3b8; border:none; padding:10px; cursor:pointer; font-weight:bold;">2. Medication Errors</button>
-                <button onclick="document.getElementById('tab1').style.display='none'; document.getElementById('tab2').style.display='none'; document.getElementById('tab3').style.display='block';" style="background:transparent; color:#94a3b8; border:none; padding:10px; cursor:pointer; font-weight:bold;">3. Length of Stay</button>
+            <style>
+                .ex-tab-btn { background:transparent; color:#94a3b8; border:none; padding:12px 20px; cursor:pointer; font-weight:bold; transition: 0.3s; font-size:14px; border-bottom:3px solid transparent; }
+                .ex-tab-btn.active { color:#60a5fa; border-bottom:3px solid #3b82f6; background: rgba(59, 130, 246, 0.1); border-radius: 6px 6px 0 0;}
+                .ex-tab-btn:hover:not(.active) { color:#cbd5e1; background: rgba(255,255,255,0.05); }
+                .ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: start; margin-top: 20px; }
+                .ex-img { width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+                .ex-points { list-style-type: none; padding-left: 0; }
+                .ex-points li { margin-bottom: 12px; font-size: 13.5px; line-height: 1.5; padding-left: 15px; position: relative; }
+                .ex-points li::before { content: "•"; position: absolute; left: 0; color: #3b82f6; font-size: 18px; line-height: 20px; }
+                .ex-highlight { color: #facc15; font-weight: bold; }
+                .ex-highlight-blue { color: #60a5fa; font-weight: bold; }
+                .ex-highlight-red { color: #f87171; font-weight: bold; }
+                .ex-tab-content { animation: fadeIn 0.4s ease-out; }
+            </style>
+
+            <div style="border-bottom: 2px solid #1e293b; display:flex; gap:5px; margin-top: 10px;">
+                <button id="btn-ed" class="ex-tab-btn active" onclick="switchExTab('ed')">1. ED Wait Times</button>
+                <button id="btn-meds" class="ex-tab-btn" onclick="switchExTab('meds')">2. Medication Errors</button>
+                <button id="btn-los" class="ex-tab-btn" onclick="switchExTab('los')">3. Length of Stay</button>
             </div>
-            <div id="tab1" style="display:block;">
-                <h4 style="color:#facc15; margin-top:0;">Emergency Department Triage-to-Provider Time</h4>
-                <p><strong>Shape:</strong> Right-Skewed (Long upper whisker / many outliers above maximum fence).</p>
-                <p><strong>Interpretation:</strong> Most patients are seen within 45 mins (compact box), but outliers wait up to 4 hours due to sudden trauma influxes or boarding issues.</p>
+            
+            <!-- TAB 1 -->
+            <div id="tab-ed" class="ex-tab-content" style="display:block;">
+                <div class="ex-grid">
+                    <div style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 15px; border-left: 4px solid #facc15;">
+                        <h4 style="color:#facc15; font-size:18px; margin-top:0; margin-bottom: 15px;"><i class="fas fa-ambulance" style="margin-right:8px;"></i>ED Triage-to-Provider Time</h4>
+                        
+                        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; line-height: 1.5; color: #e2e8f0; border-left: 3px solid #60a5fa;">
+                            <strong style="color:white; display:block; margin-bottom:5px;"><i class="fas fa-clipboard-list" style="margin-right:5px;"></i>Case Study Summary:</strong>
+                            Management assumed the ED needed more doctors to fix 4-hour wait times. The Lean Team plotted triage-to-provider times and discovered the vast majority of patients were actually seen in under 45 minutes. The true issue wasn't overall staffing numbers, but unpredictable trauma influxes causing temporary but massive backlogs.
+                        </div>
+
+                        <ul class="ex-points" style="color:#cbd5e1;">
+                            <li><span class="ex-highlight">The Box:</span> Represents the middle 50% of patients (Interquartile Range). Because it is "compact" and located to the left, it shows that most patients have a consistent, short wait time.</li>
+                            <li><span class="ex-highlight-blue">The Median:</span> The line inside the box shows the middle value. If it's closer to the left of the box, it further emphasizes the right skew.</li>
+                            <li><span class="ex-highlight">Whiskers:</span> The right whisker is much longer than the left, indicating high variability in the longer wait times.</li>
+                            <li><span class="ex-highlight-red">Outliers (Red Diamonds):</span> These individual points represent the "trauma influxes." While they are not the norm, they show that wait times can occasionally reach 4 hours (240 minutes), which significantly pulls the average up.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <img src="images/ed_wait_boxplot.png" onerror="this.src='https://via.placeholder.com/600x400?text=ED+Wait+Time+Chart'" class="ex-img" alt="ED Wait Time Chart">
+                    </div>
+                </div>
             </div>
-            <div id="tab2" style="display:none;">
-                <h4 style="color:#facc15; margin-top:0;">Medication Administration Delays</h4>
-                <p><strong>Shape:</strong> Symmetrical Box with tight IQR.</p>
-                <p><strong>Interpretation:</strong> Nursing staff consistently deliver meds within a 15-minute window around the scheduled time, showing high process stability despite a few outliers during shift changes.</p>
+
+            <!-- TAB 2 -->
+            <div id="tab-meds" class="ex-tab-content" style="display:none;">
+                <div class="ex-grid">
+                    <div style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 15px; border-left: 4px solid #facc15;">
+                        <h4 style="color:#facc15; font-size:18px; margin-top:0; margin-bottom: 15px;"><i class="fas fa-pills" style="margin-right:8px;"></i>Medication Administration Delays</h4>
+                        
+                        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; line-height: 1.5; color: #e2e8f0; border-left: 3px solid #60a5fa;">
+                            <strong style="color:white; display:block; margin-bottom:5px;"><i class="fas fa-clipboard-list" style="margin-right:5px;"></i>Case Study Summary:</strong>
+                            Pharmacy suspected nurses were habitually late in retrieving meds. By plotting deviation from the scheduled time, the symmetrical box proved the baseline nursing workflow was incredibly stable and accurate. The true root cause lay in the outliers—specific instances occurring strictly during shift changes, indicating a breakdown in patient handoffs, not core administration.
+                        </div>
+
+                        <ul class="ex-points" style="color:#cbd5e1;">
+                            <li><span class="ex-highlight">Symmetrical Shape:</span> Unlike the ED wait times, this distribution is centered around zero. This indicates that meds are delivered early as often as they are late, showing a balanced process.</li>
+                            <li><span class="ex-highlight-blue">Tight IQR (The Box):</span> The box is narrow and centered, reflecting that the middle 50% of administrations occur very close to the scheduled time (well within the 15-minute window).</li>
+                            <li><span class="ex-highlight">High Process Stability:</span> The concentration of data points near zero shows that the nursing workflow is highly consistent.</li>
+                            <li><span class="ex-highlight-red">Shift Change Outliers:</span> The individual red dots far from the center represent the delays or early administrations that typically happen during hand-offs or shift transitions.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <img src="images/med_delay_boxplot.png" onerror="this.src='https://via.placeholder.com/600x400?text=Medication+Errors+Chart'" class="ex-img" alt="Medication Errors Chart">
+                    </div>
+                </div>
             </div>
-            <div id="tab3" style="display:none;">
-                <h4 style="color:#facc15; margin-top:0;">Inpatient Length of Stay (Pneumonia)</h4>
-                <p><strong>Shape:</strong> Bimodal appearance or wide IQR.</p>
-                <p><strong>Interpretation:</strong> The "box" is very wide. This suggests two different patient populations might be mixed together (e.g., uncomplicated vs. complex with comorbidities). Needs stratification!</p>
+
+            <!-- TAB 3 -->
+            <div id="tab-los" class="ex-tab-content" style="display:none;">
+                <div class="ex-grid">
+                    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; border-left: 4px solid #facc15;">
+                        <h4 style="color:#facc15; font-size:18px; margin-top:0; margin-bottom: 15px;"><i class="fas fa-bed" style="margin-right:8px;"></i>Inpatient Length of Stay (Pneumonia)</h4>
+                        
+                        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; line-height: 1.5; color: #e2e8f0; border-left: 3px solid #60a5fa;">
+                            <strong style="color:white; display:block; margin-bottom:5px;"><i class="fas fa-clipboard-list" style="margin-right:5px;"></i>Case Study Summary:</strong>
+                            A hospital tried to lower its 6.5-day average Length of Stay (LOS) with generic aggressive discharge protocols. Plotting the data revealed two completely different patient profiles mixed together: healthy cases (3 days) and complex cases (10+ days). The 'average' protocol failed because it rushed complex patients while offering no benefit to uncomplicated ones.
+                        </div>
+
+                        <ul class="ex-points" style="color:#e2e8f0; margin-bottom: 15px;">
+                            <li><span class="ex-highlight-red">Wide IQR (The Box):</span> Notice how the box stretches from ~3 days to 10 days. This lack of a compact box indicates low process consistency and high variability in patient outcomes.</li>
+                            <li><span class="ex-highlight">Bimodal Appearance:</span> The histogram reveals two distinct 'humps'. The first peak (around 3 days) likely represents healthy cases, while the second peak (around 10 days) represents complex cases.</li>
+                        </ul>
+                        <div style="background: rgba(59,130,246,0.1); border-left: 4px solid #3b82f6; padding: 15px; border-radius: 8px;">
+                            <strong style="color: #60a5fa; font-size: 14px; display:block; margin-bottom: 8px;"><i class="fas fa-exclamation-triangle" style="margin-right:5px; color:#facc15;"></i>The Need For Stratification</strong>
+                            <p style="font-size: 12.5px; color: #cbd5e1; margin-bottom: 8px; line-height: 1.5;">Because these groups behave so differently, an "average" is misleading! Stratification means dividing data into homogeneous groups.</p>
+                            <ul style="font-size: 12.5px; color: #e2e8f0; padding-left: 15px; margin-bottom: 10px;">
+                                <li style="margin-bottom: 4px;"><strong>Uncomplicated cases:</strong> Generally healthy (~3 days).</li>
+                                <li style="margin-bottom: 4px;"><strong>Complex cases:</strong> Comorbidities (~10 days).</li>
+                            </ul>
+                            <p style="font-size: 12.5px; color: #cbd5e1; margin-bottom: 0px; line-height: 1.5;">Without stratification, a doctor might misinterpret the average. Stratifying establishes accurate benchmarks for each patient type.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="images/pneumonia_los_boxplot.png" onerror="this.src='https://via.placeholder.com/600x400?text=Length+of+Stay+Chart'" class="ex-img" alt="Length of Stay Chart">
+                    </div>
+                </div>
             </div>
             `
         },
@@ -444,7 +523,31 @@
         if (!data) return;
         document.getElementById('modalTitle').innerText = data.title;
         document.getElementById('modalText').innerHTML = data.html;
+        
+        // Dynamically adjust width for Examples to make it "half screen size"
+        const modalBox = document.getElementById('modalText').parentElement;
+        if(key === 'examples') {
+            modalBox.style.width = '75vw'; // 75% of screen
+            modalBox.style.maxWidth = '1500px';
+        } else {
+            modalBox.style.width = '500px';
+            modalBox.style.maxWidth = '90%';
+        }
+        
         document.getElementById('infoModal').style.display = 'flex';
+    }
+
+    function switchExTab(id) {
+        const contents = document.querySelectorAll('.ex-tab-content');
+        if(contents) contents.forEach(el => el.style.display = 'none');
+        const btns = document.querySelectorAll('.ex-tab-btn');
+        if(btns) btns.forEach(el => el.classList.remove('active'));
+        
+        const tab = document.getElementById('tab-' + id);
+        if(tab) tab.style.display = 'block';
+        
+        const btn = document.getElementById('btn-' + id);
+        if(btn) btn.classList.add('active');
     }
 
     function closePopup() {

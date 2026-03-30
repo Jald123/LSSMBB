@@ -1459,19 +1459,56 @@
                         <div class="info-card" style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
                             <h4 style="color:var(--pool-blue); margin-top:0;">📊 The Efficiency Matrix</h4>
                             <p style="font-size: 13px; color: #94a3b8;">Look for <strong>Ping-Pong Flow</strong>. If a process constantly moves back and forth between two lanes, it's a sign of poor handoff logic or unclear roles. Aim for a "Waterfall" flow downwards.</p>
+                            <details style="margin-top:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:6px;">
+                                <summary style="padding:8px 12px; font-size:12px; font-weight:700; color:var(--accent); cursor:pointer; outline:none;">⬇ View Example Comparison</summary>
+                                <div style="padding:12px; border-top:1px solid var(--border); font-size:12px; color:#cbd5e1; line-height:1.6;">
+                                    <div style="margin-bottom:8px;"><b style="color:#22c55e;">GOOD:</b> ER Doctor checks patient once, orders all needed labs at once, and hands off to Radiology. (1 smooth handoff)</div>
+                                    <div><b style="color:#ef4444;">BAD:</b> Doctor orders blood -> Nurse draws -> Doctor reads it -> Doctor orders X-ray -> Nurse transports. (5 ping-pong handoffs causing massive delay)</div>
+                                </div>
+                            </details>
                         </div>
                         <div class="info-card" style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
                             <h4 style="color:var(--rope-red); margin-top:0;">🚩 The Bottleneck Identification</h4>
                             <p style="font-size: 13px; color: #94a3b8;">Lanes with the highest density of decision diamonds (⚖️) are usually your control points. If decisions take more than 24 hours, the lane is a bottleneck, regardless of how fast the tasks are.</p>
+                            <details style="margin-top:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:6px;">
+                                <summary style="padding:8px 12px; font-size:12px; font-weight:700; color:var(--accent); cursor:pointer; outline:none;">⬇ View Example Comparison</summary>
+                                <div style="padding:12px; border-top:1px solid var(--border); font-size:12px; color:#cbd5e1; line-height:1.6;">
+                                    <div style="margin-bottom:8px;"><b style="color:#22c55e;">GOOD:</b> 1 Approval Diamond at the end of a process (e.g., Final Quality Check before shipping).</div>
+                                    <div><b style="color:#ef4444;">BAD:</b> 5 Approval Diamonds back-to-back (e.g., Manager -> Director -> VP) before a simple $500 purchase order is sent to the vendor.</div>
+                                </div>
+                            </details>
                         </div>
                     </div>
 
                     <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 25px;">
                         <h3 style="color:white; font-size:16px; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">📚 Strategic References</h3>
                         <div style="font-size:14px; color:#94a3b8; line-height:1.7;">
-                            <p><strong>1. The 3-Lane Rule:</strong> Any process involving more than 3 departments (lanes) has a 40% higher chance of defect due to "Communication Decay" during handoffs.</p>
-                            <p><strong>2. VA vs NVA:</strong> Value-Added steps typically occur in the "Customer-Facing" or "Production" lanes. "Support" lanes often contribute high NVA (Non-Value-Added) time.</p>
-                            <p><strong>3. ISO 9001 Alignment:</strong> Proper swimlane mapping is the foundation of quality system documentation. Ensure every lane has a clearly defined "Owner."</p>
+                            <p style="margin-bottom:5px;"><strong>1. The 3-Lane Rule:</strong> Any process involving more than 3 departments (lanes) has a 40% higher chance of defect due to "Communication Decay" during handoffs.</p>
+                            <details style="margin-bottom:15px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:6px;">
+                                <summary style="padding:8px 12px; font-size:12px; font-weight:700; color:var(--accent); cursor:pointer; outline:none;">⬇ View Example Comparison</summary>
+                                <div style="padding:12px; border-top:1px solid var(--border); font-size:12px; color:#cbd5e1; line-height:1.6;">
+                                    <div style="margin-bottom:8px;"><b style="color:#22c55e;">GOOD:</b> 2 Lanes (Sales & Fulfillment) managing a client order via a shared digital dashboard. Fast communication.</div>
+                                    <div><b style="color:#ef4444;">BAD:</b> 5 Lanes (Sales -> Admin -> Finance -> Warehouse -> Shipping) just to process a single order, resulting in 4 days of "waiting on email" delays.</div>
+                                </div>
+                            </details>
+
+                            <p style="margin-bottom:5px;"><strong>2. VA vs NVA:</strong> Value-Added steps typically occur in the "Customer-Facing" or "Production" lanes. "Support" lanes often contribute high NVA (Non-Value-Added) time.</p>
+                            <details style="margin-bottom:15px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:6px;">
+                                <summary style="padding:8px 12px; font-size:12px; font-weight:700; color:var(--accent); cursor:pointer; outline:none;">⬇ View Example Comparison</summary>
+                                <div style="padding:12px; border-top:1px solid var(--border); font-size:12px; color:#cbd5e1; line-height:1.6;">
+                                    <div style="margin-bottom:8px;"><b style="color:#22c55e;">GOOD (VA):</b> A Surgeon performing a bypass (The patient directly needs and pays for this action).</div>
+                                    <div><b style="color:#ef4444;">BAD (NVA):</b> A highly-paid Nurse spending 45 mins walking through halls searching for a wheelchair (The patient does not want to pay for this).</div>
+                                </div>
+                            </details>
+
+                            <p style="margin-bottom:5px;"><strong>3. ISO 9001 Alignment:</strong> Proper swimlane mapping is the foundation of quality system documentation. Ensure every lane has a clearly defined "Owner."</p>
+                            <details style="margin-bottom:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:6px;">
+                                <summary style="padding:8px 12px; font-size:12px; font-weight:700; color:var(--accent); cursor:pointer; outline:none;">⬇ View Example Comparison</summary>
+                                <div style="padding:12px; border-top:1px solid var(--border); font-size:12px; color:#cbd5e1; line-height:1.6;">
+                                    <div style="margin-bottom:8px;"><b style="color:#22c55e;">GOOD:</b> Lane is strictly labeled "Lead Pharmacist", making accountability 100% clear.</div>
+                                    <div><b style="color:#ef4444;">BAD:</b> Lane is vaguely labeled "Various Staff" or "External", meaning no single person can be audited or take responsibility for defects.</div>
+                                </div>
+                            </details>
                         </div>
                     </div>
                 </div>
