@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | LSS Interactive Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+        :root {
+            --bg-dark: #020617;
+            --card-bg: #0f172a;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            padding-bottom: 50px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+
+        /* ── HEADER ────────────────────────────────── */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: linear-gradient(to right, rgba(59, 130, 246, 0.1), transparent);
+            padding: 30px;
+            border-radius: 20px;
+            border-left: 5px solid var(--accent-blue);
+        }
+
+        .profile-info { display: flex; align-items: center; gap: 20px; }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; font-weight: 800; font-family: 'Orbitron', sans-serif;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .profile-meta h1 { font-family: 'Orbitron', sans-serif; font-size: 28px; margin-bottom: 5px; }
+        .profile-meta p { color: var(--text-dim); font-size: 14px; }
+        .student-id { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); padding: 4px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; font-family: 'Orbitron', sans-serif; margin-left: 10px; }
+
+        .header-actions { display: flex; gap: 15px; }
+        .btn {
+            padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer;
+            transition: 0.3s; border: none; font-size: 14px; display: flex; align-items: center; gap: 10px; text-decoration: none;
+        }
+        .btn-primary { background: var(--accent-blue); color: white; box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
+        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        /* ── GRID LAYOUT ───────────────────────────── */
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; height: 100%; }
+        .card-title { font-family: 'Orbitron', sans-serif; font-size: 16px; letter-spacing: 1px; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; color: var(--accent-blue); }
+
+        /* ── BELT PROGRESS ────────────────────────── */
+        .belt-row { margin-bottom: 20px; }
+        .belt-label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .progress-track { width: 100%; height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 4px; }
+        .belt-yellow { background: #facc15; }
+        .belt-green { background: #10b981; }
+        .belt-black { background: #64748b; }
+        .belt-mbb { background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
+
+        /* ── SCORECARD TABLE ───────────────────────── */
+        .scoreboard-card { grid-column: span 2; }
+        .table-wrap { overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { text-align: left; padding: 15px 20px; color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 2px solid var(--border-color); }
+        td { padding: 20px; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        .phase-badge { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .phase-define { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .phase-measure { background: rgba(249, 115, 22, 0.1); color: #f97316; }
+        .phase-analyze { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .phase-improve { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .phase-control { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+        .action-link { color: var(--accent-blue); text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .action-link:hover { color: white; transform: translateX(3px); }
+        .empty-state { text-align: center; padding: 60px 0; color: var(--text-dim); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <div class="profile-info">
+                <div class="profile-avatar" id="avatarIcon">?</div>
+                <div class="profile-meta">
+                    <h1><span id="studentName">Student Name</span> <span class="student-id" id="studentId">STU-2026-XXXX</span></h1>
+                    <p id="studentOrg">Organization / Department</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="Tool_WorkflowHub.html" class="btn btn-outline"><i class="fas fa-th"></i> Tools Hub</a>
+                <button class="btn btn-primary" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-medal"></i> Mastery Progress</h2>
+                <div class="belt-row">
+                    <div class="belt-label"><span>Yellow Belt</span> <span id="y-pct">0%</span></div>
+                    <div class="progress-track"><div class="progress-fill belt-yellow" id="y-bar" style="width: 0%"></div></div>
+                </div>
+                <div class="belt-row">
+                    <div class="belt-label"><span>Green Belt</span> <span id="g-pct">0%</span></div>
+                    <div class="progress-track"><div class="progress-fill belt-green" id="g-bar" style="width: 0%"></div></div>
+                </div>
+                <div class="belt-row">
+                    <div class="belt-label"><span>Black Belt</span> <span id="b-pct">0%</span></div>
+                    <div class="progress-track"><div class="progress-fill belt-black" id="b-bar" style="width: 0%"></div></div>
+                </div>
+                <div class="belt-row">
+                    <div class="belt-label"><span>Master Black Belt</span> <span id="m-pct">0%</span></div>
+                    <div class="progress-track"><div class="progress-fill belt-mbb" id="m-bar" style="width: 0%"></div></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-atom"></i> DMAIC Skill Map</h2>
+                <div style="height: 300px; display: flex; align-items: center; justify-content: center;">
+                    <canvas id="dmaicRadar"></canvas>
+                </div>
+            </div>
+            <div class="card scoreboard-card">
+                <h2 class="card-title"><i class="fas fa-clipboard-check"></i> Tool Scorecard & Reports</h2>
+                <div class="table-wrap">
+                    <table id="scorecardTable">
+                        <thead>
+                            <tr>
+                                <th>Tool / Analysis</th>
+                                <th>DMAIC Phase</th>
+                                <th>Mastery Score</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Report</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scorecardBody"></tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <i class="fas fa-folder-open" style="font-size: 50px; opacity: 0.2;"></i>
+                        <h3>No records found</h3>
+                        <p>Submit any tool analysis to see your progress here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOOL_DB = {
+            "Box Plot Tool": "Analyze", "Pareto Chart": "Analyze", "SIPOC Tool": "Define",
+            "Project Charter": "Define", "VSM Tool": "Measure", "Histogram Tool": "Measure",
+            "RACI Matrix": "Define", "Risk Registrar": "Analyze", "Control Plan": "Control",
+            "Mistake Proofing": "Improve", "5S Framework": "Improve", "Fishbone Diagram": "Analyze",
+            "DOE Wizard": "Analyze", "Regression Analysis": "Analyze", "Kaizen Board": "Improve"
+        };
+
+        const PHASE_COLORS = {
+            "Define": "phase-define", "Measure": "phase-measure", "Analyze": "phase-analyze",
+            "Improve": "phase-improve", "Control": "phase-control"
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profile = JSON.parse(localStorage.getItem('LSS_Profile'));
+            const progress = JSON.parse(localStorage.getItem('LSS_Progress')) || {};
+
+            if (!profile) {
+                window.location.href = 'Tool_BoxPlot.html';
+                return;
+            }
+
+            document.getElementById('studentName').innerText = profile.name;
+            document.getElementById('avatarIcon').innerText = profile.name[0].toUpperCase();
+            document.getElementById('studentId').innerText = profile.id;
+            document.getElementById('studentOrg').innerText = profile.org || 'Lean Six Sigma Department';
+
+            const toolEntries = Object.entries(progress);
+            if (toolEntries.length === 0) {
+                document.getElementById('scorecardTable').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            } else {
+                renderScorecard(toolEntries);
+                calculateMastery(toolEntries);
+                renderRadarChart(toolEntries);
+            }
+        });
+
+        function renderScorecard(entries) {
+            const tbody = document.getElementById('scorecardBody');
+            entries.sort((a,b) => new Date(b[1].date) - new Date(a[1].date));
+            entries.forEach(([name, data]) => {
+                const phase = TOOL_DB[name] || "Analyze";
+                const date = new Date(data.date).toLocaleDateString();
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${name}</td>
+                    <td><span class="phase-badge ${PHASE_COLORS[phase]}">${phase}</span></td>
+                    <td><span style="font-family:'Orbitron', sans-serif; font-weight:800;">${Math.round(data.score)}%</span></td>
+                    <td><span style="font-size:12px;">${data.badge}</span></td>
+                    <td style="color: var(--text-dim);">${date}</td>
+                    <td><a href="#" class="action-link" onclick="viewSavedReport('${name}')"><i class="fas fa-file-invoice"></i> View</a></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function calculateMastery(entries) {
+            const counts = { yellow: 0, green: 0, black: 0, mbb: 0 };
+            entries.forEach(([name, data]) => {
+                if (data.score >= 70) {
+                    if (name.includes('SIPOC')) counts.yellow++; 
+                    else if (name.includes('Box Plot')) counts.green++;
+                    else counts.green++;
+                }
+            });
+            updateBar('y', 2, 5); updateBar('g', counts.green, 20); updateBar('b', 0, 10); updateBar('m', 0, 5);
+        }
+
+        function updateBar(p, c, t) {
+            const pct = Math.min(Math.round((c/t)*100), 100);
+            document.getElementById(p+'-pct').innerText = pct+'%';
+            document.getElementById(p+'-bar').style.width = pct+'%';
+        }
+
+        function renderRadarChart(entries) {
+            const phases = ["Define", "Measure", "Analyze", "Improve", "Control"];
+            const scores = [0, 0, 0, 0, 0], counts = [0, 0, 0, 0, 0];
+            entries.forEach(([name, data]) => {
+                const phase = TOOL_DB[name] || "Analyze";
+                const idx = phases.indexOf(phase);
+                if (idx !== -1) { scores[idx] += data.score; counts[idx]++; }
+            });
+            const dataSets = scores.map((s, i) => counts[i] > 0 ? s / counts[i] : 20);
+
+            new Chart(document.getElementById('dmaicRadar'), {
+                type: 'radar',
+                data: {
+                    labels: phases,
+                    datasets: [{
+                        label: 'Mastery Level', data: dataSets,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)', borderColor: '#3b82f6',
+                        borderWidth: 2, pointBackgroundColor: '#fff'
+                    }]
+                },
+                options: {
+                    scales: { r: { angleLines: { color: 'rgba(255,255,255,0.1)' }, grid: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { color: '#94a3b8' }, ticks: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function viewSavedReport(toolName) {
+            const progress = JSON.parse(localStorage.getItem('LSS_Progress')) || {};
+            const data = progress[toolName];
+            if (data && data.reportHtml) {
+                const blob = new Blob([data.reportHtml], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>

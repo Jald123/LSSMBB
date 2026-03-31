@@ -7,7 +7,7 @@
    ============================================================ */
 
 // ── CONFIG ───────────────────────────────────────
-const SHEETS_ENDPOINT = ''; // Phase 5: paste Google Apps Script URL here
+const SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxD7Vk6R6b7amHbOhHnaFiMSDCQZvDAOcCG-4uv8iveiYCzXTEvAkTrATCcPai2wGpB/exec'; // Phase 5: paste Google Apps Script URL here
 
 // ── BOOT ─────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
