@@ -125,6 +125,35 @@ function _buildLoginModal() {
         <div class="generating-text">GENERATING REPORT</div>
         <div class="generating-sub">Capturing charts, data & analysis...</div>
     </div>
+
+    <!-- SUCCESS MODAL -->
+    <div id="lss-success-modal">
+        <div class="success-card">
+            <div class="success-icon"><i class="fas fa-check"></i></div>
+            <h2 class="success-title">Analysis Complete!</h2>
+            <p class="success-sub">Your progress has been measured and synced.</p>
+            
+            <div class="score-display">
+                <div class="score-circle" id="lss-success-score">0%</div>
+                <div class="score-info">
+                    <span class="score-label">Mastery Badge EARNED</span>
+                    <span class="badge-name" id="lss-success-badge">Determining...</span>
+                </div>
+            </div>
+
+            <div class="success-actions">
+                <button class="action-main" id="lss-view-report-btn">
+                    <i class="fas fa-file-invoice"></i> View Full Report
+                </button>
+                <button class="action-secondary" onclick="window.location.href='Student_Dashboard.html'">
+                    <i class="fas fa-chart-line"></i> Go to My Dashboard
+                </button>
+                <button class="action-secondary" onclick="document.getElementById('lss-success-modal').style.display='none'">
+                    <i class="fas fa-arrow-left"></i> Back to Tool
+                </button>
+            </div>
+        </div>
+    </div>
     `;
     document.body.insertAdjacentHTML('beforeend', html);
 }
@@ -213,9 +242,14 @@ function lssSubmitProgress() {
     const toolName = _getToolName();
     const progress = _getProgress();
 
-    // If already submitted, re-download the stored report
+    // If already submitted, re-show the success modal with stored data
     if (progress[toolName] && progress[toolName].reportHtml) {
-        _openReportPreview(progress[toolName].reportHtml, toolName);
+        const p = progress[toolName];
+        _showSuccessModal({
+            total: p.score,
+            badge: p.badge,
+            color: p.score >= 90 ? '#10b981' : (p.score >= 70 ? '#3b82f6' : '#facc15')
+        }, p.reportHtml, toolName);
         return;
     }
 
@@ -249,9 +283,9 @@ function lssSubmitProgress() {
             // Sync to Google Sheets (fire-and-forget)
             _syncToSheets(toolName, score, reportData);
 
-            // Hide generating overlay and show report
+            // Hide generating overlay and show success feedback
             document.getElementById('lss-generating-overlay').style.display = 'none';
-            _openReportPreview(reportHtml, toolName);
+            _showSuccessModal(score, reportHtml, toolName);
 
         } catch (err) {
             console.error('Report generation error:', err);
@@ -259,6 +293,41 @@ function lssSubmitProgress() {
             alert('Report generation encountered an issue. Please try again.');
         }
     }, 600);
+}
+
+// ── SUCCESS MODAL LOGIC ─────────────────────────
+function _showSuccessModal(score, reportHtml, toolName) {
+    const modal = document.getElementById('lss-success-modal');
+    const scoreEl = document.getElementById('lss-success-score');
+    const badgeEl = document.getElementById('lss-success-badge');
+    const reportBtn = document.getElementById('lss-view-report-btn');
+
+    modal.style.display = 'flex';
+    badgeEl.innerText = score.badge;
+    scoreEl.style.borderColor = score.color;
+    badgeEl.style.color = score.color;
+
+    // Animate the score
+    _animateValue(scoreEl, 0, score.total, 1200);
+
+    // Setup report button
+    reportBtn.onclick = () => {
+        _openReportPreview(reportHtml, toolName);
+    };
+}
+
+function _animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const val = Math.floor(progress * (end - start) + start);
+        obj.innerText = val + "%";
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
 }
 
 // ── PAGE SCANNER ─────────────────────────────────
