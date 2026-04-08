@@ -6,6 +6,7 @@
     <title>Student Dashboard | LSS Interactive Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="StudentAuth.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -167,18 +168,12 @@
     </div>
 
     <script>
-        const TOOL_DB = {
-            "Box Plot Tool": "Analyze", "Pareto Chart": "Analyze", "SIPOC Tool": "Define",
-            "Project Charter": "Define", "VSM Tool": "Measure", "Histogram Tool": "Measure",
-            "RACI Matrix": "Define", "Risk Registrar": "Analyze", "Control Plan": "Control",
-            "Mistake Proofing": "Improve", "5S Framework": "Improve", "Fishbone Diagram": "Analyze",
-            "DOE Wizard": "Analyze", "Regression Analysis": "Analyze", "Kaizen Board": "Improve"
-        };
-
         const PHASE_COLORS = {
             "Define": "phase-define", "Measure": "phase-measure", "Analyze": "phase-analyze",
             "Improve": "phase-improve", "Control": "phase-control"
         };
+
+        const PHASES = ["Define", "Measure", "Analyze", "Improve", "Control"];
 
         document.addEventListener('DOMContentLoaded', () => {
             const profile = JSON.parse(localStorage.getItem('LSS_Profile'));
@@ -207,33 +202,54 @@
 
         function renderScorecard(entries) {
             const tbody = document.getElementById('scorecardBody');
+            tbody.innerHTML = '';
             entries.sort((a,b) => new Date(b[1].date) - new Date(a[1].date));
             entries.forEach(([name, data]) => {
-                const phase = TOOL_DB[name] || "Analyze";
+                const primaryPhase = data.primaryPhase || "Analyze";
                 const date = new Date(data.date).toLocaleDateString();
+                
+                    // Smart link recovery for master records
+                    let toolUrl = data.toolFile || '#';
+                    if (toolUrl === '#' && typeof TOOL_REGISTRY !== 'undefined') {
+                        // Look for a surgical match in the global registry
+                        const registryKeys = Object.keys(TOOL_REGISTRY);
+                        const cleanName = name.replace(/\s+/g, '').toLowerCase();
+                        const match = registryKeys.find(k => k.toLowerCase().includes(cleanName.substring(0, 12)));
+                        if (match) toolUrl = match;
+                    }
+                    
+                    // Fallback for known specialized tools
+                    if (name.includes('Kaizen') && toolUrl === '#') toolUrl = 'Tool_KaizenPDCA.html';
+                    if (name.includes('Stakeholder') && toolUrl === '#') toolUrl = 'Tool_StakeholderAnalysis.html';
+                    if (name.includes('SOP') && toolUrl === '#') toolUrl = 'Tool_SOP_Premium.html';
+                    if (name.includes('Financials') && toolUrl === '#') toolUrl = 'Tool_Financials_ROI.html';
+                
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="font-weight: 600;">${name}</td>
-                    <td><span class="phase-badge ${PHASE_COLORS[phase]}">${phase}</span></td>
+                    <td><span class="phase-badge ${PHASE_COLORS[primaryPhase]}">${primaryPhase}</span></td>
                     <td><span style="font-family:'Orbitron', sans-serif; font-weight:800;">${Math.round(data.score)}%</span></td>
-                    <td><span style="font-size:12px;">${data.badge}</span></td>
+                    <td><span style="font-size:12px; color: ${data.score < 50 ? '#ef4444' : 'inherit'};">${data.badge}</span></td>
                     <td style="color: var(--text-dim);">${date}</td>
-                    <td><a href="#" class="action-link" onclick="viewSavedReport('${name}')"><i class="fas fa-file-invoice"></i> View</a></td>
+                    <td>
+                        <div style="display: flex; gap: 15px;">
+                            <a href="#" class="action-link" onclick="viewSavedReport('${name}')" title="View Full Report"><i class="fas fa-file-invoice"></i> View</a>
+                            <a href="${toolUrl}" class="action-link" style="color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 5px 12px; border-radius: 8px; background: rgba(59, 130, 246, 0.05);" title="Edit & Improvement Resubmission"><i class="fas fa-edit"></i> Edit</a>
+                        </div>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
         function calculateMastery(entries) {
-            const counts = { yellow: 0, green: 0, black: 0, mbb: 0 };
-            entries.forEach(([name, data]) => {
-                if (data.score >= 70) {
-                    if (name.includes('SIPOC')) counts.yellow++; 
-                    else if (name.includes('Box Plot')) counts.green++;
-                    else counts.green++;
-                }
-            });
-            updateBar('y', 2, 5); updateBar('g', counts.green, 20); updateBar('b', 0, 10); updateBar('m', 0, 5);
+            const totalTools = entries.filter(e => e[1].score >= 60).length;
+            
+            // LSS Thresholds: Yellow(5), Green(15), Black(30), MBB(45)
+            updateBar('y', totalTools, 5); 
+            updateBar('g', totalTools, 15); 
+            updateBar('b', totalTools, 30); 
+            updateBar('m', totalTools, 45);
         }
 
         function updateBar(p, c, t) {
@@ -243,27 +259,42 @@
         }
 
         function renderRadarChart(entries) {
-            const phases = ["Define", "Measure", "Analyze", "Improve", "Control"];
             const scores = [0, 0, 0, 0, 0], counts = [0, 0, 0, 0, 0];
+            
             entries.forEach(([name, data]) => {
-                const phase = TOOL_DB[name] || "Analyze";
-                const idx = phases.indexOf(phase);
-                if (idx !== -1) { scores[idx] += data.score; counts[idx]++; }
+                const phases = data.eligiblePhases || [data.primaryPhase || "Analyze"];
+                phases.forEach(phase => {
+                    const idx = PHASES.indexOf(phase);
+                    if (idx !== -1) {
+                        scores[idx] += data.score;
+                        counts[idx]++;
+                    }
+                });
             });
-            const dataSets = scores.map((s, i) => counts[i] > 0 ? s / counts[i] : 20);
+
+            const dataSets = scores.map((s, i) => counts[i] > 0 ? s / counts[i] : 0);
 
             new Chart(document.getElementById('dmaicRadar'), {
                 type: 'radar',
                 data: {
-                    labels: phases,
+                    labels: PHASES,
                     datasets: [{
                         label: 'Mastery Level', data: dataSets,
                         backgroundColor: 'rgba(59, 130, 246, 0.2)', borderColor: '#3b82f6',
-                        borderWidth: 2, pointBackgroundColor: '#fff'
+                        borderWidth: 2, pointBackgroundColor: '#fff',
+                        pointHoverBackgroundColor: '#fff', pointHoverBorderColor: '#3b82f6'
                     }]
                 },
                 options: {
-                    scales: { r: { angleLines: { color: 'rgba(255,255,255,0.1)' }, grid: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { color: '#94a3b8' }, ticks: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
+                    scales: { 
+                        r: { 
+                            angleLines: { color: 'rgba(255,255,255,0.1)' }, 
+                            grid: { color: 'rgba(255,255,255,0.1)' }, 
+                            pointLabels: { color: '#94a3b8', font: { family: 'Orbitron', size: 10 } }, 
+                            ticks: { display: false }, 
+                            suggestedMin: 0, suggestedMax: 100 
+                        } 
+                    },
                     plugins: { legend: { display: false } }
                 }
             });
