@@ -167,6 +167,73 @@
             border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
         }
 
+        .equation-modal {
+            max-width: 800px !important;
+            width: 70% !important;
+            background: #0f172a !important;
+            padding: 50px !important;
+            border: 2px solid var(--accent) !important;
+        }
+
+        .equation-display {
+            font-family: 'Times New Roman', serif;
+            font-size: 32px;
+            text-align: center;
+            padding: 40px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            margin: 20px 0;
+            line-height: 2;
+        }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip-content {
+            visibility: hidden;
+            width: 240px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -120px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid var(--accent);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .tooltip-container:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 10px;
+        }
+
+        .fraction > span {
+            display: block;
+            padding-top: 5px;
+        }
+
+        .fraction span.bottom {
+            border-top: 2px solid white;
+        }
+
         .clickable-result:hover {
             color: var(--accent);
             background: rgba(255, 255, 255, 0.1);
@@ -413,10 +480,11 @@
             </div>
 
             <!-- Row 2 -->
-            <div class="intro-card">
-                <div class="intro-title">📐 Standard Equation</div>
+            <div class="intro-card" onclick="openEquationModal()" style="cursor: pointer; transition: 0.3s; position: relative;" title="Click to expand equation view">
+                <div class="intro-title">📐 Standard Equation <i class="fas fa-expand-arrows-alt" style="font-size: 10px; float: right;"></i></div>
                 <div class="math-block">DPMO = (Defects / Opps) * 1M</div>
                 <div class="math-block">Z = NormInv(1 - DPMO/1M) + 1.5</div>
+                <small style="font-size: 9px; color: var(--accent); display: block; margin-top: 5px;">Click to enlarge view</small>
             </div>
             <div class="intro-card">
                 <div class="intro-title">🧠 Interpretation</div>
@@ -445,9 +513,14 @@
                 <label style="font-size:12px; color:var(--text-secondary);">Select Industry Scenario:</label>
                 <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()">
                     <option value="">-- Custom Data --</option>
-                    <option value="manufacturing">⚙️ Manufacturing (Defects)</option>
-                    <option value="healthcare">🏥 Healthcare (Errors)</option>
-                    <option value="service">🎧 Service (Complaints)</option>
+                    <optgroup label="🏥 Healthcare Excellence (1-6σ)">
+                        <option value="h1">Case 1: 1σ - Discharge Ad-hoc</option>
+                        <option value="h2">Case 2: 2σ - Routine Paperwork</option>
+                        <option value="h3">Case 3: 3σ - Lab Performance</option>
+                        <option value="h4">Case 4: 4σ - Med Admin Timing</option>
+                        <option value="h5">Case 5: 5σ - Site Marking</option>
+                        <option value="h6">Case 6: 6σ - Blood Match</option>
+                    </optgroup>
                 </select>
 
                 <div class="form-group">
@@ -463,7 +536,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Opportunities per Unit</label>
+                    <label class="tooltip-container">
+                        Opportunities per Unit <i class="fas fa-info-circle" style="color: var(--accent); font-size: 12px;"></i>
+                        <div class="tooltip-content">
+                            <strong>Definition:</strong> Total number of potential error types per process unit.<br><br>
+                            <strong>Importance:</strong> Ensures fair benchmarking. A process with 100 ways to fail is assessed differently than one with 1.
+                        </div>
+                    </label>
                     <input type="number" id="opps" value="1">
                     <small>How many ways to fail per item?</small>
                 </div>
@@ -532,6 +611,32 @@
                         Class Target: 6.0</div>
                 </div>
 
+                <!-- NORMAL DISTRIBUTION CHART -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="flex-between" style="margin-bottom:10px; justify-content:center;">
+                        <h3 style="margin:0;">Normal Distribution (6σ Map)</h3>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="normalDistChart"></canvas>
+                    </div>
+                    <div style="text-align:center; font-size:11px; color:var(--text-secondary); margin-top:10px;">
+                        Visualizing the <span style="color: #3b82f6;">99.99966%</span> efficiency zone.
+                    </div>
+                </div>
+
+                <!-- MAGNIFIED DEFECT ZONE (Tail Zoom) -->
+                <div id="tailZoomCard" class="card" style="margin-bottom: 20px; display: none; border: 1px solid rgba(231, 76, 60, 0.3);">
+                    <div class="flex-between" style="margin-bottom:10px; justify-content:center;">
+                        <h3 style="margin:0; color: #E74C3C;">🔍 Magnified Defect Zone (High-Res)</h3>
+                    </div>
+                    <div style="height: 180px; position: relative;">
+                        <canvas id="tailZoomChart"></canvas>
+                    </div>
+                    <div style="text-align:center; font-size:10px; color:var(--text-secondary); margin-top:10px;">
+                        Zooming in on the <b>Tail Region</b> to visualize the tiny DPMO failure area.
+                    </div>
+                </div>
+
                 <!-- METRICS -->
                 <div class="stat-grid">
                     <div class="stat-box clickable-result" onclick="explain('dpmo')">
@@ -583,6 +688,42 @@
             <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
             <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
             <p id="modalContent" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">Content...</p>
+        </div>
+    </div>
+
+    <!-- EQUATION MODAL -->
+    <div class="modal-overlay" id="equationModal" onclick="closeModal(event)">
+        <div class="modal-box equation-modal">
+            <span class="close-btn" onclick="document.getElementById('equationModal').style.display='none'">&times;</span>
+            <h2 style="color: var(--accent); text-align: center; font-family: 'Orbitron';">The Sigma Equation</h2>
+            <div class="equation-display">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    DPMO = 
+                    <div class="fraction">
+                        <span class="top">Total Defects</span>
+                        <span class="bottom">Units × Opps</span>
+                    </div>
+                    × 1,000,000
+                </div>
+                <div style="margin-top: 30px;">
+                    Sigma (Z) = NormInv(1 - <span class="fraction" style="font-size: 24px;"><span class="top">DPMO</span><span class="bottom">1,000,000</span></span>) + 1.5
+                </div>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 14px; text-align: center;">
+                The <span style="color: var(--accent);">+1.5 Shift</span> accounts for long-term process variation.
+            </p>
+
+            <div style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <h4 style="color: var(--text-secondary); font-size: 11px; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;">Abbreviation Breakdown</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 11px; color: var(--text-secondary);">
+                    <div>• <b>DPMO:</b> Defects Per Million Opportunities</div>
+                    <div>• <b>Opps:</b> Opportunities for error per process unit</div>
+                    <div>• <b>Z:</b> Sigma Level (Z-score)</div>
+                    <div>• <b>NormInv:</b> Converts probability into Z-score (Excel: <code>=NORM.S.INV()</code>). e.g., 93.3% Yield = 1.5 Z</div>
+                    <div>• <b>1M:</b> Normalizing factor (1,000,000)</div>
+                    <div>• <b>1.5 Shift:</b> Long-term variation adjustment</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -733,23 +874,41 @@
 
         // SCENARIOS DATABASE
         const scenarios = {
-            'manufacturing': {
-                name: "Production Line",
-                units: 10000, defects: 500, opps: 5,
-                context: "Assembly: A complex product with 5 check-points (opps) per unit.",
-                reason: "If Sigma < 3, investigate tooling calibration. If Sigma > 4.5, reduce inspection frequency."
+            'h1': {
+                name: "🏥 H1: Discharge Delays",
+                units: 1000, defects: 691, opps: 1,
+                context: "1 Sigma: Extremely high failure rate. Most discharges are delayed beyond standard window.",
+                reason: "Systemic breakdown. Process is ad-hoc with no standardization."
             },
-            'healthcare': {
-                name: "Medication Admin",
-                units: 5000, defects: 2, opps: 1,
-                context: "Patient Safety: Any error is critical. Target is > 5.5 Sigma.",
-                reason: "High yield (99%+) is mandatory here. DPMO must be minimized to near zero."
+            'h2': {
+                name: "🏥 H2: Paperwork Errors",
+                units: 1000, defects: 308, opps: 1,
+                context: "2 Sigma: Very poor performance. Frequent errors in routine patient documentation.",
+                reason: "High rework cost. Staff spending 30%+ time fixing errors."
             },
-            'service': {
-                name: "Service Levels",
-                units: 2000, defects: 150, opps: 1,
-                context: "Call Center: 'Defect' = Call dropped or customer unsatisfied.",
-                reason: "3-4 Sigma is typical for service industries. Above 4 requires automation."
+            'h3': {
+                name: "🏥 H3: Lab Turnaround",
+                units: 1000, defects: 66, opps: 1,
+                context: "3 Sigma: Average Healthcare Performance. Occasional delays in critical lab reporting.",
+                reason: "Typical 'Industry Average'. Capability is marginal for safety-critical steps."
+            },
+            'h4': {
+                name: "🏥 H4: Med. Admin. Timing",
+                units: 1000, defects: 6, opps: 1,
+                context: "4 Sigma: Stable Process. Most medications given within the +/- 30 min window.",
+                reason: "Standard industry benchmark. Process is stable but requires vigilance."
+            },
+            'h5': {
+                name: "🏥 H5: Correct Site Marking",
+                units: 10000, defects: 2, opps: 1,
+                context: "5 Sigma: High Reliability. Near perfect adherence to surgical site protocols.",
+                reason: "Process contains strong forcing functions and checklists."
+            },
+            'h6': {
+                name: "🏥 H6: Blood Compatibility",
+                units: 1000000, defects: 3, opps: 1,
+                context: "6 Sigma: World Class. Zero-defect aspiration for life-critical blood cross-matching.",
+                reason: "Statistical perfection. Mechanically mistake-proofed via barcode verification."
             }
         };
 
@@ -792,6 +951,7 @@
             document.getElementById('units').value = s.units;
             document.getElementById('defects').value = s.defects;
             document.getElementById('opps').value = s.opps;
+            calculateSigma();
         }
 
         function calculateSigma() {
@@ -816,15 +976,263 @@
 
             // UI
             document.getElementById('resultsPanel').style.display = 'block';
-            document.getElementById('resDPMO').innerText = Math.round(dpmo).toLocaleString();
-            document.getElementById('resYield').innerText = yieldVal.toFixed(2) + '%';
+            document.getElementById('resDPMO').innerText = dpmo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 4});
+            document.getElementById('resYield').innerText = yieldVal.toFixed(6) + '%';
 
-            const sigText = sigma.toFixed(2) + ' σ';
+            const sigText = sigma.toFixed(5) + ' σ';
             document.getElementById('resSigma').innerText = sigText;
             document.getElementById('resSigmaBig').innerText = sigText;
 
             generateAutoFindings(sigma, dpmo, yieldVal);
             renderGauge(sigma);
+            renderNormalDist(sigma);
+        }
+
+        function openEquationModal() {
+            document.getElementById('equationModal').style.display = 'flex';
+        }
+
+        function renderNormalDist(processSigma) {
+            const ctx = document.getElementById('normalDistChart').getContext('2d');
+            
+            function normalPDF(x, mu, sigma) {
+                return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+            }
+
+            const labels = [];
+            const fullPoints = [];
+            const shadedPoints = [];
+            
+            const zMax = Math.min(Math.max(processSigma, -6), 6);
+
+            for (let x = -6; x <= 6; x += 0.1) {
+                labels.push(x.toFixed(1));
+                const y = normalPDF(x, 0, 1);
+                fullPoints.push(y);
+                if (x <= zMax) shadedPoints.push(y);
+                else shadedPoints.push(null);
+            }
+
+            // Benchmark Lines (μ, ±1σ, ±2σ, ±3σ, etc.)
+            const sigmaLines = [];
+            for(let i = 0; i <= 6; i++) {
+                const yHeight = normalPDF(i, 0, 1);
+                sigmaLines.push({x: i, y: yHeight, label: `${i}σ`});
+            }
+
+            if (window.distChart) window.distChart.destroy();
+
+            let shadeColor = 'rgba(231, 76, 60, 0.4)'; 
+            let borderColor = '#E74C3C';
+            if (processSigma >= 3.5) { shadeColor = 'rgba(241, 196, 15, 0.4)'; borderColor = '#F1C40F'; }
+            if (processSigma >= 5.5) { shadeColor = 'rgba(46, 204, 113, 0.4)'; borderColor = '#2ECC71'; }
+
+            window.distChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Process Performance Zone',
+                            data: shadedPoints,
+                            backgroundColor: shadeColor,
+                            fill: true, pointRadius: 0, borderWidth: 0, tension: 0.4, order: 3
+                        },
+                        {
+                            label: 'Normal Curve',
+                            data: fullPoints,
+                            borderColor: 'rgba(255,255,255,0.2)',
+                            fill: false, pointRadius: 0, borderWidth: 1, tension: 0.4, order: 2
+                        },
+                        // MEAN LINE (μ)
+                        {
+                            label: 'Mean',
+                            data: labels.map(l => parseFloat(l) === 0 ? 0.45 : null),
+                            borderColor: 'rgba(255, 255, 255, 0.6)',
+                            borderWidth: 1.5,
+                            borderDash: [4, 4],
+                            fill: false,
+                            pointRadius: 0,
+                            spanGaps: false,
+                            order: 0
+                        },
+                        // The "NEEDLE" - Exact Process Sigma
+                        {
+                            label: 'Your Sigma Level',
+                            data: labels.map((l, i) => {
+                                const xVal = parseFloat(l);
+                                // Draw a vertical line segment at the closest label point
+                                return Math.abs(xVal - zMax) < 0.05 ? 0.45 : null;
+                            }),
+                            borderColor: '#fff',
+                            borderWidth: 3,
+                            fill: false,
+                            pointRadius: 0,
+                            spanGaps: false,
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { 
+                            enabled: true,
+                            callbacks: {
+                                label: (context) => {
+                                    if(context.datasetIndex === 2) return `Your Sigma: ${processSigma.toFixed(2)}`;
+                                    return null;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { 
+                                color: (context) => {
+                                    const val = parseFloat(context.tick.label);
+                                    if (val === 0) return 'rgba(255, 255, 255, 0.8)'; // Mean
+                                    if (Number.isInteger(val)) return 'rgba(255, 255, 255, 0.2)'; // Whole sigmas
+                                    return 'transparent';
+                                }
+                            },
+                            ticks: { 
+                                color: (context) => {
+                                    const val = parseFloat(context.tick.label);
+                                    return Number.isInteger(val) ? '#fff' : '#94a3b8';
+                                },
+                                callback: function(value, index, values) {
+                                    const val = parseFloat(this.getLabelForValue(value));
+                                    if (val === 0) return 'μ (Mean)';
+                                    if (Number.isInteger(val) && val > 0) return val + 'σ';
+                                    return '';
+                                },
+                                stepSize: 1,
+                                autoSkip: false
+                            }
+                        },
+                        y: { display: false, max: 0.5 }
+                    }
+                }
+            });
+
+            // --- TAIL ZOOM LOGIC ---
+            if (processSigma >= 2.5) {
+                document.getElementById('tailZoomCard').style.display = 'block';
+                renderTailZoom(processSigma);
+            } else {
+                document.getElementById('tailZoomCard').style.display = 'none';
+            }
+        }
+
+        function renderTailZoom(processSigma) {
+            const ctx = document.getElementById('tailZoomChart').getContext('2d');
+            
+            function normalPDF(x, mu, sigma) {
+                return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+            }
+
+            const zoomData = [];
+            const defectArea = [];
+            
+            // --- ADAPTIVE FOCAL WINDOW ---
+            // As sigma increases, we narrow the focus to "enlarge" the tiny area
+            let windowWidth = 1.2; // Default for 2.5-3.5
+            if (processSigma > 3.5) windowWidth = 0.8; // Medium zoom for 4-5
+            if (processSigma > 5.5) windowWidth = 0.3; // Super zoom for 6+
+
+            const startX = processSigma - (windowWidth * 0.7);
+            const endX = processSigma + (windowWidth * 0.3);
+            const step = windowWidth / 50; // Dynamic step for smoothness
+
+            let maxVisibleY = 0;
+            for (let x = startX; x <= endX; x += step) {
+                const y = normalPDF(x, 0, 1);
+                zoomData.push({x: x, y: y});
+                if (y > maxVisibleY) maxVisibleY = y;
+
+                if (x >= processSigma) {
+                    defectArea.push({x: x, y: y});
+                } else {
+                    defectArea.push({x: x, y: 0});
+                }
+            }
+
+            if (window.tailChart) window.tailChart.destroy();
+
+            window.tailChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        {
+                            label: 'DEFECT ZONE (DPMO)',
+                            data: defectArea,
+                            backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                            fill: true, pointRadius: 0, borderWidth: 0, tension: 0.1
+                        },
+                        {
+                            label: 'Process Variation Tail',
+                            data: zoomData,
+                            borderColor: '#3b82f6',
+                            fill: false, pointRadius: 0, borderWidth: 4, tension: 0.1
+                        },
+                        // USL Needle
+                        {
+                            label: 'USL',
+                            data: [
+                                {x: processSigma, y: 0},
+                                {x: processSigma, y: maxVisibleY * 1.2}
+                            ],
+                            borderColor: '#fff',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: false,
+                            pointRadius: 0,
+                            showLine: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    animation: { duration: 1000 },
+                    layout: { padding: { top: 30, right: 30, left: 10 } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            min: startX,
+                            max: endX,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            title: { display: true, text: 'Magnified View: Sigma Level (Z)', color: '#94a3b8', font: { size: 10, weight: 'bold' } },
+                            ticks: { 
+                                color: '#fff',
+                                font: { size: 10 },
+                                callback: function(val) {
+                                    if (Math.abs(val - processSigma) < (windowWidth * 0.05)) return `USL`;
+                                    return val.toFixed(2);
+                                }
+                            }
+                        },
+                        y: { 
+                            display: true,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            min: 0,
+                            max: maxVisibleY * 1.3, // Adaptive Y Scaling
+                            ticks: { 
+                                color: '#94a3b8',
+                                font: { size: 8 },
+                                callback: function(val) { return val.toExponential(1); }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function generateAutoFindings(sigma, dpmo, yieldVal) {
@@ -902,10 +1310,12 @@
 
         // Initialize
         loadScenario();
+        renderNormalDist(3);
 
         function closeModal(e) {
             if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
             if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+            if (e.target.id === 'equationModal') document.getElementById('equationModal').style.display = 'none';
         }
 
         function magnify(canvasId, title) {

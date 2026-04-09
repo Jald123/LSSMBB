@@ -885,7 +885,8 @@
                 skewed: [
                     { name: "Morning", data: "40, 42, 45, 120, 43, 44, 46" },
                     { name: "Afternoon", data: "30, 32, 35, 150, 33, 34, 31" }
-                ]
+                ],
+                context: "Healthcare Operations: Shift-based variance detected. Higher morning wait times suggest demand-staffing misalignment during peak triage hours."
             },
             'hc_falls': {
                 name: "Patient Falls (By Unit)",
@@ -899,7 +900,8 @@
                 skewed: [
                     { name: "Medical", data: "1, 1, 1, 1, 10, 1, 2" },
                     { name: "Ortho", data: "5, 5, 5, 5, 25, 6, 5" }
-                ]
+                ],
+                context: "Patient Safety: Significant variance confirmed. Orthopedic unit requires specific fall-prevention protocol audits compared to baseline units."
             },
             'hc_los': {
                 name: "Length of Stay (By Physician)",
@@ -912,7 +914,8 @@
                 skewed: [
                     { name: "Dr. Smith", data: "5, 5, 6, 5, 22, 6, 5" },
                     { name: "Dr. Jones", data: "3, 3, 4, 3, 15, 3, 4" }
-                ]
+                ],
+                context: "Clinical Efficiency: Provider-level variance is significant. Standardization of discharge criteria across physicians can reduce overall LOS."
             },
             'gen_mfg': {
                 name: "Production Yield (Across Shifts)",
@@ -925,7 +928,8 @@
                 skewed: [
                     { name: "Day", data: "98, 98, 99, 98, 70, 98, 99" },
                     { name: "Night", data: "94, 94, 95, 94, 50, 94, 95" }
-                ]
+                ],
+                context: "Manufacturing Yield: Night shift underperformance is statistically significant. Investigate machine calibration or resource levels during the 3rd shift."
             },
             'gen_nps': {
                 name: "Market NPS (Regional)",
@@ -939,7 +943,8 @@
                 skewed: [
                     { name: "North", data: "40, 42, 45, 10, 43, 44, 46" },
                     { name: "South", data: "60, 62, 65, 100, 63, 64, 61" }
-                ]
+                ],
+                context: "Voice of the Customer: Regional variance indicates local execution issues. High performing 'South' region should be studied for best practices."
             }
         };
 
@@ -1142,8 +1147,8 @@
             currentResults = { f, p, df1, df2, N, k, groupStats };
 
             document.getElementById('resultsPanel').style.display = 'block';
-            document.getElementById('resF').innerText = f.toFixed(2);
-            document.getElementById('resP').innerText = p < 0.001 ? "< 0.001" : p.toFixed(4);
+            document.getElementById('resF').innerText = f.toFixed(4);
+            document.getElementById('resP').innerText = p < 0.0001 ? "< 0.0001" : p.toFixed(4);
             document.getElementById('resP').style.color = p < 0.05 ? '#2ECC71' : '#E74C3C';
             document.getElementById('resVerdict').innerText = p < 0.05 ? "Significant Variance" : "No Difference";
 
@@ -1154,15 +1159,22 @@
 
         function generateAutoFindings(f, p, groups, labels) {
             const div = document.getElementById('analysisSummary');
+            let scenarioText = "";
+            if (currentScenario && scenarioDB[currentScenario] && scenarioDB[currentScenario].context) {
+                scenarioText = `<div style="margin-top:10px; background:rgba(59,130,246,0.1); padding:10px; border-left:3px solid #3b82f6; border-radius:4px;"><b>Scenario Intelligence:</b> ${scenarioDB[currentScenario].context}</div>`;
+            }
+
             if (p < 0.05) {
                 const means = groups.map(g => jStat.mean(g));
                 const maxIdx = means.indexOf(Math.max(...means));
                 div.innerHTML = `<span style='color:#2ecc71'><b>✅ Significant Difference Detected.</b> At least one group behaves differently.</span><br>
-                    • Highest performing group: <b>${labels[maxIdx]}</b> (Mean: ${means[maxIdx].toFixed(2)})<br>
-                    • Statistical Strength: High (F = ${f.toFixed(2)})`;
+                    • Highest performing group: <b>${labels[maxIdx]}</b> (Mean: ${means[maxIdx].toFixed(4)})<br>
+                    • Statistical Strength: High (F = ${f.toFixed(4)})
+                    ${scenarioText}`;
             } else {
                 div.innerHTML = `<span style='color:#e74c3c'><b>⚠️ No Statistically Significant Difference.</b> All groups show similar performance.</span><br>
-                    • Action: Variation is likely due to common-cause noise, not a systemic factor.`;
+                    • Action: Variation is likely due to common-cause noise, not a systemic factor.
+                    ${scenarioText}`;
             }
             div.style.display = 'block';
         }
@@ -1315,9 +1327,9 @@
                                 <tr>
                                     <td>${s.name}</td>
                                     <td>${s.n}</td>
-                                    <td>${s.mean.toFixed(3)}</td>
-                                    <td>${s.std.toFixed(3)}</td>
-                                    <td>${s.min.toFixed(1)} - ${s.max.toFixed(1)}</td>
+                                    <td>${s.mean.toFixed(4)}</td>
+                                    <td>${s.std.toFixed(4)}</td>
+                                    <td>${s.min.toFixed(4)} - ${s.max.toFixed(4)}</td>
                                 </tr>
                             `).join('')}
                         </tbody>

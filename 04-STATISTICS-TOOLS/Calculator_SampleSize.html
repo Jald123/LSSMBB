@@ -506,21 +506,24 @@
                 type: "proportion",
                 vals: { conf: 95, errProp: 2, estProp: 5 }, // 2% margin, 5% defect est
                 context: "Quality Audit: Checking 10,000 screws. We think 5% are bad.",
-                reason: "We need 2% precision to know if we are truly improving."
+                reason: "We need 2% precision to know if we are truly improving.",
+                mbb_insight: "High-precision manufacturing requires tight error margins. A 2% error threshold is standard for critical component yields."
             },
             'healthcare': {
                 name: "ER Wait Times",
                 type: "mean",
                 vals: { conf: 95, errMean: 5, stdMean: 15 }, // ±5 mins, StdDev 15
                 context: "Patient Flow: Measuring average wait time. High variance expected.",
-                reason: "High StdDev (15m) drives up the sample size required."
+                reason: "High StdDev (15m) drives up the sample size required.",
+                mbb_insight: "In healthcare patient flow, high variance (Std Dev 15) is common. The sample size must be robust enough to separate signal from noise."
             },
             'service': {
                 name: "Customer Survey",
                 type: "proportion",
                 vals: { conf: 90, errProp: 5, estProp: 50 }, // 50% conservative
                 context: "NPS Survey: Polling customers. We have no idea what they think (50% est).",
-                reason: "50% Estimate creates the maximum possible sample size (safest bet)."
+                reason: "50% Estimate creates the maximum possible sample size (safest bet).",
+                mbb_insight: "Assuming a 50% proportion is the 'safest' statistical hedge, ensuring the largest possible sample size for an unknown population."
             }
         };
 
@@ -682,7 +685,11 @@
 
         function generateAutoFindings(n) {
             const div = document.getElementById('analysisSummary');
-            let html = `<b>Optimization Insight:</b><br>To cut this Sample Size in half, you would need to accept range of error that is <b>1.41x</b> wider (Square Root Rule).<br>Conversely, if you want twice the precision, you'd need <b>${(n * 4).toLocaleString()}</b> samples!`;
+            let mbbContext = "";
+            if (currentScenario && scenarios[currentScenario] && scenarios[currentScenario].mbb_insight) {
+                mbbContext = `<div style="margin-top:10px; background:rgba(59,130,246,0.1); padding:10px; border-left:3px solid #3b82f6; border-radius:4px;"><b>Scenario Intelligence:</b> ${scenarios[currentScenario].mbb_insight}</div>`;
+            }
+            let html = `<b>Optimization Insight:</b><br>To cut this Sample Size in half, you would need to accept range of error that is <b>1.4142x</b> wider (Square Root Rule).<br>Conversely, if you want twice the precision, you'd need <b>${(n * 4).toLocaleString()}</b> samples! ${mbbContext}`;
             div.innerHTML = html;
             div.style.display = 'block';
         }

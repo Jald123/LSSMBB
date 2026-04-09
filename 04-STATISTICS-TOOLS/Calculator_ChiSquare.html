@@ -694,35 +694,40 @@
                     colA: "Time-Out Protocol", colB: "No Protocol",
                     row1: "Safe Surgery", row2: "Near-Miss/Error",
                     vals: [495, 450, 5, 50],
-                    desc: "Does a 'Time-Out' protocol significantly reduce near-misses?"
+                    desc: "Does a 'Time-Out' protocol significantly reduce near-misses?",
+                    context: "Patient Safety & Compliance: The protocol exhibits a strong protective effect. Process optimization should focus on sustaining compliance rather than redesigning the protocol."
                 },
                 'hc_readmit': {
                     name: "Readmission Analysis",
                     colA: "Unit A (High Staff)", colB: "Unit B (Standard)",
                     row1: "No Readmit", row2: "Readmitted",
                     vals: [180, 150, 20, 50],
-                    desc: "Are staffing levels linked to readmission categories?"
+                    desc: "Are staffing levels linked to readmission categories?",
+                    context: "Healthcare Operations: High staffing correlates with lower readmissions. This statistically justifies the business case for increased headcount."
                 },
                 'hc_meds': {
                     name: "Medication Errors",
                     colA: "Nurse Group A", colB: "Nurse Group B",
                     row1: "Error-Free", row2: "Incorrect Dose",
                     vals: [980, 920, 20, 80],
-                    desc: "Check for dependencies between nursing clusters and error rates."
+                    desc: "Check for dependencies between nursing clusters and error rates.",
+                    context: "Quality Audits: Statistically significant deviation detected between teams. Investigate training, shift fatigue, or local operational procedures."
                 },
                 'gen_mfg': {
                     name: "Yield Comparison",
                     colA: "Day Shift", colB: "Night Shift",
                     row1: "Pass", row2: "Fail/Scrap",
                     vals: [480, 420, 20, 80],
-                    desc: "Is there a dependency between shift time and quality outcome?"
+                    desc: "Is there a dependency between shift time and quality outcome?",
+                    context: "Manufacturing Variance: Night shift underperformance confirmed. Look into lighting, supervision levels, or maintenance schedules unique to that shift."
                 },
                 'gen_nps': {
                     name: "Regional Promoter Status",
                     colA: "Region North", colB: "Region South",
                     row1: "Promoter", row2: "Detractor",
                     vals: [200, 150, 20, 70],
-                    desc: "Does geography influence customer sentiment patterns?"
+                    desc: "Does geography influence customer sentiment patterns?",
+                    context: "Voice of the Customer (VOC): Sentiment is dependent on geography. Standardize service delivery across regions to mitigate local execution flaws."
                 }
             };
 
@@ -882,10 +887,10 @@
 
                 // UI
                 document.getElementById('resultsPanel').style.display = 'block';
-                document.getElementById('resChi').innerText = chi.toFixed(2);
+                document.getElementById('resChi').innerText = chi.toFixed(4);
 
                 const pElem = document.getElementById('resP');
-                pElem.innerText = p < 0.001 ? "< 0.001" : p.toFixed(4);
+                pElem.innerText = p < 0.0001 ? "< 0.0001" : p.toFixed(4);
                 pElem.style.color = p < 0.05 ? '#2ECC71' : '#E74C3C';
 
                 const resElem = document.getElementById('resResult');
@@ -906,6 +911,11 @@
                 let colNameB = document.getElementById('colB').innerText.replace(/\n.*/g, '');
                 let rowNameBad = document.getElementById('row2').innerText.replace(/\n.*/g, '');
 
+                let scenarioText = "";
+                if (currentScenario && scenarioDB[currentScenario] && scenarioDB[currentScenario].context) {
+                    scenarioText = `<div style="margin-top:10px; background:rgba(59,130,246,0.1); padding:10px; border-left:3px solid #3b82f6; border-radius:4px;"><b>Scenario Intelligence:</b> ${scenarioDB[currentScenario].context}</div>`;
+                }
+
                 // Calculate "Bad" Rates
                 let rateA = o21 / (o11 + o21);
                 let rateB = o22 / (o12 + o22);
@@ -915,12 +925,14 @@
                     let best = rateA > rateB ? colNameB : colNameA;
 
                     html = `<span style='color:var(--success)'><b>Significant Link Found:</b> The outcome depends on the group.</span><br>
-                • <b>${worst}</b> has a higher rate of '${rowNameBad}' (${(Math.max(rateA, rateB) * 100).toFixed(1)}%).<br>
-                • <b>${best}</b> is performing better (${(Math.min(rateA, rateB) * 100).toFixed(1)}%).<br>
-                Conclusion: Focus improvement efforts on <b>${worst}</b> as it is statistically the problem area.`;
+                • <b>${worst}</b> has a higher rate of '${rowNameBad}' (${(Math.max(rateA, rateB) * 100).toFixed(2)}%).<br>
+                • <b>${best}</b> is performing better (${(Math.min(rateA, rateB) * 100).toFixed(2)}%).<br>
+                Conclusion: Focus improvement efforts on <b>${worst}</b> as it is statistically the problem area.
+                ${scenarioText}`;
                 } else {
                     html = `<span style='color:var(--warning)'><b>No Significant Link:</b> The differences are likely random chance.</span><br>
-                 Both groups perform similarly. Changing from ${colNameA} to ${colNameB} will likely NOT fix the problem.`;
+                 Both groups perform similarly. Changing from ${colNameA} to ${colNameB} will likely NOT fix the problem.
+                 ${scenarioText}`;
                 }
 
                 div.innerHTML = html;
@@ -1053,7 +1065,7 @@
                         </div>
                         <div class="card">
                             <div class="label">Chi-Square (χ²)</div>
-                            <div class="val">${currentResults.chi.toFixed(3)}</div>
+                            <div class="val">${currentResults.chi.toFixed(4)}</div>
                             <div style="font-size:11px; color:#64748b;">Observed vs Expected Variance</div>
                         </div>
                         <div class="card">

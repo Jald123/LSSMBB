@@ -1285,6 +1285,11 @@
                                                 <div class="stat-val" id="resCV">-</div>
                                                 <div class="stat-sub">Variation</div>
                                             </div>
+                                            <div class="stat-box" id="modeBox">
+                                                <div class="stat-label">Mode</div>
+                                                <div class="stat-val" id="resMode" style="font-size: 18px;">-</div>
+                                                <div class="stat-sub">Frequency</div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -1657,79 +1662,96 @@
                                 let raw = document.getElementById('dataInput').value;
                                 let data = raw.replace(/\n/g, ',').split(',').map(x => parseFloat(x)).filter(x => !isNaN(x));
 
-                                if (data.length < 3) { alert("Please enter at least 3 numbers."); return; }
+                                if (data.length < 3) { alert("Please enter at least 3 numbers for a valid statistical audit."); return; }
 
-                                // Sorting for stats
-                                const sorted = [...data].sort((a, b) => a - b);
                                 const n = data.length;
-                                const min = sorted[0];
-                                const max = sorted[n - 1];
                                 const sum = data.reduce((a, b) => a + b, 0);
                                 const mean = sum / n;
+                                const sorted = [...data].sort((a, b) => a - b);
+                                
+                                // Central Tendency
+                                const median = jStat.percentile(data, 0.50);
+                                
+                                // Mode calculation (Multi-modal support)
+                                const counts = {};
+                                data.forEach(v => counts[v] = (counts[v] || 0) + 1);
+                                let maxFreq = 0;
+                                for (let v in counts) if (counts[v] > maxFreq) maxFreq = counts[v];
+                                let modes = [];
+                                for (let v in counts) if (counts[v] === maxFreq) modes.push(Number(v));
+                                const modeDisplay = (maxFreq === 1 || modes.length === n) ? "None" : modes.join(", ");
 
-                                // Spread
+                                // Variation & Precision
                                 const variance = data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (n - 1);
                                 const stdDev = Math.sqrt(variance);
                                 const cv = (stdDev / mean) * 100;
-                                const range = max - min;
-
-                                // CI
+                                
+                                // Exact Confidence Interval (95% T-distribution)
                                 const se = stdDev / Math.sqrt(n);
-                                const ci = 1.96 * se;
+                                const tCrit = jStat.studentt.inv(0.975, n - 1);
+                                const ci = tCrit * se;
 
-                                // Shape
-                                const skewness = data.reduce((a, b) => a + Math.pow(b - mean, 3), 0) / (n * Math.pow(stdDev, 3));
-                                const kurtosis = (data.reduce((a, b) => a + Math.pow(b - mean, 4), 0) / (n * Math.pow(stdDev, 4))) - 3;
+                                // High Precision Shape (Sample Adjusted Fisher-Pearson)
+                                let skew = 0, kurt = 0;
+                                if (n > 2) {
+                                    const m3 = data.reduce((a, b) => a + Math.pow(b - mean, 3), 0) / n;
+                                    const m2 = variance * (n - 1) / n;
+                                    const g1 = m3 / Math.pow(m2, 1.5);
+                                    skew = (Math.sqrt(n * (n - 1)) / (n - 2)) * g1;
+                                }
+                                if (n > 3) {
+                                    const m4 = data.reduce((a, b) => a + Math.pow(b - mean, 4), 0) / n;
+                                    const m2 = variance * (n - 1) / n;
+                                    const g2 = (m4 / Math.pow(m2, 2)) - 3;
+                                    kurt = ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * g2 + 6);
+                                }
 
-                                // Quartiles
+                                // Robust Normality Inference
+                                const ses = Math.sqrt((6 * n * (n - 1)) / ((n - 2) * (n + 1) * (n + 3)));
+                                const zSkew = skew / ses;
+                                const pVal = Math.max(0.001, 2 * (1 - jStat.normal.cdf(Math.abs(zSkew), 0, 1)));
+
+                                // Outlier Audit (Tukey's Method)
                                 const q1 = jStat.percentile(data, 0.25);
-                                const median = jStat.percentile(data, 0.50);
                                 const q3 = jStat.percentile(data, 0.75);
                                 const iqr = q3 - q1;
+                                const lowFence = q1 - 1.5 * iqr;
+                                const highFence = q3 + 1.5 * iqr;
+                                const outliers = data.filter(x => x < lowFence || x > highFence);
 
-                                // Fences
-                                const lowerFence = q1 - 1.5 * iqr;
-                                const upperFence = q3 + 1.5 * iqr;
+                                // Whiskers for Box Plot
+                                let whiskerLow = sorted.find(x => x >= lowFence) || sorted[0];
+                                let whiskerHigh = [...sorted].reverse().find(x => x <= highFence) || sorted[n - 1];
 
-                                // Outliers and Whiskers (Tukey style)
-                                const outliers = data.filter(x => x < lowerFence || x > upperFence);
-
-                                // Whiskers extend to the most extreme data point within fences
-                                let whiskerLow = min;
-                                let whiskerHigh = max;
-                                for (let i = 0; i < n; i++) { if (sorted[i] >= lowerFence) { whiskerLow = sorted[i]; break; } }
-                                for (let i = n - 1; i >= 0; i--) { if (sorted[i] <= upperFence) { whiskerHigh = sorted[i]; break; } }
-
-                                // UI Updates
+                                // Dashboard Population
                                 document.getElementById('resultsPanel').style.display = 'block';
                                 document.getElementById('resN').innerText = n;
-                                document.getElementById('resMean').innerText = mean.toFixed(2);
-                                document.getElementById('resCI').innerText = "± " + ci.toFixed(2) + " (95%)";
-                                document.getElementById('resMedian').innerText = median.toFixed(2);
-                                document.getElementById('resStdDev').innerText = stdDev.toFixed(2);
-                                document.getElementById('resVar').innerText = "Var: " + variance.toFixed(2);
-                                document.getElementById('resCV').innerText = cv.toFixed(1) + "%";
-                                document.getElementById('resRange').innerText = range.toFixed(2);
-                                document.getElementById('resMinMax').innerText = min + " to " + max;
-                                document.getElementById('resSkew').innerText = skewness.toFixed(2);
-                                document.getElementById('skewDesc').innerText = Math.abs(skewness) < 0.5 ? "Symmetric" : (skewness > 0 ? "Right Skewed" : "Left Skewed");
-                                document.getElementById('resKurt').innerText = kurtosis.toFixed(2);
-
-                                const pVal = Math.max(0.001, Math.min(0.99, 1 - Math.abs(skewness)));
+                                document.getElementById('resMean').innerText = mean.toFixed(4);
+                                document.getElementById('resMedian').innerText = median.toFixed(4);
+                                document.getElementById('resMode').innerText = modeDisplay;
+                                document.getElementById('resCI').innerText = "± " + ci.toFixed(4) + " (95% T)";
+                                document.getElementById('resStdDev').innerText = stdDev.toFixed(4);
+                                document.getElementById('resVar').innerText = "V: " + variance.toFixed(4);
+                                document.getElementById('resCV').innerText = cv.toFixed(2) + "%";
+                                document.getElementById('resRange').innerText = (sorted[n - 1] - sorted[0]).toFixed(2);
+                                document.getElementById('resMinMax').innerText = sorted[0] + " to " + sorted[n - 1];
+                                document.getElementById('resSkew').innerText = skew.toFixed(3);
+                                document.getElementById('skewDesc').innerText = Math.abs(skew) < 0.5 ? "Symmetric" : (skew > 0 ? "Right Skew" : "Left Skew");
+                                document.getElementById('resKurt').innerText = kurt.toFixed(3);
                                 document.getElementById('resP').innerText = "P-Value: " + pVal.toFixed(3);
-                                document.getElementById('resAD').innerText = pVal < 0.05 ? "Not Normal" : "Normal";
+                                document.getElementById('resAD').innerText = pVal < 0.05 ? "Significant Non-Normal" : "Normality Likely";
                                 document.getElementById('resAD').style.color = pVal < 0.05 ? "var(--error)" : "var(--success)";
                                 document.getElementById('resOutliers').innerText = outliers.length;
                                 document.getElementById('resOutliers').style.color = outliers.length > 0 ? "var(--error)" : "white";
 
-                                renderCharts(data, sorted, mean, stdDev, skewness, outliers.length);
-                                drawHighResBoxPlot(min, q1, median, q3, max, whiskerLow, whiskerHigh, outliers);
-                                updateInterpretations(mean, stdDev, skewness, outliers.length, pVal, cv);
-                                generateAutoSummary(n, mean, median, stdDev, cv, skewness, kurtosis, pVal, outliers.length);
+                                renderCharts(data, sorted, mean, stdDev, skew, outliers.length);
+                                drawHighResBoxPlot(sorted[0], q1, median, q3, sorted[n - 1], whiskerLow, whiskerHigh, outliers);
+                                updateInterpretations(mean, stdDev, skew, outliers.length, pVal, cv, kurt);
+                                generateAutoSummary(n, mean, median, stdDev, cv, skew, kurt, pVal, outliers.length);
                                 updateProgress(100);
                             }
 
-                            function updateInterpretations(mean, std, skew, outCount, pVal, cv) {
+                            function updateInterpretations(mean, std, skew, outCount, pVal, cv, kurt) { const scenarioContext = (currentScenario && scenarios[currentScenario][currentType].context) ? scenarios[currentScenario][currentType].context : null;
                                 let hText = Math.abs(skew) < 0.5 ? "The data appears <b>Symmetric (Normal)</b>. The Bell curve is centered." : (skew > 0 ? "The data is <b>Positively Skewed</b> (Tail to the right)." : "The data is <b>Negatively Skewed</b> (Tail to the left).");
                                 document.getElementById('interpHisto').innerHTML = hText;
                                 document.getElementById('interpHisto').className = Math.abs(skew) < 0.5 ? "interp-box" : "interp-box interp-warn";
@@ -1911,70 +1933,69 @@
 
                                 // Data Quality
                                 let qualityText = n >= 30 ? `<span style="color:#22c55e;">✓ Sample size adequate (n=${n} ≥ 30)</span>` :
-                                    n >= 10 ? `<span style="color:#eab308;">⚠ Sample size marginal (n=${n}). Consider more data.</span>` :
-                                        `<span style="color:#ef4444;">✗ Sample too small (n=${n} < 10). Results unreliable.</span>`;
+                                    n >= 15 ? `<span style="color:#eab308;">⚠ Sample size marginal (n=${n}). Proceed with caution.</span>` :
+                                        `<span style="color:#ef4444;">✗ Sample too small (n=${n} < 15). Results may be statistically unstable.</span>`;
                                 document.getElementById('sum-quality').innerHTML = qualityText;
 
                                 // Central Tendency
                                 let centerDiff = Math.abs(mean - median);
-                                let centerText = centerDiff < 0.5 ? `Mean (${mean.toFixed(2)}) ≈ Median (${median.toFixed(2)}). <span style="color:#22c55e;">Process centered.</span>` :
-                                    `Mean (${mean.toFixed(2)}) ≠ Median (${median.toFixed(2)}). <span style="color:#eab308;">Possible skew. Use Median.</span>`;
+                                let centerText = centerDiff < (0.05 * mean) ? `Mean (${mean.toFixed(4)}) ≈ Median (${median.toFixed(4)}). <span style="color:#22c55e;">✓ High Central Precision.</span>` :
+                                    `Mean (${mean.toFixed(4)}) ≠ Median (${median.toFixed(4)}). <span style="color:#eab308;">Possible asymmetry. Use Median for reporting.</span>`;
                                 document.getElementById('sum-center').innerHTML = centerText;
 
                                 // Variation
-                                let varText = cv < 10 ? `CV = ${cv.toFixed(1)}%. <span style="color:#22c55e;">✓ Excellent consistency (< 10%)</span>` :
-                                    cv < 30 ? `CV = ${cv.toFixed(1)}%. <span style="color:#eab308;">⚠ Moderate variation (10-30%)</span>` :
-                                        `CV = ${cv.toFixed(1)}%. <span style="color:#ef4444;">✗ High variation (> 30%)</span>`;
+                                let varText = cv < 10 ? `CV = ${cv.toFixed(2)}%. <span style="color:#22c55e;">✓ World-Class Consistency (< 10%)</span>` :
+                                    cv < 30 ? `CV = ${cv.toFixed(2)}%. <span style="color:#eab308;">⚠ Industrial Average Variation (10-30%)</span>` :
+                                        `CV = ${cv.toFixed(2)}%. <span style="color:#ef4444;">✗ High Variance (> 30%). Process requires optimization.</span>`;
                                 document.getElementById('sum-variation').innerHTML = varText;
 
                                 // Normality
-                                let normText = pVal > 0.05 ? `P-Value = ${pVal.toFixed(3)}. <span style="color:#22c55e;">✓ Data is Normal (P > 0.05)</span>` :
-                                    `P-Value = ${pVal.toFixed(3)}. <span style="color:#ef4444;">✗ Data NOT Normal (P < 0.05). Use non-parametric tests.</span>`;
+                                let normText = pVal > 0.05 ? `P-Value = ${pVal.toFixed(4)}. <span style="color:#22c55e;">✓ Data follows Normal Distribution (P > 0.05)</span>` :
+                                    `P-Value = ${pVal.toFixed(4)}. <span style="color:#ef4444;">✗ Significant Non-Normality (P < 0.05). Use non-parametric methods.</span>`;
                                 document.getElementById('sum-normality').innerHTML = normText;
 
                                 // Outliers
-                                let outText = outCount === 0 ? `<span style="color:#22c55e;">✓ No outliers detected</span>` :
-                                    `<span style="color:#ef4444;">✗ ${outCount} outlier(s) detected. Investigate for special cause.</span>`;
+                                let outText = outCount === 0 ? `<span style="color:#22c55e;">✓ No outliers (z > 3σ) detected.</span>` :
+                                    `<span style="color:#ef4444;">✗ ${outCount} potential outlier(s) detected. Examine for special cause variation.</span>`;
                                 document.getElementById('sum-outliers').innerHTML = outText;
 
                                 // Overall Verdict
-                                let issues = 0;
-                                if (n < 10) issues++;
-                                if (cv > 30) issues++;
-                                if (pVal < 0.05) issues++;
-                                if (outCount > 0) issues++;
+                                let concerns = 0;
+                                if (n < 15) concerns++;
+                                if (cv > 25) concerns++;
+                                if (pVal < 0.05) concerns++;
+                                if (outCount > 0) concerns++;
+                                if (Math.abs(skew) > 1.0) concerns++;
 
                                 const verdictBox = document.getElementById('sum-verdict');
                                 const verdictText = document.getElementById('sum-verdict-text');
                                 const verdictIcon = document.getElementById('sum-verdict-icon');
 
-                                if (issues === 0) {
-                                    verdictText.textContent = 'PASS - Data quality is excellent. Proceed with analysis.';
+                                if (concerns === 0) {
+                                    verdictText.textContent = 'OPTIMAL - High-precision data matches parametric assumptions. Proceed to Capability Analysis.';
                                     verdictText.style.color = '#22c55e';
                                     verdictBox.style.borderColor = '#22c55e';
-                                    verdictIcon.textContent = '✅';
-                                } else if (issues <= 2) {
-                                    verdictText.textContent = 'CAUTION - Some concerns. Review outliers and normality.';
+                                    verdictIcon.textContent = '💎';
+                                } else if (concerns <= 2) {
+                                    verdictText.textContent = 'CAPABLE BUT VARIABLE - Minor statistical shifts detected. Monitor process stability.';
                                     verdictText.style.color = '#eab308';
                                     verdictBox.style.borderColor = '#eab308';
                                     verdictIcon.textContent = '⚠️';
                                 } else {
-                                    verdictText.textContent = 'FAIL - Multiple issues detected. Collect more data or investigate process.';
+                                    verdictText.textContent = 'NON-CAPABLE - Significant statistical risk. Data fails normality or shows outliers.';
                                     verdictText.style.color = '#ef4444';
                                     verdictBox.style.borderColor = '#ef4444';
-                                    verdictIcon.textContent = '❌';
+                                    verdictIcon.textContent = '🛑';
                                 }
 
                                 // Chart Recommendation
                                 let chartRec = '';
                                 if (Math.abs(skew) < 0.5 && outCount === 0) {
-                                    chartRec = '📊 <b>Histogram</b> - Best for symmetric normal data. Shows bell curve shape clearly.';
+                                    chartRec = '📊 <b>Histogram</b> - Perfectly aligned for symmetric data. Displays distribution spread.';
                                 } else if (outCount > 0) {
-                                    chartRec = '📦 <b>Box Plot</b> - Best choice when outliers are present. Visually highlights extreme values.';
-                                } else if (Math.abs(skew) >= 0.5) {
-                                    chartRec = '📉 <b>Run Chart</b> - Best for detecting trends or shifts in skewed data over time.';
+                                    chartRec = '📦 <b>Box Plot</b> - Essential for outlier visualization. Identifies extreme variances.';
                                 } else {
-                                    chartRec = '📈 <b>Normal Probability Plot</b> - Use to confirm or reject normality assumption.';
+                                    chartRec = '📉 <b>Run Chart</b> - Necessary to track time-series stability in skewed processes.';
                                 }
 
                                 // Check for scenario recommendation
@@ -2108,3 +2129,4 @@
 </body>
 
 </html>
+

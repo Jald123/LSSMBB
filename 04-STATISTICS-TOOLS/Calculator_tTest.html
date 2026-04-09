@@ -878,31 +878,36 @@
                 name: "ER Wait Times (Triage Protocol)",
                 desc: "Does Beta protocol reduce wait times more than Alpha?",
                 normal: { groupA: "45, 48, 52, 44, 50, 47, 49, 51, 46, 53", groupB: "32, 28, 35, 30, 31, 34, 29, 33, 30, 32" },
-                skewed: { groupA: "45, 48, 52, 44, 50, 47, 49, 120, 46, 53", groupB: "32, 28, 35, 30, 31, 85, 29, 33, 30, 32" }
+                skewed: { groupA: "45, 48, 52, 44, 50, 47, 49, 120, 46, 53", groupB: "32, 28, 35, 30, 31, 85, 29, 33, 30, 32" },
+                context: "Healthcare Throughput: Significant reduction detected with Protocol Beta. Pilot results justify a system-wide rollout to improve patient experience metrics."
             },
             'hc_los': {
                 name: "Length of Stay (Unit A vs B)",
                 desc: "Comparing discharge efficiency between wings.",
                 normal: { groupA: "4.2, 4.5, 4.8, 4.0, 4.3, 4.1, 4.4, 4.6", groupB: "3.1, 3.5, 3.2, 3.0, 3.3, 2.9, 3.4, 3.1" },
-                skewed: { groupA: "4.2, 4.5, 12.0, 4.0, 4.3, 4.1, 4.4, 4.6", groupB: "3.1, 3.5, 3.2, 3.0, 10.5, 2.9, 3.4, 3.1" }
+                skewed: { groupA: "4.2, 4.5, 12.0, 4.0, 4.3, 4.1, 4.4, 4.6", groupB: "3.1, 3.5, 3.2, 3.0, 10.5, 2.9, 3.4, 3.1" },
+                context: "Operational Efficiency: Wing B is discharging patients significantly faster. Conduct a Gemba walk on Wing B to identify transferable discharge best practices."
             },
             'hc_bp': {
                 name: "BP Reduction Trial",
                 desc: "Medication vs Placebo systolic reduction.",
                 normal: { groupA: "125, 128, 122, 130, 126, 124, 127, 129", groupB: "142, 145, 140, 148, 144, 143, 146, 141" },
-                skewed: { groupA: "110, 128, 122, 150, 126, 124, 127, 129", groupB: "142, 175, 140, 148, 144, 110, 146, 141" }
+                skewed: { groupA: "110, 128, 122, 150, 126, 124, 127, 129", groupB: "142, 175, 140, 148, 144, 110, 146, 141" },
+                context: "Clinical Efficacy: The medication exhibits a clearly superior effect. P-value confirms the result is not due to random variation in patient baseline."
             },
             'gen_mfg': {
                 name: "Production Yield (Machine A vs B)",
                 desc: "Is there a significant difference in machine accuracy?",
                 normal: { groupA: "98.2, 97.8, 98.5, 98.0, 97.9, 98.3", groupB: "94.2, 93.8, 94.5, 94.0, 93.5, 94.1" },
-                skewed: { groupA: "98.2, 70.0, 98.5, 98.0, 97.9, 98.3", groupB: "94.2, 93.8, 94.5, 60.0, 93.5, 94.1" }
+                skewed: { groupA: "98.2, 70.0, 98.5, 98.0, 97.9, 98.3", groupB: "94.2, 93.8, 94.5, 60.0, 93.5, 94.1" },
+                context: "Process Capability: Machine A is outperforming Machine B. Schedule maintenance for Machine B to align its precision with the target baseline established by A."
             },
             'gen_nps': {
                 name: "Customer NPS (A vs B)",
                 desc: "Comparing customer satisfaction scores.",
                 normal: { groupA: "42, 45, 40, 43, 44, 41, 38, 46", groupB: "65, 68, 62, 70, 66, 64, 67, 69" },
-                skewed: { groupA: "42, 45, 10, 43, 44, 41, 38, 46", groupB: "65, 68, 100, 70, 66, 64, 67, 69" }
+                skewed: { groupA: "42, 45, 10, 43, 44, 41, 38, 46", groupB: "65, 68, 100, 70, 66, 64, 67, 69" },
+                context: "Voice of the Customer: Group B holds a statistically significant lead in satisfaction. Analyze Group B's customer journey to detect the differentiator."
             }
         };
 
@@ -1060,10 +1065,10 @@
 
             // UI
             document.getElementById('resultsPanel').style.display = 'block';
-            document.getElementById('resP').innerText = p < 0.001 ? "< 0.001" : p.toFixed(4);
+            document.getElementById('resP').innerText = p < 0.0001 ? "< 0.0001" : p.toFixed(4);
             document.getElementById('resP').style.color = p < 0.05 ? '#2ECC71' : '#E74C3C';
-            document.getElementById('resDiff').innerText = (mA - mB).toFixed(2);
-            document.getElementById('resT').innerText = t.toFixed(2);
+            document.getElementById('resDiff').innerText = (mA - mB).toFixed(4);
+            document.getElementById('resT').innerText = t.toFixed(4);
 
             generateAutoFindings(mA, mB, t, p);
 
@@ -1080,20 +1085,25 @@
 
         function generateAutoFindings(mA, mB, t, p) {
             const div = document.getElementById('analysisSummary');
-            let html = "";
+            let scenarioText = "";
+            if (currentScenario && scenarioDB[currentScenario] && scenarioDB[currentScenario].context) {
+                scenarioText = `<div style="margin-top:10px; background:rgba(59,130,246,0.1); padding:10px; border-left:3px solid #3b82f6; border-radius:4px;"><b>Scenario Intelligence:</b> ${scenarioDB[currentScenario].context}</div>`;
+            }
 
             if (p < 0.05) {
                 const better = mA > mB ? "Group A" : "Group B";
-                const diff = Math.abs(mA - mB).toFixed(2);
+                const diff = Math.abs(mA - mB).toFixed(4);
                 html = `<span style='color:var(--success)'><b>✅ Significant Difference Confirmed:</b> The two groups have different means.</span><br>
                     • <b>${better}</b> has a higher mean (difference = ${diff}).<br>
-                    • t-statistic = <b>${t.toFixed(2)}</b> (high absolute value indicates clear separation).<br>
-                    • <b>Confidence:</b> 95% certain this is not due to random chance.`;
+                    • t-statistic = <b>${t.toFixed(4)}</b> (high absolute value indicates clear separation).<br>
+                    • <b>Confidence:</b> 95% certain this is not due to random chance.
+                    ${scenarioText}`;
             } else {
                 html = `<span style='color:var(--warning)'><b>⚠️ No Significant Difference:</b> The two group means are statistically equivalent.</span><br>
-                    • The observed difference (${Math.abs(mA - mB).toFixed(2)}) is within normal random variation.<br>
-                    • t-statistic = <b>${t.toFixed(2)}</b> (low absolute value indicates overlap).<br>
-                    • <b>Conclusion:</b> Cannot claim the groups are different.`;
+                    • The observed difference (${Math.abs(mA - mB).toFixed(4)}) is within normal random variation.<br>
+                    • t-statistic = <b>${t.toFixed(4)}</b> (low absolute value indicates overlap).<br>
+                    • <b>Conclusion:</b> Cannot claim the groups are different.
+                    ${scenarioText}`;
             }
 
             div.innerHTML = html;
@@ -1239,16 +1249,16 @@
                             <tr>
                                 <td>Group A</td>
                                 <td>${currentResults.nA}</td>
-                                <td>${currentResults.mA.toFixed(3)}</td>
-                                <td>${currentResults.sA.toFixed(3)}</td>
-                                <td>${(currentResults.sA ** 2).toFixed(3)}</td>
+                                <td>${currentResults.mA.toFixed(4)}</td>
+                                <td>${currentResults.sA.toFixed(4)}</td>
+                                <td>${(currentResults.sA ** 2).toFixed(4)}</td>
                             </tr>
                             <tr>
                                 <td>Group B</td>
                                 <td>${currentResults.nB}</td>
-                                <td>${currentResults.mB.toFixed(3)}</td>
-                                <td>${currentResults.sB.toFixed(3)}</td>
-                                <td>${(currentResults.sB ** 2).toFixed(3)}</td>
+                                <td>${currentResults.mB.toFixed(4)}</td>
+                                <td>${currentResults.sB.toFixed(4)}</td>
+                                <td>${(currentResults.sB ** 2).toFixed(4)}</td>
                             </tr>
                         </tbody>
                     </table>

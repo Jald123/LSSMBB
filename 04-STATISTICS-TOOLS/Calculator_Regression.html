@@ -807,31 +807,36 @@
                 name: "ER Staffing vs Wait Time",
                 desc: "Does adding RN staffing (X) predictably reduce wait times (Y)?",
                 x: "2, 3, 4, 5, 6, 7, 8, 9, 10",
-                y: "45, 42, 38, 35, 30, 28, 25, 22, 20"
+                y: "45, 42, 38, 35, 30, 28, 25, 22, 20",
+                context: "Healthcare Resource Optimization: Demonstrates a strong inverse correlation. Staffing models can reliably use this equation to staff to demand."
             },
             'hc_noise': {
                 name: "ER Staffing vs Wait Time (Noise Only)",
                 desc: "Demonstrate a weak model where staffing doesn't explain variation.",
                 x: "2, 3, 4, 5, 6, 7, 8, 9, 10",
-                y: "35, 42, 28, 45, 32, 40, 38, 25, 36"
+                y: "35, 42, 28, 45, 32, 40, 38, 25, 36",
+                context: "Process Noise Warning: The lack of fit suggests wait times are driven by other lurking variables (e.g., acuity, triage efficiency), not just raw headcount."
             },
             'hc_falls': {
                 name: "Staff Hours vs Patient Falls",
                 desc: "Analyze if safety improves with increased floor presence.",
                 x: "1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0",
-                y: "12, 10, 8, 6, 5, 4, 3, 2"
+                y: "12, 10, 8, 6, 5, 4, 3, 2",
+                context: "Patient Safety Metric: Highly predictive model. Supports business cases for increasing floor hours to directly reduce adverse patient events."
             },
             'gen_mfg': {
                 name: "Yield vs Temperature",
                 desc: "Find the optimal temperature for manufacturing output.",
                 x: "100, 120, 140, 160, 180, 200, 220, 240",
-                y: "50, 55, 62, 68, 75, 82, 88, 95"
+                y: "50, 55, 62, 68, 75, 82, 88, 95",
+                context: "Process Capability Check: Linear range confirmed. Proceed to Design of Experiments (DOE) to lock in optimal settings within this predictive band."
             },
             'gen_nps': {
                 name: "Loyalty vs Reward Spend",
                 desc: "Does investment in rewards correlate with brand NPS?",
                 x: "1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000",
-                y: "15, 22, 28, 35, 42, 48, 55, 62"
+                y: "15, 22, 28, 35, 42, 48, 55, 62",
+                context: "Customer Loyalty Analysis: Strong correlation between spend and NPS. Calculate the return on investment per unit of X."
             }
         };
 
@@ -991,9 +996,9 @@
 
             // UI
             document.getElementById('resultsPanel').style.display = 'block';
-            document.getElementById('resEquation').innerText = `Y = ${slope.toFixed(3)}X ${intercept >= 0 ? '+' : '-'} ${Math.abs(intercept).toFixed(3)}`;
-            document.getElementById('resR2').innerText = (r2 * 100).toFixed(1) + "%";
-            document.getElementById('resR').innerText = r.toFixed(3);
+            document.getElementById('resEquation').innerText = `Y = ${slope.toFixed(4)}X ${intercept >= 0 ? '+' : '-'} ${Math.abs(intercept).toFixed(4)}`;
+            document.getElementById('resR2').innerText = (r2 * 100).toFixed(2) + "%";
+            document.getElementById('resR').innerText = r.toFixed(4);
 
             const pElem = document.getElementById('resP');
             pElem.innerText = pVal < 0.001 ? "< 0.001" : pVal.toFixed(4);
@@ -1007,18 +1012,24 @@
         function generateAutoFindings(slope, intercept, r2, pVal) {
             const div = document.getElementById('analysisSummary');
             let html = "";
+            let scenarioText = "";
+            if (currentScenario && scenarioDB[currentScenario] && scenarioDB[currentScenario].context) {
+                scenarioText = `<div style="margin-top:10px; background:rgba(59,130,246,0.1); padding:10px; border-left:3px solid #3b82f6; border-radius:4px;"><b>Scenario Intelligence:</b> ${scenarioDB[currentScenario].context}</div>`;
+            }
 
             if (pVal < 0.05) {
                 const direction = slope > 0 ? "positive (both increase together)" : "negative (inverse relationship)";
                 html = `<span style='color:var(--success)'><b>✅ Strong Relationship Confirmed:</b> The input (X) significantly drives the output (Y).</span><br>
                     • The relationship is <b>${direction}</b>.<br>
-                    • For every <b>1 unit increase in X</b>, the Output Y changes by <b>${slope.toFixed(3)}</b>.<br>
-                    • The Model predicts <b>${(r2 * 100).toFixed(0)}%</b> of the variation. ${r2 > 0.8 ? "This is a highly reliable predictor." : "Consider additional factors."}`;
+                    • For every <b>1 unit increase in X</b>, the Output Y changes by <b>${slope.toFixed(4)}</b>.<br>
+                    • The Model predicts <b>${(r2 * 100).toFixed(2)}%</b> of the variation. ${r2 > 0.8 ? "This is a highly reliable predictor." : "Consider additional factors."}
+                    ${scenarioText}`;
             } else {
                 html = `<span style='color:var(--warning)'><b>⚠️ No Significant Relationship:</b> Changes in X do not reliably predict Y.</span><br>
                     • The trend observed is likely random noise (P > 0.05).<br>
                     • Do not use this model for prediction or control.<br>
-                    • Consider: Other variables, measurement error, or non-linear relationships.`;
+                    • Consider: Other variables, measurement error, or non-linear relationships.
+                    ${scenarioText}`;
             }
 
             div.innerHTML = html;
@@ -1119,21 +1130,21 @@
                         </div>
                         <div class="card">
                             <div class="label">Correlation (r)</div>
-                            <div class="val">${currentResults.r.toFixed(3)}</div>
+                            <div class="val">${currentResults.r.toFixed(4)}</div>
                             <div style="font-size:11px; color:#64748b;">Direction: ${currentResults.r > 0 ? 'Positive' : 'Negative'}</div>
                         </div>
                         <div class="card">
                             <div class="label">P-Value</div>
-                            <div class="val ${currentResults.pVal < 0.05 ? 'sig-pass' : 'sig-fail'}">${currentResults.pVal < 0.001 ? '< 0.001' : currentResults.pVal.toFixed(4)}</div>
+                            <div class="val ${currentResults.pVal < 0.05 ? 'sig-pass' : 'sig-fail'}">${currentResults.pVal < 0.0001 ? '< 0.0001' : currentResults.pVal.toFixed(4)}</div>
                             <div style="font-size:12px; font-weight:600;">${currentResults.pVal < 0.05 ? '✅ SIGNIFICANT' : '❌ NOT SIGNIFICANT'}</div>
                         </div>
                     </div>
 
                     <div class="insight-box">
                         <h3 style="margin-top:0; color:#7c2d12;">🔍 Executive Interpretation</h3>
-                        <p>${document.getElementById('analysisSummary').innerText}</p>
+                        <p>${document.getElementById('analysisSummary').innerHTML}</p>
                         <p style="margin-top:10px; font-size:13px; color:#9a3412;">
-                            The model indicates that for every 1 unit increase in X, Y is expected to change by ${currentResults.slope.toFixed(3)} units. 
+                            The model indicates that for every 1 unit increase in X, Y is expected to change by ${currentResults.slope.toFixed(4)} units. 
                             ${currentResults.r2 > 0.7 ? "The high R-squared suggests this model is reliable for forecasting." : "The moderate R-squared suggests other lurking variables are influencing the outcome."}
                         </p>
                     </div>

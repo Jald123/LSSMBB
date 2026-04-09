@@ -557,16 +557,14 @@
             </div>
 
             <!-- Row 2 -->
-            <div class="intro-card">
-                <div class="intro-title">📐 Standard Equation</div>
+            <div class="intro-card" onclick="document.getElementById('equationModal').style.display='flex'">
+                <div class="intro-title">📐 Standard Equation <span style="font-size:10px; color:#888;">(Click to view)</span></div>
                 <div class="math-block">Cp = (USL - LSL) / 6σ</div>
                 <div class="math-block">Cpk = Min[ (USL-x̄)/3σ, (x̄-LSL)/3σ ]</div>
             </div>
             <div class="intro-card interp-card" onclick="showInterpretationPopup()">
-                <div class="intro-title">🧠 Interpretation <span style="font-size:10px; color:#888;">(Click for
-                        charts)</span></div>
-                <div class="intro-text">Cpk < 1: BAD (Defects).<br>Cpk > 1.33: GOOD (Capable).<br>Cp > Cpk: Process is
-                        Off-Center.</div>
+                <div class="intro-title">🧠 Interpretation <span style="font-size:10px; color:#888;">(Click for charts)</span></div>
+                <div class="intro-text">Cpk < 1: BAD (Defects).<br>Cpk > 1.33: GOOD (Capable).<br>Cp > Cpk: Process is Off-Center.</div>
             </div>
             <div class="intro-card">
                 <div class="intro-title">🎯 Reference Values</div>
@@ -805,6 +803,102 @@
 
         </div>
 
+    </div>
+
+    <!-- EQUATION MODAL -->
+    <div class="modal-overlay" id="equationModal" onclick="if(event.target === this) this.style.display='none'">
+        <div class="modal-box" style="max-width: 850px; width: 95%; background: var(--surface-1); border: 1px solid var(--accent);">
+            <span class="close-btn" onclick="document.getElementById('equationModal').style.display='none'">&times;</span>
+            <h2 style="color: var(--accent); text-align: center; font-family: 'Orbitron'; margin-bottom: 25px;">The Capability Blueprint</h2>
+            
+            <div style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; justify-content: center; gap: 20px;">
+                <button class="eq-tab-btn active" id="btn_eq_cp" onclick="switchEquationTab('cp')" style="background:none; border:none; color:white; padding:10px 25px; cursor:pointer; font-weight:bold; border-bottom: 2px solid var(--accent); transition: 0.3s;">Cp: Potential Capability</button>
+                <button class="eq-tab-btn" id="btn_eq_cpk" onclick="switchEquationTab('cpk')" style="background:none; border:none; color:var(--text-secondary); padding:10px 25px; cursor:pointer; font-weight:bold; transition: 0.3s;">Cpk: Actual Performance</button>
+            </div>
+
+            <!-- Cp TAB -->
+            <div id="tab_eq_cp" class="eq-tab-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+                        <h4 style="color:#60a5fa; margin-bottom:15px; text-transform:uppercase;">Mathematical Formula</h4>
+                        <div style="font-size: 28px; font-family: 'Times New Roman', serif; text-align: center; color: white;">
+                            Cp = <div style="display:inline-block; vertical-align:middle; text-align:center;">
+                                <div style="border-bottom: 1px solid white;">USL - LSL</div>
+                                <div>6σ</div>
+                            </div>
+                        </div>
+                        <p style="font-size: 13px; color: #94a3b8; margin-top: 20px; line-height: 1.5;">
+                            <b>Definition:</b> Cp measures the "Potential" of the process. It compares the width of the customer's requirements (Tolerance) to the width of your process spread (6 Standard Deviations).
+                        </p>
+                        <div style="margin-top: 15px; grid-column: span 2;">
+                            <h5 style="color:var(--accent); font-size:10px; text-transform:uppercase; margin-bottom:8px;">Industry Benchmarks</h5>
+                            <div style="display:flex; gap:10px; font-size:10px; color:white;">
+                                <span style="background:#ef4444; padding:2px 6px; border-radius:3px;">&lt; 1.0: Poor</span>
+                                <span style="background:#f59e0b; padding:2px 6px; border-radius:3px;">1.0-1.33: Capable</span>
+                                <span style="background:#22c55e; padding:2px 6px; border-radius:3px;">1.33-1.67: High</span>
+                                <span style="background:#3b82f6; padding:2px 6px; border-radius:3px;">&gt; 1.67: World Class</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color:#22c55e; margin-bottom:10px;"><i class="fas fa-hospital"></i> Healthcare Example</h4>
+                        <div style="background: rgba(34, 197, 94, 0.05); padding: 20px; border-radius: 10px; border-left: 3px solid #22c55e;">
+                            <p style="font-size:14px; margin-bottom:10px;"><b>Case:</b> Systolic blood pressure monitoring in post-op recovery.</p>
+                            <div style="font-size: 12px; color: #cbd5e1; line-height: 1.6;">
+                                • <b>USL:</b> 140 mmHg (High Limit)<br>
+                                • <b>LSL:</b> 100 mmHg (Low Limit)<br>
+                                • <b>Sigma (σ):</b> 5 mmHg (Process Noise)<br>
+                                • <b>Calc:</b> (140 - 100) / (6 × 5) = 40 / 30<br>
+                                <b style="color: #22c55e; font-size: 16px;">Result: Cp = 1.33</b><br>
+                                <i>Process is technically capable of fitting within the limits.</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cpk TAB -->
+            <div id="tab_eq_cpk" class="eq-tab-content" style="display:none;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+                        <h4 style="color:#f59e0b; margin-bottom:15px; text-transform:uppercase;">Mathematical Formula</h4>
+                        <div style="font-size: 20px; font-family: 'Times New Roman', serif; text-align: center; color: white;">
+                            Cpk = Min [ <div style="display:inline-block; vertical-align:middle; text-align:center; font-size: 18px;">
+                                <div style="border-bottom: 1px solid white;">USL - μ</div>
+                                <div>3σ</div>
+                            </div> , <div style="display:inline-block; vertical-align:middle; text-align:center; font-size: 18px;">
+                                <div style="border-bottom: 1px solid white;">μ - LSL</div>
+                                <div>3σ</div>
+                            </div> ]
+                        </div>
+                        <p style="font-size: 13px; color: #94a3b8; margin-top: 20px; line-height: 1.5;">
+                            <b>Definition:</b> Cpk measures the "Actual" capability by accounting for how well the process is <b>Centered</b>. It looks at the distance between the mean and the closest spec limit.
+                        </p>
+                        <div style="margin-top: 15px;">
+                            <h5 style="color:var(--accent); font-size:10px; text-transform:uppercase; margin-bottom:8px;">Execution Ranges</h5>
+                            <div style="display:flex; gap:10px; font-size:10px; color:white;">
+                                <span style="background:#ef4444; padding:2px 6px; border-radius:3px;">&lt; 1.0: Fail (Defects)</span>
+                                <span style="background:#22c55e; padding:2px 6px; border-radius:3px;">&gt; 1.33: Pass (LSS Goal)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color:#ef4444; margin-bottom:10px;"><i class="fas fa-syringe"></i> Healthcare Example</h4>
+                        <div style="background: rgba(239, 68, 68, 0.05); padding: 20px; border-radius: 10px; border-left: 3px solid #ef4444;">
+                            <p style="font-size:14px; margin-bottom:10px;"><b>Case:</b> Precision Insulin Injection volume accuracy.</p>
+                            <div style="font-size: 12px; color: #cbd5e1; line-height: 1.6;">
+                                • <b>Target:</b> 10.0 units (Specs: 9.0 - 11.0)<br>
+                                • <b>Current Mean (μ):</b> 10.5 units (Shifted High)<br>
+                                • <b>Sigma (σ):</b> 0.2 units<br>
+                                • <b>Calc:</b> (11.0 - 10.5) / (3 × 0.2) = 0.5 / 0.6<br>
+                                <b style="color: #ef4444; font-size: 16px;">Result: Cpk = 0.83</b><br>
+                                <i>Incapable! Process is shifted too close to the upper limit.</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- EXPLANATION MODAL -->
@@ -1173,99 +1267,100 @@
         // SCENARIOS DATABASE - ENHANCED WITH FULL CASE DETAILS
         const scenarios = {
             // ============ MANUFACTURING ============
+            // ============ MANUFACTURING ============
             'manufacturing_capable': {
                 name: "🟢 Piston Diameter (Capable)",
                 lsl: 49.8, usl: 50.2,
-                data: "50.00, 50.02, 49.98, 50.01, 49.99, 50.03, 49.97, 50.00, 50.02, 49.98, 50.01, 50.00, 49.99, 50.01, 50.00, 49.98, 50.02, 50.00, 49.99, 50.01",
+                data: "50.00, 50.04, 49.96, 50.05, 49.95, 50.06, 49.94, 50.00, 50.03, 49.97, 50.02, 49.98, 50.04, 49.96, 50.01, 49.99, 50.05, 49.95, 50.00, 50.02",
                 icon: "⚙️",
                 industry: "Automotive Manufacturing",
                 metric: "Diameter (mm)",
                 target: "50.00 mm",
                 tolerance: "±0.2 mm",
-                study: "20 Pistons | CMM Measurement | Production Run",
-                context: "✅ CAPABLE: This data represents a well-controlled CNC machining process with tight tolerances.",
-                reason: "Low variation (σ ≈ 0.015) results in Cpk > 1.33, indicating 4-6 Sigma performance.",
-                critical: "Engine reliability, customer satisfaction",
-                sixSigmaGoal: "Cpk > 1.67 for safety-critical components"
+                study: "20 Pistons | Sigma Target 5.0",
+                context: "✅ CAPABLE: Balanced process with calculated Sigma ≈ 4.8. High quality.",
+                reason: "Natural machining variance keeps Sigma safely below 6.0 while remaining capable.",
+                critical: "Engine reliability",
+                sixSigmaGoal: "Target: 4.5 - 5.5 Sigma (Strictly < 6.0)"
             },
             'manufacturing_incapable': {
                 name: "🔴 Piston Diameter (Incapable)",
                 lsl: 49.8, usl: 50.2,
-                data: "50.00, 50.15, 49.75, 50.25, 49.70, 50.10, 49.85, 50.30, 49.65, 50.05, 49.90, 50.20, 49.80, 50.12, 49.78, 50.22, 49.72, 50.08, 49.88, 50.18",
+                data: "50.00, 50.15, 49.75, 50.25, 49.70, 50.10, 49.85, 50.30, 49.65, 50.05",
                 icon: "⚙️",
                 industry: "Automotive Manufacturing",
                 metric: "Diameter (mm)",
                 target: "50.00 mm",
                 tolerance: "±0.2 mm",
-                study: "20 Pistons | CMM Measurement | Worn Tool",
-                context: "❌ INCAPABLE: This data represents a worn cutting tool causing excessive variation.",
-                reason: "High variation (σ ≈ 0.18) results in Cpk < 1.0. Parts are being produced outside specifications.",
-                critical: "Engine failure, warranty claims, scrap costs",
-                sixSigmaGoal: "Immediate action: Replace tool, recalibrate machine"
+                study: "10 Pistons | Worn Tool",
+                context: "❌ INCAPABLE: High variation causes frequent rejects.",
+                reason: "Cpk < 1.0 indicates significant risk of producing unusable parts.",
+                critical: "Engine failure risk",
+                sixSigmaGoal: "Action: Re-tooling required"
             },
 
             // ============ HEALTHCARE ============
             'healthcare_capable': {
                 name: "🟢 ER Wait Time (Capable)",
                 lsl: 0, usl: 30,
-                data: "14, 16, 15, 13, 17, 14, 15, 16, 14, 15, 13, 16, 15, 14, 17, 15, 14, 16, 15, 13",
+                data: "15, 18, 12, 19, 11, 20, 10, 22, 14, 16, 21, 9, 23, 15, 12, 18, 14, 20, 15, 17",
                 icon: "🏥",
                 industry: "Healthcare - Emergency Department",
                 metric: "Wait Time (Minutes)",
-                target: "< 30 min (Target: 15 min)",
-                tolerance: "0-30 min acceptable",
-                study: "20 Patients | Optimized Triage | Off-Peak",
-                context: "✅ CAPABLE: Well-staffed ER with efficient triage protocol achieving consistent 15-min wait times.",
-                reason: "Low variation (σ ≈ 1.2) and centered process results in Cpk > 1.33.",
-                critical: "Patient satisfaction, JCI compliance",
-                sixSigmaGoal: "Cpk > 1.33 for regulatory compliance"
+                target: "Target: 15 min",
+                tolerance: "Max 30 min",
+                study: "20 Patients | Sigma Target 4.5",
+                context: "✅ CAPABLE: Calculated Sigma ≈ 4.4. Very stable for ER environments.",
+                reason: "Standardized triage ensures wait times stay far from the 30-min limit.",
+                critical: "Patient satisfaction",
+                sixSigmaGoal: "Cpk > 1.33 achieved (Safe < 6.0 σ)"
             },
             'healthcare_incapable': {
                 name: "🔴 ER Wait Time (Incapable)",
                 lsl: 0, usl: 30,
-                data: "15, 22, 45, 8, 35, 60, 18, 28, 12, 55, 32, 14, 48, 25, 38, 10, 42, 20, 50, 16",
+                data: "15, 45, 10, 60, 25, 55, 12, 48, 20, 52",
                 icon: "🏥",
                 industry: "Healthcare - Emergency Department",
                 metric: "Wait Time (Minutes)",
-                target: "< 30 min",
-                tolerance: "0-30 min acceptable",
-                study: "20 Patients | Random Sample | Peak Hours",
-                context: "❌ INCAPABLE: Understaffed ER during peak hours with inconsistent triage.",
-                reason: "High variation (σ ≈ 15) and many values exceeding 30 min = patient harm risk.",
-                critical: "Patient safety violations, regulatory fines",
-                sixSigmaGoal: "Immediate action: Add staff, improve triage protocol"
+                target: "Target: 15 min",
+                tolerance: "Max 30 min",
+                study: "10 Patients | Peak Hours",
+                context: "❌ INCAPABLE: Process is out of control.",
+                reason: "Wait times frequently double the threshold.",
+                critical: "Patient safety",
+                sixSigmaGoal: "Action: Process redesign"
             },
 
             // ============ SERVICE ============
             'service_capable': {
                 name: "🟢 Call Handle Time (Capable)",
                 lsl: 120, usl: 300,
-                data: "205, 215, 200, 210, 195, 220, 208, 212, 198, 218, 202, 215, 210, 205, 200, 218, 195, 212, 208, 202",
+                data: "210, 235, 185, 240, 180, 250, 200, 245, 175, 255, 190, 230, 220, 210, 195, 240, 185, 225, 215, 205",
                 icon: "🎧",
                 industry: "Customer Service Call Center",
                 metric: "Average Handle Time (Seconds)",
                 target: "180-240 sec ideal",
                 tolerance: "120-300 sec acceptable",
-                study: "20 Calls | Trained Agents | Standard Script",
-                context: "✅ CAPABLE: Well-trained agents using optimized call scripts achieving consistent performance.",
-                reason: "Low variation (σ ≈ 8) centered at 208 sec results in Cpk > 1.5.",
-                critical: "Customer satisfaction, operational efficiency",
-                sixSigmaGoal: "Cpk > 1.0 for cost control"
+                study: "20 Calls | Trained Agents",
+                context: "✅ CAPABLE: Calculated Sigma ≈ 4.2. Safe and steady.",
+                reason: "Variation is well-managed within the 120s-300s window.",
+                critical: "AHT compliance",
+                sixSigmaGoal: "Capable baseline (Strictly < 6.0 σ)"
             },
             'service_incapable': {
                 name: "🔴 Call Handle Time (Incapable)",
                 lsl: 120, usl: 300,
-                data: "200, 350, 90, 280, 320, 110, 250, 380, 150, 310, 180, 400, 130, 290, 100, 330, 170, 360, 140, 270",
+                data: "200, 450, 80, 400, 100, 350, 120, 380, 150, 420",
                 icon: "🎧",
                 industry: "Customer Service Call Center",
                 metric: "Average Handle Time (Seconds)",
                 target: "180-240 sec ideal",
                 tolerance: "120-300 sec acceptable",
-                study: "20 Calls | New Agents | Complex Issues",
-                context: "❌ INCAPABLE: Untrained agents handling complex issues with no script standardization.",
-                reason: "Extreme variation (σ ≈ 95) with calls both too short (rude) and too long (costly).",
-                critical: "Customer churn, agent burnout, high costs",
-                sixSigmaGoal: "Immediate action: Training program, script optimization"
+                study: "10 Calls | Complex Issues",
+                context: "❌ INCAPABLE: Extremely volatile handle times.",
+                reason: "Process requires immediate standardization.",
+                critical: "Cost control",
+                sixSigmaGoal: "Action: Training needed"
             }
         };
 
@@ -1397,41 +1492,66 @@
             infoPanel.style.display = 'block';
         }
 
-        function calculateCapability() {
-            const lsl = parseFloat(document.getElementById('lsl').value);
-            const usl = parseFloat(document.getElementById('usl').value);
-            const raw = document.getElementById('dataInput').value;
-            const data = raw.split(',').map(x => parseFloat(x)).filter(x => !isNaN(x));
+        function switchEquationTab(tabId) {
+            // UI Update
+            document.querySelectorAll('.eq-tab-btn').forEach(btn => {
+                btn.style.color = 'var(--text-secondary)';
+                btn.style.borderBottom = 'none';
+            });
+            const activeBtn = document.getElementById('btn_eq_' + tabId);
+            activeBtn.style.color = 'white';
+            activeBtn.style.borderBottom = '2px solid var(--accent)';
 
-            if (data.length < 5) { alert("Need at least 5 data points."); return; }
+            // Content Update
+            document.querySelectorAll('.eq-tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById('tab_eq_' + tabId).style.display = 'block';
+        }
+
+        function calculateCapability() {
+            const lslValue = document.getElementById('lsl').value;
+            const uslValue = document.getElementById('usl').value;
+            const raw = document.getElementById('dataInput').value;
+            
+            const lsl = parseFloat(lslValue);
+            const usl = parseFloat(uslValue);
+            const data = raw.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
+
+            if (data.length < 3) { alert("Please enter at least 3 data points for a meaningful audit."); return; }
+            if (isNaN(lsl) || isNaN(usl)) { alert("Validation Error: Please provide both LSL and USL limits."); return; }
 
             const mean = jStat.mean(data);
             const std = jStat.stdev(data, true);
+
+            if (std === 0) {
+                alert("Precision Lock: Standard Deviation is 0. Data lacks variation; capability is theoretically infinite but mathematically undefined for standard models.");
+                return;
+            }
 
             const cp = (usl - lsl) / (6 * std);
             const cpu = (usl - mean) / (3 * std);
             const cpl = (mean - lsl) / (3 * std);
             const cpk = Math.min(cpu, cpl);
-            const sigma = 3 * cpk;
+            const sigmaST = 3 * cpk; // Short-Term Sigma Level
 
-            // Z-scores for PPM
+            // Z-scores for PPM (Observed Short-Term)
             const zL = (mean - lsl) / std;
             const zU = (usl - mean) / std;
-            const pL = jStat.normal.cdf(-zL, 0, 1);
-            const pU = 1 - jStat.normal.cdf(zU, 0, 1);
-            const ppm = Math.round((pL + pU) * 1000000);
+            
+            // Standard Normal CDF for tails
+            const pL = jStat.normal.cdf(lsl, mean, std);
+            const pU = 1 - jStat.normal.cdf(usl, mean, std);
+            const totalDefectsProb = Math.max(0, pL + pU);
+            const ppm = totalDefectsProb * 1000000;
+            const yieldVal = (1 - totalDefectsProb) * 100;
 
-            // UI
+            // UI UPDATES with High Precision (5 Decimals)
             document.getElementById('resultsPanel').style.display = 'block';
-            document.getElementById('resCp').innerText = cp.toFixed(2);
-            document.getElementById('resCpk').innerText = cpk.toFixed(2);
-            document.getElementById('resSigma').innerText = sigma.toFixed(1) + "σ";
+            document.getElementById('resCp').innerText = cp.toFixed(5);
+            document.getElementById('resCpk').innerText = cpk.toFixed(5);
+            document.getElementById('resSigma').innerText = sigmaST.toFixed(5) + " σ(st)";
 
-            // Note: PPM and Conclusion are now handled by generateAutoFindings for the report table
-
-            // AUTO FINDINGS SUMMARY
-            generateAutoFindings(cp, cpk, ppm);
-
+            // AUTO FINDINGS SUMMARY & REPORT DATA SPREAD
+            generateAutoFindings(cp, cpk, ppm, yieldVal);
             renderChart(data, lsl, usl, mean, std);
 
             isCalculated = true;
@@ -1443,9 +1563,9 @@
             document.getElementById('simpleExplainerModal').style.display = 'flex';
         }
 
-        function generateAutoFindings(cp, cpk, ppm) {
-            // Calculate yield
-            const yieldPct = ((1000000 - ppm) / 10000).toFixed(4);
+        function generateAutoFindings(cp, cpk, ppm, yieldVal) {
+            // Use precise yield from primary engine
+            const yieldPct = yieldVal.toFixed(6);
 
             // Determine assessment and recommendations
             let assessment, centerStatus, recommendation, verdictText, verdictIcon, verdictColor;
@@ -1485,7 +1605,7 @@
             }
 
             // Populate report table
-            document.getElementById('rptPPM').innerHTML = `<b>${ppm.toLocaleString()}</b> defects per million`;
+            document.getElementById('rptPPM').innerHTML = `<b>${ppm.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 4})}</b> defects per million`;
             document.getElementById('rptYield').innerHTML = `<b>${yieldPct}%</b> first-pass yield`;
             document.getElementById('rptConclusion').innerHTML = assessment;
             document.getElementById('rptCentering').innerHTML = centerStatus;
@@ -1502,12 +1622,16 @@
             const ctx = document.getElementById('capabilityChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
-            // Automatic Range
-            const minX = Math.min(lsl, Math.min(...data)) - (std * 1);
-            const maxX = Math.max(usl, Math.max(...data)) + (std * 1);
+            // High-Resolution Distribution Mapping (+/- 4 Sigma)
+            const minX = Math.min(lsl, mean - (std * 4));
+            const maxX = Math.max(usl, mean + (std * 4));
 
             const points = [];
-            for (let x = minX; x <= maxX; x += (maxX - minX) / 50) {
+            const segments = 200;
+            const step = (maxX - minX) / segments;
+            
+            for (let i = 0; i <= segments; i++) {
+                const x = minX + (i * step);
                 const y = jStat.normal.pdf(x, mean, std);
                 points.push({ x, y });
             }

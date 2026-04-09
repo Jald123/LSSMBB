@@ -202,7 +202,7 @@
             const forecastX = Array.from({ length: terms }, (_, i) => lastX + i + 1);
             const forecastY = forecastX.map(v => slope * v + intercept);
 
-            document.getElementById('equationOutput').innerText = `y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}`;
+            document.getElementById('equationOutput').innerText = `y = ${slope.toFixed(4)}x + ${intercept.toFixed(4)}`;
 
             renderChart(x, y, forecastX, forecastY, slope, intercept);
         }
