@@ -503,6 +503,167 @@
             border-color: #3b82f6 !important;
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
         }
+        /* --- THEME: CORPORATE TECH (DAY) --- */
+        body.theme-day {
+            --primary: #f8fafc;
+            --surface-1: #ffffff;
+            --surface-2: #f1f5f9;
+            --surface-3: #e2e8f0;
+            --accent: #3b82f6; /* Electric Blue */
+            --accent-glow: rgba(59, 130, 246, 0.2);
+            --text-primary: #1a202c; /* Dark Navy/Black */
+            --text-secondary: #64748b; /* Slate Gray */
+            --glass-border: rgba(0, 0, 0, 0.1);
+            
+            background-color: var(--primary);
+            color: var(--text-primary);
+        }
+
+        body.theme-day .card {
+            background: #ffffff;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+
+        body.theme-day h1, body.theme-day h2, body.theme-day h3, body.theme-day h4 {
+            font-family: 'Inter', sans-serif;
+            color: #1a202c;
+        }
+        
+        body.theme-day p, body.theme-day .btn {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body.theme-day .lss-intro-box {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            border-left: 5px solid #0284c7;
+            box-shadow: none;
+        }
+
+        body.theme-day .lss-intro-title {
+            color: #0284c7;
+            text-shadow: none;
+        }
+
+        body.theme-day .lss-intro-text {
+            color: #334155;
+        }
+
+        body.theme-day .btn-primary {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+        }
+
+        body.theme-day .btn-ghost {
+            color: #3b82f6;
+            border: 1px solid #cbd5e1;
+        }
+
+        body.theme-day .premium-input {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #1a202c !important;
+        }
+        
+        body.theme-day .phase-glow {
+            background: #dbeafe;
+            color: #2563eb;
+            text-shadow: none;
+            padding: 4px 12px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        /* --- THEME: FUTURISTIC DARK (NIGHT) --- */
+        body.theme-night {
+            --primary: #0a0f1a;
+            --surface-1: #111a2e;
+            --surface-2: #16223b;
+            --surface-3: #1c2b4b;
+            --accent: #f59e0b; /* Neon Gold/Orange */
+            --accent-glow: rgba(245, 158, 11, 0.4);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --glass-border: rgba(245, 158, 11, 0.3);
+            
+            background-color: var(--primary);
+            color: var(--text-primary);
+            background-image: 
+                linear-gradient(rgba(245, 158, 11, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(245, 158, 11, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        body.theme-night .card {
+            background: rgba(10, 15, 26, 0.8);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(245, 158, 11, 0.05);
+            border-radius: 16px;
+        }
+
+        body.theme-night h1, body.theme-night h2, body.theme-night h3, body.theme-night h4 {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        
+        body.theme-night h1 {
+            font-style: italic;
+            font-weight: 900;
+        }
+
+        body.theme-night .lss-intro-box {
+            background: rgba(28, 43, 75, 0.6);
+            border: 1px solid #f59e0b;
+            border-left: 5px solid #f59e0b;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+
+        body.theme-night .lss-intro-title {
+            color: #f59e0b;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+        }
+
+        body.theme-night .lss-intro-text {
+            color: #ffffff;
+        }
+
+        body.theme-night .btn-primary {
+            background: transparent;
+            color: #f59e0b;
+            border: 1px solid #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+        }
+
+        body.theme-night .btn-primary:hover {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        body.theme-night .btn-ghost {
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        body.theme-night .premium-input {
+            background: rgba(255, 255, 255, 0.02) !important;
+            border: 1px solid rgba(245, 158, 11, 0.3) !important;
+            color: #ffffff !important;
+        }
+
+        body.theme-night .architecture-intelligence-btn {
+            background: transparent !important;
+            border: 1px solid #f43f5e !important; /* Neon Red/Pink for Architect */
+            color: #f43f5e !important;
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.4) !important;
+        }
+        
+        body.theme-night .architecture-intelligence-btn i {
+            color: #f43f5e !important;
+        }
     </style>
 </head>
 
@@ -520,7 +681,12 @@
                 <p style="color: var(--text-secondary); margin-top: 5px; letter-spacing: 1px;">The 80/20 Rule of Focus
                 </p>
             </div>
-            <div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div style="background:var(--surface-2); padding:5px; border-radius:50px; border:1px solid var(--glass-border); display:flex; gap:5px; margin-right: 15px;">
+                    <button onclick="setTheme('day')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Corporate Tech (Day)"><i class="fas fa-sun"></i></button>
+                    <button onclick="setTheme('twilight')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Twilight Mode"><i class="fas fa-moon"></i></button>
+                    <button onclick="setTheme('night')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Futuristic Dark (Night)"><i class="fas fa-space-shuttle"></i></button>
+                </div>
                 <button class="architecture-intelligence-btn" onclick="openVisualExpl()" style="margin-right:15px; background: linear-gradient(135deg, #FFD700, #FFA500) !important; color: #000 !important; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;">
                     <i class="fas fa-eye" style="filter:none !important; color:#000;"></i> Visual Expl.
                 </button>
@@ -1262,4 +1428,30 @@
 <script src="StudentAuth.js"></script>
 </body>
 
+<script>
+    function setTheme(theme) {
+        document.body.classList.remove('theme-day', 'theme-night');
+        const introTitle = document.querySelector('.lss-intro-title');
+        const introText = document.querySelector('.lss-intro-text');
+        
+        if (theme === 'day') {
+            document.body.classList.add('theme-day');
+            if (introTitle) introTitle.innerHTML = '<i class="fas fa-khanda" style="margin-right:10px;"></i> The Sword of Focus';
+            if (introText) introText.innerHTML = 'The biggest mistake in problem-solving is trying to fix everything. In reality, <b style="color: #1e3a8a;">80% of your pain comes from 20% of your sources</b>. The Pareto Chart is your weapon to ignore the "Trivial Many" and strike the "Vital Few" with surgical precision.';
+        } 
+        else if (theme === 'night') {
+            document.body.classList.add('theme-night');
+            if (introTitle) introTitle.innerHTML = '<i class="fas fa-khanda" style="margin-right:10px; color:#f59e0b; text-shadow:0 0 15px #f59e0b;"></i> The Sword of Focus';
+            if (introText) introText.innerHTML = 'The biggest mistake in problem-solving is trying to fix everything. In reality, <b style="color: #fde047;">80% of your pain comes from 20% of your sources</b>. The Pareto Chart is your weapon to ignore the "Trivial Many" and strike the "Vital Few" with surgical precision.';
+        }
+        else {
+            if (introTitle) introTitle.innerHTML = '⚔️ The Sword of Focus';
+            if (introText) introText.innerHTML = 'The biggest mistake in problem-solving is trying to fix everything. In reality, <b style="color:var(--accent);">80% of your pain comes from 20% of your sources</b>. The Pareto Chart is your weapon to ignore the "Trivial Many" and strike the "Vital Few" with surgical precision.';
+        }
+        
+        if (window.chartInstance && window.currentResults && window.currentResults.items) {
+            generatePareto();
+        }
+    }
+</script>
 </html>

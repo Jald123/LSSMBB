@@ -184,6 +184,22 @@
             align-items: center;
             gap: 8px;
         }
+
+        /* STUDIO MODAL */
+        .studio-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #050505; z-index: 100000; display: none; padding: 40px; color: white; flex-direction: column; overflow-y: auto; }
+        .studio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; flex-shrink: 0; }
+        .studio-grid { display: grid; grid-template-columns: 1fr 400px; gap: 40px; flex: 1; min-height: 0; align-items: stretch; }
+        .studio-chart-wrapper { background: white; border-radius: 16px; padding: 30px; position: relative; display: flex; align-items: center; justify-content: center; min-height: 500px; }
+        .studio-analysis-panel { background: #0a0a0a; border-radius: 16px; border: 1px solid var(--glass-border); padding: 30px; overflow-y: auto; max-height: calc(100vh - 150px); }
+        .studio-close { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--glass-border); cursor: pointer; color: #94a3b8; transition: 0.3s; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 800; }
+        .studio-close:hover { background: #ef4444; color: white; border-color: #ef4444; transform: scale(1.05); }
+        .enlarge-hint { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); color: white; padding: 8px 15px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; opacity: 0; transition: 0.3s; z-index: 10; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px); }
+        .chart-container:hover .enlarge-hint { opacity: 1; }
+        
+        .hotspot-label { background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 15px; border-radius: 8px; margin-bottom: 15px; cursor: help; transition: 0.3s; }
+        .hotspot-label:hover { background: rgba(59, 130, 246, 0.25); transform: translateX(5px); }
+        .hotspot-title { color: #60a5fa; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
+        .hotspot-desc { color: #cbd5e1; font-size: 13px; line-height: 1.4; }
     </style>
 </head>
 
@@ -316,8 +332,9 @@
                         <i class="fas fa-stethoscope"></i> Real Healthcare Examples
                     </button>
                 </div>
-                <div class="chart-container"
-                    style="background: white; border-radius: 12px; position:relative; height:450px;">
+                <div class="chart-container" onclick="openStudio()"
+                    style="background: white; border-radius: 12px; position:relative; height:600px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border: 2px solid var(--glass-border); cursor: zoom-in;">
+                    <div class="enlarge-hint"><i class="fas fa-expand-arrows-alt"></i> OPEN STUDIO VIEW</div>
                     <canvas id="boxChart"></canvas>
                 </div>
 
@@ -784,21 +801,31 @@
             }
         } else {
             const lines = raw.split('\n');
-            lines.forEach(line => {
+            lines.forEach((line, index) => {
                 if (!line.includes(':') && !line.includes(',')) return;
                 const parts = line.includes(':') ? line.split(':') : ['Series', line];
-                const name = parts[0];
+                const name = parts[0].trim();
                 const vals = parts[1].split(',').map(n => parseFloat(n)).filter(n => !isNaN(n));
+                
+                // Color logic for Standard A vs Standard B (or any sequential groups)
+                const colors = [
+                    { border: '#06b6d4', bg: 'rgba(6, 182, 212, 0.2)' }, // Group A: Cyan
+                    { border: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.2)' }, // Group B: Purple
+                    { border: '#3b82f6', bg: 'rgba(59, 130, 246, 0.2)' }, // Group C: Blue
+                    { border: '#f97316', bg: 'rgba(249, 115, 22, 0.2)' }  // Group D: Orange
+                ];
+                const color = colors[index % colors.length];
+
                 if (vals.length > 0) {
                     datasets.push({
                         label: name,
                         data: [vals],
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                        borderColor: '#3b82f6',
+                        backgroundColor: color.bg,
+                        borderColor: color.border,
                         borderWidth: 3,
-                        medianColor: '#facc15',
+                        medianColor: '#ffffff',
                         outlierColor: '#ef4444',
-                        itemRadius: 3
+                        itemRadius: 4
                     });
                 }
             });
@@ -811,25 +838,57 @@
         if (chart) chart.destroy();
         chart = new Chart(ctx, {
             type: 'boxplot',
-            data: { labels: ['Compare'], datasets: datasets },
+            data: { labels: ['Visual Comparison'], datasets: datasets },
             options: {
                 indexAxis: 'y', // Horizontal Layout
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: 'top', labels: { color: '#cbd5e1' } },
+                    legend: { position: 'top', labels: { color: '#1e293b', font: { weight: 'bold', size: 12 } } },
                     tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 15,
+                        displayColors: true,
                         callbacks: {
                             label: function (context) {
-                                const raw = context.raw; // Boxplot stats
-                                if (raw && raw.q3 !== undefined) {
-                                    const iqr = (raw.q3 - raw.q1).toFixed(2);
-                                    return `${context.dataset.label}: Min:${raw.min}, Q1:${raw.q1}, Med:${raw.median}, Q3:${raw.q3}, Max:${raw.max}, IQR:${iqr}`;
+                                let r = context.raw;
+                                let stats = {};
+
+                                if (Array.isArray(r)) {
+                                    // Handle array of arrays if present
+                                    if (Array.isArray(r[0])) r = r[0];
+                                    const sorted = r.slice().sort((a,b) => a - b);
+                                    stats = {
+                                        min: sorted[0],
+                                        max: sorted[sorted.length-1],
+                                        q1: getQuantile(sorted, 0.25),
+                                        median: getQuantile(sorted, 0.50),
+                                        q3: getQuantile(sorted, 0.75)
+                                    };
+                                } else if (r && typeof r === 'object' && r.median !== undefined) {
+                                    // Handle pre-calculated object
+                                    stats = r;
+                                } else {
+                                    return '';
                                 }
-                                return '';
+
+                                const iqr = (stats.q3 - stats.q1).toFixed(2);
+                                return [
+                                    `${context.dataset.label}`,
+                                    `● Median: ${stats.median.toFixed ? stats.median.toFixed(2) : stats.median}`,
+                                    `● Q1-Q3: ${stats.q1.toFixed ? stats.q1.toFixed(2) : stats.q1} to ${stats.q3.toFixed ? stats.q3.toFixed(2) : stats.q3}`,
+                                    `● IQR: ${iqr}`,
+                                    `● Range: ${stats.min.toFixed ? stats.min.toFixed(2) : stats.min} to ${stats.max.toFixed ? stats.max.toFixed(2) : stats.max}`
+                                ];
                             }
                         }
                     }
+                },
+                scales: {
+                    x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { weight: 'bold' } } },
+                    y: { grid: { display: false }, ticks: { color: '#1e293b', font: { weight: 'bold' } } }
                 }
             }
         });
@@ -898,11 +957,137 @@
         localStorage.setItem(`lss_pref_boxplot`, JSON.stringify(payload));
     }
 
+    // FULLSCREEN STUDIO LOGIC
+    let studioChart;
+    function openStudio() {
+        const datasets = chart.data.datasets;
+        document.getElementById('studioModal').style.display = 'flex';
+        
+        const ctx = document.getElementById('studioCanvas').getContext('2d');
+        if (studioChart) studioChart.destroy();
+        
+        studioChart = new Chart(ctx, {
+            type: 'boxplot',
+            data: { labels: ['Detailed Diagnostic View'], datasets: datasets },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#0f172a', font: { weight: 'bold', size: 14 } } },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#0f172a',
+                        titleFont: { size: 16, weight: 'bold' },
+                        bodyFont: { size: 14 },
+                        padding: 20,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                let r = context.raw;
+                                let stats = {};
+
+                                if (Array.isArray(r)) {
+                                    if (Array.isArray(r[0])) r = r[0];
+                                    const sorted = r.slice().sort((a,b) => a - b);
+                                    stats = {
+                                        min: sorted[0],
+                                        max: sorted[sorted.length-1],
+                                        q1: getQuantile(sorted, 0.25),
+                                        median: getQuantile(sorted, 0.50),
+                                        q3: getQuantile(sorted, 0.75)
+                                    };
+                                } else if (r && typeof r === 'object' && r.median !== undefined) {
+                                    stats = r;
+                                } else {
+                                    return '';
+                                }
+
+                                const iqr = (stats.q3 - stats.q1).toFixed(2);
+                                return [
+                                    `━━━━━━━━━━━━━━━━━━`,
+                                    `📊 GROUP: ${context.dataset.label}`,
+                                    `━━━━━━━━━━━━━━━━━━`,
+                                    `● Median (Target): ${stats.median.toFixed ? stats.median.toFixed(2) : stats.median}`,
+                                    `● IQR (Box): ${stats.q1.toFixed ? stats.q1.toFixed(2) : stats.q1} to ${stats.q3.toFixed ? stats.q3.toFixed(2) : stats.q3}`,
+                                    `● Min/Max (Whiskers): ${stats.min.toFixed ? stats.min.toFixed(2) : stats.min} to ${stats.max.toFixed ? stats.max.toFixed(2) : stats.max}`,
+                                    `● Spread (IQR): ${iqr}`,
+                                    `━━━━━━━━━━━━━━━━━━`,
+                                    `Click hotspots on the right for help.`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { color: '#e2e8f0' }, ticks: { color: '#475569', font: { weight: 'bold' } } },
+                    y: { ticks: { color: '#0f172a', font: { weight: 'bold', size: 14 } } }
+                }
+            }
+        });
+
+        // LOCK SCROLL
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeStudio() {
+        document.getElementById('studioModal').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
     // CLICK OUTSIDE MODAL
     window.onclick = function (e) {
         if (e.target == document.getElementById('infoModal')) closePopup();
     }
 </script>
+
+<!-- STUDIO MODAL -->
+<div id="studioModal" class="studio-overlay">
+    <div class="studio-header">
+        <div>
+            <h1 style="margin:0; font-size:24px; color:white; font-family:'Orbitron', sans-serif;">Diagnostic Fullscreen Studio</h1>
+            <p style="color:#94a3b8; font-size:12px;">High-Resolution Chart Analysis & Component Breakdown</p>
+        </div>
+        <div class="studio-close" onclick="closeStudio()">
+            <i class="fas fa-times-circle"></i> EXIT STUDIO MODE
+        </div>
+    </div>
+    
+    <div class="studio-grid">
+        <div class="studio-chart-wrapper">
+            <canvas id="studioCanvas"></canvas>
+        </div>
+        
+        <div class="studio-analysis-panel">
+            <h2 style="color:#3b82f6; margin-bottom:20px; font-size:14px;"><i class="fas fa-microscope"></i> COMPONENT INTERPRETATION</h2>
+            
+            <div class="hotspot-label">
+                <div class="hotspot-title">📦 INTERQUARTILE RANGE (THE BOX)</div>
+                <div class="hotspot-desc">Represents the central 50% of your data. A compact box indicates <b>Process Stability</b> and low variation. A long box indicates uncertainty and high spread.</div>
+            </div>
+
+            <div class="hotspot-label">
+                <div class="hotspot-title">📏 THE MEDIAN (CENTER LINE)</div>
+                <div class="hotspot-desc">The "Balance Point" of your data. If the line is off-center, your process is <b>Skewed</b>. Left of center means most items are near the minimum (Right Skew).</div>
+            </div>
+
+            <div class="hotspot-label">
+                <div class="hotspot-title">📡 THE WHISKERS (ERROR BARS)</div>
+                <div class="hotspot-desc">Represent the <b>Extreme Values</b> within the statistical limit (1.5x IQR). Long whiskers show that outliers are lurking just outside the boundary.</div>
+            </div>
+
+            <div class="hotspot-label">
+                <div class="hotspot-title">⚠️ OUTLIERS (RED DIAMONDS)</div>
+                <div class="hotspot-desc">Signals of <b>Special Cause Variation</b>. These points are mathematically abnormal. In Lean Six Sigma, you must investigate each outlier immediately.</div>
+            </div>
+
+            <div style="margin-top:40px; padding:20px; background:rgba(255,255,255,0.03); border-radius:12px; border:1px dashed rgba(255,255,255,0.1);">
+                <h4 style="color:#facc15; font-size:12px; margin-bottom:10px;">MBB PRO TIP</h4>
+                <p style="font-size:11px; color:#94a3b8; line-height:1.5;">When comparing two boxes, check if the Boxes overlap. If they don't, there is a <b>Statistically Significant Difference</b> between the groups. If they overlap heavily, the difference might just be noise.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- MODAL -->
 <div id="infoModal"

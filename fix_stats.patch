@@ -1,0 +1,168 @@
+--- Calculator_DescriptiveStats.html
++++ Calculator_DescriptiveStats.html
+@@ -1661,75 +1661,73 @@
+-                             function calcStats() {
+-                                 let raw = document.getElementById('dataInput').value;
+-                                 let data = raw.replace(/\n/g, ',').split(',').map(x => parseFloat(x)).filter(x => !isNaN(x));
+-
+-                                 if (data.length < 3) { alert("Please enter at least 3 numbers."); return; }
+-
+-                                 // Sorting for stats
+-                                 const sorted = [...data].sort((a, b) => a - b);
+-                                 const n = data.length;
+-                                 const min = sorted[0];
+-                                 const max = sorted[n - 1];
+-                                 const sum = data.reduce((a, b) => a + b, 0);
+-                                 const mean = sum / n;
+-
+-                                 // Spread
+-                                 const variance = data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (n - 1);
+-                                 const stdDev = Math.sqrt(variance);
+-                                 const cv = (stdDev / mean) * 100;
+-                                 const range = max - min;
+-
+-                                 // CI
+-                                 const se = stdDev / Math.sqrt(n);
+-                                 const ci = 1.96 * se;
+-
+-                                 // Shape
+-                                 const skewness = data.reduce((a, b) => a + Math.pow(b - mean, 3), 0) / (n * Math.pow(stdDev, 3));
+-                                 const kurtosis = (data.reduce((a, b) => a + Math.pow(b - mean, 4), 0) / (n * Math.pow(stdDev, 4))) - 3;
+-
+-                                 // Quartiles
+-                                 const q1 = jStat.percentile(data, 0.25);
+-                                 const median = jStat.percentile(data, 0.50);
+-                                 const q3 = jStat.percentile(data, 0.75);
+-                                 const iqr = q3 - q1;
+-
+-                                 // Fences
+-                                 const lowerFence = q1 - 1.5 * iqr;
+-                                 const upperFence = q3 + 1.5 * iqr;
+-
+-                                 // Outliers and Whiskers (Tukey style)
+-                                 const outliers = data.filter(x => x < lowerFence || x > upperFence);
+-
+-                                 // Whiskers extend to the most extreme data point within fences
+-                                 let whiskerLow = min;
+-                                 let whiskerHigh = max;
+-                                 for (let i = 0; i < n; i++) { if (sorted[i] >= lowerFence) { whiskerLow = sorted[i]; break; } }
+-                                 for (let i = n - 1; i >= 0; i--) { if (sorted[i] <= upperFence) { whiskerHigh = sorted[i]; break; } }
+-
+-                                 // UI Updates
+-                                 document.getElementById('resultsPanel').style.display = 'block';
+-                                 document.getElementById('resN').innerText = n;
+-                                 document.getElementById('resMean').innerText = mean.toFixed(2);
+-                                 document.getElementById('resCI').innerText = "± " + ci.toFixed(2) + " (95%)";
+-                                 document.getElementById('resMedian').innerText = median.toFixed(2);
+-                                 document.getElementById('resStdDev').innerText = stdDev.toFixed(2);
+-                                 document.getElementById('resVar').innerText = "Var: " + variance.toFixed(2);
+-                                 document.getElementById('resCV').innerText = cv.toFixed(1) + "%";
+-                                 document.getElementById('resRange').innerText = range.toFixed(2);
+-                                 document.getElementById('resMinMax').innerText = min + " to " + max;
+-                                 document.getElementById('resSkew').innerText = skewness.toFixed(2);
+-                                 document.getElementById('skewDesc').innerText = Math.abs(skewness) < 0.5 ? "Symmetric" : (skewness > 0 ? "Right Skewed" : "Left Skewed");
+-                                 document.getElementById('resKurt').innerText = kurtosis.toFixed(2);
+-
+-                                 const pVal = Math.max(0.001, Math.min(0.99, 1 - Math.abs(skewness)));
+-                                 document.getElementById('resP').innerText = "P-Value: " + pVal.toFixed(3);
+-                                 document.getElementById('resAD').innerText = pVal < 0.05 ? "Not Normal" : "Normal";
+-                                 document.getElementById('resAD').style.color = pVal < 0.05 ? "var(--error)" : "var(--success)";
+-                                 document.getElementById('resOutliers').innerText = outliers.length;
+-                                 document.getElementById('resOutliers').style.color = outliers.length > 0 ? "var(--error)" : "white";
+-
+-                                 renderCharts(data, sorted, mean, stdDev, skewness, outliers.length);
+-                                 drawHighResBoxPlot(min, q1, median, q3, max, whiskerLow, whiskerHigh, outliers);
+-                                 updateInterpretations(mean, stdDev, skewness, outliers.length, pVal, cv);
+-                                 generateAutoSummary(n, mean, median, stdDev, cv, skewness, kurtosis, pVal, outliers.length);
+-                                 updateProgress(100);
+-                             }
++                             function calcStats() {
++                                 let raw = document.getElementById('dataInput').value;
++                                 let data = raw.replace(/\n/g, ',').split(',').map(x => parseFloat(x)).filter(x => !isNaN(x));
++                                 if (data.length < 3) { alert("Please enter at least 3 numbers for a valid statistical audit."); return; }
++                                 const n = data.length;
++                                 const sum = data.reduce((a, b) => a + b, 0);
++                                 const mean = sum / n;
++                                 const sorted = [...data].sort((a, b) => a - b);
++                                 
++                                 // Central Tendency
++                                 const median = jStat.percentile(data, 0.50);
++                                 
++                                 // Mode calculation (Multi-modal support)
++                                 const counts = {};
++                                 data.forEach(v => counts[v] = (counts[v] || 0) + 1);
++                                 let maxFreq = 0;
++                                 for (let v in counts) if (counts[v] > maxFreq) maxFreq = counts[v];
++                                 let modes = [];
++                                 for (let v in counts) if (counts[v] === maxFreq) modes.push(Number(v));
++                                 const modeDisplay = (maxFreq === 1 || modes.length === n) ? "None" : modes.join(", ");
++
++                                 // Variation & Precision
++                                 const variance = data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (n - 1);
++                                 const stdDev = Math.sqrt(variance);
++                                 const cv = (stdDev / mean) * 100;
++                                 
++                                 // Exact Confidence Interval (95% T-distribution)
++                                 const se = stdDev / Math.sqrt(n);
++                                 const tCrit = jStat.studentt.inv(0.975, n - 1);
++                                 const ci = tCrit * se;
++
++                                 // High Precision Shape (Sample Adjusted Fisher-Pearson)
++                                 let skew = 0, kurt = 0;
++                                 if (n > 2) {
++                                     const m3 = data.reduce((a, b) => a + Math.pow(b - mean, 3), 0) / n;
++                                     const m2 = variance * (n - 1) / n;
++                                     const g1 = m3 / Math.pow(m2, 1.5);
++                                     skew = (Math.sqrt(n * (n - 1)) / (n - 2)) * g1;
++                                 }
++                                 if (n > 3) {
++                                     const m4 = data.reduce((a, b) => a + Math.pow(b - mean, 4), 0) / n;
++                                     const m2 = variance * (n - 1) / n;
++                                     const g2 = (m4 / Math.pow(m2, 2)) - 3;
++                                     kurt = ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * g2 + 6);
++                                 }
++
++                                 // Robust Normality Inference
++                                 const ses = Math.sqrt((6 * n * (n - 1)) / ((n - 2) * (n + 1) * (n + 3)));
++                                 const zSkew = skew / ses;
++                                 const pVal = Math.max(0.001, 2 * (1 - jStat.normal.cdf(Math.abs(zSkew), 0, 1)));
++
++                                 // Outlier Audit (Tukey's Method)
++                                 const q1 = jStat.percentile(data, 0.25);
++                                 const q3 = jStat.percentile(data, 0.75);
++                                 const iqr = q3 - q1;
++                                 const lowFence = q1 - 1.5 * iqr;
++                                 const highFence = q3 + 1.5 * iqr;
++                                 const outliers = data.filter(x => x < lowFence || x > highFence);
++
++                                 // Whiskers for Box Plot
++                                 let whiskerLow = sorted.find(x => x >= lowFence) || sorted[0];
++                                 let whiskerHigh = [...sorted].reverse().find(x => x <= highFence) || sorted[n - 1];
++
++                                 // Dashboard Population
++                                 document.getElementById('resultsPanel').style.display = 'block';
++                                 document.getElementById('resN').innerText = n;
++                                 document.getElementById('resMean').innerText = mean.toFixed(4);
++                                 document.getElementById('resMedian').innerText = median.toFixed(4);
++                                 document.getElementById('resMode').innerText = modeDisplay;
++                                 document.getElementById('resCI').innerText = "± " + ci.toFixed(4) + " (95% T)";
++                                 document.getElementById('resStdDev').innerText = stdDev.toFixed(4);
++                                 document.getElementById('resVar').innerText = "V: " + variance.toFixed(4);
++                                 document.getElementById('resCV').innerText = cv.toFixed(2) + "%";
++                                 document.getElementById('resRange').innerText = (sorted[n - 1] - sorted[0]).toFixed(2);
++                                 document.getElementById('resMinMax').innerText = sorted[0] + " to " + sorted[n - 1];
++                                 document.getElementById('resSkew').innerText = skew.toFixed(3);
++                                 document.getElementById('skewDesc').innerText = Math.abs(skew) < 0.5 ? "Symmetric" : (skew > 0 ? "Right Skew" : "Left Skew");
++                                 document.getElementById('resKurt').innerText = kurt.toFixed(3);
++                                 document.getElementById('resP').innerText = "P-Value: " + pVal.toFixed(3);
++                                 document.getElementById('resAD').innerText = pVal < 0.05 ? "Significant Non-Normal" : "Normality Likely";
++                                 document.getElementById('resAD').style.color = pVal < 0.05 ? "var(--error)" : "var(--success)";
++                                 document.getElementById('resOutliers').innerText = outliers.length;
++                                 document.getElementById('resOutliers').style.color = outliers.length > 0 ? "var(--error)" : "white";
++
++                                 renderCharts(data, sorted, mean, stdDev, skew, outliers.length);
++                                 drawHighResBoxPlot(sorted[0], q1, median, q3, sorted[n - 1], whiskerLow, whiskerHigh, outliers);
++                                 updateInterpretations(mean, stdDev, skew, outliers.length, pVal, cv);
++                                 generateAutoSummary(n, mean, median, stdDev, cv, skew, kurt, pVal, outliers.length);
++                                 updateProgress(100);
++                             }

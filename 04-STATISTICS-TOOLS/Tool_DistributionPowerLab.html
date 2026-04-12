@@ -133,21 +133,24 @@
         .btn-tooltip:hover::after {
             content: attr(data-hover);
             position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.95);
+            bottom: 125%;
+            left: 0;
+            /* Changed from left: 50% to left: 0 to prevent left-side clipping */
+            transform: none;
+            /* Removed translateX(-50%) */
+            background: rgba(15, 23, 42, 0.98);
             color: #fff;
-            padding: 12px;
-            border-radius: 6px;
-            width: 280px;
-            font-size: 12px;
-            line-height: 1.5;
+            padding: 16px;
+            border-radius: 12px;
+            width: 320px;
+            /* Slightly wider for better readability */
+            font-size: 13px;
+            line-height: 1.6;
             pointer-events: none;
             z-index: 1000;
             white-space: pre-wrap;
             border: 1px solid var(--accent);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             text-align: left;
         }
 

@@ -692,7 +692,11 @@ details summary:focus-visible {
     padding: 40px;
     position: relative;
     box-shadow: 0 0 60px rgba(59, 130, 246, 0.2);
-    margin: auto;
+    margin: 40px auto;
+    max-height: 85vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #3b82f6 transparent;
 }
 
 .premium-modal-close {

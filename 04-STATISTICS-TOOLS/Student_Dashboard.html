@@ -11,12 +11,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
         :root {
-            --bg-dark: #020617;
-            --card-bg: #0f172a;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --bg-dark: #0f172a; /* Deeper Indigo-Blue */
+            --card-bg: #1e293b;
+            --border-color: rgba(148, 163, 184, 0.1);
             --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --text-main: #f8fafc;
+            --executive-blue: #1e40af;
+            --accent-purple: #818cf8;
+            --text-main: #f1f5f9;
             --text-dim: #94a3b8;
         }
 
@@ -68,8 +69,21 @@
 
         /* ── GRID LAYOUT ───────────────────────────── */
         .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
-        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; height: 100%; }
-        .card-title { font-family: 'Orbitron', sans-serif; font-size: 16px; letter-spacing: 1px; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; color: var(--accent-blue); }
+        .card { 
+            background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%); 
+            border: 1px solid var(--border-color); 
+            border-radius: 24px; 
+            padding: 30px; 
+            height: 100%; 
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card:hover { 
+            transform: translateY(-8px); 
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+        .card-title { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; color: var(--accent-blue); }
 
         /* ── BELT PROGRESS ────────────────────────── */
         .belt-row { margin-bottom: 20px; }
@@ -229,7 +243,15 @@
                     <td style="font-weight: 600;">${name}</td>
                     <td><span class="phase-badge ${PHASE_COLORS[primaryPhase]}">${primaryPhase}</span></td>
                     <td><span style="font-family:'Orbitron', sans-serif; font-weight:800;">${Math.round(data.score)}%</span></td>
-                    <td><span style="font-size:12px; color: ${data.score < 50 ? '#ef4444' : 'inherit'};">${data.badge}</span></td>
+                    <td>
+                        <div style="display:flex; flex-direction:column; gap:4px;">
+                            <span style="font-size:10px; font-weight:900; font-family:'Orbitron', sans-serif; color: ${data.result === 'PASS' ? '#10b981' : '#ef4444'}; letter-spacing:1px; text-transform:uppercase;">
+                                <i class="fas ${data.result === 'PASS' ? 'fa-check-circle' : 'fa-times-circle'}"></i> 
+                                ${data.result || (data.score >= 70 ? 'PASS' : 'FAIL')}
+                            </span>
+                            <span style="font-size:12px; color:#94a3b8; font-weight:600;">${data.badge}</span>
+                        </div>
+                    </td>
                     <td style="color: var(--text-dim);">${date}</td>
                     <td>
                         <div style="display: flex; gap: 15px;">

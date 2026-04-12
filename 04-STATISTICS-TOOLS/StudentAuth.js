@@ -871,6 +871,7 @@ function _saveProgress(toolName, score, reportHtml) {
         breakdown: score.breakdown,
         date: new Date().toISOString(),
         reportHtml: reportHtml,
+        result: score.result,
         type: toolInfo.type,
         primaryPhase: toolInfo.primary,
         eligiblePhases: toolInfo.phases,
@@ -898,21 +899,31 @@ function _showSuccessModal(score, reportHtml, toolName) {
     scoreEl.style.color = score.color;
     badgeEl.style.color = score.color;
 
-    // Result Label (PASS/FAIL)
+    // Result Label (PASS/FAIL) — Executive Stamp Utility
     const resultHtml = `
         <div id="lss-verdict-result" style="
-            margin-top:20px; 
+            margin-top:25px; 
             font-family: 'Orbitron', sans-serif; 
-            font-size: 24px; 
+            font-size: 14px; 
             font-weight: 900; 
-            color: ${score.resultColor}; 
+            color: #fff; 
             letter-spacing: 2px;
             text-align: center;
-        ">${score.result}</div>
+            background: ${score.resultColor};
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px ${score.resultColor}44;
+            display: inline-block;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.2);
+        ">
+            <i class="fas ${score.result === 'PASS' ? 'fa-check-double' : 'fa-times-circle'}" style="margin-right:8px;"></i>
+            ${score.result} VERDICT
+        </div>
     `;
     const existingResult = document.getElementById('lss-verdict-result');
     if (existingResult) existingResult.remove();
-    badgeEl.insertAdjacentHTML('afterend', resultHtml);
+    badgeEl.insertAdjacentHTML('afterend', `<div style="text-align:center;">${resultHtml}</div>`);
 
     // Enterprise-Grade Mastery Reveal (Executive Blue)
     let auditHtml = `
@@ -1282,7 +1293,17 @@ function _buildReport(data, score) {
             </div>
             <div style="text-align:right;">
                 <div style="font-size:32px; font-weight:900; color:#1D4ED8;">${score.total}%</div>
-                <div style="font-size:10px; font-weight:700; color:#1D4ED8; text-transform:uppercase; letter-spacing:1px;">Verified Mastery Level</div>
+                <div style="font-size:10px; font-weight:700; color:#1D4ED8; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Verified Mastery Level</div>
+                <div style="
+                    display: inline-block;
+                    padding: 4px 12px;
+                    background: ${score.resultColor};
+                    color: white;
+                    border-radius: 4px;
+                    font-size: 11px;
+                    font-weight: 900;
+                    letter-spacing: 1px;
+                "><i class="fas ${score.result === 'PASS' ? 'fa-check' : 'fa-times'}"></i> ${score.result} VERDICT</div>
             </div>
         </div>
 
