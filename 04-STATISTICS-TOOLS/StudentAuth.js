@@ -325,6 +325,14 @@ function _buildCommandHub() {
                 <span>View Audit Report</span>
             </button>
         </div>
+        <div class="hub-footer">
+            <div class="mode-switcher">
+                <button onclick="lssSetTheme('day')" title="Corporate Tech (Day)"><i class="fas fa-sun"></i></button>
+                <button onclick="lssSetTheme('twilight')" title="Twilight Horizon (Balanced)"><i class="fas fa-moon"></i></button>
+                <button onclick="lssSetTheme('night')" title="Futuristic Studio (Night)"><i class="fas fa-rocket"></i></button>
+            </div>
+        </div>
+
     `;
 
     document.body.appendChild(hub);
@@ -402,7 +410,32 @@ function _initDraggable(el, handle) {
     }
 }
 
+// ── THEME SWITCHER ──────────────────────────────
+window.lssSetTheme = function(theme) {
+    document.body.classList.remove('theme-day', 'theme-night', 'theme-twilight');
+    if (theme === 'day') document.body.classList.add('theme-day');
+    else if (theme === 'night') document.body.classList.add('theme-night');
+    else if (theme === 'twilight') document.body.classList.add('theme-twilight');
+    
+    // Persist preference
+    localStorage.setItem('LSS_Theme', theme);
+    
+    // Sync UI if there are local setTheme functions on pages
+    if (typeof window.setTheme === 'function') {
+        window.setTheme(theme);
+    }
+};
+
+// Apply saved theme on load
+(function() {
+    const saved = localStorage.getItem('LSS_Theme');
+    if (saved) {
+        document.addEventListener('DOMContentLoaded', () => lssSetTheme(saved));
+    }
+})();
+
 function _getToolInfo() {
+
     const key = _getToolKey();
     return TOOL_REGISTRY[key] || null;
 }

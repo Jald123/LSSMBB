@@ -1173,15 +1173,19 @@
     position: fixed;
     bottom: 30px;
     right: 30px;
-    width: 160px;
-    background: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 16px;
+    width: 200px; /* Reduced for a more compact feel */
+    box-sizing: border-box;
+
+
+    background: #f1f5f9; /* Subtle grey-blue background to make white cards pop */
+    border: 1px solid rgba(0, 0, 51, 0.1);
+    border-radius: 20px;
     box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
     z-index: 99998;
     overflow: hidden;
     animation: hubGlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 
 @keyframes hubGlide {
     from { transform: translateY(20px); opacity: 0; }
@@ -1189,11 +1193,12 @@
 }
 
 #lss-command-hub .hub-header {
-    background: #F8FAFC;
-    border-bottom: 1px solid #E2E8F0;
-    padding: 10px;
+    background: #FFFFFF;
+    border-bottom: 1px solid rgba(0, 0, 51, 0.05);
+    padding: 12px;
     text-align: center;
-    font-size: 11px;
+    font-size: 10px;
+
     font-weight: 600;
     color: #64748B;
     text-transform: uppercase;
@@ -1206,24 +1211,40 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+    box-sizing: border-box;
 }
 
+
+
+
 .hub-quadrant {
-    width: 80px;
-    height: 80px;
-    background: #FFFFFF;
+    width: 82px;
+    height: 82px;
+    box-sizing: border-box;
+
+
+    background: #FFFFFF !important;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.15s ease;
-    border: 0.5px solid #E2E8F0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(0, 0, 51, 0.05);
+    border-radius: 14px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
+
 .hub-quadrant:hover {
-    background: #F8FAFC;
+    background: #FFFFFF !important;
+    transform: translateY(-2px) scale(1.05);
+    border-color: #2563EB;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
 }
+
 
 .hub-quadrant i {
     font-size: 20px;
@@ -1233,9 +1254,12 @@
 }
 
 .hub-quadrant span {
-    font-size: 10px;
-    font-weight: 600;
+    font-size: 6.5px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.1;
     color: #334155;
+    text-transform: uppercase;
 }
 
 .hub-quadrant:hover i { color: #2563EB; }
@@ -1243,3 +1267,78 @@
 /* Highlight for Submit */
 .hub-quadrant.q-submit i { color: #2563EB; }
 .hub-quadrant.q-submit:hover { background: #E0E7FF; }
+
+/* ── MODE SWITCHER (EXECUTIVE PILL) ──────────────── */
+.hub-footer {
+    padding: 0 15px 15px 15px;
+    background: transparent;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+
+.mode-switcher {
+    background: #eff6ff;
+    padding: 4px 6px;
+    border-radius: 100px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    border: 1px solid rgba(0,0,51,0.05);
+}
+
+
+
+
+.mode-switcher button {
+    flex: 1;
+    background: #1e293b;
+    color: #ffffff;
+    border: none;
+    height: 26px; /* Reduced height */
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px; /* Smaller Icons */
+}
+
+
+
+
+.mode-switcher button:hover {
+    background: #000000;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+
+.mode-switcher button:active {
+    transform: scale(0.95);
+}
+
+/* Day Mode specific branding for hub */
+body.theme-day .hub-footer,
+body.theme-day #lss-command-hub {
+    background: #ffffff !important;
+}
+
+body.theme-day .mode-switcher {
+    background: #f1f5f9;
+    padding: 4px 28px; /* Increased horizontal padding to shrink buttons */
+}
+
+body.theme-day .mode-switcher button {
+    max-width: 35px; /* Explicit width reduction */
+    margin: 0 auto;
+}
+
+

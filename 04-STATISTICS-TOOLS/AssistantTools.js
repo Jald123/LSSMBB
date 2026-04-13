@@ -4,6 +4,21 @@
  */
 
 (function () {
+    // NUCLEAR OPTION: Hijack Canvas fillText for High Contrast in Day Mode
+    (function() {
+        const originalFillText = CanvasRenderingContext2D.prototype.fillText;
+        CanvasRenderingContext2D.prototype.fillText = function(text, x, y, maxWidth) {
+            if (document.body.classList.contains('theme-day')) {
+                const fs = this.fillStyle.toString().toLowerCase();
+                // If the color is white or nearly white, force it to black
+                if (fs === '#ffffff' || fs === 'white' || fs.includes('rgba(255, 255, 255') || fs.includes('rgb(255, 255, 255')) {
+                    this.fillStyle = '#000000';
+                }
+            }
+            return originalFillText.apply(this, arguments);
+        };
+    })();
+
     // 0. SELF-INJECTION (CSS)
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -797,4 +812,64 @@
         };
     }
 
+    // 11. GLOBAL THEME ENGINE (Universal + Pareto Specialized)
+    window.setTheme = function (theme) {
+        document.body.classList.remove('theme-day', 'theme-night');
+        localStorage.setItem('lss_theme_mode', theme);
+        
+        const introTitle = document.querySelector('.lss-intro-title');
+        const introText = document.querySelector('.lss-intro-text');
+
+        if (theme === 'day') {
+            document.body.classList.add('theme-day');
+            if (introTitle && window.generatePareto) introTitle.innerHTML = '<i class="fas fa-khanda" style="margin-right:10px;"></i> The Sword of Focus';
+            if (introText && window.generatePareto) introText.innerHTML = 'The biggest mistake in problem-solving is trying to fix everything. In reality, <b style="color: #000033;">80% of your pain comes from 20% of your sources</b>. The Pareto Chart is your weapon to ignore the \"Trivial Many\" and strike the \"Vital Few\" with surgical precision.';
+        } else if (theme === 'night') {
+            document.body.classList.add('theme-night');
+            if (introTitle && window.generatePareto) introTitle.innerHTML = '<i class=\"fas fa-khanda\" style=\"margin-right:10px; color:#f59e0b; text-shadow:0 0 15px #f59e0b;\"></i> The Sword of Focus';
+            if (introText && window.generatePareto) introText.innerHTML = 'The biggest mistake in problem-solving is trying to fix everything. In reality, <b style=\"color: #fde047;\">80% of your pain comes from 20% of your sources</b>. The Pareto Chart is your weapon to ignore the \"Trivial Many\" and strike the \"Vital Few\" with surgical precision.';
+        } else {
+            if (introTitle && window.generatePareto) introTitle.innerHTML = '⚔️ The Sword of Focus';
+            if (introText && window.generatePareto) introText.innerHTML = 'The biggest mistake in problem-solving is trying to fix everything. In reality, <b style=\"color:var(--accent);\">80% of your pain comes from 20% of your sources</b>. The Pareto Chart is your weapon to ignore the \"Trivial Many\" and strike the \"Vital Few\" with surgical precision.';
+        }
+
+        // Adapted Re-renders (if chartInstance globally exposed)
+        if (window.chartInstance && typeof window.generatePareto === 'function') {
+             try { window.generatePareto(); } catch(e) {}
+        }
+        
+        // Update toggle UI (if auto-injected)
+        document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('onclick').includes(theme));
+        });
+    };
+
+    // CLEANUP: Aggressively hide all legacy theme switchers except from the Sensei Hub
+    function cleanupLegacyThemes() {
+        document.querySelectorAll('button[onclick*="setTheme("]').forEach(btn => {
+            // If it's not inside our new hub footer, hide it
+            if (!btn.closest('.hub-footer')) {
+                btn.style.setProperty('display', 'none', 'important');
+            }
+        });
+    }
+
+    // AUTO-INJECT THEME SWITCHER (Disabled in favor of Hub)
+    function injectThemeSwitcher() {
+        cleanupLegacyThemes();
+    }
+
+    // Theme injection handles by StudentAuth Hub
+
+
+    // Auto-load persisted theme
+    const activeTheme = localStorage.getItem('lss_theme_mode') || 'twilight';
+    window.setTheme(activeTheme);
+    
+    // Inject switcher on load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', injectThemeSwitcher);
+    } else {
+        injectThemeSwitcher();
+    }
 })();

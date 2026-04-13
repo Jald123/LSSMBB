@@ -1,12 +1,603 @@
 /* Assistant Tools - Twilight Horizon Design System */
+@import url('https://fonts.googleapis.com/css2?family=Slackey&family=Orbitron:wght@400;700;900&family=Inter:wght@400;700&display=swap');
 
-:root {
-    --dock-bg: rgba(15, 23, 42, 0.8);
-    --dock-border: rgba(255, 255, 255, 0.1);
-    --dock-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-    --tool-accent: #3b82f6;
-    --tool-bg: #1e293b;
+/* NEXUS OS Specific Day Mode Overrides - Modern Professional Alignment */
+body.theme-day {
+    --nexus-navy: #ffffff !important;
+    --nexus-surface: #ffffff !important;
+    --nexus-text-primary: #1e293b !important; /* Deep Slate */
+    --nexus-text-secondary: #475569 !important; /* Muted Slate */
+    --nexus-border: rgba(0, 0, 51, 0.1) !important;
+    --nexus-card: #ffffff !important;
+    --nexus-glass: #ffffff !important;
+    --card-padding: 45px !important;
+    --card-radius: 12px !important;
 }
+
+/* SENSEI MBB CONTROL DOCK (Floating Assistant) */
+body.theme-day #assistant-dock {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 51, 0.1) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 51, 0.08) !important;
+    color: #1e293b !important;
+    border-radius: 50px !important;
+}
+
+body.theme-day .assistant-window {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 51, 0.08) !important;
+    box-shadow: 0 30px 100px rgba(0, 0, 51, 0.1) !important;
+    color: #1e293b !important;
+    border-radius: 20px !important;
+}
+
+
+
+/* LEAN WORKSHOP & SIPOC SPECIFICS */
+body.theme-day .main-stage, 
+body.theme-day .app-grid {
+    background: #ffffff !important;
+    color: #000000 !important;
+}
+
+body.theme-day .sidebar {
+    background: #f8fbff !important;
+    border-right: 1px solid rgba(0, 0, 51, 0.08) !important;
+}
+
+
+body.theme-day .tool-btn {
+    color: #000033 !important;
+    font-weight: 600 !important;
+}
+
+body.theme-day .tool-btn.active {
+    background: #dbeafe !important;
+    color: #000000 !important;
+    border-left: 5px solid #000033 !important;
+}
+
+body.theme-day .zoom-controls {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 51, 0.1) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 51, 0.05) !important;
+    border-radius: 8px !important;
+}
+
+
+body.theme-day .zoom-value {
+    color: #000000 !important;
+    font-weight: 800 !important;
+}
+
+body.theme-day .zoom-btn {
+    background: #000033 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+/* Force Checkbox Text Visibility */
+body.theme-day label[for="pref-save"],
+body.theme-day #inputFormContainer label {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+/* Visual Template Header */
+body.theme-day .visual-card-wrapper h3 {
+    color: #000000 !important;
+    font-weight: 900 !important;
+}
+
+/* SWIMLANE & FLOWCHART SPECIFICS */
+body.theme-day .lane-label-box {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0, 0, 51, 0.1) !important;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.theme-day .palette-item {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0, 0, 51, 0.1) !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+}
+
+
+body.theme-day .palette-item i {
+    color: #000033 !important;
+    opacity: 1 !important;
+}
+
+body.theme-day .palette-item:hover {
+    background: #dbeafe !important;
+    border-color: #000000 !important;
+}
+
+/* Lane Manager & Sidebar Controls */
+body.theme-day .lane-control,
+body.theme-day .section-title {
+    color: #000000 !important;
+    font-weight: 900 !important;
+}
+
+/* Canvas Viewport in Day Mode */
+body.theme-day .canvas-viewport {
+    background: #f1f5f9 !important;
+}
+
+body.theme-day .pool-surface {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 51, 0.1) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 51, 0.03) !important;
+}
+
+
+/* Shape Logic (YES/NO) */
+body.theme-day .shape-logic {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border: 1px solid rgba(0, 0, 51, 0.15) !important;
+    border-radius: 8px !important;
+}
+
+
+body.theme-day .shape-logic[style*="#10b981"] { background: #dcfce7 !important; color: #166534 !important; border-color: #166534 !important; }
+body.theme-day .shape-logic[style*="#ef4444"] { background: #fee2e2 !important; color: #991b1b !important; border-color: #991b1b !important; }
+
+
+body.theme-day .window-header {
+    background: #f8fbff !important;
+    color: #1e293b !important;
+    border-bottom: 1px solid rgba(0, 0, 51, 0.08) !important;
+}
+
+
+body.theme-day .calc-display {
+    background: #000033 !important;
+    color: #ffffff !important;
+}
+
+body.theme-day .calc-btn.num { background: #ffffff !important; color: #000000 !important; border: 1px solid #000033 !important; }
+body.theme-day .calc-btn.op { background: #000033 !important; color: #ffffff !important; }
+
+body.theme-day #sticky-editor {
+    color: #000000 !important;
+}
+
+body.theme-day .sticky-footer-toolbar {
+    background: #eff6ff !important;
+    border-top: 1px solid #000033 !important;
+}
+
+body.theme-day .tool-btn-rich {
+    color: #000033 !important;
+    border: 1px solid #000033 !important;
+}
+
+
+body.theme-day .nexus-sidebar {
+    background: #ffffff !important;
+    border-right: 3px solid #000033 !important;
+}
+
+body.theme-day .nav-item {
+    color: #444 !important;
+}
+
+body.theme-day .nav-item:hover, body.theme-day .nav-item.active {
+    color: #000033 !important;
+    background: #dbeafe !important;
+}
+
+body.theme-day .nexus-header {
+    background: #ffffff !important;
+    border-bottom: 3px solid #000033 !important;
+}
+
+body.theme-day .hero-gradient-text {
+    -webkit-text-fill-color: #000000 !important;
+    background: none !important;
+}
+
+body.theme-day .methodology-engine {
+    background: #ffffff !important;
+    border: 3px solid #000000 !important;
+}
+
+body.theme-day .method-tab {
+    color: #000000 !important;
+}
+
+body.theme-day .nav-logo {
+    font-family: 'Slackey', cursive, system-ui !important;
+    color: #000000 !important;
+}
+
+
+body.theme-day .phase-glow {
+    color: #000000 !important;
+    font-weight: 800 !important;
+    opacity: 1 !important;
+}
+
+body.theme-day .app-nav-bar {
+    background: #ffffff !important;
+    border-bottom: 3px solid #000033 !important;
+}
+
+body.theme-day .nav-link {
+    color: #000000 !important;
+    font-weight: 600 !important;
+}
+
+
+/* DAY MODE: Corporate Tech + User Constraints */
+/* NO GREY ALLOWED. Only Black and Dark Blue transitions. */
+body.theme-day {
+    --bg-dark: #ffffff !important;
+    --bg-primary: #ffffff !important;
+    --surface-1: #ffffff !important;
+    --surface-2: #eff6ff !important; /* Extremely Light Blue */
+    --surface-3: #dbeafe !important; /* Light Blue */
+    --text-primary: #000000 !important;
+    --text-secondary: #000033 !important; /* Dark Blue */
+    --primary: #000033 !important;
+    --accent: #000000 !important;
+    --glass-border: #000033 !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-day h1, 
+body.theme-day .header-title,
+body.theme-day .hero-title,
+body.theme-day .logo-text,
+body.theme-day .nav-logo,
+body.theme-day .system-title .os-title {
+    font-family: 'Slackey', cursive, system-ui !important;
+    color: #000000 !important;
+    text-shadow: 0 0 10px rgba(135, 206, 250, 0.8), 0 0 20px rgba(135, 206, 250, 0.5) !important;
+    background: transparent !important;
+    -webkit-text-fill-color: initial !important;
+}
+
+
+body.theme-day .card, 
+body.theme-day .intro-card,
+body.theme-day .tool-card,
+body.theme-day .instruction-panel,
+body.theme-day .phase-card,
+body.theme-day .ehr-input-panel,
+body.theme-day .lss-intro-box,
+body.theme-day .matrix-wrapper {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 51, 0.1) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 51, 0.05) !important;
+    color: #1e293b !important;
+    padding: 45px !important;
+    margin-bottom: 30px !important;
+    border-radius: 16px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+
+/* Ensure text on light cards is always dark */
+body.theme-day .card *, 
+body.theme-day .intro-card *,
+body.theme-day .tool-card * {
+    color: #000000 !important;
+}
+
+body.theme-day p, 
+body.theme-day span, 
+body.theme-day div {
+    /* Pure Black/Deep Blue contrast only */
+    color: inherit;
+    line-height: 1.7 !important;
+}
+
+body.theme-day .btn-ghost {
+    background: #ffffff !important;
+    color: #000033 !important;
+    border: 1px solid rgba(0, 0, 51, 0.4) !important;
+    padding: 14px 28px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    border-radius: 6px !important;
+}
+
+body.theme-day h1 { font-size: 32px; font-weight: 800; color: #1e293b; margin-bottom: 25px; }
+body.theme-day h2 { font-size: 24px; font-weight: 700; color: #334155; margin-bottom: 20px; line-height: 1.3; }
+body.theme-day h3 { font-size: 18px; font-weight: 700; color: #475569; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Global Contrast Guard (Day Mode) */
+body.theme-day * {
+    border-color: rgba(0, 0, 51, 0.1) !important;
+}
+
+body.theme-day p, 
+body.theme-day li,
+body.theme-day span:not(.hub-quadrant span), 
+body.theme-day div:not(.hub-quadrant div) {
+    color: #1e293b !important;
+    line-height: 1.7 !important;
+}
+
+
+/* Status colors in Day Mode (High Contrast) */
+body.theme-day .status-success, body.theme-day .badge-success { background: #065f46 !important; color: white !important; }
+body.theme-day .status-warning, body.theme-day .badge-warning { background: #92400e !important; color: white !important; }
+body.theme-day .status-error, body.theme-day .badge-error { background: #991b1b !important; color: white !important; }
+
+/* ARCHITECTURE INTELLIGENCE & INFO POPUPS (Day Mode Polish) */
+body.theme-day [id*="Help"],
+body.theme-day [class*="modal"],
+body.theme-day [class*="panel"],
+body.theme-day [class*="overlay"],
+body.theme-day .ai-panel,
+body.theme-day .sensei-modal {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border: 1px solid rgba(0, 0, 51, 0.1) !important;
+    box-shadow: 0 30px 100px rgba(0, 0, 51, 0.15) !important;
+    border-radius: 16px !important;
+}
+
+body.theme-day [id*="Help"] *,
+body.theme-day [class*="modal"] *,
+body.theme-day [class*="panel"] *,
+body.theme-day [class*="overlay"] * {
+    color: #1e293b !important;
+}
+
+body.theme-day .architecture-intelligence-btn {
+    background: #ffffff !important;
+    color: #000033 !important;
+    border: 1px solid rgba(0, 0, 51, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 51, 0.08) !important;
+    padding: 12px 24px !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    transition: all 0.2s ease !important;
+}
+
+body.theme-day .architecture-intelligence-btn:hover {
+    background: #eff6ff !important;
+    border-color: #2563eb !important;
+    transform: translateY(-2px);
+}
+
+
+
+/* NIGHT MODE: Futuristic Neon Logic */
+body.theme-night {
+    --bg-dark: #0a0f1a !important;
+    --surface-1: #111a2e !important;
+    --surface-2: #16223b !important;
+    --text-primary: #ffffff !important;
+    --accent: #f59e0b !important;
+    background-color: #0a0f1a !important;
+    background-image: linear-gradient(rgba(245, 158, 11, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 158, 11, 0.1) 1px, transparent 1px) !important;
+    background-size: 40px 40px !important;
+}
+
+body.theme-night h1, 
+body.theme-night .header-title {
+    font-family: 'Orbitron', sans-serif !important;
+    color: #ffffff !important;
+    text-shadow: 0 0 20px #f59e0b !important;
+}
+
+body.theme-night .card {
+    border: 1px solid #f59e0b !important;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3) !important;
+    padding: 35px !important; /* Consistent padding */
+    background: rgba(10, 15, 26, 0.95) !important;
+}
+
+body.theme-night p {
+    color: #cbd5e1 !important;
+    line-height: 1.8 !important;
+}
+
+/* STAKEHOLDER ANALYSIS & HERO SECTION OVERRIDES */
+body.theme-day .hero {
+    background: #ffffff !important;
+    border-bottom: 1px solid rgba(0, 0, 51, 0.08) !important;
+    color: #1e293b !important;
+}
+
+
+body.theme-day .hero p {
+    color: #000033 !important;
+    font-weight: 600 !important;
+}
+
+body.theme-day .lss-intro-box {
+    background: #eff6ff !important;
+    border: 1px solid rgba(0, 0, 51, 0.25) !important;
+    border-radius: 8px !important;
+    padding: 45px !important;
+}
+
+/* Force dark text for intro box and its children */
+body.theme-day .lss-intro-box p, 
+body.theme-day .lss-intro-box strong,
+body.theme-day .lss-intro-box div {
+    color: #000000 !important;
+}
+
+/* Stakeholder Roster / Table Panel */
+body.theme-day .ehr-findings-panel div[style*="background:#1e293b"] {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 51, 0.25) !important;
+    color: #000000 !important;
+}
+
+
+body.theme-day .ehr-input-panel {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 51, 0.25) !important;
+    color: #000000 !important;
+    padding: 45px !important;
+}
+
+
+body.theme-day .clinical-input, 
+body.theme-day select {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 51, 0.3) !important;
+    color: #000000 !important;
+    padding: 12px 16px !important;
+}
+
+body.theme-day .clinical-label {
+    color: #000033 !important;
+    font-weight: 800 !important;
+}
+
+/* Button Improvements */
+body.theme-day .lss-intro-box button {
+    background: #000033 !important;
+    color: #ffffff !important;
+    border: 2px solid #000000 !important;
+    font-weight: 800 !important;
+}
+
+/* Matrix Wrapper */
+body.theme-day .matrix-wrapper {
+    background: #ffffff !important;
+    border: 3px solid #000033 !important;
+}
+
+body.theme-day .canvas-overlay-label {
+    opacity: 1 !important;
+    font-weight: 900 !important;
+}
+
+body.theme-day .canvas-overlay-label[style*="color:#f59e0b"] { color: #92400e !important; } /* Darker Orange/Gold */
+body.theme-day .canvas-overlay-label[style*="color:#ef4444"] { color: #991b1b !important; } /* Darker Red */
+body.theme-day .canvas-overlay-label[style*="color:#94a3b8"] { color: #1e293b !important; } /* Darker Blue/Slate */
+body.theme-day .canvas-overlay-label[style*="color:#3b82f6"] { color: #1e3a8a !important; } /* Darker Blue */
+
+
+/* Final cleanup for 'Why this tool exists' inline color */
+body.theme-day p[style*="color:#cbd5e1"],
+body.theme-day span[style*="color:#cbd5e1"],
+body.theme-day div[style*="color:#cbd5e1"] {
+    color: #000000 !important;
+}
+
+body.theme-day td {
+    color: #000000 !important;
+    font-weight: 500 !important;
+}
+
+body.theme-day .strategy-tag {
+    font-weight: 900 !important;
+    padding: 6px 12px !important;
+}
+
+/* Specific Strategy Color Inversions for Day Mode */
+body.theme-day .strategy-tag[style*="color:#ef4444"] { background: #fee2e2 !important; color: #991b1b !important; border-color: #991b1b !important; }
+body.theme-day .strategy-tag[style*="color:#f59e0b"] { background: #fef3c7 !important; color: #92400e !important; border-color: #92400e !important; }
+body.theme-day .strategy-tag[style*="color:#3b82f6"] { background: #dbeafe !important; color: #1e3a8a !important; border-color: #1e3a8a !important; }
+body.theme-day .strategy-tag[style*="color:#94a3b8"] { background: #f1f5f9 !important; color: #1e293b !important; border-color: #1e293b !important; }
+
+/* DAY MODE BUTTONS - Modern Elegant Suite */
+body.theme-day button, 
+body.theme-day .btn,
+body.theme-day .action-btn,
+body.theme-day .btn-primary {
+    background: #000033 !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 700 !important;
+    padding: 14px 28px !important;
+    border-radius: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 51, 0.1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+body.theme-day button:hover {
+    background: #1e3a8a !important;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0, 0, 51, 0.15) !important;
+}
+
+
+
+/* Secondary Buttons */
+body.theme-day .btn-secondary, 
+body.theme-day button[style*="background:#334155"] {
+    background: #ffffff !important;
+    color: #000033 !important;
+    border: 1px solid rgba(0, 0, 51, 0.2) !important;
+}
+
+
+/* Checkboxes & Labels */
+body.theme-day label,
+body.theme-day .checkbox-label {
+    color: #000000 !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+}
+
+/* ZOOM CONTROLS (Universal) */
+body.theme-day .zoom-controls,
+body.theme-day .zoom-bar,
+body.theme-day .zoom-panel {
+    background: #ffffff !important;
+    border: 3px solid #000033 !important;
+    box-shadow: 6px 6px 0px rgba(0,0,33,0.1) !important;
+    padding: 10px !important;
+}
+
+body.theme-day .zoom-btn,
+body.theme-day .zoom-control button {
+    background: #000033 !important;
+    color: #ffffff !important;
+    border: 1px solid #000000 !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 4px !important;
+}
+
+/* SENSEI MBB CONTROL DOCK ICON FIX */
+body.theme-day .dock-tool {
+    font-size: 24px !important;
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 1px #000) !important;
+    color: #000000 !important;
+}
+
+body.theme-day .dock-tool:hover {
+    background: #dbeafe !important;
+}
+
+/* Input Fields Visibility */
+body.theme-day input[type="text"],
+body.theme-day textarea {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #000033 !important;
+}
+
+
+
 
 /* 🚀 UNIVERSAL NEON GLASS SCROLLBAR (Aggressive Enforcement) */
 *::-webkit-scrollbar {
@@ -434,3 +1025,28 @@
     font-size: 10px;
     color: var(--text-secondary);
 }
+
+/* Day Mode Tables/Cells padded with subtle modern borders */
+body.theme-day table td,
+body.theme-day table th,
+body.theme-day .dataTable td,
+body.theme-day .dataTable th,
+body.theme-day .data-table td,
+body.theme-day .data-table th,
+body.theme-day .styled-table td,
+body.theme-day .styled-table th,
+body.theme-day .grid-cell {
+    padding: 16px 20px !important;
+    border: 1px solid rgba(0, 0, 51, 0.15) !important;
+    color: #000000 !important;
+}
+
+body.theme-day table th,
+body.theme-day .dataTable th,
+body.theme-day .data-table th,
+body.theme-day .styled-table th {
+    background-color: #eff6ff !important;
+    font-weight: 800 !important;
+    color: #000033 !important;
+    border-bottom: 2px solid rgba(0, 0, 51, 0.4) !important;
+}
