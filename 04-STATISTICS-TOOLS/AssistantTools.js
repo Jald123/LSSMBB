@@ -10,14 +10,32 @@
         CanvasRenderingContext2D.prototype.fillText = function(text, x, y, maxWidth) {
             if (document.body.classList.contains('theme-day')) {
                 const fs = this.fillStyle.toString().toLowerCase();
-                // If the color is white or nearly white, force it to black
+                // If the color is white or nearly white (Light BG Text), force it to #1A1917 (Dark Text)
                 if (fs === '#ffffff' || fs === 'white' || fs.includes('rgba(255, 255, 255') || fs.includes('rgb(255, 255, 255')) {
-                    this.fillStyle = '#000000';
+                    this.fillStyle = '#1A1917';
                 }
             }
             return originalFillText.apply(this, arguments);
         };
+
+        const originalStroke = CanvasRenderingContext2D.prototype.stroke;
+        CanvasRenderingContext2D.prototype.stroke = function() {
+            if (document.body.classList.contains('theme-day')) {
+                const ss = this.strokeStyle.toString().toLowerCase();
+                // If color is default black or dark (for lines on Light BG), force to custom #1A1917
+                if (ss === '#000000' || ss === 'black' || ss.includes('rgb(0, 0, 0)')) {
+                    this.strokeStyle = '#1A1917';
+                }
+                // Specifically for chart gridlines or axes that should be Dark Blue/Navy on Light BG
+                if (ss.includes('rgba(0, 0, 51') || ss === '#000033') {
+                    this.strokeStyle = '#000033'; 
+                }
+            }
+            return originalStroke.apply(this, arguments);
+        };
     })();
+
+
 
     // 0. SELF-INJECTION (CSS)
     const link = document.createElement('link');
@@ -817,7 +835,33 @@
         document.body.classList.remove('theme-day', 'theme-night');
         localStorage.setItem('lss_theme_mode', theme);
         
+        // Chart.js Global Contrast Overrides
+        if (typeof Chart !== 'undefined') {
+            const isDay = theme === 'day';
+            const isNight = theme === 'night';
+            
+            Chart.defaults.color = isDay ? '#1A1917' : (isNight ? '#ffffff' : '#cbd5e1');
+            Chart.defaults.font.family = isDay ? "'Plus Jakarta Sans'" : Chart.defaults.font.family;
+            Chart.defaults.font.weight = isDay ? '500' : 'normal';
+            
+            if (Chart.defaults.scale) {
+                Chart.defaults.scale.grid.color = isDay ? 'rgba(26,25,23,0.06)' : (isNight ? 'rgba(245,158,11,0.1)' : 'rgba(255,255,255,0.05)');
+            }
+
+            
+            // Re-render any active chart instances if they are exposed
+            document.querySelectorAll('canvas').forEach(canvas => {
+                const chart = Chart.getChart(canvas);
+                if (chart) {
+                    chart.options.scales.x.ticks.color = Chart.defaults.color;
+                    chart.options.scales.y.ticks.color = Chart.defaults.color;
+                    chart.update();
+                }
+            });
+        }
+
         const introTitle = document.querySelector('.lss-intro-title');
+
         const introText = document.querySelector('.lss-intro-text');
 
         if (theme === 'day') {

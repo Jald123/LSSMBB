@@ -1,21 +1,55 @@
-/* Assistant Tools - Twilight Horizon Design System */
-@import url('https://fonts.googleapis.com/css2?family=Slackey&family=Orbitron:wght@400;700;900&family=Inter:wght@400;700&display=swap');
+/* ═══════════════════════════════════════════════
+   WARM MINIMALIST DESIGN SYSTEM (Day Mode Only)
+   ═══════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-/* NEXUS OS Specific Day Mode Overrides - Modern Professional Alignment */
-body.theme-day {
-    --nexus-navy: #ffffff !important;
-    --nexus-surface: #ffffff !important;
-    --nexus-text-primary: #1e293b !important; /* Deep Slate */
-    --nexus-text-secondary: #475569 !important; /* Muted Slate */
-    --nexus-border: rgba(0, 0, 51, 0.1) !important;
-    --nexus-card: #ffffff !important;
-    --nexus-glass: #ffffff !important;
-    --card-padding: 45px !important;
-    --card-radius: 12px !important;
+body.theme-universal {
+    /* Color Palette */
+    --bg-base:        #FFFEFB;
+    --bg-surface:     #F5F4F1;
+    --bg-surface-2:   #EDEAE5;
+    --bg-offset:      #E6E4DF;
+
+    --text-primary:   #1A1917;
+    --text-muted:     #6B6A68;
+    --text-faint:     #BABABF;
+    --text-inverse:   #FFFEFB;
+
+    --accent:         #FF4D4D; /* Electric Coral */
+    --accent-hover:   #E03A3A;
+    --accent-tint:    #FFE5E5;
+    --accent-border:  #FFBDBD;
+
+    --border:         rgba(26,25,23,0.10);
+    --border-focus:   #FF4D4D;
+    --divider:        #DCDBD7;
+
+    /* Shadows */
+    --shadow-sm:      0 1px 2px rgba(26,25,23,0.06);
+    --shadow-md:      0 4px 12px rgba(26,25,23,0.08);
+    --shadow-lg:      0 12px 32px rgba(26,25,23,0.12);
+
+    /* Legacy Maping */
+    --nexus-navy: var(--bg-surface) !important;
+    --nexus-surface: var(--bg-surface) !important;
+    --nexus-text-primary: var(--text-primary) !important;
+    --nexus-text-secondary: var(--text-muted) !important;
+    --nexus-border: var(--border) !important;
+    
+    background-color: var(--bg-base) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
+
+body.theme-universal {
+    background: radial-gradient(circle at top left, #f1f5f9, #ffffff) !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+
 /* SENSEI MBB CONTROL DOCK (Floating Assistant) */
-body.theme-day #assistant-dock {
+body.theme-universal #assistant-dock {
     background: #ffffff !important;
     border: 1px solid rgba(0, 0, 51, 0.1) !important;
     box-shadow: 0 10px 40px rgba(0, 0, 51, 0.08) !important;
@@ -23,7 +57,7 @@ body.theme-day #assistant-dock {
     border-radius: 50px !important;
 }
 
-body.theme-day .assistant-window {
+body.theme-universal .assistant-window {
     background: #ffffff !important;
     border: 1px solid rgba(0, 0, 51, 0.08) !important;
     box-shadow: 0 30px 100px rgba(0, 0, 51, 0.1) !important;
@@ -34,30 +68,30 @@ body.theme-day .assistant-window {
 
 
 /* LEAN WORKSHOP & SIPOC SPECIFICS */
-body.theme-day .main-stage, 
-body.theme-day .app-grid {
+body.theme-universal .main-stage, 
+body.theme-universal .app-grid {
     background: #ffffff !important;
     color: #000000 !important;
 }
 
-body.theme-day .sidebar {
+body.theme-universal .sidebar {
     background: #f8fbff !important;
     border-right: 1px solid rgba(0, 0, 51, 0.08) !important;
 }
 
 
-body.theme-day .tool-btn {
+body.theme-universal .tool-btn {
     color: #000033 !important;
     font-weight: 600 !important;
 }
 
-body.theme-day .tool-btn.active {
+body.theme-universal .tool-btn.active {
     background: #dbeafe !important;
     color: #000000 !important;
     border-left: 5px solid #000033 !important;
 }
 
-body.theme-day .zoom-controls {
+body.theme-universal .zoom-controls {
     background: #ffffff !important;
     border: 1px solid rgba(0, 0, 51, 0.1) !important;
     box-shadow: 0 4px 15px rgba(0, 0, 51, 0.05) !important;
@@ -65,39 +99,54 @@ body.theme-day .zoom-controls {
 }
 
 
-body.theme-day .zoom-value {
+body.theme-universal .zoom-value {
     color: #000000 !important;
     font-weight: 800 !important;
 }
 
-body.theme-day .zoom-btn {
+body.theme-universal .zoom-btn {
     background: #000033 !important;
     color: #ffffff !important;
     border: none !important;
 }
 
 /* Force Checkbox Text Visibility */
-body.theme-day label[for="pref-save"],
-body.theme-day #inputFormContainer label {
+body.theme-universal label[for="pref-save"],
+body.theme-universal #inputFormContainer label {
     color: #000000 !important;
     font-weight: 700 !important;
 }
 
 /* Visual Template Header */
-body.theme-day .visual-card-wrapper h3 {
+body.theme-universal .visual-card-wrapper h3 {
     color: #000000 !important;
     font-weight: 900 !important;
 }
 
-/* SWIMLANE & FLOWCHART SPECIFICS */
-body.theme-day .lane-label-box {
+/* Circular Numbered Index Pills (Data Rows) */
+body.theme-universal .index-pill,
+body.theme-universal .row-number {
+    background: #eff6ff !important;
+    color: var(--primary-azure) !important;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 8px;
+}
+
+body.theme-universal .lane-label-box {
     background: #ffffff !important;
     color: #000000 !important;
     border: 1px solid rgba(0, 0, 51, 0.1) !important;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.03) !important;
 }
 
-body.theme-day .palette-item {
+body.theme-universal .palette-item {
     background: #ffffff !important;
     color: #000000 !important;
     border: 1px solid rgba(0, 0, 51, 0.1) !important;
@@ -106,29 +155,29 @@ body.theme-day .palette-item {
 }
 
 
-body.theme-day .palette-item i {
+body.theme-universal .palette-item i {
     color: #000033 !important;
     opacity: 1 !important;
 }
 
-body.theme-day .palette-item:hover {
+body.theme-universal .palette-item:hover {
     background: #dbeafe !important;
     border-color: #000000 !important;
 }
 
 /* Lane Manager & Sidebar Controls */
-body.theme-day .lane-control,
-body.theme-day .section-title {
+body.theme-universal .lane-control,
+body.theme-universal .section-title {
     color: #000000 !important;
     font-weight: 900 !important;
 }
 
 /* Canvas Viewport in Day Mode */
-body.theme-day .canvas-viewport {
+body.theme-universal .canvas-viewport {
     background: #f1f5f9 !important;
 }
 
-body.theme-day .pool-surface {
+body.theme-universal .pool-surface {
     background: #ffffff !important;
     border: 1px solid rgba(0, 0, 51, 0.1) !important;
     box-shadow: 0 10px 30px rgba(0, 0, 51, 0.03) !important;
@@ -136,7 +185,7 @@ body.theme-day .pool-surface {
 
 
 /* Shape Logic (YES/NO) */
-body.theme-day .shape-logic {
+body.theme-universal .shape-logic {
     background: #ffffff !important;
     color: #1e293b !important;
     border: 1px solid rgba(0, 0, 51, 0.15) !important;
@@ -144,91 +193,95 @@ body.theme-day .shape-logic {
 }
 
 
-body.theme-day .shape-logic[style*="#10b981"] { background: #dcfce7 !important; color: #166534 !important; border-color: #166534 !important; }
-body.theme-day .shape-logic[style*="#ef4444"] { background: #fee2e2 !important; color: #991b1b !important; border-color: #991b1b !important; }
+body.theme-universal .shape-logic[style*="#10b981"] { background: #dcfce7 !important; color: #166534 !important; border-color: #166534 !important; }
+body.theme-universal .shape-logic[style*="#ef4444"] { background: #fee2e2 !important; color: #991b1b !important; border-color: #991b1b !important; }
 
 
-body.theme-day .window-header {
+body.theme-universal .window-header {
     background: #f8fbff !important;
     color: #1e293b !important;
     border-bottom: 1px solid rgba(0, 0, 51, 0.08) !important;
 }
 
 
-body.theme-day .calc-display {
+body.theme-universal .calc-display {
     background: #000033 !important;
     color: #ffffff !important;
 }
 
-body.theme-day .calc-btn.num { background: #ffffff !important; color: #000000 !important; border: 1px solid #000033 !important; }
-body.theme-day .calc-btn.op { background: #000033 !important; color: #ffffff !important; }
+body.theme-universal .calc-btn.num { background: #ffffff !important; color: #000000 !important; border: 1px solid #000033 !important; }
+body.theme-universal .calc-btn.op { background: #000033 !important; color: #ffffff !important; }
 
-body.theme-day #sticky-editor {
+body.theme-universal #sticky-editor {
     color: #000000 !important;
 }
 
-body.theme-day .sticky-footer-toolbar {
+body.theme-universal .sticky-footer-toolbar {
     background: #eff6ff !important;
     border-top: 1px solid #000033 !important;
 }
 
-body.theme-day .tool-btn-rich {
+body.theme-universal .tool-btn-rich {
     color: #000033 !important;
     border: 1px solid #000033 !important;
 }
 
 
-body.theme-day .nexus-sidebar {
+body.theme-universal .nexus-sidebar {
     background: #ffffff !important;
     border-right: 3px solid #000033 !important;
 }
 
-body.theme-day .nav-item {
+body.theme-universal .nav-item {
     color: #444 !important;
 }
 
-body.theme-day .nav-item:hover, body.theme-day .nav-item.active {
-    color: #000033 !important;
-    background: #dbeafe !important;
+body.theme-universal .nav-item:hover, 
+body.theme-universal .nav-item.active,
+body.theme-universal .tool-btn.active {
+    color: #ffffff !important;
+    background: var(--primary-azure) !important;
+    border-radius: 8px !important;
 }
 
-body.theme-day .nexus-header {
+
+body.theme-universal .nexus-header {
     background: #ffffff !important;
     border-bottom: 3px solid #000033 !important;
 }
 
-body.theme-day .hero-gradient-text {
+body.theme-universal .hero-gradient-text {
     -webkit-text-fill-color: #000000 !important;
     background: none !important;
 }
 
-body.theme-day .methodology-engine {
+body.theme-universal .methodology-engine {
     background: #ffffff !important;
     border: 3px solid #000000 !important;
 }
 
-body.theme-day .method-tab {
+body.theme-universal .method-tab {
     color: #000000 !important;
 }
 
-body.theme-day .nav-logo {
+body.theme-universal .nav-logo {
     font-family: 'Slackey', cursive, system-ui !important;
     color: #000000 !important;
 }
 
 
-body.theme-day .phase-glow {
-    color: #000000 !important;
+body.theme-universal .phase-glow {
+    color: inherit !important;
     font-weight: 800 !important;
     opacity: 1 !important;
 }
 
-body.theme-day .app-nav-bar {
+body.theme-universal .app-nav-bar {
     background: #ffffff !important;
     border-bottom: 3px solid #000033 !important;
 }
 
-body.theme-day .nav-link {
+body.theme-universal .nav-link {
     color: #000000 !important;
     font-weight: 600 !important;
 }
@@ -236,7 +289,7 @@ body.theme-day .nav-link {
 
 /* DAY MODE: Corporate Tech + User Constraints */
 /* NO GREY ALLOWED. Only Black and Dark Blue transitions. */
-body.theme-day {
+body.theme-universal {
     --bg-dark: #ffffff !important;
     --bg-primary: #ffffff !important;
     --surface-1: #ffffff !important;
@@ -250,58 +303,105 @@ body.theme-day {
     background-color: #ffffff !important;
 }
 
-body.theme-day h1, 
-body.theme-day .header-title,
-body.theme-day .hero-title,
-body.theme-day .logo-text,
-body.theme-day .nav-logo,
-body.theme-day .system-title .os-title {
-    font-family: 'Slackey', cursive, system-ui !important;
-    color: #000000 !important;
-    text-shadow: 0 0 10px rgba(135, 206, 250, 0.8), 0 0 20px rgba(135, 206, 250, 0.5) !important;
-    background: transparent !important;
+/* Typography System */
+body.theme-universal h1, 
+body.theme-universal .header-title,
+body.theme-universal .hero-title,
+body.theme-universal .logo-text,
+body.theme-universal .nav-logo {
+    font-family: 'Space Grotesk', sans-serif !important;
+    color: var(--text-primary) !important;
+    font-size: var(--text-2xl) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.2 !important;
+    text-shadow: none !important;
+    background: none !important;
     -webkit-text-fill-color: initial !important;
+    margin-bottom: 24px;
+}
+
+body.theme-universal h2 {
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: var(--text-xl) !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+    line-height: 1.2 !important;
+    margin-bottom: 16px;
+}
+
+body.theme-universal h3 {
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: var(--text-lg) !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    line-height: 1.2 !important;
+    margin-bottom: 12px;
 }
 
 
-body.theme-day .card, 
-body.theme-day .intro-card,
-body.theme-day .tool-card,
-body.theme-day .instruction-panel,
-body.theme-day .phase-card,
-body.theme-day .ehr-input-panel,
-body.theme-day .lss-intro-box,
-body.theme-day .matrix-wrapper {
-    background: #ffffff !important;
-    border: 1px solid rgba(0, 0, 51, 0.1) !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 51, 0.05) !important;
-    color: #1e293b !important;
-    padding: 45px !important;
-    margin-bottom: 30px !important;
-    border-radius: 16px !important;
+
+body.theme-universal .card, 
+body.theme-universal .intro-card,
+body.theme-universal .tool-card,
+body.theme-universal .instruction-panel,
+body.theme-universal .phase-card,
+body.theme-universal .ehr-input-panel,
+body.theme-universal .lss-intro-box,
+body.theme-universal .matrix-wrapper {
+    background: var(--bg-base) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: var(--shadow-sm) !important;
+    color: var(--text-primary) !important;
+    padding: 20px 24px !important;
+    margin-bottom: 24px !important;
+    border-radius: 12px !important;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+    max-width: 100% !important;
+}
+
+body.theme-universal .card:hover {
+    box-shadow: var(--shadow-md) !important;
+    border-color: rgba(26,25,23,0.18) !important;
+}
+
+body.theme-universal .card-header {
+    border-bottom: 1px solid var(--border);
+    margin: -20px -24px 16px -24px;
+    padding: 16px 24px;
 }
 
 
 
-/* Ensure text on light cards is always dark */
-body.theme-day .card *, 
-body.theme-day .intro-card *,
-body.theme-day .tool-card * {
-    color: #000000 !important;
+
+
+body.theme-universal p,
+body.theme-universal .body-text,
+body.theme-universal li {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: var(--text-base) !important;
+    color: var(--text-primary) !important;
+    line-height: 1.55 !important;
+    max-width: 65ch;
+    margin-bottom: 16px;
 }
 
-body.theme-day p, 
-body.theme-day span, 
-body.theme-day div {
-    /* Pure Black/Deep Blue contrast only */
-    color: inherit;
-    line-height: 1.7 !important;
+body.theme-universal .text-muted {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: var(--text-sm) !important;
+    color: var(--text-muted) !important;
 }
 
-body.theme-day .btn-ghost {
+body.theme-universal .text-xs {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: var(--text-xs) !important;
+    color: var(--text-muted) !important;
+}
+
+
+body.theme-universal .btn-ghost {
     background: #ffffff !important;
     color: #000033 !important;
     border: 1px solid rgba(0, 0, 51, 0.4) !important;
@@ -312,36 +412,59 @@ body.theme-day .btn-ghost {
     border-radius: 6px !important;
 }
 
-body.theme-day h1 { font-size: 32px; font-weight: 800; color: #1e293b; margin-bottom: 25px; }
-body.theme-day h2 { font-size: 24px; font-weight: 700; color: #334155; margin-bottom: 20px; line-height: 1.3; }
-body.theme-day h3 { font-size: 18px; font-weight: 700; color: #475569; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+body.theme-universal h1,
+body.theme-universal .page-title,
+body.theme-universal .impact-title { 
+    font-size: 48px !important; 
+    font-weight: 900 !important; 
+    color: #000000 !important; 
+    margin-bottom: 25px; 
+    letter-spacing: -1.5px !important;
+    line-height: 1 !important;
+}
+
+body.theme-universal h2 { 
+    font-size: 24px; 
+    font-weight: 700; 
+    color: #0f172a; 
+    margin-bottom: 20px; 
+    line-height: 1.3; 
+}
+
+body.theme-universal h3 { 
+    font-size: 16px; 
+    font-weight: 600; 
+    color: #64748b; /* Card Heading spec: Medium Slate */
+    margin-bottom: 15px; 
+}
+
 
 /* Global Contrast Guard (Day Mode) */
-body.theme-day * {
+body.theme-universal * {
     border-color: rgba(0, 0, 51, 0.1) !important;
 }
 
-body.theme-day p, 
-body.theme-day li,
-body.theme-day span:not(.hub-quadrant span), 
-body.theme-day div:not(.hub-quadrant div) {
+body.theme-universal p, 
+body.theme-universal li,
+body.theme-universal span:not(.hub-quadrant span), 
+body.theme-universal div:not(.hub-quadrant div) {
     color: #1e293b !important;
     line-height: 1.7 !important;
 }
 
 
 /* Status colors in Day Mode (High Contrast) */
-body.theme-day .status-success, body.theme-day .badge-success { background: #065f46 !important; color: white !important; }
-body.theme-day .status-warning, body.theme-day .badge-warning { background: #92400e !important; color: white !important; }
-body.theme-day .status-error, body.theme-day .badge-error { background: #991b1b !important; color: white !important; }
+body.theme-universal .status-success, body.theme-universal .badge-success { background: #065f46 !important; color: white !important; }
+body.theme-universal .status-warning, body.theme-universal .badge-warning { background: #92400e !important; color: white !important; }
+body.theme-universal .status-error, body.theme-universal .badge-error { background: #991b1b !important; color: white !important; }
 
 /* ARCHITECTURE INTELLIGENCE & INFO POPUPS (Day Mode Polish) */
-body.theme-day [id*="Help"],
-body.theme-day [class*="modal"],
-body.theme-day [class*="panel"],
-body.theme-day [class*="overlay"],
-body.theme-day .ai-panel,
-body.theme-day .sensei-modal {
+body.theme-universal [id*="Help"],
+body.theme-universal [class*="modal"],
+body.theme-universal [class*="panel"],
+body.theme-universal [class*="overlay"],
+body.theme-universal .ai-panel,
+body.theme-universal .sensei-modal {
     background: #ffffff !important;
     color: #1e293b !important;
     border: 1px solid rgba(0, 0, 51, 0.1) !important;
@@ -349,29 +472,32 @@ body.theme-day .sensei-modal {
     border-radius: 16px !important;
 }
 
-body.theme-day [id*="Help"] *,
-body.theme-day [class*="modal"] *,
-body.theme-day [class*="panel"] *,
-body.theme-day [class*="overlay"] * {
+body.theme-universal [id*="Help"] *,
+body.theme-universal [class*="modal"] *,
+body.theme-universal [class*="panel"] *,
+body.theme-universal [class*="overlay"] * {
     color: #1e293b !important;
 }
 
-body.theme-day .architecture-intelligence-btn {
-    background: #ffffff !important;
-    color: #000033 !important;
-    border: 1px solid rgba(0, 0, 51, 0.2) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 51, 0.08) !important;
-    padding: 12px 24px !important;
+body.theme-universal .architecture-intelligence-btn {
+    background: var(--bg-surface) !important;
+    color: #1A1917 !important;
+    border: 1.5px solid var(--accent) !important;
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.2) !important;
+    padding: 10px 20px !important;
     font-weight: 700 !important;
-    border-radius: 12px !important;
+    border-radius: 50px !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    text-shadow: 0 0 8px rgba(0, 0, 51, 0.3) !important; /* Gowing font */
     transition: all 0.2s ease !important;
 }
 
-body.theme-day .architecture-intelligence-btn:hover {
-    background: #eff6ff !important;
-    border-color: #2563eb !important;
+body.theme-universal .architecture-intelligence-btn:hover {
+    background: var(--accent-tint) !important;
     transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.3) !important;
 }
+
 
 
 
@@ -407,19 +533,19 @@ body.theme-night p {
 }
 
 /* STAKEHOLDER ANALYSIS & HERO SECTION OVERRIDES */
-body.theme-day .hero {
+body.theme-universal .hero {
     background: #ffffff !important;
     border-bottom: 1px solid rgba(0, 0, 51, 0.08) !important;
     color: #1e293b !important;
 }
 
 
-body.theme-day .hero p {
+body.theme-universal .hero p {
     color: #000033 !important;
     font-weight: 600 !important;
 }
 
-body.theme-day .lss-intro-box {
+body.theme-universal .lss-intro-box {
     background: #eff6ff !important;
     border: 1px solid rgba(0, 0, 51, 0.25) !important;
     border-radius: 8px !important;
@@ -427,21 +553,21 @@ body.theme-day .lss-intro-box {
 }
 
 /* Force dark text for intro box and its children */
-body.theme-day .lss-intro-box p, 
-body.theme-day .lss-intro-box strong,
-body.theme-day .lss-intro-box div {
+body.theme-universal .lss-intro-box p, 
+body.theme-universal .lss-intro-box strong,
+body.theme-universal .lss-intro-box div {
     color: #000000 !important;
 }
 
 /* Stakeholder Roster / Table Panel */
-body.theme-day .ehr-findings-panel div[style*="background:#1e293b"] {
+body.theme-universal .ehr-findings-panel div[style*="background:#1e293b"] {
     background: #ffffff !important;
     border: 1px solid rgba(0, 0, 51, 0.25) !important;
     color: #000000 !important;
 }
 
 
-body.theme-day .ehr-input-panel {
+body.theme-universal .ehr-input-panel {
     background: #ffffff !important;
     border: 1px solid rgba(0, 0, 51, 0.25) !important;
     color: #000000 !important;
@@ -449,21 +575,32 @@ body.theme-day .ehr-input-panel {
 }
 
 
-body.theme-day .clinical-input, 
-body.theme-day select {
-    background: #ffffff !important;
-    border: 1px solid rgba(0, 0, 51, 0.3) !important;
-    color: #000000 !important;
+body.theme-universal .clinical-input, 
+body.theme-universal input:not([type="checkbox"]),
+body.theme-universal textarea,
+body.theme-universal select {
+    background: transparent !important; /* GHOST STYLE */
+    border: 1px solid rgba(0, 0, 51, 0.1) !important;
+    color: #0f172a !important;
     padding: 12px 16px !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease;
 }
 
-body.theme-day .clinical-label {
+body.theme-universal input:focus, 
+body.theme-universal textarea:focus {
+    border-color: var(--primary-azure) !important;
+    background: #f8fbff !important;
+}
+
+
+body.theme-universal .clinical-label {
     color: #000033 !important;
     font-weight: 800 !important;
 }
 
 /* Button Improvements */
-body.theme-day .lss-intro-box button {
+body.theme-universal .lss-intro-box button {
     background: #000033 !important;
     color: #ffffff !important;
     border: 2px solid #000000 !important;
@@ -471,74 +608,241 @@ body.theme-day .lss-intro-box button {
 }
 
 /* Matrix Wrapper */
-body.theme-day .matrix-wrapper {
+body.theme-universal .matrix-wrapper {
     background: #ffffff !important;
     border: 3px solid #000033 !important;
 }
 
-body.theme-day .canvas-overlay-label {
+body.theme-universal .canvas-overlay-label {
     opacity: 1 !important;
     font-weight: 900 !important;
 }
 
-body.theme-day .canvas-overlay-label[style*="color:#f59e0b"] { color: #92400e !important; } /* Darker Orange/Gold */
-body.theme-day .canvas-overlay-label[style*="color:#ef4444"] { color: #991b1b !important; } /* Darker Red */
-body.theme-day .canvas-overlay-label[style*="color:#94a3b8"] { color: #1e293b !important; } /* Darker Blue/Slate */
-body.theme-day .canvas-overlay-label[style*="color:#3b82f6"] { color: #1e3a8a !important; } /* Darker Blue */
+body.theme-universal .canvas-overlay-label[style*="color:#f59e0b"] { color: #92400e !important; } /* Darker Orange/Gold */
+body.theme-universal .canvas-overlay-label[style*="color:#ef4444"] { color: #991b1b !important; } /* Darker Red */
+body.theme-universal .canvas-overlay-label[style*="color:#94a3b8"] { color: #1e293b !important; } /* Darker Blue/Slate */
+body.theme-universal .canvas-overlay-label[style*="color:#3b82f6"] { color: #1e3a8a !important; } /* Darker Blue */
 
 
-/* Final cleanup for 'Why this tool exists' inline color */
-body.theme-day p[style*="color:#cbd5e1"],
-body.theme-day span[style*="color:#cbd5e1"],
-body.theme-day div[style*="color:#cbd5e1"] {
-    color: #000000 !important;
+/* -------------------------------------------------------------------------- */
+/* 🔆 GLOBAL LUMINOSITY INVERSION RULE (Day Mode)                           */
+/* -------------------------------------------------------------------------- */
+body.theme-universal {
+    color-scheme: light !important;
 }
 
-body.theme-day td {
-    color: #000000 !important;
-    font-weight: 500 !important;
+/* 1. LIGHT SURFACE -> DARK TEXT (#1A1917) */
+body.theme-universal,
+body.theme-universal .card,
+body.theme-universal .intro-card,
+body.theme-universal .tool-card,
+body.theme-universal .instruction-panel,
+body.theme-universal .phase-card,
+body.theme-universal .ehr-input-panel,
+body.theme-universal .lss-intro-box,
+body.theme-universal .matrix-wrapper,
+body.theme-universal .modal-content,
+body.theme-universal .popup-content,
+body.theme-universal [class*="modal"],
+body.theme-universal [class*="panel"],
+body.theme-universal [class*="overlay"],
+body.theme-universal [class*="shortcut"],
+body.theme-universal [id*="Help"],
+body.theme-universal .nexus-header,
+body.theme-universal .app-nav-bar,
+body.theme-universal .sidebar {
+    background-color: var(--bg-base) !important;
+    color: var(--text-primary) !important;
 }
 
-body.theme-day .strategy-tag {
+/* Force text elements to inherit the container's set color to prevent inline styles from washing them out, 
+   while allowing dark containers to invert them. */
+body.theme-universal p,
+body.theme-universal h1, body.theme-universal h2, body.theme-universal h3,
+body.theme-universal h4, body.theme-universal h5, body.theme-universal h6,
+body.theme-universal td, body.theme-universal th, body.theme-universal li {
+    color: inherit !important; 
+}
+
+/* Force inline-styled elements in the sidebar to adopt dark text */
+body.theme-universal .sticky-sidebar a,
+body.theme-universal .sticky-sidebar a span {
+    color: var(--text-primary) !important;
+}
+
+/* Clean overrides for generic clickables and spans inside light sections */
+body.theme-universal .card span,
+body.theme-universal .card div,
+body.theme-universal .modal-content span,
+body.theme-universal .modal-content div,
+body.theme-universal .tool-card span,
+body.theme-universal .tool-card div,
+body.theme-universal .shortcut-card span,
+body.theme-universal .shortcut-card div,
+body.theme-universal label {
+    color: inherit;
+}
+
+/* 2. DARK SURFACE -> LIGHT TEXT (#FFFEFB) */
+body.theme-universal .tooltip,
+body.theme-universal .tooltip-inner,
+body.theme-universal .badge.dark,
+body.theme-universal .badge.dark *,
+body.theme-universal .btn-primary,
+body.theme-universal .btn-primary *,
+body.theme-universal .status-success,
+body.theme-universal .status-error,
+body.theme-universal .badge.coral,
+body.theme-universal .badge.coral *,
+body.theme-universal .cinemax-text,
+body.theme-universal .cinemax-btn,
+body.theme-universal .phase-glow,
+body.theme-universal [style*="background:#000033"],
+body.theme-universal [style*="background:#000033"] *,
+body.theme-universal [style*="background:#1A1917"],
+body.theme-universal [style*="background:#1A1917"] *,
+body.theme-universal [style*="background: #1e293b"],
+body.theme-universal [style*="background: #1e293b"] *,
+body.theme-universal [style*="background-color: #000033"],
+body.theme-universal [style*="background-color: #000033"] *,
+body.theme-universal [class*="nav-btn"],
+body.theme-universal [class*="nav-btn"] *,
+body.theme-universal .calc-display,
+body.theme-universal .sticky-footer-toolbar,
+body.theme-universal .sticky-footer-toolbar *,
+body.theme-universal .pill.coral,
+body.theme-universal .pill.coral * {
+    color: var(--text-inverse) !important; /* Force #FFFEFB on dark surfaces */
+    -webkit-text-fill-color: var(--text-inverse) !important;
+}
+
+/* 3. ACCENT SURFACE -> WHITE TEXT (#FFFEFB) */
+body.theme-universal .accent-bg,
+body.theme-universal .accent-bg *,
+body.theme-universal .btn-primary,
+body.theme-universal .btn-primary *,
+body.theme-universal .pill.coral,
+body.theme-universal .pill.coral *,
+body.theme-universal .badge.coral,
+body.theme-universal .badge.coral *,
+body.theme-universal [style*="background:#FF4D4D"],
+body.theme-universal [style*="background:#FF4D4D"] * {
+    color: var(--text-inverse) !important;
+    background-color: var(--accent) !important;
+    -webkit-text-fill-color: var(--text-inverse) !important;
+}
+
+/* 4. EXCEPTION: PLACEHOLDERS */
+body.theme-universal input::placeholder,
+body.theme-universal textarea::placeholder {
+    color: var(--text-muted) !important; /* #6B6A68 for readability on light */
+    opacity: 1 !important;
+}
+
+/* 5. COMPONENTS: CARDS & MODALS */
+body.theme-universal .modal-header,
+body.theme-universal .card-header {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+}
+
+/* 6. CHARTS & VISUALIZATIONS */
+body.theme-universal .chart-grid,
+body.theme-universal .axis-label,
+body.theme-universal .tick-text {
+    color: var(--text-muted) !important; /* #6B6A68 */
+}
+
+/* 7. NESTED CLICKABLES */
+body.theme-universal .card .nested-component {
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+}
+
+
+
+body.theme-universal .strategy-tag {
     font-weight: 900 !important;
     padding: 6px 12px !important;
 }
 
 /* Specific Strategy Color Inversions for Day Mode */
-body.theme-day .strategy-tag[style*="color:#ef4444"] { background: #fee2e2 !important; color: #991b1b !important; border-color: #991b1b !important; }
-body.theme-day .strategy-tag[style*="color:#f59e0b"] { background: #fef3c7 !important; color: #92400e !important; border-color: #92400e !important; }
-body.theme-day .strategy-tag[style*="color:#3b82f6"] { background: #dbeafe !important; color: #1e3a8a !important; border-color: #1e3a8a !important; }
-body.theme-day .strategy-tag[style*="color:#94a3b8"] { background: #f1f5f9 !important; color: #1e293b !important; border-color: #1e293b !important; }
+body.theme-universal .strategy-tag[style*="color:#ef4444"] { background: #fee2e2 !important; color: #991b1b !important; border-color: #991b1b !important; }
+body.theme-universal .strategy-tag[style*="color:#f59e0b"] { background: #fef3c7 !important; color: #92400e !important; border-color: #92400e !important; }
+body.theme-universal .strategy-tag[style*="color:#3b82f6"] { background: #dbeafe !important; color: #1e3a8a !important; border-color: #1e3a8a !important; }
+body.theme-universal .strategy-tag[style*="color:#94a3b8"] { background: #f1f5f9 !important; color: #1e293b !important; border-color: #1e293b !important; }
 
 /* DAY MODE BUTTONS - Modern Elegant Suite */
-body.theme-day button, 
-body.theme-day .btn,
-body.theme-day .action-btn,
-body.theme-day .btn-primary {
-    background: #000033 !important;
-    color: #ffffff !important;
+/* BUTTON SYSTEM - WARM MINIMALIST */
+body.theme-universal button, 
+body.theme-universal .btn,
+body.theme-universal .btn-primary {
+    font-family: 'Space Grotesk', sans-serif !important;
+    background: var(--accent) !important;
+    color: var(--text-inverse) !important;
     border: none !important;
-    font-weight: 700 !important;
-    padding: 14px 28px !important;
-    border-radius: 12px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-    box-shadow: 0 8px 25px rgba(0, 0, 51, 0.1) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    -webkit-text-fill-color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 10px 20px !important;
+    border-radius: 6px !important;
+    letter-spacing: -0.01em !important;
+    box-shadow: var(--shadow-sm) !important;
+    transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+    -webkit-text-fill-color: var(--text-inverse) !important;
+    cursor: pointer;
 }
 
-body.theme-day button:hover {
-    background: #1e3a8a !important;
-    transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(0, 0, 51, 0.15) !important;
+body.theme-universal button:hover {
+    background: var(--accent-hover) !important;
+    box-shadow: var(--shadow-md) !important;
+    transform: none !important;
+    filter: none !important;
 }
+
+body.theme-universal button:active {
+    background: #C42E2E !important;
+    transform: scale(0.98) !important;
+}
+
+body.theme-universal .btn-secondary,
+body.theme-universal .action-btn-secondary {
+    background: var(--bg-base) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid rgba(26,25,23,0.20) !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+body.theme-universal .btn-secondary:hover {
+    background: var(--bg-surface) !important;
+    border-color: rgba(26,25,23,0.35) !important;
+}
+
+body.theme-universal .btn-ghost {
+    background: transparent !important;
+    border: 1.5px solid var(--accent) !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+}
+
+body.theme-universal .btn-ghost:hover {
+    background: var(--accent-tint) !important;
+}
+
+/* Specific button for CTA calculation as requested universally */
+body.theme-universal [onclick*="generate"],
+body.theme-universal [onclick*="compute"] {
+    background: var(--accent) !important;
+    color: var(--text-inverse) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+
 
 
 
 /* Secondary Buttons */
-body.theme-day .btn-secondary, 
-body.theme-day button[style*="background:#334155"] {
+body.theme-universal .btn-secondary, 
+body.theme-universal button[style*="background:#334155"] {
     background: #ffffff !important;
     color: #000033 !important;
     border: 1px solid rgba(0, 0, 51, 0.2) !important;
@@ -546,25 +850,25 @@ body.theme-day button[style*="background:#334155"] {
 
 
 /* Checkboxes & Labels */
-body.theme-day label,
-body.theme-day .checkbox-label {
+body.theme-universal label,
+body.theme-universal .checkbox-label {
     color: #000000 !important;
     font-weight: 700 !important;
     font-size: 14px !important;
 }
 
 /* ZOOM CONTROLS (Universal) */
-body.theme-day .zoom-controls,
-body.theme-day .zoom-bar,
-body.theme-day .zoom-panel {
+body.theme-universal .zoom-controls,
+body.theme-universal .zoom-bar,
+body.theme-universal .zoom-panel {
     background: #ffffff !important;
     border: 3px solid #000033 !important;
     box-shadow: 6px 6px 0px rgba(0,0,33,0.1) !important;
     padding: 10px !important;
 }
 
-body.theme-day .zoom-btn,
-body.theme-day .zoom-control button {
+body.theme-universal .zoom-btn,
+body.theme-universal .zoom-control button {
     background: #000033 !important;
     color: #ffffff !important;
     border: 1px solid #000000 !important;
@@ -577,20 +881,20 @@ body.theme-day .zoom-control button {
 }
 
 /* SENSEI MBB CONTROL DOCK ICON FIX */
-body.theme-day .dock-tool {
+body.theme-universal .dock-tool {
     font-size: 24px !important;
     opacity: 1 !important;
     filter: drop-shadow(0 0 1px #000) !important;
     color: #000000 !important;
 }
 
-body.theme-day .dock-tool:hover {
+body.theme-universal .dock-tool:hover {
     background: #dbeafe !important;
 }
 
 /* Input Fields Visibility */
-body.theme-day input[type="text"],
-body.theme-day textarea {
+body.theme-universal input[type="text"],
+body.theme-universal textarea {
     background: #ffffff !important;
     color: #000000 !important;
     border: 2px solid #000033 !important;
@@ -1027,26 +1331,205 @@ body.theme-day textarea {
 }
 
 /* Day Mode Tables/Cells padded with subtle modern borders */
-body.theme-day table td,
-body.theme-day table th,
-body.theme-day .dataTable td,
-body.theme-day .dataTable th,
-body.theme-day .data-table td,
-body.theme-day .data-table th,
-body.theme-day .styled-table td,
-body.theme-day .styled-table th,
-body.theme-day .grid-cell {
-    padding: 16px 20px !important;
-    border: 1px solid rgba(0, 0, 51, 0.15) !important;
-    color: #000000 !important;
+/* ═══════════════════════════════════════════════
+   PILLS, CHIPS, AND BADGES (Day Mode)
+   ═══════════════════════════════════════════════ */
+body.theme-universal .pill,
+body.theme-universal .category-pill {
+    height: 28px;
+    padding: 4px 16px !important;
+    border-radius: 9999px !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-body.theme-day table th,
-body.theme-day .dataTable th,
-body.theme-day .data-table th,
-body.theme-day .styled-table th {
-    background-color: #eff6ff !important;
-    font-weight: 800 !important;
-    color: #000033 !important;
-    border-bottom: 2px solid rgba(0, 0, 51, 0.4) !important;
-}
+body.theme-universal .pill.coral { background: var(--accent); color: var(--text-inverse); }
+body.theme-universal .pill.neutral { background: var(--bg-surface); color: var(--text-primary); border: 1px solid rgba(26,25,23,0.12); }
+body.theme-universal .pill.ghost { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); }
+
+body.theme-universal .chip {
+    height: 32px;
+    padding: 4px 12px !important;
+    border-radius: 8px !important;
+    background: var(--bg-base) !important;
+    border: 1px solid rgba(26,25,23,0.15) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 13px !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+body.theme-universal .chip.selected {
+    background: var(--accent-tint) !important;
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+}
+
+body.theme-universal .badge {
+    height: 24px;
+    padding: 3px 10px !important;
+    border-radius: 6px !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    display: inline-flex;
+    align-items: center;
+}
+
+body.theme-universal .badge.coral { background: var(--accent); color: var(--text-inverse); }
+body.theme-universal .badge.dark { background: var(--text-primary); color: var(--text-inverse); }
+body.theme-universal .badge.outline { background: transparent; border: 1px solid var(--text-primary); color: var(--text-primary); }
+
+/* STATUS DOTS & CONNECTORS */
+body.theme-universal .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+body.theme-universal .status-dot.active { background: var(--accent); }
+body.theme-universal .status-dot.filled { background: var(--text-primary); }
+body.theme-universal .status-dot.inactive { background: var(--text-muted); }
+body.theme-universal .status-dot.empty { background: var(--divider); }
+
+/* CONNECTOR LINES */
+body.theme-universal .connector-line {
+    border-top: 1.5px dashed var(--text-primary);
+    position: relative;
+    height: 0;
+}
+
+body.theme-universal .connector-line::before,
+body.theme-universal .connector-line::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-primary);
+}
+
+body.theme-universal .connector-line::before { left: -3px; }
+body.theme-universal .connector-line::after { right: -3px; }
+
+body.theme-universal .connector-line.active { border-color: var(--accent); }
+body.theme-universal .connector-line.active::before,
+body.theme-universal .connector-line.active::after { background: var(--accent); }
+
+
+/* ═══════════════════════════════════════════════
+   DATA TABLES & GRID SYSTEM (Day Mode)
+   ═══════════════════════════════════════════════ */
+body.theme-universal table {
+    width: 100% !important;
+    background: var(--bg-base) !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    margin-bottom: 24px !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+body.theme-universal th {
+    background: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    padding: 12px 16px !important;
+    text-align: left !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+body.theme-universal td {
+    padding: 12px 16px !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 16px !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+body.theme-universal tr:last-child td {
+    border-bottom: none !important;
+}
+
+body.theme-universal tr:nth-child(even) td {
+    background: var(--bg-surface) !important;
+}
+
+/* ═══════════════════════════════════════════════
+   FORMS AND INPUTS (Day Mode)
+   ═══════════════════════════════════════════════ */
+body.theme-universal label {
+    display: block;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: var(--text-primary) !important;
+    margin-bottom: 6px;
+}
+
+body.theme-universal input:not([type="checkbox"]):not([type="radio"]),
+body.theme-universal textarea,
+body.theme-universal select {
+    width: 100%;
+    background: var(--bg-base) !important;
+    border: 1px solid rgba(26,25,23,0.15) !important;
+    border-radius: 6px !important;
+    padding: 10px 14px !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 14px !important;
+    color: var(--text-primary) !important;
+    transition: all 180ms ease;
+    outline: none !important;
+}
+
+body.theme-universal input:focus,
+body.theme-universal textarea:focus,
+body.theme-universal select:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px var(--accent-tint) !important;
+}
+
+body.theme-universal input::placeholder {
+    color: var(--text-faint) !important;
+}
+
+/* 🚀 SCROLLBARS (Warm Minimalist) */
+body.theme-universal *::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+body.theme-universal *::-webkit-scrollbar-thumb {
+    background: var(--bg-offset) !important;
+    border-radius: 10px !important;
+}
+
+body.theme-universal *::-webkit-scrollbar-thumb:hover {
+    background: var(--text-faint) !important;
+}
+
+/* 🚀 SHAPE & CANVAS OUTLINES (Day Mode Precision) */
+body.theme-universal .shape-node,
+body.theme-universal .workflow-shape,
+body.theme-universal .process-box,
+body.theme-universal .swimlane-node,
+body.theme-universal .canvas-shape {
+    border-color: #000033 !important;
+    border-width: 2px !important;
+}
+
+
+
+

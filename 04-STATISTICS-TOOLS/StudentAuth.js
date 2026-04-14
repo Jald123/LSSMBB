@@ -327,9 +327,9 @@ function _buildCommandHub() {
         </div>
         <div class="hub-footer">
             <div class="mode-switcher">
-                <button onclick="lssSetTheme('day')" title="Corporate Tech (Day)"><i class="fas fa-sun"></i></button>
                 <button onclick="lssSetTheme('twilight')" title="Twilight Horizon (Balanced)"><i class="fas fa-moon"></i></button>
                 <button onclick="lssSetTheme('night')" title="Futuristic Studio (Night)"><i class="fas fa-rocket"></i></button>
+                <button onclick="lssSetTheme('universal')" title="Universal Laws (Light)"><i class="fas fa-sun"></i></button>
             </div>
         </div>
 
@@ -412,17 +412,17 @@ function _initDraggable(el, handle) {
 
 // ── THEME SWITCHER ──────────────────────────────
 window.lssSetTheme = function(theme) {
-    document.body.classList.remove('theme-day', 'theme-night', 'theme-twilight');
-    if (theme === 'day') document.body.classList.add('theme-day');
-    else if (theme === 'night') document.body.classList.add('theme-night');
-    else if (theme === 'twilight') document.body.classList.add('theme-twilight');
+    const validThemes = ['twilight', 'night', 'universal'];
+    const resolvedTheme = validThemes.includes(theme) ? theme : 'twilight';
+    document.body.classList.remove('theme-day', 'theme-night', 'theme-twilight', 'theme-universal');
+    document.body.classList.add('theme-' + resolvedTheme);
     
     // Persist preference
-    localStorage.setItem('LSS_Theme', theme);
+    localStorage.setItem('LSS_Theme', resolvedTheme);
     
     // Sync UI if there are local setTheme functions on pages
     if (typeof window.setTheme === 'function') {
-        window.setTheme(theme);
+        window.setTheme(resolvedTheme);
     }
 };
 
