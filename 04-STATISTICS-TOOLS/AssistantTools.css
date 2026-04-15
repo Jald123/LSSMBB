@@ -238,9 +238,9 @@ body.theme-universal .phase-glow {
     opacity: 1 !important;
 }
 
-body.theme-universal .app-nav-bar {
-    background: #ffffff !important;
-    border-bottom: 3px solid #000033 !important;
+body.theme-universal .app-nav-bar,
+.app-nav-bar {
+    display: none !important; /* Globally hidden to defer to new system footer */
 }
 
 body.theme-universal .nav-link {
