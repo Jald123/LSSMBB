@@ -908,7 +908,7 @@ body.theme-universal textarea {
     border: 1px solid var(--dock-border);
     border-radius: 50px;
     padding: 10px 20px;
-    display: flex;
+    display: none !important; /* Hidden: tools are now in the header bar */
     gap: 15px;
     align-items: center;
     box-shadow: var(--dock-shadow);
