@@ -305,16 +305,17 @@ function _buildCommandHub() {
         } catch(e) {}
     }
 
+    // Check if max attempts reached
+    const currentAttempt = (progress[toolName] && progress[toolName].attempt) || 0;
+    const maxAttempts = 4;
+    const isLocked = currentAttempt >= maxAttempts && progress[toolName]?.result === 'FAIL';
+
     hub.innerHTML = `
         <div class="hub-header">SENSEI MBB CONTROL</div>
-        <div class="hub-grid">
-            <button class="hub-quadrant q-submit" id="hub-q-submit" title="Submit Assessment for Validation">
+        <div class="hub-grid hub-grid-3">
+            <button class="hub-quadrant q-submit ${isLocked ? 'disabled' : ''}" id="hub-q-submit" title="${isLocked ? 'Max attempts reached' : 'Submit Assessment for Validation'}">
                 <i class="fas fa-bullseye"></i>
-                <span>Submit Verification</span>
-            </button>
-            <button class="hub-quadrant q-refine ${isSubmitted ? '' : 'disabled'}" id="hub-q-refine" title="Edit your analysis and response">
-                <i class="fas fa-edit"></i>
-                <span>Edit your response</span>
+                <span>${isLocked ? 'Locked' : 'Submit Verification'}</span>
             </button>
             <button class="hub-quadrant q-dash" id="hub-q-dash" title="Open Master Portfolio">
                 <i class="fas fa-chart-line"></i>
@@ -337,30 +338,19 @@ function _buildCommandHub() {
     document.body.appendChild(hub);
 
     // Bind Actions
-    document.getElementById('hub-q-submit').onclick = () => lssSubmitProgress();
+    document.getElementById('hub-q-submit').onclick = () => {
+        if (isLocked) { alert('Maximum attempts (4/4) reached. This tool is locked.'); return; }
+        lssSubmitProgress();
+    };
     document.getElementById('hub-q-dash').onclick = () => window.location.href = 'Student_Dashboard.html';
 
-    const refineBtn = document.getElementById('hub-q-refine');
     const auditBtn = document.getElementById('hub-q-audit');
 
     if (isSubmitted) {
-        // Refine Phase: Return to Tool for Editing first
-        refineBtn.onclick = () => {
-            // Close any open modals
-            document.getElementById('lss-success-modal').style.display = 'none';
-            document.getElementById('lss-sensei-modal').style.display = 'none';
-            // Scroll to tool inputs
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            // Sensei Guidance
-            const banner = document.getElementById('lss-sensei-banner');
-            if (banner) banner.innerHTML = `"Master, Research your data carefully. Once your tool inputs are refined, use the <strong>🎯 Submit Verification</strong> quadrant to re-examine your logic."`;
-        };
-
         auditBtn.onclick = () => {
             _openReportPreview(progress[toolName].reportHtml, toolName);
         };
     } else {
-        refineBtn.onclick = () => alert("Initiate 'Submit Verification' first to enable Refinement.");
         auditBtn.onclick = () => alert("Audit Report generates after Master Validation.");
     }
 
@@ -897,6 +887,30 @@ function _saveProgress(toolName, score, reportHtml) {
     const progress = _getProgress();
     const toolInfo = _getToolInfo() || { type: 'A', primary: 'General', phases: ['General'] };
 
+    // Attempt tracking
+    const existing = progress[toolName];
+    const prevAttempt = (existing && existing.attempt) || 0;
+    const newAttempt = prevAttempt + 1;
+    const maxAttempts = 4;
+
+    // Block if locked (max attempts with FAIL)
+    if (prevAttempt >= maxAttempts && existing && existing.result === 'FAIL') {
+        alert('Maximum attempts (4/4) reached. This tool is locked.');
+        return;
+    }
+
+    // Build history from previous submissions
+    const history = (existing && existing.history) || [];
+    if (existing && existing.score !== undefined) {
+        history.push({
+            attempt: prevAttempt,
+            score: existing.score,
+            result: existing.result,
+            badge: existing.badge,
+            date: existing.date
+        });
+    }
+
     progress[toolName] = {
         score: score.total,
         badge: score.badge,
@@ -907,7 +921,10 @@ function _saveProgress(toolName, score, reportHtml) {
         type: toolInfo.type,
         primaryPhase: toolInfo.primary,
         eligiblePhases: toolInfo.phases,
-        toolFile: _getToolKey()
+        toolFile: _getToolKey(),
+        attempt: newAttempt,
+        maxAttempts: maxAttempts,
+        history: history
     };
     localStorage.setItem('LSS_Progress', JSON.stringify(progress));
 
@@ -1491,3 +1508,56 @@ function _syncToSheets(toolName, score, reportData) {
 const shakeStyle = document.createElement('style');
 shakeStyle.textContent = `@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }`;
 document.head.appendChild(shakeStyle);
+
+// ── RETRY BANNER LOGIC ─────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    // Determine if on retry URL via SearchParams
+    const urlParams = new URLSearchParams(window.location.search);
+    const retryAttempt = urlParams.get('retry');
+    
+    if (retryAttempt && window.location.pathname.toLowerCase().includes('04-statistics-tools') && !window.location.pathname.toLowerCase().includes('dashboard')) {
+        const toolName = _getToolName();
+        const progress = _getProgress();
+        const existingData = progress[toolName];
+        
+        let prevScoreStr = "FAIL";
+        if (existingData && existingData.score !== undefined) {
+            prevScoreStr = existingData.score + '% (FAIL)';
+        }
+
+        const banner = document.createElement('div');
+        banner.className = 'retry-alert-banner';
+        banner.innerHTML = `
+            <div style="display:flex; justify-content:center; align-items:center; gap:15px; width:100%; max-width:1200px; margin:0 auto;">
+                <i class="fas fa-exclamation-triangle" style="font-size:18px;"></i>
+                <div>
+                    <div><strong>RETRY ATTEMPT ${retryAttempt} OF 4</strong> — Review your analysis carefully</div>
+                    <div style="font-size:10px; opacity:0.8; margin-top:2px; font-weight:500;">Previous Score: ${prevScoreStr} | Mastery Threshold: 70%</div>
+                </div>
+            </div>
+        `;
+
+        // Inject banner CSS inline
+        const style = document.createElement('style');
+        style.textContent = `
+            .retry-alert-banner {
+                background: linear-gradient(135deg, #DC2626, #B91C1C);
+                color: #FFFFFF;
+                font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+                font-size: 13px;
+                font-weight: 700;
+                padding: 12px 20px;
+                text-align: center;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                position: sticky;
+                top: 0;
+                z-index: 999999;
+                box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+                border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            }
+        `;
+        document.head.appendChild(style);
+        document.body.insertBefore(banner, document.body.firstChild);
+    }
+});

@@ -165,6 +165,7 @@
                                 <th>DMAIC Phase</th>
                                 <th>Mastery Score</th>
                                 <th>Status</th>
+                                <th>Attempt</th>
                                 <th>Date</th>
                                 <th>Report</th>
                             </tr>
@@ -238,7 +239,38 @@
                     if (name.includes('SOP') && toolUrl === '#') toolUrl = 'Tool_SOP_Premium.html';
                     if (name.includes('Financials') && toolUrl === '#') toolUrl = 'Tool_Financials_ROI.html';
                 
+                // Attempt logic
+                const attemptNum = data.attempt || 1;
+                const maxAttempts = data.maxAttempts || 4;
+                const isFail = data.result !== 'PASS' && data.score < 70;
+                const isLocked = attemptNum >= maxAttempts && isFail;
+
+                let attemptHtml = '';
+                let actionHtml = '';
+
+                if (!isFail) {
+                    attemptHtml = `<span style="font-size:11px; font-weight:800; color:#10b981;"><i class="fas fa-check"></i> ${attemptNum}/${maxAttempts}</span>`;
+                    actionHtml = `<a href="#" class="action-link" onclick="viewSavedReport('${name}')" title="View Full Report"><i class="fas fa-file-invoice"></i> View</a>`;
+                } else if (isLocked) {
+                    attemptHtml = `<span style="font-size:11px; font-weight:800; color:#ef4444;"><i class="fas fa-lock"></i> ${attemptNum}/${maxAttempts} LOCKED</span>`;
+                    actionHtml = `<a href="#" class="action-link" onclick="viewSavedReport('${name}')" title="View Full Report"><i class="fas fa-file-invoice"></i> View</a>`;
+                } else {
+                    attemptHtml = `<span style="font-size:11px; font-weight:800; color:#f97316;"><i class="fas fa-exclamation-circle"></i> ATTEMPT ${attemptNum}/${maxAttempts}</span>`;
+                    // Redirect back to tool with retry flag
+                    const retryUrl = `${toolUrl}?retry=${attemptNum + 1}`;
+                    actionHtml = `
+                        <a href="#" class="action-link" onclick="viewSavedReport('${name}')" title="View Full Report"><i class="fas fa-file-invoice"></i> View</a>
+                        <a href="${retryUrl}" class="action-link" style="color: #ffffff; background: #dc2626; padding: 5px 12px; border-radius: 8px; font-size:11px; text-transform:uppercase; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);" title="Retry tool and improve score"><i class="fas fa-redo"></i> Retry</a>
+                    `;
+                }
+
                 const tr = document.createElement('tr');
+                if (isFail) {
+                    // Failing row style tint
+                    tr.style.background = isLocked ? 'rgba(239, 68, 68, 0.12)' : 'rgba(239, 68, 68, 0.05)';
+                    if (isLocked) tr.style.opacity = '0.8';
+                }
+
                 tr.innerHTML = `
                     <td style="font-weight: 600;">${name}</td>
                     <td><span class="phase-badge ${PHASE_COLORS[primaryPhase]}">${primaryPhase}</span></td>
@@ -252,11 +284,11 @@
                             <span style="font-size:12px; color:#94a3b8; font-weight:600;">${data.badge}</span>
                         </div>
                     </td>
+                    <td>${attemptHtml}</td>
                     <td style="color: var(--text-dim);">${date}</td>
                     <td>
-                        <div style="display: flex; gap: 15px;">
-                            <a href="#" class="action-link" onclick="viewSavedReport('${name}')" title="View Full Report"><i class="fas fa-file-invoice"></i> View</a>
-                            <a href="${toolUrl}" class="action-link" style="color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); padding: 5px 12px; border-radius: 8px; background: rgba(59, 130, 246, 0.05);" title="Edit & Improvement Resubmission"><i class="fas fa-edit"></i> Edit</a>
+                        <div style="display: flex; gap: 15px; align-items:center;">
+                            ${actionHtml}
                         </div>
                     </td>
                 `;
