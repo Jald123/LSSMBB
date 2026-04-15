@@ -11,6 +11,7 @@
     // HIDE REQUESTED UI ELEMENTS (AI, EXPORT, DASHBOARD)
     const hideStyle = document.createElement('style');
     hideStyle.textContent = `
+        .app-nav-bar,
         .ai-coach-btn, .ai-badge, .ai-rewrite-btn, .ai-magic-btn,
         .ai-panel, .ai-coach-output,
         .sticky-export, .btn-export,
