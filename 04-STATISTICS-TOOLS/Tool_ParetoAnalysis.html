@@ -503,80 +503,7 @@
             border-color: #3b82f6 !important;
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
         }
-        /* --- THEME: CORPORATE TECH (DAY) --- */
-        body.theme-day {
-            --primary: #f8fafc;
-            --surface-1: #ffffff;
-            --surface-2: #f1f5f9;
-            --surface-3: #e2e8f0;
-            --accent: #3b82f6; /* Electric Blue */
-            --accent-glow: rgba(59, 130, 246, 0.2);
-            --text-primary: #1a202c; /* Dark Navy/Black */
-            --text-secondary: #64748b; /* Slate Gray */
-            --glass-border: rgba(0, 0, 0, 0.1);
-            
-            background-color: var(--primary);
-            color: var(--text-primary);
-        }
 
-        body.theme-day .card {
-            background: #ffffff;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
-            border-radius: 8px;
-        }
-
-        body.theme-day h1, body.theme-day h2, body.theme-day h3, body.theme-day h4 {
-            font-family: 'Inter', sans-serif;
-            color: #1a202c;
-        }
-        
-        body.theme-day p, body.theme-day .btn {
-            font-family: 'Inter', sans-serif;
-        }
-
-        body.theme-day .lss-intro-box {
-            background: #e0f2fe;
-            border: 1px solid #bae6fd;
-            border-left: 5px solid #0284c7;
-            box-shadow: none;
-        }
-
-        body.theme-day .lss-intro-title {
-            color: #0284c7;
-            text-shadow: none;
-        }
-
-        body.theme-day .lss-intro-text {
-            color: #334155;
-        }
-
-        body.theme-day .btn-primary {
-            background: #3b82f6;
-            color: white;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-            border-radius: 8px;
-        }
-
-        body.theme-day .btn-ghost {
-            color: #3b82f6;
-            border: 1px solid #cbd5e1;
-        }
-
-        body.theme-day .premium-input {
-            background: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            color: #1a202c !important;
-        }
-        
-        body.theme-day .phase-glow {
-            background: #dbeafe;
-            color: #2563eb;
-            text-shadow: none;
-            padding: 4px 12px;
-            border-radius: 50px;
-            display: inline-block;
-        }
 
         /* --- THEME: FUTURISTIC DARK (NIGHT) --- */
         body.theme-night {
@@ -1434,12 +1361,7 @@
         const introTitle = document.querySelector('.lss-intro-title');
         const introText = document.querySelector('.lss-intro-text');
         
-        if (theme === 'day') {
-            document.body.classList.add('theme-day');
-            if (introTitle) introTitle.innerHTML = '<i class="fas fa-khanda" style="margin-right:10px;"></i> The Sword of Focus';
-            if (introText) introText.innerHTML = 'The biggest mistake in problem-solving is trying to fix everything. In reality, <b style="color: #1e3a8a;">80% of your pain comes from 20% of your sources</b>. The Pareto Chart is your weapon to ignore the "Trivial Many" and strike the "Vital Few" with surgical precision.';
-        } 
-        else if (theme === 'night') {
+        if (theme === 'night') {
             document.body.classList.add('theme-night');
             if (introTitle) introTitle.innerHTML = '<i class="fas fa-khanda" style="margin-right:10px; color:#f59e0b; text-shadow:0 0 15px #f59e0b;"></i> The Sword of Focus';
             if (introText) introText.innerHTML = 'The biggest mistake in problem-solving is trying to fix everything. In reality, <b style="color: #fde047;">80% of your pain comes from 20% of your sources</b>. The Pareto Chart is your weapon to ignore the "Trivial Many" and strike the "Vital Few" with surgical precision.';

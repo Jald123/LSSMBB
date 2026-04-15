@@ -292,3 +292,61 @@ body.theme-universal .tag {
     color: #000000 !important;
     -webkit-text-fill-color: #000000 !important;
 }
+
+/* --- CANVAS & CONTEXT MENU FIXES --- */
+body.theme-universal #customContextMenu {
+    background: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    color: #0F172A !important;
+    border-radius: 8px !important;
+    padding: 8px 0 !important;
+}
+
+body.theme-universal .ctx-item {
+    color: #475569 !important;
+    transition: all 0.2s ease !important;
+}
+
+body.theme-universal .ctx-item:hover {
+    background: #F1F5F9 !important;
+    color: #1B6B82 !important;
+}
+
+body.theme-universal [onclick*="changeStickerColor"] {
+    width: 20px !important;
+    height: 20px !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
+}
+
+body.theme-universal [onclick*="changeStickerColor"]:hover {
+    transform: scale(1.2) !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+}
+
+/* Force dark lines for VSM arrows if they default to light */
+body.theme-universal .arrow-stem {
+    background: currentColor !important;
+}
+
+/* Specific fix for white arrows on light bg */
+body.theme-universal [style*="color:#ffffff"] .arrow-stem,
+body.theme-universal [style*="color:white"] .arrow-stem,
+body.theme-universal [style*="color: #fff"] .arrow-stem {
+    background: #000000 !important;
+}
+
+body.theme-universal [style*="color:#ffffff"] .arrow-head,
+body.theme-universal [style*="color:white"] .arrow-head,
+body.theme-universal [style*="color: #fff"] .arrow-head {
+    border-left-color: #000000 !important;
+}
+
+/* Law 1 reversal for VSM stickers that were hardcoded dark */
+body.theme-universal .vsm-sticker {
+    background: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    color: #0F172A !important;
+}

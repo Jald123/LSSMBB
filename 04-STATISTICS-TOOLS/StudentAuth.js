@@ -329,7 +329,6 @@ function _buildCommandHub() {
             <div class="mode-switcher">
                 <button onclick="lssSetTheme('twilight')" title="Twilight Horizon (Balanced)"><i class="fas fa-moon"></i></button>
                 <button onclick="lssSetTheme('night')" title="Futuristic Studio (Night)"><i class="fas fa-rocket"></i></button>
-                <button onclick="lssSetTheme('universal')" title="Universal Laws (Light)"><i class="fas fa-sun"></i></button>
             </div>
         </div>
 
@@ -412,9 +411,9 @@ function _initDraggable(el, handle) {
 
 // ── THEME SWITCHER ──────────────────────────────
 window.lssSetTheme = function(theme) {
-    const validThemes = ['twilight', 'night', 'universal'];
+    const validThemes = ['twilight', 'night'];
     const resolvedTheme = validThemes.includes(theme) ? theme : 'twilight';
-    document.body.classList.remove('theme-day', 'theme-night', 'theme-twilight', 'theme-universal');
+    document.body.classList.remove('theme-day', 'theme-night', 'theme-twilight');
     document.body.classList.add('theme-' + resolvedTheme);
     
     // Persist preference

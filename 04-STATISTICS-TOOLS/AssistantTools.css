@@ -1,55 +1,5 @@
-/* ═══════════════════════════════════════════════
-   WARM MINIMALIST DESIGN SYSTEM (Day Mode Only)
-   ═══════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-
-body.theme-universal {
-    /* Color Palette */
-    --bg-base:        #FFFEFB;
-    --bg-surface:     #F5F4F1;
-    --bg-surface-2:   #EDEAE5;
-    --bg-offset:      #E6E4DF;
-
-    --text-primary:   #1A1917;
-    --text-muted:     #6B6A68;
-    --text-faint:     #BABABF;
-    --text-inverse:   #FFFEFB;
-
-    --accent:         #FF4D4D; /* Electric Coral */
-    --accent-hover:   #E03A3A;
-    --accent-tint:    #FFE5E5;
-    --accent-border:  #FFBDBD;
-
-    --border:         rgba(26,25,23,0.10);
-    --border-focus:   #FF4D4D;
-    --divider:        #DCDBD7;
-
-    /* Shadows */
-    --shadow-sm:      0 1px 2px rgba(26,25,23,0.06);
-    --shadow-md:      0 4px 12px rgba(26,25,23,0.08);
-    --shadow-lg:      0 12px 32px rgba(26,25,23,0.12);
-
-    /* Legacy Maping */
-    --nexus-navy: var(--bg-surface) !important;
-    --nexus-surface: var(--bg-surface) !important;
-    --nexus-text-primary: var(--text-primary) !important;
-    --nexus-text-secondary: var(--text-muted) !important;
-    --nexus-border: var(--border) !important;
-    
-    background-color: var(--bg-base) !important;
-    color: var(--text-primary) !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-}
-
-
-body.theme-universal {
-    background: radial-gradient(circle at top left, #f1f5f9, #ffffff) !important;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-}
-
-
 /* SENSEI MBB CONTROL DOCK (Floating Assistant) */
-body.theme-universal #assistant-dock {
+#assistant-dock {
     background: #ffffff !important;
     border: 1px solid rgba(0, 0, 51, 0.1) !important;
     box-shadow: 0 10px 40px rgba(0, 0, 51, 0.08) !important;
@@ -75,13 +25,25 @@ body.theme-universal .app-grid {
 }
 
 body.theme-universal .sidebar {
-    background: #f8fbff !important;
+    background: #ffffff !important;
     border-right: 1px solid rgba(0, 0, 51, 0.08) !important;
+    color: #1e293b !important;
 }
 
+body.theme-universal .sidebar *,
+body.theme-universal .btn,
+body.theme-universal .palette-item {
+    color: #1e293b !important;
+}
+
+body.theme-universal .btn:hover,
+body.theme-universal .palette-item:hover {
+    background: #f1f5f9 !important;
+    color: #2563eb !important;
+}
 
 body.theme-universal .tool-btn {
-    color: #000033 !important;
+    color: #1e293b !important;
     font-weight: 600 !important;
 }
 

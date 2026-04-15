@@ -1173,93 +1173,125 @@
     position: fixed;
     bottom: 30px;
     right: 30px;
-    width: 200px; /* Reduced for a more compact feel */
+    width: 240px;
+    height: 320px;
+    min-width: 200px;
+    min-height: 280px;
     box-sizing: border-box;
-
-
-    background: #f1f5f9; /* Subtle grey-blue background to make white cards pop */
-    border: 1px solid rgba(0, 0, 51, 0.1);
+    background: #f1f5f9;
+    border: 2px solid #2563EB;
     border-radius: 20px;
-    box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
     z-index: 99998;
     overflow: hidden;
-    animation: hubGlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    animation: hubGlide 0.4s cubic-bezier(0.16, 1, 0.3, 1), hubGlow 4s infinite alternate;
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+    container-type: size; /* Enable Container Queries */
 }
 
-
-@keyframes hubGlide {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+@keyframes hubGlow {
+    0% { box-shadow: 0 0 10px rgba(37, 99, 235, 0.2), 0 20px 25px -5px rgba(15, 23, 42, 0.1); }
+    100% { box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), 0 20px 25px -5px rgba(15, 23, 42, 0.1); border-color: #3b82f6; }
 }
 
 #lss-command-hub .hub-header {
     background: #FFFFFF;
     border-bottom: 1px solid rgba(0, 0, 51, 0.05);
-    padding: 12px;
+    padding: 10px;
     text-align: center;
-    font-size: 10px;
-
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 800;
     color: #64748B;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     cursor: move;
     user-select: none;
+    position: relative;
+    flex-shrink: 0;
+}
+
+#lss-command-hub .hub-header::after {
+    content: 'DRAG ME';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2563EB;
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 10px;
+    opacity: 0.1; /* Subtly visible by default */
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+#lss-command-hub .hub-header:hover::after {
+    opacity: 1;
 }
 
 #lss-command-hub .hub-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    gap: 8px;
+    gap: 10px;
     padding: 12px;
     box-sizing: border-box;
+    flex: 1; /* This expands to fill resized container */
+    min-height: 0; /* Important for flex-grow with grid */
 }
 
-
-
-
 .hub-quadrant {
-    width: 82px;
-    height: 82px;
+    width: 100% !important;
+    height: 100% !important;
     box-sizing: border-box;
-
-
     background: #FFFFFF !important;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     border: 1px solid rgba(0, 0, 51, 0.05);
     border-radius: 14px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    overflow: hidden; /* Keep content inside */
 }
-
 
 .hub-quadrant:hover {
-    background: #FFFFFF !important;
-    transform: translateY(-2px) scale(1.05);
     border-color: #2563EB;
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+    background: #F8FAFC !important;
+    transform: scale(1.02);
 }
 
-
 .hub-quadrant i {
-    font-size: 20px;
-    color: #64748B;
-    margin-bottom: 8px;
-    transition: color 0.15s ease;
+    font-size: clamp(18px, 8cqw, 32px); /* Scales with Hub Width */
+    color: #2563EB;
+    margin-bottom: 6px;
+    flex-shrink: 0;
 }
 
 .hub-quadrant span {
-    font-size: 6.5px;
-    font-weight: 700;
+    font-size: clamp(8px, 4.5cqw, 13px); /* Scales with Hub Width */
+    font-weight: 800;
     text-align: center;
     line-height: 1.1;
     color: #334155;
     text-transform: uppercase;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2; /* Standard property */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hub-footer {
+    padding: 0 12px 12px 12px;
+    flex-shrink: 0;
 }
 
 .hub-quadrant:hover i { color: #2563EB; }
@@ -1297,18 +1329,17 @@
 
 
 .mode-switcher button {
-    flex: 1;
     background: #1e293b;
     color: #ffffff;
     border: none;
-    height: 26px; /* Reduced height */
+    height: 32px; /* Increased height */
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px; /* Smaller Icons */
+    font-size: 14px; /* Larger Icons */
 }
 
 

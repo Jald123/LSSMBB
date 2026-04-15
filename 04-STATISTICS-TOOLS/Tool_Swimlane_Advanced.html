@@ -949,7 +949,13 @@
         const POOL = document.getElementById('pool'), SVG = document.getElementById('svg-layer');
         const CTX = document.getElementById('custom-ctx'), ECTX = document.getElementById('edge-ctx');
 
-        window.onload = () => { loadFromStorage(); renderAll(); saveHistory(); };
+        window.onload = () => { 
+            loadFromStorage(); 
+            if (!appState.config) appState.config = { laneHeight: 180, lineMode: 'straight' };
+            if (!appState.config.laneHeight) appState.config.laneHeight = 180;
+            renderAll(); 
+            saveHistory(); 
+        };
 
         function openHowTo() { document.getElementById('modal-howto').style.display = 'flex'; }
         function openShapeInfo() { document.getElementById('modal-shapes').style.display = 'flex'; }
@@ -1148,91 +1154,94 @@
             appState.edges = appState.edges.filter(v => v.id !== selectedEdgeId); renderEdges(); updateAnalysis(); saveHistory();
         }
 
+        const cases = {
+            er: {
+                l: ["Patient", "Triage", "Specialist", "Billing"],
+                f: "Finding: Triage bottleneck detected. Patient wait time exceeds 20 mins due to high handoff frequency between Arrival and Vitals Check.",
+                n: [
+                    { id: 'er1', t: 'start', x: 50, y: 60, l: 'Arrival', i: '🏁' },
+                    { id: 'er2', t: 'task', x: 250, y: 240, l: 'Check Vitals', i: '📋' },
+                    { id: 'er3', t: 'dec', x: 500, y: 420, l: 'Critical?', i: '⚖️' },
+                    { id: 'er4', t: 'task', x: 750, y: 420, l: 'Doctor Review', i: '📋' },
+                    { id: 'er5', t: 'doc', x: 1000, y: 600, l: 'Invoice', i: '📄' }
+                ],
+                e: [
+                    { id: 'e1', from: 'er1', fSide: 'E', to: 'er2', tSide: 'W', type: 'elbow' },
+                    { id: 'e2', from: 'er2', fSide: 'E', to: 'er3', tSide: 'W', type: 'elbow' },
+                    { id: 'e3', from: 'er3', fSide: 'E', to: 'er4', tSide: 'W', type: 'straight' },
+                    { id: 'e4', from: 'er4', fSide: 'S', to: 'er5', tSide: 'N', type: 'free' }
+                ]
+            },
+            surgery: {
+                l: ["Surgeon", "Anesthesia", "Nurse", "Recovery"],
+                f: "Observation: Sterile boundary risks identified. Multiple handoffs between Nurse and Recovery indicate potential patient safety gaps during transition.",
+                n: [
+                    { id: 's1', t: 'start', x: 50, y: 60, l: 'OR Ready', i: '🏁' },
+                    { id: 's2', t: 'task', x: 250, y: 240, l: 'Sedation', i: '💉' },
+                    { id: 's3', t: 'task', x: 500, y: 60, l: 'Procedure', i: '🔪' },
+                    { id: 's4', t: 'task', x: 750, y: 420, l: 'Cleanup', i: '🧹' }
+                ],
+                e: [
+                    { id: 'e5', from: 's1', fSide: 'E', to: 's2', tSide: 'W', type: 'elbow' },
+                    { id: 'e6', from: 's2', fSide: 'E', to: 's3', tSide: 'W', type: 'elbow' },
+                    { id: 'e7', from: 's3', fSide: 'E', to: 's4', tSide: 'W', type: 'elbow' }
+                ]
+            },
+            pharmacy: {
+                l: ["Customer", "Pharmacist", "Insurance", "Logistics"],
+                f: "Analysis: Insurance loop detected. 15% of prescriptions are delayed in regulatory verification step (Pharmacist <-> Insurance handoff).",
+                n: [
+                    { id: 'p1', t: 'start', x: 50, y: 60, l: 'Drop Off', i: '📥' },
+                    { id: 'p2', t: 'task', x: 250, y: 240, l: 'Verification', i: '🔍' },
+                    { id: 'p3', t: 'dec', x: 500, y: 420, l: 'Approved?', i: '❓' },
+                    { id: 'p4', t: 'task', x: 750, y: 600, l: 'Shipping', i: '📦' }
+                ],
+                e: [
+                    { id: 'ee1', from: 'p1', fSide: 'E', to: 'p2', tSide: 'W', type: 'straight' },
+                    { id: 'ee2', from: 'p2', fSide: 'E', to: 'p3', tSide: 'W', type: 'straight' },
+                    { id: 'ee3', from: 'p3', fSide: 'S', to: 'p4', tSide: 'N', type: 'free' }
+                ]
+            },
+            lean_mfg: {
+                l: ["Warehouse", "Assembly", "QC", "Shipping"],
+                f: "Kaizen Finding: Material movement waste. Large physical gap between Assembly and QC lanes introduces transportation time waste ($2.4k/mo loss).",
+                n: [
+                    { id: 'm1', t: 'start', x: 50, y: 60, l: 'Raw Material', i: '🏗️' },
+                    { id: 'm2', t: 'task', x: 300, y: 240, l: 'Assembly', i: '⚙️' },
+                    { id: 'm3', t: 'dec', x: 600, y: 420, l: 'Defects?', i: '💩' },
+                    { id: 'm4', t: 'start', x: 900, y: 600, l: 'Delivered', i: '🏁' }
+                ],
+                e: [
+                    { id: 'em1', from: 'm1', fSide: 'E', to: 'm2', tSide: 'W', type: 'elbow' },
+                    { id: 'em2', from: 'm2', fSide: 'E', to: 'm3', tSide: 'W', type: 'elbow' },
+                    { id: 'em3', from: 'm3', fSide: 'E', to: 'm4', tSide: 'W', type: 'elbow' }
+                ]
+            },
+            logistics: {
+                l: ["Sales", "Inventory", "Freight", "Customer"],
+                f: "Global Impact: Data latency bottleneck. Inventory-to-Freight handoff lacks automation, causing 4-hour delay in manifest generation.",
+                n: [
+                    { id: 'l1', t: 'start', x: 50, y: 60, l: 'New Order', i: '✉️' },
+                    { id: 'l2', t: 'task', x: 250, y: 240, l: 'Check Stock', i: '📊' },
+                    { id: 'l3', t: 'task', x: 500, y: 420, l: 'Truck Load', i: '🚚' },
+                    { id: 'l4', t: 'start', x: 750, y: 600, l: 'Feedback', i: '⭐' }
+                ],
+                e: [
+                    { id: 'el1', from: 'l1', fSide: 'E', to: 'l2', tSide: 'W', type: 'straight' },
+                    { id: 'el2', from: 'l2', fSide: 'E', to: 'l3', tSide: 'W', type: 'straight' },
+                    { id: 'el3', from: 'l3', fSide: 'E', to: 'l4', tSide: 'W', type: 'straight' }
+                ]
+            }
+        };
+
         function loadCase(k) {
-            if (!confirm("Clear current canvas to load example?")) return;
-            appState.nodes = []; appState.edges = [];
-            const cases = {
-                er: {
-                    l: ["Patient", "Triage", "Specialist", "Billing"],
-                    f: "Finding: Triage bottleneck detected. Patient wait time exceeds 20 mins due to high handoff frequency between Arrival and Vitals Check.",
-                    n: [
-                        { id: 'er1', t: 'start', x: 50, y: 60, l: 'Arrival', i: '🏁' },
-                        { id: 'er2', t: 'task', x: 250, y: 240, l: 'Check Vitals', i: '📋' },
-                        { id: 'er3', t: 'dec', x: 500, y: 420, l: 'Critical?', i: '⚖️' },
-                        { id: 'er4', t: 'task', x: 750, y: 420, l: 'Doctor Review', i: '📋' },
-                        { id: 'er5', t: 'doc', x: 1000, y: 600, l: 'Invoice', i: '📄' }
-                    ],
-                    e: [
-                        { id: 'e1', from: 'er1', fSide: 'E', to: 'er2', tSide: 'W', type: 'elbow' },
-                        { id: 'e2', from: 'er2', fSide: 'E', to: 'er3', tSide: 'W', type: 'elbow' },
-                        { id: 'e3', from: 'er3', fSide: 'E', to: 'er4', tSide: 'W', type: 'straight' },
-                        { id: 'e4', from: 'er4', fSide: 'S', to: 'er5', tSide: 'N', type: 'free' }
-                    ]
-                },
-                surgery: {
-                    l: ["Surgeon", "Anesthesia", "Nurse", "Recovery"],
-                    f: "Observation: Sterile boundary risks identified. Multiple handoffs between Nurse and Recovery indicate potential patient safety gaps during transition.",
-                    n: [
-                        { id: 's1', t: 'start', x: 50, y: 60, l: 'OR Ready', i: '🏁' },
-                        { id: 's2', t: 'task', x: 250, y: 240, l: 'Sedation', i: '💉' },
-                        { id: 's3', t: 'task', x: 500, y: 60, l: 'Procedure', i: '🔪' },
-                        { id: 's4', t: 'task', x: 750, y: 420, l: 'Cleanup', i: '🧹' }
-                    ],
-                    e: [
-                        { id: 'e5', from: 's1', fSide: 'E', to: 's2', tSide: 'W', type: 'elbow' },
-                        { id: 'e6', from: 's2', fSide: 'E', to: 's3', tSide: 'W', type: 'elbow' },
-                        { id: 'e7', from: 's3', fSide: 'E', to: 's4', tSide: 'W', type: 'elbow' }
-                    ]
-                },
-                pharmacy: {
-                    l: ["Customer", "Pharmacist", "Insurance", "Logistics"],
-                    f: "Analysis: Insurance loop detected. 15% of prescriptions are delayed in regulatory verification step (Pharmacist <-> Insurance handoff).",
-                    n: [
-                        { id: 'p1', t: 'start', x: 50, y: 60, l: 'Drop Off', i: '📥' },
-                        { id: 'p2', t: 'task', x: 250, y: 240, l: 'Verification', i: '🔍' },
-                        { id: 'p3', t: 'dec', x: 500, y: 420, l: 'Approved?', i: '❓' },
-                        { id: 'p4', t: 'task', x: 750, y: 600, l: 'Shipping', i: '📦' }
-                    ],
-                    e: [
-                        { id: 'ee1', from: 'p1', fSide: 'E', to: 'p2', tSide: 'W', type: 'straight' },
-                        { id: 'ee2', from: 'p2', fSide: 'E', to: 'p3', tSide: 'W', type: 'straight' },
-                        { id: 'ee3', from: 'p3', fSide: 'S', to: 'p4', tSide: 'N', type: 'free' }
-                    ]
-                },
-                lean_mfg: {
-                    l: ["Warehouse", "Assembly", "QC", "Shipping"],
-                    f: "Kaizen Finding: Material movement waste. Large physical gap between Assembly and QC lanes introduces transportation time waste ($2.4k/mo loss).",
-                    n: [
-                        { id: 'm1', t: 'start', x: 50, y: 60, l: 'Raw Material', i: '🏗️' },
-                        { id: 'm2', t: 'task', x: 300, y: 240, l: 'Assembly', i: '⚙️' },
-                        { id: 'm3', t: 'dec', x: 600, y: 420, l: 'Defects?', i: '💩' },
-                        { id: 'm4', t: 'start', x: 900, y: 600, l: 'Delivered', i: '🏁' }
-                    ],
-                    e: [
-                        { id: 'em1', from: 'm1', fSide: 'E', to: 'm2', tSide: 'W', type: 'elbow' },
-                        { id: 'em2', from: 'm2', fSide: 'E', to: 'm3', tSide: 'W', type: 'elbow' },
-                        { id: 'em3', from: 'm3', fSide: 'E', to: 'm4', tSide: 'W', type: 'elbow' }
-                    ]
-                },
-                logistics: {
-                    l: ["Sales", "Inventory", "Freight", "Customer"],
-                    f: "Global Impact: Data latency bottleneck. Inventory-to-Freight handoff lacks automation, causing 4-hour delay in manifest generation.",
-                    n: [
-                        { id: 'l1', t: 'start', x: 50, y: 60, l: 'New Order', i: '✉️' },
-                        { id: 'l2', t: 'task', x: 250, y: 240, l: 'Check Stock', i: '📊' },
-                        { id: 'l3', t: 'task', x: 500, y: 420, l: 'Truck Load', i: '🚚' },
-                        { id: 'l4', t: 'start', x: 750, y: 600, l: 'Feedback', i: '⭐' }
-                    ],
-                    e: [
-                        { id: 'el1', from: 'l1', fSide: 'E', to: 'l2', tSide: 'W', type: 'straight' },
-                        { id: 'el2', from: 'l2', fSide: 'E', to: 'l3', tSide: 'W', type: 'straight' },
-                        { id: 'el3', from: 'l3', fSide: 'E', to: 'l4', tSide: 'W', type: 'straight' }
-                    ]
-                }
-            };
             const active = cases[k];
-            appState.lanes = active.l;
-            appState.currentFinding = active.f; // Store finding
+            if (!active) return;
+            appState.nodes = []; appState.edges = [];
+            selectedNodeId = null; selectedEdgeId = null;
+            history = []; historyIndex = -1;
+            appState.lanes = [...active.l];
+            appState.currentFinding = active.f;
             active.n.forEach(v => {
                 appState.nodes.push({
                     id: v.id, type: v.t, icon: v.i, x: v.x, y: v.y, label: v.l, color: '#ffffff', rotation: 0, scale: 1, w: 140, h: 80
@@ -1430,6 +1439,14 @@
         }
 
         window.onclick = () => { CTX.style.display = 'none'; ECTX.style.display = 'none'; selectNode(null); };
+
+        function renderEdgePreview(e) {
+            if (!isConnecting) return;
+            const rect = POOL.getBoundingClientRect();
+            const p1 = getAnchorCoords(connStartAnchor.id, connStartAnchor.side);
+            const p2 = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+            SVG.innerHTML += `<path d="M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}" stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="4,4" />`;
+        }
 
         function openInterpretationModal() {
             const modal = document.createElement('div');
