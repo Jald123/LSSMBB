@@ -5,7 +5,7 @@ import { getSession } from "@/lib/auth";
 // POST /api/projects/{id}/deliverables/{toolId}/retry
 export async function POST(
     request: Request,
-    { params }: { params: { id: string; toolId: string } }
+    { params }: { params: Promise<{ id: string; toolId: string }> }
 ) {
     try {
         const session = await getSession();

@@ -5,7 +5,7 @@ import { getSession } from "@/lib/auth";
 // GET /api/projects/{id}/deliverables/{toolId}
 export async function GET(
     request: Request,
-    { params }: { params: { id: string; toolId: string } }
+    { params }: { params: Promise<{ id: string; toolId: string }> }
 ) {
     try {
         const session = await getSession();
@@ -54,7 +54,7 @@ export async function GET(
 // POST /api/projects/{id}/deliverables/{toolId} - Save/Update deliverable
 export async function POST(
     request: Request,
-    { params }: { params: { id: string; toolId: string } }
+    { params }: { params: Promise<{ id: string; toolId: string }> }
 ) {
     try {
         const session = await getSession();
