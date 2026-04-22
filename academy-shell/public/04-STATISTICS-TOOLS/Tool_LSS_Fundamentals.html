@@ -1,0 +1,3933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSS Fundamentals | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* ============================================
+           FUTURISTIC PROFESSIONAL DESIGN SYSTEM
+           Deep Navy/Charcoal + Glassmorphism + Neon
+           ============================================ */
+        :root {
+            --bg-deep: #0a0f1a;
+            --bg-navy: #111827;
+            --bg-charcoal: #1e293b;
+            --glass: rgba(30, 41, 59, 0.7);
+            --glass-strong: rgba(17, 24, 39, 0.9);
+            --lean-color: #10b981;
+            --lean-glow: rgba(16, 185, 129, 0.4);
+            --sigma-color: #8b5cf6;
+            --sigma-glow: rgba(139, 92, 246, 0.4);
+            --healthcare-teal: #14b8a6;
+            --healthcare-glow: rgba(20, 184, 166, 0.4);
+            --lss-orange: #f97316;
+            --gold: #fbbf24;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background: var(--bg-deep);
+            min-height: 100vh;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(139, 92, 246, 0.06) 100%);
+            padding: 50px 40px;
+            border-radius: 24px;
+            text-align: center;
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 60%);
+            animation: slowPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes slowPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.6;
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--lean-color), var(--sigma-color));
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title .lean-text {
+            color: var(--lean-color);
+        }
+
+        .hero-title .sigma-text {
+            color: var(--sigma-color);
+        }
+
+        .hero-title .amp {
+            color: var(--text-secondary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle strong {
+            color: var(--lean-color);
+        }
+
+        .hero-subtitle em {
+            color: var(--sigma-color);
+            font-style: normal;
+        }
+
+        /* ============================================
+           PART 1: GATEWAY HERO CARDS
+           ============================================ */
+        .gateway-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .gateway-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .gateway-card {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            min-height: 350px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border);
+        }
+
+        .gateway-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .gateway-card .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease;
+            z-index: 1;
+        }
+
+        .gateway-card:hover .bg-image {
+            transform: scale(1.1);
+        }
+
+        .gateway-card .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(10, 15, 26, 0.98) 20%, rgba(10, 15, 26, 0.5) 100%);
+            z-index: 2;
+        }
+
+        .gateway-card .content {
+            position: relative;
+            z-index: 3;
+            padding: 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .gateway-card .label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--healthcare-teal);
+            margin-bottom: 10px;
+        }
+
+        .gateway-card.history-card .label {
+            color: var(--healthcare-teal);
+        }
+
+        .gateway-card.method-card .label {
+            color: var(--lss-orange);
+        }
+
+        .gateway-card h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .gateway-card p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .gateway-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .history-card .gateway-cta {
+            background: linear-gradient(135deg, var(--healthcare-teal), #0d9488);
+            color: white;
+            box-shadow: 0 10px 30px var(--healthcare-glow);
+        }
+
+        .method-card .gateway-cta {
+            background: linear-gradient(135deg, var(--lss-orange), #ea580c);
+            color: white;
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.3);
+        }
+
+        .gateway-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .gateway-cta .arrow {
+            transition: transform 0.3s;
+        }
+
+        .gateway-card:hover .gateway-cta .arrow {
+            transform: translateX(5px);
+        }
+
+        /* Split Visual for Methodology Card */
+        .split-visual {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .split-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 1px solid var(--border);
+        }
+
+        .split-icon.lean {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), transparent);
+            box-shadow: 0 0 30px var(--lean-glow);
+        }
+
+        .split-icon.sigma {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), transparent);
+            box-shadow: 0 0 30px var(--sigma-glow);
+        }
+
+        /* ============================================
+           MODAL SYSTEM - 80% Screen Glassmorphism
+           ============================================ */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            background: var(--glass-strong);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-container.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 35px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .modal-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .modal-title h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .modal-title .badge {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-close {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* ============================================
+           MODAL A: TIMELINE JOURNEY
+           ============================================ */
+        .timeline-modal .modal-title .badge {
+            background: var(--healthcare-teal);
+            color: white;
+        }
+
+        .timeline-container {
+            height: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0 100px;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+        }
+
+
+
+        .timeline-path {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: relative;
+            padding: 60px 0;
+        }
+
+        /* The Glowing Path Line */
+        .timeline-path::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--sigma-color), var(--sigma-color) 60%, var(--healthcare-teal) 60%, var(--healthcare-teal));
+            transform: translateY(-50%);
+            z-index: 1;
+            box-shadow: 0 0 20px var(--sigma-glow);
+        }
+
+        /* Healthcare Stream Joins at Node 6 */
+        .timeline-path::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 60%;
+            width: 40%;
+            height: 4px;
+            background: var(--healthcare-teal);
+            transform: translateY(-50%);
+            z-index: 2;
+            box-shadow: 0 0 30px var(--healthcare-glow);
+        }
+
+        .timeline-node {
+            position: relative;
+            z-index: 10;
+            flex-shrink: 0;
+            width: 320px;
+            scroll-snap-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .timeline-connector {
+            width: 80px;
+            height: 4px;
+            background: transparent;
+            flex-shrink: 0;
+        }
+
+        .node-content {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 25px;
+            transition: all 0.4s ease;
+            transform-origin: center;
+        }
+
+        .timeline-node:hover .node-content,
+        .timeline-node.active .node-content {
+            transform: scale(1.05);
+            border-color: var(--sigma-color);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px var(--sigma-glow);
+        }
+
+        .timeline-node.healthcare:hover .node-content,
+        .timeline-node.healthcare.active .node-content {
+            border-color: var(--healthcare-teal);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px var(--healthcare-glow);
+        }
+
+        .node-year {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: var(--sigma-color);
+            color: white;
+        }
+
+        .timeline-node.healthcare .node-year {
+            background: var(--healthcare-teal);
+        }
+
+        .node-image {
+            width: 100%;
+            height: 140px;
+            border-radius: 16px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .node-figure {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .node-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .node-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .node-impact {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--sigma-color);
+            border: 1px solid var(--sigma-color);
+        }
+
+        .timeline-node.healthcare .node-impact {
+            background: rgba(20, 184, 166, 0.2);
+            color: var(--healthcare-teal);
+            border-color: var(--healthcare-teal);
+        }
+
+        /* Floating Animation */
+        @keyframes floatNode {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .timeline-node.active .node-content {
+            animation: floatNode 3s ease-in-out infinite;
+        }
+
+        /* ============================================
+           MODAL B: COMPARATOR (Before/After Slider)
+           ============================================ */
+        .comparator-modal .modal-title .badge {
+            background: linear-gradient(135deg, var(--lean-color), var(--sigma-color));
+            color: white;
+        }
+
+        .comparator-container {
+            height: 100%;
+            position: relative;
+            overflow: visible;
+        }
+
+        .comparator-side {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 60px;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+
+        .comparator-side::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .comparator-side::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .comparator-side.lean-side {
+            left: 0;
+            width: 50%;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+            border-right: 1px solid var(--border);
+        }
+
+        .comparator-side.sigma-side {
+            right: 0;
+            width: 50%;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.15));
+            border-left: 1px solid var(--border);
+            /* Added for clarity when sliding */
+        }
+
+        .comparator-side .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-size: cover;
+            background-position: center;
+            filter: blur(2px);
+            z-index: 1;
+        }
+
+        .lean-side .bg-pattern {
+            background-image: url('images/fundamentals/lean_general.png');
+        }
+
+        .sigma-side .bg-pattern {
+            background-image: url('images/fundamentals/sixsigma_healthcare.png');
+        }
+
+        .comparator-content {
+            position: relative;
+            z-index: 2;
+            min-width: 500px;
+            /* Prevent text squeezing */
+            flex-shrink: 0;
+        }
+
+        .sigma-side .comparator-content {
+            position: absolute;
+            right: 60px;
+            /* Pin the right-side content to the right */
+        }
+
+        /* Help Button styles */
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+            color: white !important;
+            padding: 10px 24px !important;
+            border-radius: 50px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+            border: none;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 40px rgba(59, 130, 246, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            filter: brightness(1.1);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 16px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        .instruction-overlay {
+            position: absolute;
+            top: 80px;
+            right: 40px;
+            width: 320px;
+            background: var(--glass-strong);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--sigma-color);
+            padding: 25px;
+            border-radius: 20px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeInScale 0.3s ease;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .instruction-overlay.active {
+            display: block;
+        }
+
+        .instruction-overlay h4 {
+            color: var(--sigma-color);
+            margin-bottom: 12px;
+        }
+
+        .instruction-overlay p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .instruction-overlay ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .instruction-overlay li {
+            font-size: 13px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .slider-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 50px;
+            pointer-events: none;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--sigma-color);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        .comparator-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .lean-side .comparator-title {
+            background: linear-gradient(135deg, var(--lean-color), #34d399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sigma-side .comparator-title {
+            background: linear-gradient(135deg, var(--sigma-color), #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .comparator-role {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .comparator-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comparator-list li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .comparator-list li:last-child {
+            border-bottom: none;
+        }
+
+        .comparator-list .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .lean-side .comparator-list .icon {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .sigma-side .comparator-list .icon {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        /* Center Fusion Slider */
+        .comparator-slider {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100%;
+            width: 100px;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: ew-resize;
+        }
+
+        .slider-line {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--lean-color), var(--sigma-color));
+            transform: translateX(-50%);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .slider-handle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--glass-strong);
+            backdrop-filter: blur(20px);
+            border: 3px solid;
+            border-image: linear-gradient(135deg, var(--lean-color), var(--sigma-color)) 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .slider-handle::before {
+            content: '⟷';
+            font-size: 24px;
+            color: white;
+        }
+
+        .fusion-text {
+            position: absolute;
+            bottom: 80px;
+            background: var(--glass-strong);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .fusion-text p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .fusion-logo {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, var(--lean-color), var(--sigma-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+        }
+
+        /* Timeline Scroll Indicators */
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            animation: bounceHint 2s ease-in-out infinite;
+        }
+
+        @keyframes bounceHint {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* Context Toggle */
+        .context-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .context-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .context-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .context-btn.active {
+            background: linear-gradient(135deg, var(--lean-color), var(--sigma-color));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 10px 40px var(--sigma-glow);
+        }
+
+        /* Bottom Section - Original Cards */
+        .bottom-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .method-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .method-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .method-card {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .method-card .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: all 0.5s ease;
+            z-index: 1;
+        }
+
+        .method-card .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .method-card.lean-card .bg-overlay {
+            background: linear-gradient(to top, rgba(10, 15, 26, 0.98) 35%, rgba(16, 185, 129, 0.25) 100%);
+        }
+
+        .method-card.sigma-card .bg-overlay {
+            background: linear-gradient(to top, rgba(10, 15, 26, 0.98) 35%, rgba(139, 92, 246, 0.25) 100%);
+        }
+
+        .method-card .content {
+            position: relative;
+            z-index: 3;
+            padding: 35px;
+        }
+
+        .method-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .lean-card .method-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--lean-color);
+            border: 1px solid var(--lean-color);
+        }
+
+        .sigma-card .method-badge {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--sigma-color);
+            border: 1px solid var(--sigma-color);
+        }
+
+        .method-card h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .lean-card h2 {
+            background: linear-gradient(135deg, var(--lean-color), #34d399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sigma-card h2 {
+            background: linear-gradient(135deg, var(--sigma-color), #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .method-card .focus {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .method-card .motto {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 25px;
+            padding-left: 15px;
+            border-left: 3px solid;
+        }
+
+        .lean-card .motto {
+            border-left-color: var(--lean-color);
+        }
+
+        .sigma-card .motto {
+            border-left-color: var(--sigma-color);
+        }
+
+        .example-box {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .example-box .scenario {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .lean-card .example-box .scenario {
+            color: var(--lean-color);
+        }
+
+        .sigma-card .example-box .scenario {
+            color: var(--sigma-color);
+        }
+
+        .example-box .desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Hover Animations */
+        .lean-card:hover .bg-image {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
+        .sigma-card:hover .bg-image {
+            transform: scale(1.15);
+            filter: contrast(1.2) saturate(1.3);
+        }
+
+        .fade-content {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .fade-content.fading {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        /* ============================================
+           PROCESS LAB BUTTON
+           ============================================ */
+        .lab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            margin-left: 20px;
+            vertical-align: middle;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
+            animation: labPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes labPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 10px 40px rgba(249, 115, 22, 0.6), 0 0 60px rgba(249, 115, 22, 0.3);
+            }
+        }
+
+        .lab-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 50px rgba(249, 115, 22, 0.6);
+        }
+
+        .lab-icon {
+            font-size: 18px;
+        }
+
+        .lab-text {
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ============================================
+           PROCESS LAB MODAL - COFFEE SHOP SIMULATOR
+           ============================================ */
+        .processlab-modal {
+            max-width: 1400px;
+            width: 95%;
+            height: 85vh;
+            background: #0a0f1a !important;
+            overflow: hidden;
+        }
+
+        .processlab-modal .modal-title .badge {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+        }
+
+        .lab-panels {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 20px;
+            height: 100%;
+            padding: 25px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 1100px) {
+            .lab-panels {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+        }
+
+        .lab-panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title .icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        /* Panel A: Chaos Controls */
+        .chaos-panel .panel-title {
+            color: #ef4444;
+        }
+
+        .chaos-panel .panel-title .icon {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .chaos-toggle {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chaos-toggle:hover {
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .chaos-toggle.active {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+        }
+
+        .chaos-toggle.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #ef4444;
+        }
+
+        .chaos-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .chaos-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chaos-impact {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 50px;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .chaos-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .variation-display {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .variation-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .variation-value {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+        }
+
+        .variation-value.low {
+            color: var(--lean-color);
+        }
+
+        .variation-value.medium {
+            color: #fbbf24;
+        }
+
+        .variation-value.high {
+            color: #ef4444;
+        }
+
+        /* ============================================
+           NEW GAMIFIED PROCESS LAB
+           ============================================ */
+        .process-lab-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 300px;
+            gap: 20px;
+            height: 100%;
+            min-height: 0;
+            flex: 1;
+            background: #0a0f1a;
+            color: #e2e8f0;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .lab-sidebar {
+            background: rgba(15, 23, 42, 0.6);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(99, 102, 241, 0.5) transparent;
+        }
+
+        .lab-sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .lab-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .lab-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 10px;
+        }
+
+        .lab-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
+        }
+
+        .lab-stage {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at center, rgba(30, 41, 59, 0.5) 0%, transparent 100%);
+        }
+
+        .lab-scorecard {
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(99, 102, 241, 0.5) transparent;
+        }
+
+        .lab-scorecard::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .lab-scorecard::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .lab-scorecard::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 10px;
+        }
+
+        .lab-scorecard::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
+        }
+
+        /* Center Stage Elements */
+        .curve-stage-container {
+            flex: 1;
+            position: relative;
+            min-height: 400px;
+        }
+
+        /* Sigma Explorer - Draggable Lens */
+        .sigma-explorer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 60;
+            user-select: none;
+            transition: transform 0.1s ease-out;
+        }
+
+        .sigma-explorer:active {
+            cursor: grabbing;
+        }
+
+        .explorer-lens {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #6366f1;
+            background: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5), inset 0 0 20px rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .explorer-lens.sigma-1 {
+            border-color: #ef4444;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+        }
+
+        .explorer-lens.sigma-2 {
+            border-color: #f59e0b;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+        }
+
+        .explorer-lens.sigma-3 {
+            border-color: #eab308;
+            box-shadow: 0 0 30px rgba(234, 179, 8, 0.5);
+        }
+
+        .explorer-lens.sigma-4 {
+            border-color: #22c55e;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+        }
+
+        .explorer-lens.sigma-5 {
+            border-color: #10b981;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+        }
+
+        .explorer-lens.sigma-6 {
+            border-color: #6366f1;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .explorer-data {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 10px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            min-width: 140px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .explorer-sigma {
+            font-size: 28px;
+            font-weight: 900;
+            color: #6366f1;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .explorer-stats {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .explorer-stats .stat-label {
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .explorer-stats div {
+            margin: 4px 0;
+        }
+
+        .explorer-hint {
+            position: absolute;
+            top: 100%;
+            /* Move relative to parent */
+            margin-top: 130px;
+            /* Space it well below the data box */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.4);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            pointer-events: none;
+            animation: pulse-hint 2s ease-in-out infinite;
+        }
+
+
+        @keyframes pulse-hint {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .simulation-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 40;
+        }
+
+        .sim-item {
+            position: absolute;
+            font-size: 20px;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .sim-item.hit {
+            color: #10b981;
+            filter: drop-shadow(0 0 5px #10b981);
+        }
+
+        .sim-item.miss {
+            color: #ef4444;
+            filter: drop-shadow(0 0 5px #ef4444);
+        }
+
+        /* Sidebar Controls */
+        .scenario-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+
+        .scenario-pill.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: #6366f1;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .chaos-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .chaos-toggle:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .chaos-toggle.active {
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 3px solid #ef4444;
+        }
+
+        /* Scorecard Displays */
+        .metric-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .metric-box:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .metric-value {
+            font-size: 22px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .sigma-display-glow {
+            font-size: 48px;
+            text-align: center;
+            margin: 10px 0;
+            text-shadow: 0 0 20px currentColor;
+            transition: font-size 0.3s ease;
+        }
+
+        .metric-box.active .sigma-display-glow {
+            font-size: 36px;
+            /* Slightly smaller when expanded */
+        }
+
+        /* Limit Markers */
+        .limit-handle {
+            cursor: ew-resize;
+            pointer-events: auto;
+        }
+
+        .limit-label {
+            font-size: 10px;
+            font-weight: 800;
+            fill: #fff;
+        }
+
+        /* Action Buttons */
+        .run-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .run-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.5);
+        }
+
+        .run-btn:active {
+            transform: scale(0.95);
+        }
+
+        .run-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* DPMO Pop-up Modal */
+        .dpmo-popup-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: auto;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: white;
+            padding: 5px;
+            border-radius: 12px;
+            z-index: 100002;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
+        }
+
+        .dpmo-popup-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .dpmo-full-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .dpmo-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 30px;
+            height: 30px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .modal-header {
+            cursor: move;
+        }
+
+        .target-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--lean-color);
+            transform: translateX(-50%);
+            opacity: 0.5;
+        }
+
+        .target-label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--lean-color);
+            background: rgba(16, 185, 129, 0.2);
+            padding: 5px 15px;
+            border-radius: 6px;
+            pointer-events: none;
+        }
+
+        /* Sigma Lines & Labels */
+        .sigma-line {
+            stroke: var(--sigma-color);
+            stroke-width: 1;
+            stroke-dasharray: 4 4;
+            opacity: 0.3;
+            transition: all 0.5s ease;
+        }
+
+        .sigma-line.active {
+            opacity: 0.8;
+            stroke-width: 2;
+        }
+
+        .sigma-marker-label {
+            font-size: 9px;
+            fill: var(--text-secondary);
+            font-weight: 600;
+            text-anchor: middle;
+            transition: all 0.5s ease;
+        }
+
+        /* Hover Explanation Tooltip */
+        .graph-explanation {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--glass-strong);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--sigma-color);
+            padding: 12px 20px;
+            border-radius: 12px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 240px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .graph-explanation.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .graph-explanation h5 {
+            color: var(--sigma-color);
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .graph-explanation p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Zoom Functionality */
+        .curve-stage-container {
+            cursor: zoom-in;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        .curve-stage-container.zoomed {
+            cursor: zoom-out;
+            transform: scale(1.4);
+            z-index: 50;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+        }
+
+        .sigma-zone {
+            transition: all 0.3s ease;
+            cursor: crosshair;
+        }
+
+        /* Lab Legend */
+        .lab-legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 70;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.green {
+            background: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        }
+
+        .legend-dot.yellow {
+            background: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+        }
+
+        .legend-dot.red {
+            background: #ef4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+        }
+
+
+        .sigma-zone:hover {
+            fill-opacity: 0.6 !important;
+            stroke-width: 1.5 !important;
+        }
+
+        .sigma-bracket-line {
+            fill: none;
+            stroke-width: 1;
+        }
+
+        .sigma-percentage-text {
+            font-size: 9px;
+            font-weight: 800;
+            text-anchor: middle;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        #scenario-selector {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 8px 15px;
+            outline: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: 0.3s;
+        }
+
+        #scenario-selector:hover {
+            border-color: var(--sigma-color);
+            color: white;
+        }
+
+        /* Graph Zones for explains */
+        .graph-zone {
+            fill: transparent;
+            cursor: pointer;
+        }
+
+        .graph-zone:hover {
+            fill: rgba(139, 92, 246, 0.05);
+        }
+
+        /* Cup Animation Container */
+        .cups-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .falling-cup {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: fallCup 1.5s ease-in forwards;
+        }
+
+        @keyframes fallCup {
+            0% {
+                transform: translateY(-20px) scale(0.5);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                transform: translateY(280px);
+                opacity: 1;
+            }
+        }
+
+        .falling-cup.good {
+            filter: hue-rotate(100deg) brightness(1.3);
+        }
+
+        .falling-cup.defect {
+            filter: hue-rotate(-50deg) brightness(0.8);
+        }
+
+        .defect-splash {
+            animation: splash 0.3s ease-out forwards;
+        }
+
+        @keyframes splash {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3) rotate(15deg);
+            }
+
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Run Batch Button */
+        .run-batch-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 20px 30px;
+            background: linear-gradient(135deg, var(--sigma-color), #7c3aed);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 15px 40px var(--sigma-glow);
+        }
+
+        .run-batch-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 50px var(--sigma-glow);
+        }
+
+        .run-batch-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .run-batch-btn .cup-icon {
+            font-size: 24px;
+            animation: steam 1s ease-in-out infinite;
+        }
+
+        @keyframes steam {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        /* Panel C: Scorecard */
+        .scorecard-panel .panel-title {
+            color: var(--gold);
+        }
+
+        .scorecard-panel .panel-title .icon {
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .customer-selector {
+            margin-bottom: 20px;
+        }
+
+        .customer-option {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .customer-option:hover {
+            border-color: var(--gold);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .customer-option.active {
+            border-color: var(--gold);
+            background: rgba(251, 191, 36, 0.15);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+        }
+
+        .customer-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .customer-icon {
+            font-size: 18px;
+        }
+
+        .customer-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+        }
+
+        .customer-tolerance {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* Results Display */
+        .results-section {
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+        }
+
+        .result-value.sigma-score {
+            font-size: 3rem;
+        }
+
+        .result-value.sigma-low {
+            color: #ef4444;
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+        }
+
+        .result-value.sigma-medium {
+            color: #fbbf24;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+        }
+
+        .result-value.sigma-high {
+            color: var(--lean-color);
+            text-shadow: 0 0 30px var(--lean-glow);
+        }
+
+        .batch-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .batch-stat {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .batch-stat.good {
+            border: 1px solid var(--lean-color);
+        }
+
+        .batch-stat.defect {
+            border: 1px solid #ef4444;
+        }
+
+        .batch-stat .value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            font-family: 'Courier New', monospace;
+        }
+
+        .batch-stat.good .value {
+            color: var(--lean-color);
+        }
+
+        .batch-stat.defect .value {
+            color: #ef4444;
+        }
+
+        .batch-stat .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* Bell Curve Animation */
+        .bell-path {
+            fill: none;
+            stroke: var(--sigma-color);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 10px var(--sigma-glow));
+            transition: d 0.5s ease;
+        }
+
+        .bell-fill {
+            fill: url(#bellGradient);
+            opacity: 0.3;
+            transition: d 0.5s ease;
+        }
+
+        /* Good/Defect Bins */
+        .bins-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .result-bin {
+            flex: 1;
+            padding: 10px 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 14px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            min-height: 90px;
+        }
+
+        .result-bin.good-bin {
+            border: 1.5px solid rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .result-bin.defect-bin {
+            border: 1.5px solid rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .bin-count {
+            display: block;
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .result-bin.good-bin .bin-count {
+            color: #10b981;
+        }
+
+        .result-bin.defect-bin .bin-count {
+            color: #ef4444;
+        }
+
+        .bin-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            opacity: 0.8;
+        }
+
+        .result-bin.good-bin .bin-label {
+            color: #34d399;
+        }
+
+        .result-bin.defect-bin .bin-label {
+            color: #f87171;
+        }
+
+        .modal-action-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .reset-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reset-action-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .reset-action-btn i {
+            width: 12px;
+            height: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- TOP NAVIGATION -->
+        <div class="flex-between"
+            style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); gap: 15px;">
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-ghost" onclick="window.location.href='Tool_WorkflowHub.html'">⟵ Workflow
+                    Hub</button>
+                <button class="btn" onclick="window.location.href='Tool_BlackBeltCommandCenter.html'"
+                    style="background: linear-gradient(90deg, #22d3ee, #ec4899); border:none; color:white; font-family:'Orbitron'; font-weight:800; font-size:10px; border-radius:8px; display:flex; align-items:center; gap:8px; padding: 10px 15px;">
+                    🛸 COMMAND CENTER
+                </button>
+            </div>
+            <h2
+                style="margin:0; font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:3px;">
+                COURSE MODULE: FUNDAMENTALS</h2>
+                            <div style="background:var(--surface-2); padding:5px; border-radius:50px; border:1px solid var(--glass-border); display:flex; gap:5px; margin-right: 15px; display: inline-flex;">
+                    
+                    <button onclick="setTheme('twilight')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Twilight Mode"><i class="fas fa-moon"></i></button>
+                    <button onclick="setTheme('night')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Futuristic Dark (Night)"><i class="fas fa-space-shuttle"></i></button>
+                </div><button class="btn btn-accent" onclick="window.location.href='Stats_Calculator_Main.html'">Stats Engine
+                🧮</button>
+        </div>
+
+        <!-- HERO SECTION -->
+        <div class="hero-section">
+            <div class="hero-badge">⚡ Speed Meets Precision</div>
+            <h1 class="hero-title">
+                <span class="lean-text">Lean</span>
+                <span class="amp">&</span>
+                <span class="sigma-text">Six Sigma</span>
+                <button class="lab-btn" onclick="openModal('processlab')" title="Open Process Lab Simulator">
+                    <span class="lab-icon">🧪</span>
+                    <span class="lab-text">Process Lab</span>
+                </button>
+            </h1>
+            <p class="hero-subtitle">
+                <strong>Lean</strong> clears the road (Speed). <em>Six Sigma</em> makes sure you don't crash (Safety).
+                Together, they transform chaos into excellence.
+            </p>
+        </div>
+
+        <!-- GATEWAY HERO CARDS -->
+        <div class="gateway-grid">
+            <!-- Card A: History -->
+            <div class="gateway-card history-card" onclick="openModal('timeline')">
+                <div class="bg-image" style="background-image: url('images/fundamentals/hero_timeline.png');"></div>
+                <div class="overlay"></div>
+                <div class="content">
+                    <div class="label">The Origin Story</div>
+                    <h2>The LSS Evolution</h2>
+                    <p>From 1809 to today. Travel through 200+ years of innovation. See how factory concepts now save
+                        human lives.</p>
+                    <button class="gateway-cta">
+                        <span>Start the Journey</span>
+                        <span class="arrow">→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card B: Methodology -->
+            <div class="gateway-card method-card" onclick="openModal('comparator')">
+                <div class="bg-image"
+                    style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);">
+                </div>
+                <div class="overlay"></div>
+                <div class="content">
+                    <div class="label">The Power Dynamics</div>
+                    <div class="split-visual">
+                        <div class="split-icon lean">🏎️</div>
+                        <div class="split-icon sigma">🎯</div>
+                    </div>
+                    <h2>The Dynamic Duo</h2>
+                    <p>Engine vs Steering. Speed vs Precision. Explore the forces that drive world-class performance.
+                    </p>
+                    <button class="gateway-cta">
+                        <span>Compare Forces</span>
+                        <span class="arrow">→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTEXT TOGGLE -->
+        <div class="context-toggle">
+            <button class="context-btn" data-context="general" onclick="setContext('general')">
+                <span>🏢</span><span>General Business</span>
+            </button>
+            <button class="context-btn active" data-context="healthcare" onclick="setContext('healthcare')">
+                <span>🏥</span><span>Healthcare</span>
+            </button>
+            <button class="context-btn" data-context="daily_life" onclick="setContext('daily_life')">
+                <span>🏠</span><span>Daily Life</span>
+            </button>
+        </div>
+
+        <!-- BOTTOM SECTION: LEAN vs SIGMA CARDS -->
+        <div class="bottom-section">
+            <h2 class="section-title">The Power of Combined Approach</h2>
+            <div class="method-cards">
+                <!-- LEAN Card -->
+                <div class="method-card lean-card">
+                    <div class="bg-image" id="lean-bg"
+                        style="background-image: url('images/fundamentals/lean_healthcare.png');"></div>
+                    <div class="bg-overlay"></div>
+                    <div class="content">
+                        <div class="method-badge">Speed · Efficiency · Flow</div>
+                        <h2>LEAN</h2>
+                        <div class="focus">Focus: Eliminate Waste</div>
+                        <div class="motto">"Remove the Friction"</div>
+                        <div class="example-box">
+                            <div class="scenario fade-content" id="lean-scenario">Door-to-Balloon</div>
+                            <div class="desc fade-content" id="lean-desc">A heart attack patient moving from ER to Cath
+                                Lab without paperwork stops.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIX SIGMA Card -->
+                <div class="method-card sigma-card">
+                    <div class="bg-image" id="sigma-bg"
+                        style="background-image: url('images/fundamentals/sixsigma_healthcare.png');"></div>
+                    <div class="bg-overlay"></div>
+                    <div class="content">
+                        <div class="method-badge">Quality · Consistency · Precision</div>
+                        <h2>SIX SIGMA</h2>
+                        <div class="focus">Focus: Reduce Variation</div>
+                        <div class="motto">"Trust the Process"</div>
+                        <div class="example-box">
+                            <div class="scenario fade-content" id="sigma-scenario">The Anesthesiologist</div>
+                            <div class="desc fade-content" id="sigma-desc">Exact dose for weight. Too little = pain; too
+                                much = danger. Precision is vital.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL A: TIMELINE JOURNEY
+         ============================================ -->
+    <div class="modal-backdrop" id="timeline-backdrop" onclick="closeModal('timeline')"></div>
+    <div class="modal-container timeline-modal" id="timeline-modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <h2>The LSS Evolution Timeline</h2>
+                <span class="badge">Journey</span>
+            </div>
+            <button class="modal-close" onclick="closeModal('timeline')">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="timeline-container" id="timeline-scroll">
+                <div class="timeline-path">
+                    <!-- Node 1: Gauss -->
+                    <div class="timeline-node" data-index="0">
+                        <div class="node-content">
+                            <span class="node-year">1809</span>
+                            <img class="node-image" src="images/fundamentals/timeline_gauss.png"
+                                alt="Carl Friedrich Gauss">
+                            <div class="node-figure">Carl Friedrich Gauss</div>
+                            <div class="node-title">The Bell Curve</div>
+                            <div class="node-desc">The birth of the 'Normal Distribution.' The mathematical foundation
+                                of Six Sigma.</div>
+                            <div class="node-impact">📐 Mathematics</div>
+                        </div>
+                    </div>
+                    <div class="timeline-connector"></div>
+
+                    <!-- Node 2: Ford -->
+                    <div class="timeline-node" data-index="1">
+                        <div class="node-content">
+                            <span class="node-year">1913</span>
+                            <img class="node-image" src="images/fundamentals/timeline_ford.png" alt="Henry Ford">
+                            <div class="node-figure">Henry Ford</div>
+                            <div class="node-title">The First Flow</div>
+                            <div class="node-desc">Ford introduces the assembly line. He reduced chassis assembly from
+                                12 hours to 93 minutes.</div>
+                            <div class="node-impact">⚡ Speed (Lean)</div>
+                        </div>
+                    </div>
+                    <div class="timeline-connector"></div>
+
+                    <!-- Node 3: Ohno -->
+                    <div class="timeline-node" data-index="2">
+                        <div class="node-content">
+                            <span class="node-year">1950s</span>
+                            <img class="node-image" src="images/fundamentals/timeline_ohno.png" alt="Taiichi Ohno">
+                            <div class="node-figure">Taiichi Ohno (Toyota)</div>
+                            <div class="node-title">TPS (Toyota Production System)</div>
+                            <div class="node-desc">The birth of 'Muda' (Waste). Ohno defined the 7 Wastes. If the
+                                customer doesn't pay for it, cut it.</div>
+                            <div class="node-impact">🎯 Efficiency (Lean)</div>
+                        </div>
+                    </div>
+                    <div class="timeline-connector"></div>
+
+                    <!-- Node 4: Motorola -->
+                    <div class="timeline-node" data-index="3">
+                        <div class="node-content">
+                            <span class="node-year">1986</span>
+                            <img class="node-image" src="images/fundamentals/timeline_motorola.png"
+                                alt="Bill Smith - Motorola">
+                            <div class="node-figure">Bill Smith (Motorola)</div>
+                            <div class="node-title">Six Sigma is Born</div>
+                            <div class="node-desc">Smith coined the term. The goal: 3.4 defects per million
+                                opportunities. Perfection becomes a metric.</div>
+                            <div class="node-impact">📊 Quality (Six Sigma)</div>
+                        </div>
+                    </div>
+                    <div class="timeline-connector"></div>
+
+                    <!-- Node 5: GE -->
+                    <div class="timeline-node" data-index="4">
+                        <div class="node-content">
+                            <span class="node-year">1995</span>
+                            <img class="node-image" src="images/fundamentals/timeline_welch.png" alt="Jack Welch - GE">
+                            <div class="node-figure">Jack Welch (GE)</div>
+                            <div class="node-title">The Global Standard</div>
+                            <div class="node-desc">Welch made Six Sigma famous. He proved it wasn't just for
+                                factories—it was for strategy and finance.</div>
+                            <div class="node-impact">💼 Business Strategy</div>
+                        </div>
+                    </div>
+                    <div class="timeline-connector"></div>
+
+                    <!-- Node 6: Healthcare (Teal) -->
+                    <div class="timeline-node healthcare" data-index="5">
+                        <div class="node-content">
+                            <span class="node-year">2002</span>
+                            <img class="node-image" src="images/fundamentals/timeline_hospital.png"
+                                alt="Virginia Mason Medical Center">
+                            <div class="node-figure">Virginia Mason Medical Center</div>
+                            <div class="node-title">Healthcare Adopts Lean</div>
+                            <div class="node-desc">The first hospital to fully embed TPS. They proved that 'Factory
+                                concepts' save human lives.</div>
+                            <div class="node-impact">🏥 Patient Safety</div>
+                        </div>
+                    </div>
+                    <div class="timeline-connector"></div>
+
+                    <!-- Node 7: Today -->
+                    <div class="timeline-node healthcare" data-index="6">
+                        <div class="node-content">
+                            <span class="node-year">Today</span>
+                            <img class="node-image" src="images/fundamentals/timeline_today.png"
+                                alt="The Joint Commission">
+                            <div class="node-figure">The Joint Commission</div>
+                            <div class="node-title">RPI (Robust Process Improvement)</div>
+                            <div class="node-desc">Lean Six Sigma is now the gold standard for hospital accreditation
+                                and patient safety worldwide.</div>
+                            <div class="node-impact">🛡️ Global Standard</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-hint">
+                <span>←</span>
+                <span>Scroll to travel through time</span>
+                <span>→</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL B: COMPARATOR (Before/After Slider)
+         ============================================ -->
+    <div class="modal-backdrop" id="comparator-backdrop" onclick="closeModal('comparator')"></div>
+    <div class="modal-container comparator-modal" id="comparator-modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <h2>The Dynamic Duo</h2>
+                <span class="badge">Comparator</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="architecture-intelligence-btn" onclick="toggleInstructions()" style="padding: 8px 18px !important; font-size: 10px !important; margin-right: 10px;">
+                    <i class="fas fa-microchip"></i> Architecture Intelligence
+                </button>
+                <button class="modal-close" onclick="closeModal('comparator')">×</button>
+            </div>
+        </div>
+        <div class="modal-body" style="position: relative;">
+            <!-- Instructions Overlay -->
+            <div class="instruction-overlay" id="comparator-instructions">
+                <h4>Discovery Mode</h4>
+                <p>Lean and Six Sigma are two sides of the same coin. Use this tool to see how they differ:</p>
+                <ul>
+                    <li><strong>Drag the Handle:</strong> Grab the "LSS" circle in the middle and slide it left or
+                        right.</li>
+                    <li><strong>Reveal Philosophies:</strong> Sliding left expands the Six Sigma side; sliding right
+                        reveals more of Lean.</li>
+                    <li><strong>The Fusion:</strong> The quote in the center remains fixed to remind you that both are
+                        needed for true operational excellence.</li>
+                </ul>
+                <p style="margin-top: 15px; font-weight: 700; color: white;">Try reaching 100% on either side!</p>
+            </div>
+
+            <div class="comparator-container">
+                <!-- LEAN Side -->
+                <div class="comparator-side lean-side">
+                    <div class="bg-pattern"></div>
+                    <div class="comparator-content">
+                        <h2 class="comparator-title">LEAN</h2>
+                        <div class="comparator-role">"The Engine" — Speed & Flow</div>
+                        <ul class="comparator-list">
+                            <li>
+                                <div class="icon">⚡</div> Eliminates WASTE (Muda)
+                            </li>
+                            <li>
+                                <div class="icon">🔄</div> Streamlines Workflows
+                            </li>
+                            <li>
+                                <div class="icon">⏱️</div> Reduces Wait Times
+                            </li>
+                            <li>
+                                <div class="icon">📦</div> Optimizes Resources
+                            </li>
+                            <li>
+                                <div class="icon">🎯</div> Focus on "Flow" & "Pull"
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SIGMA Side -->
+                <div class="comparator-side sigma-side">
+                    <div class="bg-pattern" style="background-image: url('images/fundamentals/timeline_gauss.png');">
+                    </div>
+                    <div class="comparator-content">
+                        <h2 class="comparator-title">SIX SIGMA</h2>
+                        <div class="comparator-role">"The Steering" — Precision & Control</div>
+                        <ul class="comparator-list">
+                            <li>
+                                <div class="icon">📊</div> Reduces VARIATION
+                            </li>
+                            <li>
+                                <div class="icon">📈</div> Data-Driven Decisions (DMAIC)
+                            </li>
+                            <li>
+                                <div class="icon">🔬</div> Minimizes Defects
+                            </li>
+                            <li>
+                                <div class="icon">📐</div> Process Capability (Cp/Cpk)
+                            </li>
+                            <li>
+                                <div class="icon">🎯</div> 3.4 DPMO Target
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Center Slider -->
+                <div class="comparator-slider">
+                    <div class="slider-line"></div>
+                    <div class="slider-handle"></div>
+                    <div class="fusion-text">
+                        <div class="fusion-logo">LSS</div>
+                        <p>"Speed without precision is dangerous. Precision without speed is too slow."</p>
+                    </div>
+                </div>
+
+                <!-- Slider Hint -->
+                <div class="slider-hint">
+                    <div class="pulse-dot"></div>
+                    Drag the center handle to compare
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL C: PROCESS LAB - GAMIFIED SCENARIO ENGINE
+         ============================================ -->
+    <div class="modal-backdrop" id="processlab-backdrop" onclick="closeModal('processlab')"></div>
+    <div class="modal-container processlab-modal" id="processlab-modal">
+        <div class="process-lab-container">
+            <!-- PANEL A: SCENARIOS & CHAOS -->
+            <div class="lab-sidebar">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <div style="background:#6366f1; width:3px; height:20px;"></div>
+                    <h3 id="lab-title-text"
+                        style="font-size: 14px; text-transform:uppercase; letter-spacing:1px; margin:0;">Scenario Lab
+                    </h3>
+                </div>
+
+                <div id="scenario-list" style="display:flex; flex-direction:column; gap:10px;">
+                    <!-- Scenarios injected via JS -->
+                </div>
+
+                <div style="margin-top:auto; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+                    <div class="metric-label" style="margin-bottom:10px;">Chaos Inputs (Sources of Variation)</div>
+                    <div id="chaos-controls" style="display:flex; flex-direction:column; gap:8px;">
+                        <!-- Toggles injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL B: BELL CURVE STAGE -->
+            <div class="lab-stage">
+                <div class="sigma-explorer" id="sigma-explorer">
+                    <div class="explorer-lens" id="explorer-lens">
+                        <svg id="explorer-svg" viewBox="0 0 100 100" style="width:100%; height:100%;">
+                            <!-- Sigma reference line (vertical) -->
+                            <line id="explorer-sigma-line" x1="50" y1="0" x2="50" y2="100" stroke="#fff"
+                                stroke-width="2" stroke-opacity="0.6" />
+                            <!-- The curve fill -->
+                            <path id="explorer-curve" fill="rgba(99, 102, 241, 0.3)" stroke="#6366f1" stroke-width="2"
+                                d="" />
+                            <!-- Distance arrow/indicator -->
+                            <line id="explorer-distance" x1="50" y1="0" x2="50" y2="0" stroke="#10b981" stroke-width="2"
+                                stroke-dasharray="3 2" />
+                            <text id="explorer-distance-label" x="55" y="50" fill="#10b981" font-size="8"
+                                font-weight="bold"></text>
+                        </svg>
+                    </div>
+                    <div class="explorer-data" id="explorer-data">
+                        <div class="explorer-sigma" id="explorer-sigma">3σ</div>
+                        <div class="explorer-stats">
+                            <div><span class="stat-label">DPMO:</span> <span id="explorer-dpmo">66,807</span></div>
+                            <div><span class="stat-label">Yield:</span> <span id="explorer-yield">93.3%</span></div>
+                        </div>
+                    </div>
+                    <div class="explorer-hint">↔ Drag to explore sigma zones</div>
+                </div>
+
+                <div class="lab-legend">
+                    <div class="legend-item"><span class="legend-dot green"></span> Stability (±2σ)</div>
+                    <div class="legend-item"><span class="legend-dot yellow"></span> Warning (±3σ)</div>
+                    <div class="legend-item"><span class="legend-dot red"></span> Outlier (>±3σ)</div>
+                </div>
+
+
+                <div class="curve-stage-container">
+                    <svg id="lab-svg" viewBox="0 0 800 500" style="width:100%; height:100%; overflow:visible;">
+                        <!-- Sigma Zone Colors -->
+                        <g id="zone-paths"></g>
+                        <!-- Sigma Level Lines -->
+                        <g id="sigma-lines"></g>
+                        <!-- Main Curve Line -->
+                        <path id="lab-curve-main" fill="none" stroke="#6366f1" stroke-width="4" d="" />
+                        <!-- Target/Mean Line -->
+                        <line id="lab-mean-line" x1="400" y1="50" x2="400" y2="450" stroke="rgba(255,255,255,0.2)"
+                            stroke-dasharray="4 4" />
+                        <!-- Limit Handles (Draggable) -->
+                        <g id="limits-group">
+                            <line id="lsl-line" class="limit-handle" x1="200" y1="50" x2="200" y2="450" stroke="#ef4444"
+                                stroke-width="3" />
+                            <text id="lsl-label" class="limit-label" x="200" y="40" text-anchor="middle">REJECT
+                                (LOW)</text>
+
+                            <line id="usl-line" class="limit-handle" x1="600" y1="50" x2="600" y2="450" stroke="#ef4444"
+                                stroke-width="3" />
+                            <text id="usl-label" class="limit-label" x="600" y="40" text-anchor="middle">REJECT
+                                (HIGH)</text>
+                        </g>
+                        <!-- Sigma Labels at Bottom -->
+                        <g id="sigma-labels"></g>
+                    </svg>
+                    <!-- Floating simulation items -->
+                    <div class="simulation-layer" id="sim-layer"></div>
+                </div>
+
+                <div
+                    style="padding: 20px; display:flex; justify-content:center; gap:20px; background: rgba(0,0,0,0.3);">
+                    <button class="run-btn" id="run-batch-btn" onclick="startBatchSimulation()">
+                        RUN BATCH (n=1,000)
+                    </button>
+                    <button class="reset-action-btn" onclick="resetSimData()" style="padding:15px; border-radius:12px;">
+                        RESET LOGS
+                    </button>
+                </div>
+            </div>
+
+            <!-- PANEL C: SIX SIGMA SCORECARD -->
+            <!-- PANEL C: SIX SIGMA SCORECARD -->
+            <div class="lab-scorecard" id="lab-scorecard">
+                <div class="metric-box" data-metric="quality">
+                    <div class="metric-label">Operational Quality <span style="opacity:0.5; font-size:10px;">ⓘ</span>
+                    </div>
+                    <div class="sigma-display-glow" id="sigma-display">0.0σ</div>
+                    <div style="text-align:center; font-size:12px; color:#94a3b8;" id="sigma-status">CHAOS</div>
+                </div>
+
+                <div class="metric-box" data-metric="yield">
+                    <div class="metric-label">Yield Accuracy <span style="opacity:0.5; font-size:10px;">ⓘ</span></div>
+                    <div class="metric-value" id="yield-display">0.00%</div>
+                </div>
+
+                <div class="metric-box" data-metric="dpmo">
+                    <div class="metric-label">Defects (DPMO) <span style="opacity:0.5; font-size:10px;">ⓘ</span></div>
+                    <div class="metric-value" style="color:#ef4444;" id="dpmo-display">0</div>
+                </div>
+
+                <div class="metric-box" data-metric="copq">
+                    <div class="metric-label">Cost of Poor Quality (COPQ) <span
+                            style="opacity:0.5; font-size:10px;">ⓘ</span></div>
+                    <div class="metric-value" style="color:#facc15;" id="cost-display">$0.00</div>
+                    <div style="font-size:10px; color:#94a3b8; margin-top:5px;">Weighted loss per defect event.</div>
+                </div>
+
+                <div
+                    style="margin-top:auto; padding:15px; background:rgba(99, 102, 241, 0.1); border-radius:12px; border:1px solid rgba(99, 102, 241, 0.2);">
+                    <div style="font-weight:800; font-size:12px; margin-bottom:5px; color:#818cf8;">THE MAGNIFYING LENS
+                    </div>
+                    <p style="font-size:11px; margin:0; line-height:1.4; color:#94a3b8;">
+                        At 6 Sigma, defects are invisible at normal scale. The 1000x lens tracks the intersection of the
+                        process curve and the USL.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close" onclick="closeModal('processlab')"
+            style="position:absolute; top:20px; right:20px; z-index:100;">×</button>
+    </div>
+
+    <script>
+        // ============================================
+        // CONTENT DATA
+        // ============================================
+        const introContent = {
+            bottom_split: {
+                lean: {
+                    examples: {
+                        general: { scenario: "The F1 Pit Stop", desc: "Changing tires in 2.0 seconds. No wasted movement. Pure flow." },
+                        healthcare: { scenario: "Door-to-Balloon", desc: "A heart attack patient moving from ER to Cath Lab without paperwork stops." },
+                        daily_life: { scenario: "Mise-en-place", desc: "A chef having all ingredients chopped and ready before cooking starts." }
+                    }
+                },
+                six_sigma: {
+                    examples: {
+                        general: { scenario: "The Barista", desc: "Your latte tastes exactly the same in NY, London, and Tokyo. Zero variation." },
+                        healthcare: { scenario: "The Anesthesiologist", desc: "Exact dose for weight. Too little = pain; too much = danger. Precision is vital." },
+                        daily_life: { scenario: "Your Alarm Clock", desc: "It wakes you at 6:00 AM every day. If it fails 1% of the time, you get fired." }
+                    }
+                }
+            }
+        };
+
+        const contextImages = {
+            lean: {
+                general: 'images/fundamentals/lean_general.png',
+                healthcare: 'images/fundamentals/lean_healthcare.png',
+                daily_life: 'images/fundamentals/lean_dailylife.png'
+            },
+            sigma: {
+                general: 'images/fundamentals/sixsigma_general.png',
+                healthcare: 'images/fundamentals/sixsigma_healthcare.png',
+                daily_life: 'images/fundamentals/sixsigma_dailylife.png'
+            }
+        };
+
+        let currentContext = 'healthcare';
+
+        // ============================================
+        // CONTEXT SWITCHING
+        // ============================================
+        function setContext(context) {
+            if (context === currentContext) return;
+            currentContext = context;
+
+            document.querySelectorAll('.context-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.context === context);
+            });
+
+            const fadeElements = document.querySelectorAll('.fade-content');
+            fadeElements.forEach(el => el.classList.add('fading'));
+
+            setTimeout(() => {
+                updateContent();
+                fadeElements.forEach(el => el.classList.remove('fading'));
+            }, 300);
+        }
+
+        function updateContent() {
+            const ctx = currentContext;
+
+            const leanExample = introContent.bottom_split.lean.examples[ctx];
+            document.getElementById('lean-scenario').textContent = leanExample.scenario;
+            document.getElementById('lean-desc').textContent = leanExample.desc;
+            document.getElementById('lean-bg').style.backgroundImage = `url('${contextImages.lean[ctx]}')`;
+
+            const sigmaExample = introContent.bottom_split.six_sigma.examples[ctx];
+            document.getElementById('sigma-scenario').textContent = sigmaExample.scenario;
+            document.getElementById('sigma-desc').textContent = sigmaExample.desc;
+            document.getElementById('sigma-bg').style.backgroundImage = `url('${contextImages.sigma[ctx]}')`;
+        }
+
+        // ============================================
+        // MODAL SYSTEM
+        // ============================================
+        function openModal(type) {
+            const backdrop = document.getElementById(`${type}-backdrop`);
+            const modal = document.getElementById(`${type}-modal`);
+            if (backdrop) backdrop.classList.add('active');
+            if (modal) modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(type) {
+            document.getElementById(`${type}-backdrop`).classList.remove('active');
+            document.getElementById(`${type}-modal`).classList.remove('active');
+            document.body.style.overflow = '';
+
+            // Hide instructions if it was open
+            if (type === 'comparator') {
+                const instr = document.getElementById('comparator-instructions');
+                if (instr) instr.classList.remove('active');
+            }
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('timeline');
+                closeModal('comparator');
+                closeModal('processlab');
+            }
+        });
+
+        // ============================================
+        // TIMELINE INTERACTIONS
+        // ============================================
+        const timelineScroll = document.getElementById('timeline-scroll');
+        const timelineNodes = document.querySelectorAll('.timeline-node');
+
+        // Intersection Observer for active state
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    timelineNodes.forEach(n => n.classList.remove('active'));
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            root: timelineScroll,
+            threshold: 0.7
+        });
+
+        timelineNodes.forEach(node => observer.observe(node));
+
+        // ============================================
+        // GAMIFIED PROCESS LAB ENGINE
+        // ============================================
+        const gamifiedScenarios = {
+            coffee: {
+                id: 'coffee',
+                title: "Coffee Shop Intro",
+                icon: "☕",
+                unit: "oz",
+                mean: 12.0,
+                lsl: 11.5,
+                usl: 12.5,
+                baseStd: 0.15,
+                costPerDefect: 5.0,
+                itemIcon: "☕",
+                simpleDesc: "Pouring the perfect cup of coffee. If you overfill or underfill, the customer is unhappy.",
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#6366f1"],
+                chaos: [
+                    { id: 'hand', name: "Shaky Hand", impact: 0.2, desc: "Manual pouring inconsistency." },
+                    { id: 'machine', name: "Old Machine", impact: 0.1, desc: "Pressure fluctuations." },
+                    { id: 'beans', name: "Bad Beans", impact: 0.05, desc: "Variable grind density." }
+                ]
+            },
+            medication: {
+                id: 'medication',
+                title: "Medication Dosing",
+                icon: "💊",
+                unit: "mg",
+                mean: 50.0,
+                lsl: 49.5,
+                usl: 50.5,
+                baseStd: 0.08,
+                costPerDefect: 25000.0,
+                itemIcon: "💊",
+                simpleDesc: "Ensuring life-saving medicine is dosed with precision. Precision here saves lives.",
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#6366f1"],
+                chaos: [
+                    { id: 'fatigue', name: "Fatigued Nurse", impact: 0.15, desc: "Human error due to 12hr shifts." },
+                    { id: 'scale', name: "Uncalibrated Scale", impact: 0.2, desc: "Mechanical drift in measurements." },
+                    { id: 'packaging', name: "Similar Packaging", impact: 0.5, desc: "High likelihood of lookup errors." }
+                ]
+            },
+            er_wait: {
+                id: 'er_wait',
+                title: "ER Triage Wait",
+                icon: "🏥",
+                unit: "min",
+                mean: 30,
+                lsl: 5,
+                usl: 60,
+                baseStd: 5,
+                costPerDefect: 500.0,
+                itemIcon: "🏥",
+                oneSided: true,
+                simpleDesc: "How long patients wait for help. Too long is dangerous; too short might mean overstaffing.",
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#6366f1"],
+                chaos: [
+                    { id: 'flu', name: "Flu Season Surge", impact: 15, desc: "Unpredictable patient volume." },
+                    { id: 'staffing', name: "Understaffing", impact: 10, desc: "Bottleneck in processing." },
+                    { id: 'system', name: "System Crash", impact: 5, desc: "Administrative delays." }
+                ]
+            },
+            sterile: {
+                id: 'sterile',
+                title: "Surgical Kit Sterility",
+                icon: "✂️",
+                unit: "%",
+                mean: 100.0,
+                lsl: 99.99,
+                usl: 100.01,
+                baseStd: 0.002,
+                costPerDefect: 100000.0,
+                itemIcon: "✂️",
+                simpleDesc: "Cleanliness of tools used in surgery. Anything less than 100% is catastrophic failure.",
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#c084fc"],
+                chaos: [
+                    { id: 'autoclave', name: "Broken Autoclave", impact: 0.05, desc: "Major sterilization failure." },
+                    { id: 'flash', name: "Flash Sterilization", impact: 0.02, desc: "Shortcut-related risk." },
+                    { id: 'newtech', name: "Inexperienced Tech", impact: 0.01, desc: "Human handling risk." }
+                ]
+            },
+            pizza: {
+                id: 'pizza',
+                title: "Pizza Delivery",
+                icon: "🍕",
+                unit: "min",
+                mean: 25,
+                lsl: 10,
+                usl: 40,
+                baseStd: 4,
+                costPerDefect: 25.0,
+                itemIcon: "🍕",
+                oneSided: true,
+                simpleDesc: "Delivering hot pizza on time. Slow delivery means free pizza and loss of profit.",
+                colors: ["#ef4444", "#f59e0b", "#10b981", "#3b82f6"],
+                chaos: [
+                    { id: 'traffic', name: "Traffic Jam", impact: 10, desc: "Major urban bottleneck." },
+                    { id: 'driver', name: "Lost Driver", impact: 15, desc: "Lack of GPS/Local knowledge." },
+                    { id: 'storm', name: "Rain Storm", impact: 5, desc: "Hazardous slowing of delivery." }
+                ]
+            }
+        };
+
+        let labState = {
+            currentScenario: 'coffee',
+            activeChaos: new Set(),
+            lsl: 11.5,
+            usl: 12.5,
+            isSimulating: false,
+            logs: { good: 0, bad: 0 }
+        };
+
+        // Standard Normal CDF
+        function cdf(x) {
+            const t = 1 / (1 + 0.2316419 * Math.abs(x));
+            const d = 0.3989423 * Math.exp(-x * x / 2);
+            const prob = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+            return x >= 0 ? 1 - prob : prob;
+        }
+
+        // Inverse Normal PDF
+        function inverseNormal(p) {
+            const a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
+            const b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02, 6.680131188771972e+01, -1.328068155288572e+01];
+            const c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00, -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
+            const d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00, 3.754408661907416e+00];
+            const pLow = 0.02425;
+            if (p < pLow) {
+                let q = Math.sqrt(-2 * Math.log(p));
+                return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+            }
+            if (p < (1 - pLow)) {
+                let q = p - 0.5, r = q * q;
+                return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+            }
+            let q = Math.sqrt(-2 * Math.log(1 - p));
+            return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+        }
+
+        function initProcessLab() {
+            renderScenarios();
+            switchScenario('coffee');
+            setupDrag();
+            initSigmaExplorer();
+
+            // Attach hovers for metric calculations
+            // Robust metric handling using data attributes
+            const metricHovers = {
+                'quality': `
+                    <div style="font-weight:700; color:#818cf8; margin-bottom:5px;">HOW TO CALCULATE SIGMA</div>
+                    <div style="font-size:11px; line-height:1.4;">
+                        <strong>Process Sigma</strong> represents how many standard deviations fit between the mean and your limits (<span style="color:#ef4444">LSL/USL</span>).<br><br>
+                        <strong>Process:</strong><br>
+                        1. Count defects during production.<br>
+                        2. Convert yield % to a Z-score.<br>
+                        3. Add +1.5σ (Industry standard shift for long-term drift).<br><br>
+                        <strong>Reference:</strong><br>
+                        3σ = 6.6% defects<br>
+                        4σ = 0.6% defects<br>
+                        6σ = 3.4 defects per million
+                    </div>
+                `,
+                'yield': `
+                    <div style="font-weight:700; color:#10b981; margin-bottom:5px;">YIELD CALCULATION</div>
+                    <div style="font-size:11px; line-height:1.4;">
+                        The percentage of items produced that meet quality standards.<br><br>
+                        <strong>Formula:</strong><br>
+                        (Good Units / Total Units) × 100<br><br>
+                        <strong>Example:</strong><br>
+                        If 95 items out of 100 are good, your yield is 95%.
+                    </div>
+                `,
+                'dpmo': `
+                    <div style="font-weight:700; color:#ef4444; margin-bottom:5px;">DPMO CALCULATION</div>
+                    <div style="font-size:11px; line-height:1.4;">
+                        <strong>Defects Per Million Opportunities.</strong> A standard metric to compare quality across different processes.<br><br>
+                        <strong>Formula:</strong><br>
+                        (Defects / Total Units) × 1,000,000<br><br>
+                        <strong>Target:</strong><br>
+                        6-Sigma quality requires less than 3.4 DPMO.
+                    </div>
+                `,
+                'copq': `
+                    <div style="font-weight:700; color:#facc15; margin-bottom:5px;">COPQ CALCULATION</div>
+                    <div style="font-size:11px; line-height:1.4;">
+                        The financial loss incurred by creating defective products.<br><br>
+                        <strong>Formula:</strong><br>
+                        (DPMO / 1,000) × Cost Per Defect Event<br><br>
+                        <strong>Includes:</strong><br>
+                        Scrap, rework, warranty claims, and loss of customer trust.
+                    </div>
+                `
+            };
+
+            const metricBoxes = document.querySelectorAll('.metric-box');
+            metricBoxes.forEach(box => {
+                const metricKey = box.dataset.metric;
+
+                if (metricKey && metricHovers[metricKey]) {
+                    // Visual cue for hover
+                    box.style.cursor = 'help';
+
+                    box.onmouseenter = (e) => {
+                        showLabTooltip(e, metricHovers[metricKey]);
+                        box.style.background = 'rgba(255, 255, 255, 0.08)';
+                        box.style.borderColor = 'rgba(99, 102, 241, 0.5)';
+                    };
+
+                    box.onmousemove = (e) => moveLabTooltip(e);
+
+                    box.onmouseleave = () => {
+                        hideLabTooltip();
+                        box.style.background = 'rgba(255, 255, 255, 0.03)';
+                        box.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+                    };
+                }
+            });
+        }
+
+        function renderScenarios() {
+            const list = document.getElementById('scenario-list');
+            list.innerHTML = '';
+            for (let id in gamifiedScenarios) {
+                const s = gamifiedScenarios[id];
+                const div = document.createElement('div');
+                div.className = `scenario-pill ${labState.currentScenario === id ? 'active' : ''}`;
+                div.innerHTML = `<span style="font-size:18px;">${s.icon}</span> <span>${s.title}</span>`;
+                div.onclick = () => switchScenario(id);
+
+                // Added hover details for "attached cases" with simple description
+                div.onmouseenter = (e) => {
+                    const details = `
+                        <div style="font-weight:700; color:#818cf8; margin-bottom:5px;">CASE DETAILS</div>
+                        <div style="font-size:13px; font-weight:900; margin-bottom:4px;">${s.icon} ${s.title}</div>
+                        <div style="font-style:italic; color:#94a3b8; font-size:11px; margin-bottom:12px; line-height:1.4;">"${s.simpleDesc}"</div>
+                        
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:8px;">
+                            <div>
+                                <div style="color:#94a3b8; font-size:9px; text-transform:uppercase;">System Target</div>
+                                <div>${s.mean} ${s.unit}</div>
+                            </div>
+                            <div>
+                                <div style="color:#94a3b8; font-size:9px; text-transform:uppercase;">Tolerance Range</div>
+                                <div>${s.lsl} - ${s.usl}</div>
+                            </div>
+                        </div>
+                    `;
+                    showLabTooltip(e, details);
+                };
+                div.onmousemove = (e) => moveLabTooltip(e);
+                div.onmouseleave = () => hideLabTooltip();
+
+                list.appendChild(div);
+            }
+        }
+
+        function switchScenario(id) {
+            labState.currentScenario = id;
+            labState.activeChaos.clear();
+            const config = gamifiedScenarios[id];
+            labState.lsl = config.lsl;
+            labState.usl = config.usl;
+
+            // Update UI Title
+            const titleEl = document.getElementById('lab-title-text');
+            if (titleEl) titleEl.innerHTML = `<span style="margin-right:8px;">${config.icon}</span>${config.title}`;
+
+            renderScenarios();
+            renderChaos();
+            updateLabVisuals();
+        }
+
+        function renderChaos() {
+            const container = document.getElementById('chaos-controls');
+            container.innerHTML = '';
+            const config = gamifiedScenarios[labState.currentScenario];
+            config.chaos.forEach(c => {
+                const div = document.createElement('div');
+                div.className = `chaos-toggle ${labState.activeChaos.has(c.id) ? 'active' : ''}`;
+                div.innerHTML = `
+                    <div style="flex:1">
+                        <div style="font-size:11px; font-weight:800;">${c.name}</div>
+                        <div style="font-size:9px; opacity:0.6;">${c.desc}</div>
+                    </div>
+                    <div style="font-size:10px; font-weight:800; color:#ef4444;">+${c.impact}σ</div>
+                `;
+                div.onclick = () => toggleChaos(c.id);
+                container.appendChild(div);
+            });
+        }
+
+        function toggleChaos(id) {
+            if (labState.activeChaos.has(id)) labState.activeChaos.delete(id);
+            else labState.activeChaos.add(id);
+            renderChaos();
+            updateLabVisuals();
+        }
+
+        function updateLabVisuals() {
+            const config = gamifiedScenarios[labState.currentScenario];
+            let currentStd = config.baseStd;
+            labState.activeChaos.forEach(cid => { currentStd += config.chaos.find(x => x.id === cid).impact; });
+
+            const zU = (labState.usl - config.mean) / currentStd;
+            const zL = (config.mean - labState.lsl) / currentStd;
+            const pFailU = 1 - cdf(zU);
+            const pFailL = cdf(-zL);
+            const totalFail = pFailU + pFailL;
+            const dpmo = totalFail * 1000000;
+            const yieldVal = (1 - totalFail) * 100;
+            const sigmaLevel = inverseNormal(1 - totalFail) + 1.5;
+
+            document.getElementById('yield-display').innerText = yieldVal.toFixed(yieldVal > 99.9 ? 5 : 2) + '%';
+            document.getElementById('dpmo-display').innerText = Math.round(dpmo).toLocaleString();
+            document.getElementById('sigma-display').innerText = sigmaLevel.toFixed(1) + 'σ';
+
+            const display = document.getElementById('sigma-display');
+            document.getElementById('sigma-status').innerText = sigmaLevel < 3 ? "CHAOS" : (sigmaLevel < 5 ? "AVERAGE" : (sigmaLevel < 6 ? "ELITE" : "WORLD CLASS"));
+            display.style.color = sigmaLevel < 3 ? '#ef4444' : (sigmaLevel < 5 ? '#f59e0b' : (sigmaLevel < 6 ? '#10b981' : '#6366f1'));
+
+            const copq = Math.round(dpmo / 1000 * config.costPerDefect);
+            document.getElementById('cost-display').innerText = '$' + copq.toLocaleString();
+
+            renderMainCurve(config.mean, currentStd, labState.lsl, labState.usl);
+        }
+
+        function renderMainCurve(mean, std, lsl, usl) {
+            const svg = document.getElementById('lab-svg');
+            const zoneGroup = document.getElementById('zone-paths');
+            const sigmaLinesGroup = document.getElementById('sigma-lines');
+            const sigmaLabelsGroup = document.getElementById('sigma-labels');
+            const mainPath = document.getElementById('lab-curve-main');
+
+            zoneGroup.innerHTML = '';
+            sigmaLinesGroup.innerHTML = '';
+            sigmaLabelsGroup.innerHTML = '';
+            sigmaLabelsGroup.style.display = 'none'; // Hiding the 2nd attached part (labels)
+
+            const centerX = 400;
+            const centerY = 450;
+            const scaleX = 40;
+
+            // Draw sigma zone fills
+            const drawZone = (zStart, zEnd, color, explanation) => {
+                let pts = [];
+                for (let z = zStart; z <= zEnd; z += 0.1) {
+                    const x = centerX + z * scaleX;
+                    const y = centerY - (Math.exp(-0.5 * z * z) * 350);
+                    pts.push(`${x},${y}`);
+                }
+                const pathD = `M ${centerX + (zStart * scaleX)},${centerY} L ` + pts.join(' L ') + ` L ${centerX + (zEnd * scaleX)},${centerY} Z`;
+                const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                p.setAttribute("d", pathD);
+                p.setAttribute("fill", color);
+                p.setAttribute("fill-opacity", "0.2");
+                p.classList.add("sigma-zone");
+                p.dataset.explanation = explanation;
+
+                p.onmouseenter = (e) => showLabTooltip(e, explanation);
+                p.onmousemove = (e) => moveLabTooltip(e);
+                p.onmouseleave = () => hideLabTooltip();
+
+                zoneGroup.appendChild(p);
+            };
+
+            drawZone(-6, -3, "#ef4444", "<strong>Outlier Zone (Left)</strong><br>Defects occur frequently in this region. This is the 'waste' area.");
+            drawZone(-3, -2, "#f59e0b", "<strong>Warning Zone</strong><br>Process is approaching lower specification limits.");
+            drawZone(-2, 2, "#10b981", "<strong>Stability Zone (μ ± 2σ)</strong><br>~95% of your process output lives here in a healthy system.");
+            drawZone(2, 3, "#f59e0b", "<strong>Warning Zone</strong><br>Process is approaching upper specification limits.");
+            drawZone(3, 6, "#ef4444", "<strong>Outlier Zone (Right)</strong><br>Extreme variations that lead to rejects and customer dissatisfaction.");
+
+            // Draw sigma level lines and labels (-6σ to +6σ)
+            for (let sigma = -6; sigma <= 6; sigma++) {
+                const x = centerX + sigma * scaleX;
+
+                // Determine line color based on sigma level
+                let lineColor = '#10b981'; // Green for center
+                let lineOpacity = 0.3;
+                if (Math.abs(sigma) >= 3) {
+                    lineColor = '#ef4444'; // Red for tails
+                    lineOpacity = 0.4;
+                } else if (Math.abs(sigma) >= 2) {
+                    lineColor = '#f59e0b'; // Yellow for 2-3σ
+                    lineOpacity = 0.35;
+                }
+
+                // Create vertical line
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x);
+                line.setAttribute("y1", 70);
+                line.setAttribute("x2", x);
+                line.setAttribute("y2", centerY);
+                line.setAttribute("stroke", lineColor);
+                line.setAttribute("stroke-width", sigma === 0 ? "2" : "1");
+                line.setAttribute("stroke-opacity", lineOpacity);
+                line.setAttribute("stroke-dasharray", sigma === 0 ? "none" : "4 4");
+                sigmaLinesGroup.appendChild(line);
+
+                // Create label at bottom
+                const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                label.setAttribute("x", x);
+                label.setAttribute("y", centerY + 25);
+                label.setAttribute("text-anchor", "middle");
+                label.setAttribute("fill", lineColor);
+                label.setAttribute("font-size", "11");
+                label.setAttribute("font-weight", sigma === 0 ? "bold" : "normal");
+                label.setAttribute("font-family", "system-ui, sans-serif");
+                label.textContent = sigma === 0 ? "μ" : (sigma > 0 ? `+${sigma}σ` : `${sigma}σ`);
+                sigmaLabelsGroup.appendChild(label);
+            }
+
+            // Draw main curve
+            let linePts = [];
+            for (let z = -6; z <= 6; z += 0.1) {
+                const x = centerX + z * scaleX;
+                const y = centerY - (Math.exp(-0.5 * z * z) * 350);
+                linePts.push(`${x},${y}`);
+            }
+            mainPath.setAttribute("d", "M " + linePts.join(" L "));
+
+            // Position LSL/USL lines based on scenario
+            const lslX = centerX + ((lsl - mean) / std) * scaleX;
+            const uslX = centerX + ((usl - mean) / std) * scaleX;
+            document.getElementById('lsl-line').setAttribute('x1', lslX);
+            document.getElementById('lsl-line').setAttribute('x2', lslX);
+            document.getElementById('lsl-label').setAttribute('x', lslX);
+            document.getElementById('usl-line').setAttribute('x1', uslX);
+            document.getElementById('usl-line').setAttribute('x2', uslX);
+            document.getElementById('usl-label').setAttribute('x', uslX);
+        }
+
+        // Sigma Reference Data (with 1.5 sigma shift)
+        const sigmaReferenceData = {
+            1: { dpmo: 691462, yield: 30.85, color: '#ef4444' },
+            2: { dpmo: 308538, yield: 69.15, color: '#f59e0b' },
+            3: { dpmo: 66807, yield: 93.32, color: '#eab308' },
+            4: { dpmo: 6210, yield: 99.38, color: '#22c55e' },
+            5: { dpmo: 233, yield: 99.977, color: '#22c55e' }, // Brighter Green to match drawing
+            6: { dpmo: 3.4, yield: 99.99966, color: '#a855f7' } // Rich Purple to match drawing
+        };
+
+        let explorerState = {
+            isDragging: false,
+            offsetX: 0,
+            offsetY: 0,
+            currentSigma: 3
+        };
+
+        function initSigmaExplorer() {
+            const explorer = document.getElementById('sigma-explorer');
+            const stage = document.querySelector('.lab-stage');
+            if (!explorer || !stage) return;
+
+            // Mouse events
+            explorer.addEventListener('mousedown', startExplorerDrag);
+            document.addEventListener('mousemove', dragExplorer);
+            document.addEventListener('mouseup', stopExplorerDrag);
+
+            // Touch events
+            explorer.addEventListener('touchstart', startExplorerDrag, { passive: false });
+            document.addEventListener('touchmove', dragExplorer, { passive: false });
+            document.addEventListener('touchend', stopExplorerDrag);
+
+            // Mouse Wheel support for fine adjustment
+            explorer.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const step = 5; // Pixels to move
+                const direction = e.deltaY > 0 ? -1 : 1;
+
+                const stage = document.querySelector('.curve-stage-container');
+                if (!stage) return;
+
+                const stageRect = stage.getBoundingClientRect();
+                const currentX = explorer.offsetLeft;
+                let newX = currentX + (direction * step);
+
+                // Constrain X
+                newX = Math.max(60, Math.min(stageRect.width - 60, newX));
+
+                // Update position (X and Y based on curve)
+                updateExplorerPosition(newX, stageRect);
+            }, { passive: false });
+
+            // Initial update
+            updateExplorerData(3);
+            renderExplorerCurve(3);
+        }
+
+        function updateExplorerPosition(x, stageRect) {
+            const explorer = document.getElementById('sigma-explorer');
+            if (!explorer || !stageRect) return;
+
+            // Calculate sigma level and curve alignment based on X position
+            const centerX = stageRect.width / 2;
+            const sigmaWidth = stageRect.width / 12;
+            const zScoreSigned = (x - centerX) / sigmaWidth;
+
+            // Follow the bell curve line vertically
+            const baselineY = stageRect.height * (450 / 500);
+            const peakHeight = stageRect.height * (350 / 500);
+            let y = baselineY - (Math.exp(-0.5 * zScoreSigned * zScoreSigned) * peakHeight);
+
+            y = Math.max(80, Math.min(stageRect.height - 80, y));
+
+            explorer.style.left = x + 'px';
+            explorer.style.top = y + 'px';
+            explorer.style.transform = 'translate(-50%, -50%)';
+
+            const zScore = Math.abs(zScoreSigned);
+            const sigmaLevel = Math.min(6, Math.max(1, Math.ceil(zScore)));
+
+            if (sigmaLevel !== explorerState.currentSigma) {
+                explorerState.currentSigma = sigmaLevel;
+                updateExplorerData(sigmaLevel);
+                renderExplorerCurve(sigmaLevel);
+            }
+        }
+
+        function startExplorerDrag(e) {
+            e.preventDefault();
+            explorerState.isDragging = true;
+            const explorer = document.getElementById('sigma-explorer');
+            const rect = explorer.getBoundingClientRect();
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            explorerState.offsetX = clientX - rect.left - rect.width / 2;
+            explorerState.offsetY = clientY - rect.top - rect.height / 2;
+
+            explorer.style.transition = 'none';
+        }
+
+        function dragExplorer(e) {
+            if (!explorerState.isDragging) return;
+            e.preventDefault();
+
+            const stage = document.querySelector('.curve-stage-container');
+            if (!stage) return;
+
+            const stageRect = stage.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+
+            // Calculate position relative to stage
+            let x = clientX - stageRect.left - explorerState.offsetX;
+
+            // Constrain X to stage bounds
+            x = Math.max(60, Math.min(stageRect.width - 60, x));
+
+            updateExplorerPosition(x, stageRect);
+        }
+
+        function stopExplorerDrag() {
+            explorerState.isDragging = false;
+            const explorer = document.getElementById('sigma-explorer');
+            if (explorer) {
+                explorer.style.transition = 'transform 0.1s ease-out';
+            }
+        }
+
+        function updateExplorerData(sigmaLevel) {
+            const data = sigmaReferenceData[sigmaLevel];
+            if (!data) return;
+
+            const sigmaEl = document.getElementById('explorer-sigma');
+            const dpmoEl = document.getElementById('explorer-dpmo');
+            const yieldEl = document.getElementById('explorer-yield');
+            const lensEl = document.getElementById('explorer-lens');
+
+            if (sigmaEl) {
+                sigmaEl.textContent = sigmaLevel + 'σ';
+                sigmaEl.style.color = data.color;
+            }
+            if (dpmoEl) dpmoEl.textContent = data.dpmo.toLocaleString();
+            if (yieldEl) yieldEl.textContent = data.yield + '%';
+
+            if (lensEl) {
+                // Remove all sigma classes
+                lensEl.className = 'explorer-lens sigma-' + sigmaLevel;
+            }
+        }
+
+        function renderExplorerCurve(sigmaLevel) {
+            const svg = document.getElementById('explorer-svg');
+            if (!svg) return;
+
+            // Clear current SVG content to rebuild it based on mode
+            svg.innerHTML = '';
+
+            // --- MODE A: High Sigma Schematic View (5 & 6 Sigma) ---
+            // Matches the specific user request: Red text, Orange line, Purple curve
+            if (sigmaLevel >= 5) {
+                // 1. Orange Limit Line (Thicker and Glowing)
+                const orangeLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                orangeLine.setAttribute("x1", "5");
+                orangeLine.setAttribute("y1", "72");
+                orangeLine.setAttribute("x2", "95");
+                orangeLine.setAttribute("y2", "72");
+                orangeLine.setAttribute("stroke", "#f97316"); // Pure Orange
+                orangeLine.setAttribute("stroke-width", "5");
+                orangeLine.setAttribute("stroke-linecap", "round");
+                svg.appendChild(orangeLine);
+
+                // 2. Purple Curve (Custom Bezier following the drawing)
+                const curve = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                // Path for 5 Sigma (visible gap) vs 6 Sigma (almost touching)
+                const pathD = sigmaLevel < 5.8
+                    ? "M 10,48 Q 45,62 85,64"  // 5 Sigma swoop (higher)
+                    : "M 10,50 Q 45,70 85,71"; // 6 Sigma swoop (extreme precision)
+
+                curve.setAttribute("d", pathD);
+                curve.setAttribute("fill", "none");
+                curve.setAttribute("stroke", "#a855f7"); // Vibrant Purple
+                curve.setAttribute("stroke-width", "4");
+                curve.setAttribute("stroke-linecap", "round");
+                svg.appendChild(curve);
+
+                // 3. Bold Red Label
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", "50");
+                text.setAttribute("y", "38");
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("fill", "#ff0000"); // Standard Red
+                text.setAttribute("font-weight", "900");
+                text.setAttribute("font-family", "system-ui, sans-serif");
+                text.setAttribute("font-size", "15");
+                text.textContent = `${Math.round(sigmaLevel)} sigma`;
+                svg.appendChild(text);
+            }
+
+            // --- MODE B: Standard Adaptive View (1-4 Sigma) ---
+            else {
+                // 1. Vertical Center Line
+                const sigmaLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                sigmaLine.setAttribute("x1", "50");
+                sigmaLine.setAttribute("y1", "0");
+                sigmaLine.setAttribute("x2", "50");
+                sigmaLine.setAttribute("y2", "100");
+                sigmaLine.setAttribute("stroke", "#fff");
+                sigmaLine.setAttribute("stroke-opacity", "0.5");
+                sigmaLine.setAttribute("stroke-dasharray", "3 3");
+                svg.appendChild(sigmaLine);
+
+                // 2. Calculate Normalized Curve Points
+                const centerPdf = Math.exp(-0.5 * sigmaLevel * sigmaLevel);
+                const targetHeightPx = 40;
+                const amplification = targetHeightPx / centerPdf;
+                const zoomWidth = 0.8;
+                let pts = [];
+
+                for (let i = 0; i <= 100; i++) {
+                    const z = (sigmaLevel - zoomWidth) + (i / 100) * (2 * zoomWidth);
+                    const pdfValue = Math.exp(-0.5 * z * z);
+                    const y = 100 - (pdfValue * amplification);
+                    // Clamp to keep inside view
+                    pts.push(`${i},${Math.max(0, Math.min(100, y))}`);
+                }
+
+                // 3. Draw The Curve
+                const curvePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                curvePath.setAttribute("d", `M 0,100 L ` + pts.join(" L ") + ` L 100,100 Z`);
+
+                const data = sigmaReferenceData[sigmaLevel] || { color: '#6366f1' }; // Fallback color
+                curvePath.setAttribute("fill", data.color + '40');
+                curvePath.setAttribute("stroke", data.color);
+                curvePath.setAttribute("stroke-width", "3");
+                svg.appendChild(curvePath);
+
+                // 4. Distance Line (Visual Aid)
+                const distanceLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                distanceLine.setAttribute("x1", "50");
+                distanceLine.setAttribute("y1", 100 - targetHeightPx);
+                distanceLine.setAttribute("x2", "50");
+                distanceLine.setAttribute("y2", "100");
+                distanceLine.setAttribute("stroke", data.color);
+                distanceLine.setAttribute("stroke-width", "2");
+                svg.appendChild(distanceLine);
+            }
+        }
+
+        // Tooltip Helpers
+        function showLabTooltip(e, text) {
+            const tooltip = document.getElementById('lab-tooltip');
+            tooltip.innerHTML = text;
+            tooltip.style.display = 'block';
+            moveLabTooltip(e);
+        }
+
+        function moveLabTooltip(e) {
+            const tooltip = document.getElementById('lab-tooltip');
+            tooltip.style.left = (e.clientX + 15) + 'px';
+            tooltip.style.top = (e.clientY + 15) + 'px';
+        }
+
+        function hideLabTooltip() {
+            document.getElementById('lab-tooltip').style.display = 'none';
+        }
+
+        // Add Zoom Toggle to Curve Stage
+        document.addEventListener('DOMContentLoaded', () => {
+            const stage = document.querySelector('.curve-stage-container');
+            if (stage) {
+                stage.addEventListener('click', (e) => {
+                    // Don't zoom if clicking on handles
+                    if (e.target.classList.contains('limit-handle')) return;
+                    stage.classList.toggle('zoomed');
+                });
+            }
+        });
+
+        function setupDrag() {
+            const svg = document.getElementById('lab-svg');
+            let activeLimit = null;
+            document.querySelectorAll('.limit-handle').forEach(el => {
+                el.addEventListener('mousedown', (e) => { activeLimit = el.id; });
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!activeLimit) return;
+                const rect = svg.getBoundingClientRect();
+                const x = (e.clientX - rect.left) * (800 / rect.width);
+                const config = gamifiedScenarios[labState.currentScenario];
+                let std = config.baseStd;
+                labState.activeChaos.forEach(cid => { std += config.chaos.find(x => x.id === cid).impact; });
+                const z = (x - 400) / 40;
+                const val = config.mean + z * std;
+                if (activeLimit === 'lsl-line') labState.lsl = Math.min(val, config.mean - 0.01);
+                else labState.usl = Math.max(val, config.mean + 0.01);
+                updateLabVisuals();
+            });
+            window.addEventListener('mouseup', () => { activeLimit = null; });
+        }
+
+        function startBatchSimulation() {
+            if (labState.isSimulating) return;
+            labState.isSimulating = true;
+            document.getElementById('run-batch-btn').disabled = true;
+            const layer = document.getElementById('sim-layer');
+            const config = gamifiedScenarios[labState.currentScenario];
+            let batchCount = 0;
+            const interval = setInterval(() => {
+                createSimulationItem(layer, config);
+                batchCount++;
+                if (batchCount >= 100) {
+                    clearInterval(interval);
+                    labState.isSimulating = false;
+                    document.getElementById('run-batch-btn').disabled = false;
+                }
+            }, 50);
+        }
+
+        function createSimulationItem(parent, config) {
+            const item = document.createElement('div');
+            item.className = 'sim-item';
+            item.innerText = config.itemIcon;
+            let std = config.baseStd;
+            labState.activeChaos.forEach(cid => { std += config.chaos.find(x => x.id === cid).impact; });
+            const u1 = Math.random(), u2 = Math.random();
+            const randZ = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+            const val = config.mean + randZ * std;
+            item.style.left = `${400 + (randZ * 40)}px`;
+            item.style.top = `-20px`;
+            parent.appendChild(item);
+            const isSuccess = val >= labState.lsl && val <= labState.usl;
+            setTimeout(() => {
+                item.style.transform = `translateY(${470 + Math.random() * 20}px)`;
+                setTimeout(() => {
+                    item.classList.add(isSuccess ? 'hit' : 'miss');
+                    setTimeout(() => item.remove(), 1000);
+                }, 800);
+            }, 10);
+        }
+
+        function resetSimData() {
+            document.getElementById('sim-layer').innerHTML = '';
+            showToast("Laboratory logs cleared.", "info");
+        }
+
+        // ============================================
+        // COMPARATOR SLIDER LOGIC
+        // ============================================
+        const slider = document.querySelector('.comparator-slider');
+        const comparatorContainer = document.querySelector('.comparator-container');
+        const leanSide = document.querySelector('.lean-side');
+        const sigmaSide = document.querySelector('.sigma-side');
+        const sliderHint = document.querySelector('.slider-hint');
+        let isDragging = false;
+
+        function toggleInstructions() {
+            document.getElementById('comparator-instructions').classList.toggle('active');
+        }
+
+        function updateSlider(percent) {
+            // Constrain between 10% and 90%
+            percent = Math.max(10, Math.min(90, percent));
+
+            slider.style.left = `${percent}%`;
+            leanSide.style.width = `${percent}%`;
+            sigmaSide.style.width = `${100 - percent}%`;
+
+            // Hide hint on interaction
+            if (sliderHint) sliderHint.style.opacity = '0';
+        }
+
+        slider.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            document.body.style.cursor = 'ew-resize';
+            // Disable transitions during dragging for immediate response
+            leanSide.style.transition = 'none';
+            sigmaSide.style.transition = 'none';
+            slider.style.transition = 'none';
+            if (sliderHint) sliderHint.style.display = 'none';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const rect = comparatorContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percent = (x / rect.width) * 100;
+
+            updateSlider(percent);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            document.body.style.cursor = '';
+            // Re-enable transitions? Maybe not needed as 0.3s might feel laggy during drag anyway.
+            // But let's restore them in case of context switching etc.
+            leanSide.style.transition = 'all 0.3s ease';
+            sigmaSide.style.transition = 'all 0.3s ease';
+            slider.style.transition = 'all 0.3s ease';
+        });
+
+        // Touch support
+        slider.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            leanSide.style.transition = 'none';
+            sigmaSide.style.transition = 'none';
+            slider.style.transition = 'none';
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+
+            const rect = comparatorContainer.getBoundingClientRect();
+            const x = e.touches[0].clientX - rect.left;
+            const percent = (x / rect.width) * 100;
+
+            updateSlider(percent);
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            isDragging = false;
+            leanSide.style.transition = 'all 0.3s ease';
+            sigmaSide.style.transition = 'all 0.3s ease';
+            slider.style.transition = 'all 0.3s ease';
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateContent();
+            initProcessLab();
+            lucide.createIcons();
+        });
+    </script>
+
+    <!-- DPMO Pop-up Modal -->
+    <div class="modal-backdrop" id="dpmo-backdrop" onclick="closeDpmoTable()" style="z-index:100001;"></div>
+    <div class="dpmo-popup-modal" id="dpmo-popup">
+        <div class="dpmo-close" onclick="closeDpmoTable()">×</div>
+        <img src="images/fundamentals/dpmo_reference.png" class="dpmo-full-img" alt="DPMO Reference Table">
+    </div>
+
+    <!-- Lab Tooltip -->
+    <div id="lab-tooltip"
+        style="position:fixed; display:none; background:rgba(15,23,42,0.95); color:white; padding:12px; border-radius:8px; border:1px solid var(--sigma-color); z-index:100002; pointer-events:none; font-size:12px; max-width:250px; box-shadow:0 10px 30px rgba(0,0,0,0.5); backdrop-filter:blur(10px);">
+    </div>
+
+    <script src="AssistantTools.js"></script>
+
+<script src="StudentAuth.js"></script>
+</body>
+
+</html><!-- Cache bust: 2026-02-05 08:12:13 -->

@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master QFD Builder | House of Quality</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            /* LIGHT 3D THEME - Darker Background */
+            --bg-dark: #cbd5e1;
+            /* A bit darker slate */
+            --bg-panel: #ffffff;
+            /* White Blocks */
+
+            /* STEP COLORS - Slightly Darker for Light BG visibility */
+            --c-step1: #db2777;
+            /* Pink */
+            --c-step2: #0891b2;
+            /* Cyan */
+            --c-step3: #4f46e5;
+            /* Indigo */
+            --c-step4: #9333ea;
+            /* Purple */
+            --c-step5: #ca8a04;
+            /* Yellow */
+            --c-step6: #059669;
+            /* Green */
+
+            --text-primary: #1e293b;
+            /* Dark Slate */
+            --text-secondary: #475569;
+            --border: #94a3b8;
+            --shadow-3d: 6px 6px 0px rgba(71, 85, 105, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+
+        /* NAV */
+        .builder-nav {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            border-bottom: 2px solid #e2e8f0;
+            align-items: center;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Nav Dropdowns */
+        .step-dropdown {
+            position: absolute;
+            top: 45px;
+            left: 0;
+            width: 280px;
+            background: #ffffff;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
+            /* 3D Dropdown */
+            display: none;
+            /* Toggled by JS */
+            z-index: 1000;
+            text-transform: none;
+            white-space: normal;
+        }
+
+        .step-dropdown.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .sd-title {
+            font-family: 'Orbitron';
+            font-size: 13px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #f1f5f9;
+            color: #0f172a;
+            padding-bottom: 5px;
+        }
+
+        .sd-row {
+            font-size: 11px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            color: #475569;
+        }
+
+        .sd-row strong {
+            color: #0f172a;
+            margin-right: 4px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-btn {
+            background: #334155;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .step-btn:hover {
+            background: #475569;
+            color: white;
+        }
+
+        .step-btn.s1.active {
+            background: var(--c-step1);
+            color: #000;
+            border-color: var(--c-step1);
+            box-shadow: 0 0 15px rgba(244, 114, 182, 0.4);
+        }
+
+        .step-btn.s2.active {
+            background: var(--c-step2);
+            color: #000;
+            border-color: var(--c-step2);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+        }
+
+        .step-btn.s3.active {
+            background: var(--c-step3);
+            color: #fff;
+            border-color: var(--c-step3);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .step-btn.s4.active {
+            background: var(--c-step4);
+            color: #fff;
+            border-color: var(--c-step4);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .step-btn.s5.active {
+            background: var(--c-step5);
+            color: #000;
+            border-color: var(--c-step5);
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+        }
+
+        .step-btn.s6.active {
+            background: var(--c-step6);
+            color: #000;
+            border-color: var(--c-step6);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* GRID LAYOUT */
+        .layout-wrapper {
+            display: flex;
+            padding: 50px;
+            gap: 40px;
+            min-width: 1500px;
+            justify-content: center;
+            transform: scale(0.95);
+            transform-origin: top center;
+        }
+
+        .house-grid {
+            display: grid;
+            grid-template-columns: 80px 320px max-content 360px;
+            grid-template-rows: max-content 140px auto max-content;
+            gap: 15px;
+            /* Bigger gaps for 3D separation */
+            position: relative;
+            align-content: flex-start;
+        }
+
+        /* ZONES - 3D CARDS */
+        .zone {
+            background: var(--bg-panel);
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            box-shadow: var(--shadow-3d);
+            /* 3D Effect */
+            transition: all 0.2s;
+            opacity: 1;
+        }
+
+        /* Active State - "Popped Up" */
+        .zone.active {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px rgba(100, 116, 139, 0.6);
+            border-width: 2px;
+            z-index: 10;
+        }
+
+        /* Active Color Borders */
+        .zone.active-s1 {
+            border-color: var(--c-step1);
+            color: var(--text-primary);
+        }
+
+        .zone.active-s2 {
+            border-color: var(--c-step2);
+            color: var(--text-primary);
+        }
+
+        .zone.active-s3 {
+            border-color: var(--c-step3);
+            color: var(--text-primary);
+        }
+
+        .zone.active-s4 {
+            border-color: var(--c-step4);
+            background: transparent !important;
+            border: none;
+            box-shadow: none;
+        }
+
+        .zone.active-s5 {
+            border-color: var(--c-step5);
+            color: var(--text-primary);
+        }
+
+        .zone.active-s6 {
+            border-color: var(--c-step6);
+            color: var(--text-primary);
+        }
+
+        /* HEADER ROW */
+        .house-header {
+            grid-column: 1 / 5;
+            grid-row: 1;
+            margin-bottom: 20px;
+        }
+
+        /* 1. WHATS (Left) */
+        .zone-whats {
+            grid-column: 1 / 3;
+            grid-row: 3;
+            display: grid;
+            grid-template-columns: 80px 320px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* INPUTS & CELLS - High Contrast */
+        .imp-cell,
+        .req-cell,
+        .rel-cell,
+        .base-cell {
+            border-color: #e2e8f0;
+        }
+
+        .imp-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: #fdf2f8;
+            height: 42px;
+            /* Force sync with JS */
+        }
+
+        .req-cell {
+            display: grid;
+            grid-template-columns: 1fr 20px;
+            align-items: center;
+            padding-left: 10px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            height: 42px;
+            /* Force sync with JS */
+        }
+
+        .imp-input {
+            width: 100%;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--c-step1);
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .req-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #334155;
+            font-weight: 600;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Remove btn */
+        .row-del {
+            position: absolute;
+            left: -15px;
+            color: #ef4444;
+            cursor: pointer;
+            display: none;
+            font-size: 10px;
+        }
+
+        .req-cell:hover .row-del {
+            display: block;
+        }
+
+        /* 2. HOWS (Tech) */
+        .zone-hows {
+            grid-column: 3;
+            grid-row: 2;
+            display: flex;
+            overflow: hidden;
+            background: #ecfeff;
+        }
+
+        .how-col {
+            flex: 1;
+            min-width: 50px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 8px;
+            position: relative;
+        }
+
+        .how-label {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            color: var(--c-step2);
+            font-weight: 800;
+            font-size: 12px;
+            white-space: nowrap;
+            margin-bottom: 10px;
+            height: 90px;
+        }
+
+        .dir-icon {
+            color: #94a3b8;
+            cursor: pointer;
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .col-del {
+            position: absolute;
+            top: -15px;
+            color: #ef4444;
+            cursor: pointer;
+            display: none;
+            font-size: 10px;
+        }
+
+        .how-col:hover .col-del {
+            display: block;
+            top: 2px;
+        }
+
+        /* 3. MATRIX (Center) */
+        .zone-matrix {
+            grid-column: 3;
+            grid-row: 3;
+            display: grid;
+            background: #fff;
+        }
+
+        .rel-cell {
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.2s;
+            height: 42px;
+            /* Force sync with JS */
+            font-weight: 900;
+        }
+
+        .rel-cell:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sym-strong {
+            color: #0891b2;
+            text-shadow: 1px 1px 0 rgba(8, 145, 178, 0.2);
+        }
+
+        /* ● */
+        .sym-med {
+            color: #16a34a;
+        }
+
+        /* ○ */
+        .sym-weak {
+            color: #d97706;
+        }
+
+        /* △ */
+
+        /* 4. ROOF (Top) */
+        .zone-roof {
+            grid-column: 3;
+            grid-row: 1;
+            height: 260px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 4px;
+            z-index: 20;
+        }
+
+        .roof-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .roof-diamond {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 1px solid #94a3b8;
+            background: #ffffff;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #ccc;
+            transition: all 0.2s;
+            z-index: 5;
+            box-shadow: 2px 2px 0 rgba(71, 85, 105, 0.1);
+        }
+
+        .roof-diamond:hover {
+            border-color: white;
+            z-index: 100;
+            transform: rotate(45deg) scale(1.15);
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border-color: var(--c-step4);
+        }
+
+        .roof-diamond.pos {
+            color: #4ade80;
+            border-color: #4ade80;
+            background: #dcfce7;
+            border-color: #22c55e;
+            color: #15803d;
+        }
+
+        .roof-diamond.neg {
+            color: #ef4444;
+            border-color: #ef4444;
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+
+        /* 5. COMP (Right) */
+        .zone-comp {
+            grid-column: 4;
+            grid-row: 3;
+            display: grid;
+            background: #fffbeb;
+            position: relative;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .comp-header {
+            position: absolute;
+            top: -35px;
+            width: 100%;
+            text-align: center;
+            color: var(--c-step5);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .comp-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-bottom: 1px dashed var(--border);
+            position: relative;
+            z-index: 2;
+            height: 42px;
+            /* Force sync with JS */
+        }
+
+        .comp-cell {
+            width: 25px;
+            /* Smaller cells */
+            text-align: center;
+            font-size: 10px;
+            color: #64748b;
+            cursor: pointer;
+            padding: 4px 0;
+            border-radius: 4px;
+            transition: 0.2s;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 1px;
+        }
+
+        .comp-cell:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .comp-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 6. BASE (Bottom) */
+        .zone-base {
+            grid-column: 3;
+            grid-row: 4;
+            display: grid;
+            margin-top: 4px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .base-header-col {
+            grid-column: 1 / 3;
+            grid-row: 4;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding-right: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--c-step6);
+            text-transform: uppercase;
+            background: #ecfdf5;
+            color: var(--c-step6);
+            border-right: 2px solid var(--c-step6);
+            text-align: right;
+        }
+
+        .base-row {
+            display: flex;
+        }
+
+        .base-cell {
+            flex: 1;
+            min-width: 50px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #0f172a; /* Changed from #475569 to near-black per user request */
+            font-weight: 700;
+            position: relative;
+        }
+
+        .base-cell:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .calc-high {
+            background: rgba(16, 185, 129, 0.25);
+            color: #000; /* Changed from #fff to black for readability on light green */
+            font-weight: 900;
+            border-top: 3px solid var(--c-step6);
+        }
+
+        /* ANALYSIS HOVER TOOLTIPS */
+        .info-mark {
+            margin-left: 8px;
+            cursor: help;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        .info-mark:hover {
+            opacity: 1;
+            color: white;
+        }
+
+        /* REPORT SIDEBAR - White Paper Style */
+        .report-panel {
+            width: 400px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            padding: 25px;
+            /* More padding for document feel */
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            /* Sharper corners for paper look */
+            height: fit-content;
+            box-shadow: var(--shadow-3d);
+            /* MATCH 3D */
+            margin-top: 100px;
+            position: relative;
+            color: #0f172a;
+        }
+
+        /* Paper Header */
+        .report-header {
+            border-bottom: 2px solid #0f172a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .report-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .report-meta {
+            font-size: 10px;
+            color: #64748b;
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        /* Sections */
+        .rep-sec {
+            margin-bottom: 20px;
+        }
+
+        .rep-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 2px;
+        }
+
+        .rep-content {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #334155;
+            font-weight: 500;
+        }
+
+        /* Specific Highlights */
+        .highlight-box {
+            background: #f8fafc;
+            border-left: 4px solid #cbd5e1;
+            padding: 8px 12px;
+            margin-top: 4px;
+        }
+
+        .hl-driver {
+            border-color: var(--c-step1);
+            background: #fdf2f8;
+            color: #831843;
+        }
+
+        .hl-ctq {
+            border-color: var(--c-step6);
+            background: #ecfdf5;
+            color: #064e3b;
+        }
+
+        .hl-risk {
+            border-color: var(--c-step4);
+            background: #faf5ff;
+            color: #581c87;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* LEGEND on White */
+        .legend-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid #0f172a;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #475569;
+        }
+
+        .leg-sym {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 11px;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* Make Matrix Legend Bigger */
+        .lg-grid .leg-sym {
+            width: 22px;
+            height: 22px;
+            font-size: 14px;
+        }
+
+        /* NEW LEGEND STYLE (Grouped) */
+        .legend-group {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        .lg-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .lg-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 5px;
+        }
+
+        .lg-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #334155;
+            font-weight: 500;
+        }
+
+        /* HOVER POP */
+        .hover-pop {
+            position: absolute;
+            width: 220px;
+            background: #ffffff;
+            color: #334155;
+            border: 2px solid var(--c-step6);
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: #1f2937;
+            /* Dark Grey for Body */
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+
+        .hover-pop strong {
+            color: #000000;
+            /* Black for Headers */
+            display: block;
+            margin-bottom: 4px;
+            font-family: 'Orbitron';
+            font-size: 12px;
+        }
+
+        /* FORCE BLACK BUTTON TEXT (User Request) */
+        .step-btn,
+        .step-btn.active,
+        .step-btn:hover {
+            color: #000 !important;
+            font-weight: 800;
+        }
+
+        /* MODERN PROGRESS BAR */
+        .progress-container {
+            width: 150px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            height: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 12px;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* BOTTOM NAVIGATION - STANDARD */
+        .bottom-nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 100px;
+            padding: 8px 24px;
+            display: flex;
+            gap: 0;
+            align-items: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            color: #94a3b8;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .nav-item:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 5px;
+        }
+
+        .nav-tooltip {
+            position: absolute;
+            bottom: 140%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+        }
+
+        .nav-item:hover .nav-tooltip {
+            opacity: 1;
+            visibility: visible;
+            bottom: 130%;
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background: white;
+                color: black;
+                font-size: 10pt;
+            }
+
+            .builder-nav,
+            .bottom-nav,
+            .step-dropdown {
+                display: none !important;
+            }
+
+            .layout-wrapper {
+                display: block;
+                padding: 0;
+                transform: scale(1);
+                min-width: 100%;
+            }
+
+            .house-grid {
+                display: block;
+            }
+
+            /* Print Header */
+            .print-header {
+                display: block !important;
+                border-bottom: 2px solid #000;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+            }
+
+            .print-footer {
+                display: block !important;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                font-size: 10px;
+                color: #666;
+                border-top: 1px solid #ccc;
+                padding-top: 10px;
+            }
+
+            /* Print Summary Page */
+            #print-summary-page {
+                display: block !important;
+                page-break-after: always;
+                padding: 30px;
+                border: 1px solid #ddd;
+                border-top: 5px solid #000;
+            }
+
+            /* Hide non-print areas */
+            .zone {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+            }
+        }
+
+        .print-header,
+        .print-footer,
+        #print-summary-page {
+            display: none;
+        }
+
+        .comp-active-us {
+            background: #22d3ee !important;
+            color: black !important;
+            font-weight: bold;
+            box-shadow: 0 0 5px #22d3ee;
+        }
+
+        .comp-active-them {
+            background: #facc15 !important;
+            color: black !important;
+            font-weight: bold;
+            box-shadow: 0 0 5px #facc15;
+            border: 1px dashed black;
+        }
+
+        .comp-cell:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PRINT HEADER -->
+    <div class="print-header">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h1>QFD House of Quality Report</h1>
+            <div style="text-align:right; font-size:12px;">
+                <strong>Lean Six Sigma Platform</strong><br>
+                Generated: <span id="printDate"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRINT SUMMARY PAGE -->
+    <div id="print-summary-page">
+        <h2 style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">1. Executive Analysis
+            Report</h2>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom: 30px;">
+            <div style="flex:1;">
+                <strong>Project Title:</strong> <span id="print-project-title">QFD Analysis</span><br><br>
+                <strong>Created by:</strong> <span id="print-candidate-name">TBD</span>
+            </div>
+            <div style="flex:1; text-align:right;">
+                <strong>Date:</strong> <span id="print-date-summary"></span><br><br>
+                <strong>Ref Code:</strong> LSS-QFD-2026
+            </div>
+        </div>
+
+        <div style="background:#f9f9f9; padding:20px; border-radius:8px; margin-bottom:30px; border:1px solid #ddd;">
+            <h3 style="margin-top:0;">Analysis Completeness</h3>
+            <div style="margin-bottom:10px; display:flex; justify-content:space-between;">
+                <span>Construction Score:</span>
+                <strong id="print-score-val">0/5 Steps</strong>
+            </div>
+            <div
+                style="width: 100%; background-color: #ddd; height: 20px; border-radius: 10px; overflow: hidden; margin-bottom: 10px;">
+                <div id="print-progress-bar" style="width: 0%; height: 100%; background-color: #10b981;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong>Status:</strong>
+                <span id="print-verdict" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;">IN
+                    PROGRESS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRINT FOOTER -->
+    <div class="print-footer">
+        <div style="display:flex; justify-content:space-between;">
+            <span>Lean Six Sigma Master Black Belt Studio</span>
+            <span>Date: <span id="printDateFooter"></span></span>
+            <span>Ref: LSS-QFD-2026</span>
+        </div>
+    </div>
+
+    <nav class="builder-nav">
+        <div style="font-family:'Orbitron'; font-weight:700; font-size:16px; margin-right:20px; color:#0f172a;">QFD STUDIO</div>
+        
+        <button class="architecture-intelligence-btn" onclick="openQFDInfo()" style="margin-left: auto; margin-right: 15px;">
+            <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+        </button>
+
+        <!-- STEP 1 -->
+        <div style="position:relative;">
+            <div class="step-btn s1 active" onclick="activateStep(1)">1. VOC</div>
+            <div class="step-dropdown" id="drop1">
+                <div class="sd-title" style="color:var(--c-step1)">1. Voice of Customer</div>
+                <div class="sd-row"><strong>🤔 What:</strong> Customer wants & needs expressed in their own words.</div>
+                <div class="sd-row"><strong>💡 Why:</strong> Ensures we build what people actually care about, not just
+                    what's cool.</div>
+                <div class="sd-row"><strong>🛠️ How:</strong> List requirements on the Left Wall. Rate Importance (1-5).
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div style="position:relative;">
+            <div class="step-btn s2" onclick="activateStep(2)">2. Specs</div>
+            <div class="step-dropdown" id="drop2">
+                <div class="sd-title" style="color:var(--c-step2)">2. Eng. Specifications</div>
+                <div class="sd-row"><strong>🤔 What:</strong> Technical metrics we can measure and control.</div>
+                <div class="sd-row"><strong>💡 Why:</strong> Translates vague "wants" into concrete "buildables".</div>
+                <div class="sd-row"><strong>🛠️ How:</strong> Add columns. Set Direction (▲ Maximize, ▼ Minimize, ◎ Target).</div>
+            </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div style="position:relative;">
+            <div class="step-btn s3" onclick="activateStep(3)">3. Matrix</div>
+            <div class="step-dropdown" id="drop3">
+                <div class="sd-title" style="color:var(--c-step3)">3. Relationship Matrix</div>
+                <div class="sd-row"><strong>🤔 What:</strong> The link between WHAT customers want and HOW we do it.
+                </div>
+                <div class="sd-row"><strong>💡 Why:</strong> Identifies which technical specs actually drive
+                    satisfaction.</div>
+                <div class="sd-row"><strong>🛠️ How:</strong> Click grid cells: ◎ Strong (9), ○ Medium (3), △ Weak (1).
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div style="position:relative;">
+            <div class="step-btn s4" onclick="activateStep(4)">4. Roof</div>
+            <div class="step-dropdown" id="drop4">
+                <div class="sd-title" style="color:var(--c-step4)">4. The Roof</div>
+                <div class="sd-row"><strong>🤔 What:</strong> Correlations between technical specifications.</div>
+                <div class="sd-row"><strong>💡 Why:</strong> Highlights design conflicts (e.g. Speed vs Safety)
+                    requiring innovation.</div>
+                <div class="sd-row"><strong>🛠️ How:</strong> Click diamonds: + Positive Support, - Negative Conflict.
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div style="position:relative;">
+            <div class="step-btn s5" onclick="activateStep(5)">5. Comp</div>
+            <div class="step-dropdown" id="drop5">
+                <div class="sd-title" style="color:var(--c-step5)">5. Competitive Assessment</div>
+                <div class="sd-row"><strong>🤔 What:</strong> Compare your solution vs. the market leader.</div>
+                <div class="sd-row"><strong>🛠️ How:</strong> Click cells 1-5 on the Right Wall.</div>
+                <div class="sd-row"><strong>🔢 Scale:</strong> 1 = Poor, 3 = Average, 5 = Best in Class.</div>
+                <div class="sd-row"><strong>🎨 Key:</strong> <span style="color:#22d3ee; font-weight:bold;">Blue Line
+                        (Us)</span> vs <span style="color:#facc15; font-weight:bold;">Yellow Dashed (Them)</span>.</div>
+            </div>
+        </div>
+
+        <!-- STEP 6 -->
+        <div style="position:relative;">
+            <div class="step-btn s6" onclick="activateStep(6)">6. Analysis</div>
+            <div class="step-dropdown" id="drop6">
+                <div class="sd-title" style="color:var(--c-step6)">6. Technical Analysis</div>
+                <div class="sd-row"><strong>🤔 What:</strong> Final calculation of priorities and targets.</div>
+                <div class="sd-row"><strong>💡 Why:</strong> Tells engineers exactly what to focus on first (CTQ).</div>
+                <div class="sd-row"><strong>🛠️ How:</strong> Review Absolute Weights. Set Difficulty (1-5) and Targets.
+                </div>
+            </div>
+        </div>
+
+        <div style="width:20px;"></div>
+
+        <button class="step-btn" style="background:#0f172a; color:white !important;" onclick="adjustGrid(1,0)">+
+            ROW</button>
+        <button class="step-btn" style="background:#0f172a; color:white !important;" onclick="adjustGrid(-1,0)">-
+            ROW</button>
+        <button class="step-btn" style="background:#0f172a; color:white !important;" onclick="adjustGrid(0,1)">+
+            COL</button>
+        <button class="step-btn" style="background:#0f172a; color:white !important;" onclick="adjustGrid(0,-1)">-
+            COL</button>
+
+        <div style="flex-grow:1;"></div>
+
+        <select id="scenarioSelect" onchange="loadScenario(this.value)"
+            style="background:#0f172a; color:#fff; border:1px solid #475569; padding:6px; font-size:12px; border-radius:6px; outline:none; width: 220px;">
+            <style>
+                #scenarioSelect option,
+                #scenarioSelect optgroup {
+                    background: #0f172a;
+                    color: #fff;
+                }
+            </style>
+            <option value="">⚡ Load 5-Star Scenario...</option>
+            <optgroup label="🏥 Healthcare">
+                <option value="hc1">Emergency Dept Wait Time</option>
+                <option value="hc2">Patient Safety / Falls</option>
+                <option value="hc3">Telemedicine App UX</option>
+            </optgroup>
+            <optgroup label="🏭 Other">
+                <option value="mfg1">EV Battery Design</option>
+                <option value="it1">Software Agile Pipeline</option>
+            </optgroup>
+        </select>
+        <button class="step-btn" onclick="toggleHistory()">📖 History</button>
+        <button class="step-btn" style="border-color:#ef4444; color:#ef4444;" onclick="clearData()">Clear Data</button>
+        <button class="step-btn" style="border-color:#555;" onclick="window.location.reload()">Reset</button>
+        <!-- ACTION CLUSTER (New) -->
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+            <div>
+                <input type="text" id="candidateNameInput" placeholder="Created By..."
+                    style="width: 140px; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 10px; color: #334155; border-radius: 4px; font-size: 11px;"
+                    oninput="updatePrintName(this.value)">
+                <div class="progress-container">
+                    <div id="screen-progress-bar" class="progress-bar"></div>
+                </div>
+            </div>
+            <button class="step-btn" style="background:#10b981; color:white !important; border-color:#059669;"
+                onclick="checkProgress()">💾 Evaluate</button>
+            <button class="step-btn" style="background:#3b82f6; color:white !important; border-color:#2563eb;"
+                onclick="window.print()">🖨️ Print</button>
+        </div>
+    </nav>
+
+    <!-- HISTORY MODAL -->
+    <div id="historyModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center;">
+        <div
+            style="background:#1e293b; width:800px; max-height:90%; overflow-y:auto; border-radius:12px; border:1px solid var(--border); box-shadow:0 0 40px rgba(0,0,0,0.5); padding:30px; position:relative;">
+            <button onclick="toggleHistory()"
+                style="position:absolute; top:20px; right:20px; background:none; border:none; color:#aaa; font-size:24px; cursor:pointer;">&times;</button>
+
+            <h2
+                style="font-family:'Orbitron'; color:var(--c-step2); border-bottom:1px solid #333; padding-bottom:15px; margin-top:0;">
+                Quality Function Deployment (QFD)</h2>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:30px;">
+                <div>
+                    <h4 style="color:#f472b6; margin-bottom:10px;">📜 History & Origin</h4>
+                    <p style="color:#cbd5e1; line-height:1.6; margin:0;">
+                        Developed by <strong>Yoji Akao</strong> in Japan (1966). It was first successfully deployed at
+                        <strong>Mitsubishi Heavy Industries</strong> (1972) for tanker design, but became famous when
+                        <strong>Toyota</strong> adopted it in the late 70s, reducing pre-production costs by 60%. It was
+                        brought to the US by Xerox and Ford in the 1980s.
+                    </p>
+                </div>
+                <div>
+                    <h4 style="color:#22d3ee; margin-bottom:10px;">🤔 What is it?</h4>
+                    <p style="color:#cbd5e1; line-height:1.6; margin:0;">
+                        A structured method to translate <strong>Customer Requirements</strong> (Voice of Customer) into
+                        appropriate <strong>Technical Requirements</strong> (Voice of Engineer). The "House of Quality"
+                        is the primary visual tool used in this process.
+                    </p>
+                </div>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:8px; margin-bottom:20px;">
+                <h4 style="color:#fbbf24; margin-top:0;">💡 Why & When to Use</h4>
+                <ul style="color:#cbd5e1; line-height:1.8; margin:0; padding-left:20px;">
+                    <li><strong>Define Phase (DMAIC):</strong> To ensure the project scope aligns with actual customer
+                        needs.</li>
+                    <li><strong>Design Phase (DMADV):</strong> Critical for designing new products/services to ensure
+                        "Quality by Design".</li>
+                    <li><strong>Why?</strong> To prevent "Gold Plating" (adding features customers don't want) and
+                        ensure all engineering efforts directly impact customer satisfaction.</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 style="color:#10b981; margin-bottom:10px;">🛠️ How to Build (The Steps)</h4>
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:15px;">
+                    <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid #333;">
+                        <strong style="color:var(--c-step1); display:block; margin-bottom:5px;">1. VOC (What)</strong>
+                        <span style="color:#94a3b8; font-size:12px;">Capture customer wants. Rate Importance 1-5.</span>
+                    </div>
+                    <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid #333;">
+                        <strong style="color:var(--c-step2); display:block; margin-bottom:5px;">2. Specs (How)</strong>
+                        <span style="color:#94a3b8; font-size:12px;">Define measurable engineering metrics.</span>
+                    </div>
+                    <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid #333;">
+                        <strong style="color:var(--c-step3); display:block; margin-bottom:5px;">3. Matrix</strong>
+                        <span style="color:#94a3b8; font-size:12px;">Map strong (9), medium (3), or weak (1)
+                            correlations.</span>
+                    </div>
+                    <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid #333;">
+                        <strong style="color:var(--c-step4); display:block; margin-bottom:5px;">4. Roof</strong>
+                        <span style="color:#94a3b8; font-size:12px;">Identify design trade-offs/conflicts (+/-).</span>
+                    </div>
+                    <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid #333;">
+                        <strong style="color:var(--c-step5); display:block; margin-bottom:5px;">5. Competition</strong>
+                        <span style="color:#94a3b8; font-size:12px;">Benchmark us vs. them on a 1-5 scale.</span>
+                    </div>
+                    <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid #333;">
+                        <strong style="color:var(--c-step6); display:block; margin-bottom:5px;">6. Analysis</strong>
+                        <span style="color:#94a3b8; font-size:12px;">Calculate Absolute Weights to find CTQs.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layout-wrapper">
+
+        <!-- HOUSE GRID -->
+        <div class="house-grid" id="houseGrid">
+
+            <!-- C1/R4 HEADER for BASEMENT -->
+            <div class="base-header-col">
+                <div onmouseenter="showEx(this, 'TARGET VALUE', 'WHAT: The measurable goal for this engineering spec.\nCALC: Determined by competitor analysis + customer needs.\nIMP: Defines pass/fail criteria.\nREF: e.g. < 10 mins, > 95% Yield.')"
+                    onmouseleave="hideEx()">Target <span class="info-mark">?</span></div>
+
+                <div onmouseenter="showEx(this, 'ABSOLUTE WEIGHT', 'WHAT: Total importance score for this technical spec.\nCALC: Sum(Cust Importance × Relationship Strength).\nIMP: Identifies most critical engineering drivers (CTQ).\nREF: Higher score = Higher priority. Top 20% are CTQs.')"
+                    onmouseleave="hideEx()">Abs Wgt <span class="info-mark">?</span></div>
+
+                <div onmouseenter="showEx(this, 'RELATIVE WEIGHT (%)', 'WHAT: Percentage share of the total weight.\nCALC: (Abs Weight / Total Weight) × 100.\nIMP: Helps prioritize resource allocation.\nREF: Values > 10% are significant.')"
+                    onmouseleave="hideEx()">Rel % <span class="info-mark">?</span></div>
+
+                <div onmouseenter="showEx(this, 'DIFFICULTY INDEX', 'WHAT: Estimated effort/risk to achieve the target.\nCALC: 1 (Easy) to 5 (Very Hard).\nIMP: High Difficulty + High Weight = High Risk Project.\nREF: 1=Standard, 3=New Dev, 5=Breakthrough needed.')"
+                    onmouseleave="hideEx()">Diff <span class="info-mark">?</span></div>
+            </div>
+
+            <!-- ZONE 1: WHATS -->
+            <div class="zone zone-whats active-s1" id="whatsZone">
+                <!-- Header -->
+                <div
+                    style="grid-column:1; text-align:center; font-size:9px; color:var(--c-step1); padding-top:5px; font-weight:bold;">
+                    IMP (1-5)</div>
+                <div
+                    style="grid-column:2; font-size:9px; color:var(--c-step1); padding:5px 0 0 10px; font-weight:bold;">
+                    CUSTOMER REQUIREMENTS</div>
+                <!-- Rows injected JS -->
+            </div>
+
+            <!-- ZONE 2: HOWS -->
+            <div class="zone zone-hows active-s2" id="howsZone">
+                <!-- Cols injected JS -->
+            </div>
+
+            <!-- ZONE 4: ROOF -->
+            <div class="zone zone-roof active-s4" id="roofZone">
+                <div class="roof-container" id="roofContainer"></div>
+            </div>
+
+            <!-- ZONE 3: MATRIX -->
+            <div class="zone zone-matrix active-s3" id="matrixZone">
+                <!-- Grid injected JS -->
+            </div>
+
+            <!-- ZONE 5: COMP -->
+            <div class="zone zone-comp active-s5" id="compZone">
+                <div class="comp-header">COMPETITIVE ASSESSMENT (1-5)</div>
+                <canvas id="compCanvas" class="comp-canvas"></canvas>
+                <div id="compGrid" style="position:absloute; z-index:2; width:100%; height:100%;"></div>
+            </div>
+
+            <!-- ZONE 6: BASE -->
+            <div class="zone zone-base active-s6" id="baseZone">
+                <!-- Rows injected JS -->
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE REPORT -->
+        <div class="report-panel" id="reportPanel">
+
+            <div class="report-header">
+                <div>
+                    <h3 class="report-title">EXECUTIVE SUMMARY</h3>
+                    <div style="font-size:10px; color:#94a3b8; font-weight:500;">QFD ANALYSIS REPORT</div>
+                </div>
+                <div class="report-meta">
+                    <span class="status-badge">DRAFT</span><br>
+                    <span id="repDate">2026-01-08</span>
+                </div>
+            </div>
+
+            <div class="rep-sec">
+                <div class="rep-label">STRATEGIC PRIORITY (VOC)</div>
+                <div class="rep-content highlight-box hl-driver" id="repDriver">
+                    --
+                </div>
+                <div style="font-size:10px; color:#64748b; margin-top:4px;">
+                    Highest impact on customer satisfaction.
+                </div>
+            </div>
+
+            <div class="rep-sec">
+                <div class="rep-label">TECHNICAL BOTTLENECK (CTQ)</div>
+                <div class="rep-content highlight-box hl-ctq" id="repCTQ">
+                    --
+                </div>
+                <div style="font-size:10px; color:#64748b; margin-top:4px;">
+                    Critical engineering specification to optimize.
+                </div>
+            </div>
+
+            <div class="rep-sec">
+                <div class="rep-label">RISK ASSESSMENT</div>
+                <div class="rep-content highlight-box hl-risk" id="repConf">
+                    --
+                </div>
+                <div style="font-size:10px; color:#64748b; margin-top:4px;">
+                    Conflicting parameters requiring trade-offs.
+                </div>
+            </div>
+
+            <!-- STEP-BASED LEGEND -->
+            <div style="margin-top:20px;">
+                <!-- 3. MATRIX -->
+                <div class="legend-group">
+                    <div class="lg-title">3. Relationship Matrix</div>
+                    <div class="lg-grid">
+                        <div class="lg-item">
+                            <div class="leg-sym" style="color:#0891b2; border-color:#0891b2;">◎</div>Strong(9)
+                        </div>
+                        <div class="lg-item">
+                            <div class="leg-sym" style="color:#16a34a; border-color:#16a34a;">○</div>Medium(3)
+                        </div>
+                        <div class="lg-item">
+                            <div class="leg-sym" style="color:#d97706; border-color:#d97706;">△</div>Weak(1)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. ROOF -->
+                <div class="legend-group">
+                    <div class="lg-title">4. Roof Correlation</div>
+                    <div class="lg-grid">
+                        <div class="lg-item">
+                            <div class="leg-sym" style="background:#dcfce7; color:#166534; border:none;">+</div>Positive
+                        </div>
+                        <div class="lg-item">
+                            <div class="leg-sym" style="background:#fee2e2; color:#991b1b; border:none;">-</div>Negative
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. SPECS & 5. COMP -->
+                <div class="legend-group" style="border:none;">
+                    <div class="lg-title">Direction & Analysis</div>
+                    <div class="lg-grid">
+                        <div class="lg-item">
+                            <div class="img-icon">▲</div>Max
+                        </div>
+                        <div class="lg-item">
+                            <div class="img-icon">▼</div>Min
+                        </div>
+                        <div class="lg-item">
+                            <div class="leg-sym" style="background:#f0f9ff; color:#0f172a; border:none;">Hi</div>CTQ
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            style="margin-top:auto; font-size:9px; color:#cbd5e1; text-align:center; padding-top:15px; border-top:1px solid #f1f5f9;">
+            CONFIDENTIAL - INTERNAL USE ONLY
+        </div>
+    </div>
+
+    </div>
+
+    <!-- HOVER POP -->
+    <div id="hoverPop" class="hover-pop">
+        <strong id="hpTitle">Title</strong>
+        <span id="hpDesc">Desc</span>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+        <a href="Stats_Calculator_Main.html" class="nav-item">
+            🛡️
+            <span class="nav-tooltip">Dashboard</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a href="#" onclick="window.history.back(); return false;" class="nav-item">
+            ←
+            <span class="nav-tooltip">Previous Page</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a href="Tool_WorkflowHub.html" class="nav-item">
+            📁
+            <span class="nav-tooltip">Workflow Hub</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a href="Stats_Calculator_Main.html" class="nav-item">
+            📊
+            <span class="nav-tooltip">Stats Engine</span>
+        </a>
+        <div class="nav-divider"></div>
+        <div class="nav-item" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            ↑
+            <span class="nav-tooltip">Top of Page</span>
+        </div>
+    </div>
+
+    <script>
+        function toggleHistory() {
+            const m = document.getElementById('historyModal');
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // CONFIG
+        let ROWS = 8;
+        let COLS = 8;
+        const COL_WIDTH = 50;
+        const ROW_HEIGHT = 42;
+
+        // State
+        let data = {
+            reqs: Array(ROWS).fill().map((_, i) => ({ imp: 3, text: `Requirement ${i + 1}` })),
+            specs: Array(COLS).fill().map((_, i) => ({ dir: '▲', text: `Spec ${i + 1}`, target: '-' })),
+            matrix: Array(ROWS).fill().map(() => Array(COLS).fill(0)),
+            roof: {},
+            comp: Array(ROWS).fill().map(() => ({ us: 3, them: 3 })),
+            diff: Array(COLS).fill(3)
+        };
+
+        // SETUP
+        function init() {
+            renderHouse();
+            calc();
+        }
+
+        function adjustGrid(dR, dC) {
+            if (ROWS + dR < 3 || COLS + dC < 3) return; // Min limits
+
+            if (dR > 0) { // Add Row
+                data.reqs.push({ imp: 3, text: 'New Req' });
+                data.matrix.push(Array(COLS).fill(0));
+                data.comp.push({ us: 3, them: 3 });
+            } else if (dR < 0) { // Remove Row
+                data.reqs.pop();
+                data.matrix.pop();
+                data.comp.pop();
+            }
+
+            if (dC > 0) { // Add Col
+                data.specs.push({ dir: '▲', text: 'New Spec', target: '-' });
+                data.matrix.forEach(r => r.push(0));
+                data.diff.push(3);
+            } else if (dC < 0) { // Remove Col
+                data.specs.pop();
+                data.matrix.forEach(r => r.pop());
+                data.diff.pop();
+            }
+
+            ROWS += dR;
+            COLS += dC;
+            renderHouse();
+            calc();
+        }
+
+        function renderHouse() {
+            // WHATS
+            const wz = document.getElementById('whatsZone');
+            wz.style.gridTemplateRows = `20px repeat(${ROWS}, ${ROW_HEIGHT}px)`;
+            wz.innerHTML = `<div style="grid-column:1; text-align:center; font-size:9px; color:var(--c-step1); padding-top:5px; font-weight:bold;">IMP (1-5)</div><div style="grid-column:2; font-size:9px; color:var(--c-step1); padding:5px 0 0 10px; font-weight:bold;">CUSTOMER REQUIREMENTS</div>` +
+                data.reqs.map((r, i) => `
+                <div class="imp-cell"><input class="imp-input" type="number" min="1" max="5" value="${r.imp}" onchange="updateData('req', ${i}, 'imp', this.value)"></div>
+                <div class="req-cell"><input class="req-input" value="${r.text}" onchange="updateData('req', ${i}, 'text', this.value)"><span class="row-del" onclick="adjustGrid(-1,0)">✖</span></div>
+            `).join('');
+
+            // HOWS
+            const hz = document.getElementById('howsZone');
+            hz.innerHTML = data.specs.map((s, i) => `
+                <div class="how-col">
+                    <div class="dir-icon" onclick="toggleDir(${i})">${s.dir}</div>
+                    <div class="how-label" contenteditable="true" onblur="updateData('spec', ${i}, 'text', this.innerText)">${s.text}</div>
+                </div>
+            `).join('');
+
+            // MATRIX
+            const mz = document.getElementById('matrixZone');
+            mz.style.gridTemplateColumns = `repeat(${COLS}, ${COL_WIDTH}px)`;
+            mz.style.gridTemplateRows = `repeat(${ROWS}, ${ROW_HEIGHT}px)`;
+            mz.innerHTML = data.matrix.map((row, r) => row.map((val, c) => {
+                let sym = val === 9 ? '◎' : val === 3 ? '○' : val === 1 ? '△' : '';
+                let cls = val === 9 ? 'sym-strong' : val === 3 ? 'sym-med' : val === 1 ? 'sym-weak' : '';
+                return `<div class="rel-cell ${cls}" onclick="toggleMatrix(${r},${c})">${sym}</div>`
+            }).join('')).join('');
+
+            // ROOF
+            renderRoof();
+
+            // COMP
+            const cg = document.getElementById('compGrid');
+            cg.style.display = 'grid';
+            cg.style.gridTemplateRows = `repeat(${ROWS}, ${ROW_HEIGHT}px)`;
+            cg.innerHTML = data.comp.map((c, r) => `
+                <div class="comp-row">
+                    <div style="flex:1; display:flex; justify-content:center; gap:2px;">
+                        <span style="font-size:9px; color:#22d3ee; writing-mode:vertical-rl; transform:rotate(180deg); margin-right:2px; font-weight:bold;">US</span>
+                        ${[1, 2, 3, 4, 5].map(v => `<div class="comp-cell ${c.us === v ? 'comp-active-us' : ''}" onclick="setCompUs(${r},${v})">${v}</div>`).join('')}
+                    </div>
+                     <div style="width:1px; background:var(--border); height:100%; opacity:0.3;"></div>
+                    <div style="flex:1; display:flex; justify-content:center; gap:2px;">
+                        ${[1, 2, 3, 4, 5].map(v => `<div class="comp-cell ${c.them === v ? 'comp-active-them' : ''}" onclick="setCompThem(${r},${v})">${v}</div>`).join('')}
+                        <span style="font-size:9px; color:#facc15; writing-mode:vertical-rl; transform:rotate(180deg); margin-left:2px; font-weight:bold;">THEM</span>
+                    </div>
+                </div>
+            `).join('');
+            drawComp();
+
+            // BASE
+            const bz = document.getElementById('baseZone');
+            bz.style.gridTemplateRows = `30px 40px 40px 40px`;
+            bz.innerHTML =
+                `<div class="base-row">` + data.specs.map((s, i) => `<div class="base-cell" contenteditable="true" onblur="updateData('spec', ${i}, 'target', this.innerText)">${s.target}</div>`).join('') + `</div>` +
+                `<div class="base-row" id="rowAbs"></div>` +
+                `<div class="base-row" id="rowRel"></div>` +
+                `<div class="base-row">` + data.diff.map((d, i) => `<div class="base-cell" contenteditable="true">${d}</div>`).join('') + `</div>`;
+        }
+
+        function renderRoof() {
+            const rc = document.getElementById('roofContainer');
+            rc.innerHTML = '';
+            // Fixed size diamonds
+            const size = 37;
+            for (let level = 1; level < COLS; level++) {
+                for (let i = 0; i < COLS - level; i++) {
+                    const j = i + level;
+                    const cx = (i + j + 1) * COL_WIDTH / 2;
+                    const cy = level * (COL_WIDTH / 2);
+                    const left = cx - (size / 2);
+                    const bottom = cy - (size / 2);
+
+                    const key = `${i}-${j}`;
+                    const val = data.roof[key] || 0;
+                    let cls = val === 1 ? 'pos' : val === -1 ? 'neg' : '';
+
+                    const d = document.createElement('div');
+                    d.className = `roof-diamond ${cls}`;
+                    d.style.width = size - 4 + 'px';
+                    d.style.height = size - 4 + 'px';
+                    d.style.left = left + 'px';
+                    d.style.bottom = bottom + 'px';
+                    d.onclick = () => toggleRoof(key);
+                    rc.appendChild(d);
+                }
+            }
+        }
+
+        // --- INTERACTIONS ---
+        function updateData(t, i, k, v) {
+            if (t == 'req') data.reqs[i][k] = v;
+            if (t == 'spec') data.specs[i][k] = v;
+            calc();
+        }
+        function toggleDir(i) {
+            const ds = ['▲', '▼', '◎']; data.specs[i].dir = ds[(ds.indexOf(data.specs[i].dir) + 1) % 3]; renderHouse();
+        }
+        function toggleMatrix(r, c) {
+            const vs = [0, 1, 3, 9]; data.matrix[r][c] = vs[(vs.indexOf(data.matrix[r][c]) + 1) % 4]; renderHouse(); calc();
+        }
+        function toggleRoof(k) {
+            const c = data.roof[k] || 0; data.roof[k] = c === 0 ? 1 : c === 1 ? -1 : 0; renderRoof(); calc();
+        }
+        function setCompUs(r, v) {
+            data.comp[r].us = v; renderHouse(); // Re-render to update active classes & chart
+        }
+        function setCompThem(r, v) {
+            data.comp[r].them = v; renderHouse(); // Re-render to update active classes & chart
+        }
+
+        function drawComp() {
+            const cvs = document.getElementById('compCanvas');
+            cvs.width = 360; cvs.height = ROWS * ROW_HEIGHT;
+            const ctx = cvs.getContext('2d');
+            const w = cvs.width, h = cvs.height, rh = ROW_HEIGHT;
+
+            ctx.clearRect(0, 0, w, h);
+            ctx.beginPath(); ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 3;
+            // Draw US (Left Side of Row) - Adjusted X coords to align with left input group
+            data.comp.forEach((c, i) => {
+                // Map 1-5 to the visual center of the left input group (0 to ~160px)
+                // Us Grid starts at approx x=20
+                let x = 25 + ((c.us - 1) * 28);
+                let y = i * rh + rh / 2;
+                if (i == 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                ctx.fillStyle = '#22d3ee'; ctx.fillRect(x - 3, y - 3, 6, 6);
+            });
+            ctx.stroke();
+
+            ctx.beginPath(); ctx.strokeStyle = '#facc15'; ctx.lineWidth = 2; ctx.setLineDash([4, 4]);
+            // Draw THEM (Right Side of Row)
+            data.comp.forEach((c, i) => {
+                // Map 1-5 to the visual center of the right input group (~180px to 340px)
+                let x = 205 + ((c.them - 1) * 28);
+                let y = i * rh + rh / 2;
+                if (i == 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                ctx.fillStyle = '#facc15'; ctx.fillRect(x - 3, y - 3, 6, 6);
+            });
+            ctx.stroke(); ctx.setLineDash([]);
+        }
+
+        function calc() {
+            let total = 0;
+            let weights = data.specs.map((_, c) => {
+                let sc = 0; data.reqs.forEach((r, i) => sc += (data.matrix[i][c] * parseInt(r.imp || 1))); return sc;
+            });
+            total = weights.reduce((a, b) => a + b, 0);
+
+            document.getElementById('rowAbs').innerHTML = weights.map(w => `<div class="base-cell ${w > (Math.max(...weights) * 0.8) ? 'calc-high' : ''}">${w}</div>`).join('');
+            document.getElementById('rowRel').innerHTML = weights.map(w => `<div class="base-cell">${total ? Math.round((w / total) * 100) : 0}%</div>`).join('');
+
+            // Report
+            const topReq = data.reqs.reduce((p, c) => parseInt(p.imp || 0) > parseInt(c.imp || 0) ? p : c);
+            const topSpecIdx = weights.indexOf(Math.max(...weights));
+            const topSpec = data.specs[topSpecIdx];
+            const confs = Object.values(data.roof).filter(v => v === -1).length;
+
+            document.getElementById('repDriver').innerText = `${topReq.text} (Imp: ${topReq.imp})`;
+            document.getElementById('repCTQ').innerText = `${topSpec.text} (Score: ${weights[topSpecIdx]})`;
+            document.getElementById('repConf').innerText = `${confs} Conflicts Detected`;
+        }
+        // INTERACTIONS
+        let activeStepNum = null;
+
+        function activateStep(n) {
+            const drop = document.getElementById('drop' + n);
+            const isRecurrent = (activeStepNum === n);
+
+            // Hide All First
+            document.querySelectorAll('.step-dropdown').forEach(d => d.classList.remove('show'));
+            document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+
+            // Handle Toggle
+            if (isRecurrent) {
+                activeStepNum = null;
+                // Deactivate Zones
+                document.querySelectorAll('.zone').forEach(z => { z.style.opacity = '1'; z.classList.remove('active', 'active-s' + n); });
+                return;
+            }
+
+            activeStepNum = n;
+
+            // Activate Button
+            document.querySelectorAll('.step-btn')[n - 1].classList.add('active'); // 0-indexed nav items logic needs care, simpler to target by class or ID if unique. Using loop match:
+            document.querySelectorAll('.step-btn').forEach((b, i) => { if (i + 1 === n || (i < 6 && b.innerText.includes(n + '.'))) b.classList.add('active'); });
+
+            // Show Dropdown
+            if (drop) drop.classList.add('show');
+
+            // Zones Highlighting
+            const zones = ['', 'whats', 'hows', 'matrix', 'roof', 'comp', 'base'];
+            document.querySelectorAll('.zone').forEach(z => {
+                z.style.opacity = '0.5'; z.classList.remove('active', 'active-s' + n);
+            });
+            document.querySelectorAll('.zone-' + zones[n]).forEach(z => {
+                z.style.opacity = '1'; z.classList.add('active', 'active-s' + n);
+            });
+        }
+
+        function clearData() {
+            if (!confirm('Clear all data from the house?')) return;
+            ROWS = 8; COLS = 8;
+            data.reqs = Array(ROWS).fill().map((_, i) => ({ imp: 3, text: `Req ${i + 1}` }));
+            data.specs = Array(COLS).fill().map((_, i) => ({ dir: '◎', text: `Spec ${i + 1}`, target: '-' }));
+            data.matrix = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+            data.comp = Array(ROWS).fill().map(() => ({ us: 3, them: 3 }));
+            data.diff = Array(COLS).fill(3);
+            data.roof = {};
+            renderHouse(); calc();
+        }
+
+        function showEx(el, t, d) {
+            const h = document.getElementById('hoverPop');
+            document.getElementById('hpTitle').innerText = t;
+            document.getElementById('hpDesc').innerText = d;
+            const rect = el.getBoundingClientRect();
+            h.style.left = (rect.right + 10) + 'px';
+            h.style.top = (rect.top) + 'px';
+            h.style.display = 'block';
+        }
+        function hideEx() { document.getElementById('hoverPop').style.display = 'none'; }
+
+        // Scenarios - 5x5 Data
+        function loadScenario(v) {
+            if (!v) return;
+            if (v === 'hc1') setData([
+                { i: 5, t: 'Min Wait Time' }, { i: 5, t: 'Accurate Dx' }, { i: 4, t: 'Friendly Staff' }, { i: 3, t: 'Clean Area' }, { i: 4, t: 'Clear Billing' }
+            ], [
+                { d: '▼', t: 'Avg Wait (m)', tg: '<15' }, { d: '▲', t: 'MD Board %', tg: '100%' }, { d: '▲', t: 'NPS Score', tg: '>70' }, { d: '▲', t: 'Hygiene Audit', tg: 'A+' }, { d: '▼', t: 'Billing Errs', tg: '0' }
+            ]);
+            if (v === 'hc2') setData([
+                { i: 5, t: 'No Falls' }, { i: 5, t: 'Med Safety' }, { i: 4, t: 'Fast Response' }, { i: 3, t: 'Quiet Room' }, { i: 4, t: 'Fam Update' }
+            ], [
+                { d: '▼', t: 'Fall Rate', tg: '0' }, { d: '▲', t: 'Scan Rates', tg: '100%' }, { d: '▼', t: 'Call Resp TM', tg: '<2m' }, { d: '▼', t: 'Decibels', tg: '<50' }, { d: '▲', t: 'Update Freq', tg: 'Daily' }
+            ]);
+            if (v === 'hc3') setData([
+                { i: 5, t: 'Easy Login' }, { i: 4, t: 'HD Video' }, { i: 5, t: 'Priv. Secure' }, { i: 3, t: 'Rx Sync' }, { i: 4, t: 'Chat Feat' }
+            ], [
+                { d: '▼', t: 'Steps to In', tg: '2' }, { d: '▲', t: 'Resolution', tg: '1080p' }, { d: '▲', t: 'Encrypt Lvl', tg: 'AES256' }, { d: '▲', t: 'API Uptime', tg: '99.9%' }, { d: '▼', t: 'Msg Latency', tg: '<1s' }
+            ]);
+            if (v === 'mfg1') setData([
+                { i: 5, t: 'Range 500mi' }, { i: 4, t: 'Fast Charge' }, { i: 3, t: 'Low Cost' }, { i: 5, t: 'Fire Safety' }, { i: 4, t: 'Recyclable' }
+            ], [
+                { d: '▲', t: 'KWh/kg', tg: '350' }, { d: '▼', t: 'Chg Time', tg: '15m' }, { d: '▼', t: '$/KWh', tg: '<100' }, { d: '▲', t: 'Therm Stab', tg: 'High' }, { d: '▲', t: 'Recycle %', tg: '95%' }
+            ]);
+            if (v === 'it1') setData([
+                { i: 5, t: 'Deploy Speed' }, { i: 5, t: '0 Defects' }, { i: 4, t: 'UX Simplicity' }, { i: 3, t: 'Auto Scaling' }, { i: 4, t: 'Analytics' }
+            ], [
+                { d: '▼', t: 'Cycle Time', tg: '2 Days' }, { d: '▲', t: 'Test Cover', tg: '99%' }, { d: '▼', t: 'Clicks', tg: '<3' }, { d: '▲', t: 'Max Req/s', tg: '10k' }, { d: '▲', t: 'Data pts', tg: 'All' }
+            ]);
+        }
+
+        function setData(reqs, specs) {
+            ROWS = reqs.length; COLS = specs.length;
+            data.reqs = reqs.map(x => ({ imp: x.i, text: x.t }));
+            data.specs = specs.map(x => ({ dir: x.d, text: x.t, target: x.tg }));
+            data.matrix = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+            data.comp = Array(ROWS).fill().map(() => ({ us: 3, them: 3 }));
+            data.diff = Array(COLS).fill(3);
+            init();
+        }
+
+        // SAVE & EVALUATE LOGIC
+        function updatePrintName(val) {
+            const el = document.getElementById('print-candidate-name');
+            if (el) el.innerText = val || "TBD";
+        }
+
+        function checkProgress() {
+            let score = 0;
+            let feedback = [];
+
+            // 1. Cust Requirements (Whats)
+            const validReqs = data.reqs.filter(r => r.text && !r.text.includes('Requirement ')).length;
+            if (validReqs >= 3) score += 20;
+            else feedback.push("Define at least 3 unique Customer Requirements (Whats).");
+
+            // 2. Tech Specs (Hows)
+            const validSpecs = data.specs.filter(s => s.text && !s.text.includes('Spec ')).length;
+            if (validSpecs >= 3) score += 20;
+            else feedback.push("Define at least 3 unique Technical Specifications (Hows).");
+
+            // 3. Matrix Density
+            const matrixCells = data.matrix.flat();
+            const filledCells = matrixCells.filter(v => v > 0).length;
+            const density = filledCells / matrixCells.length;
+            if (density > 0.15) score += 20;
+            else feedback.push("Matrix is sparse. Map Relationships between Whats & Hows.");
+
+            // 4. Competitor Assessment
+            const compChanged = data.comp.some(c => c.us !== 3 || c.them !== 3);
+            if (compChanged) score += 20;
+            else feedback.push("Perform Competitive Assessment (Right Wall).");
+
+            // 5. Targets Defined
+            const targets = data.specs.filter(s => s.target && s.target !== '-').length;
+            if (targets >= 3) score += 20;
+            else feedback.push("Set specific Targets for Technical Specs (Bottom).");
+
+            // Update UI
+            const bar = document.getElementById('screen-progress-bar');
+            const printBar = document.getElementById('print-progress-bar');
+            const pVal = document.getElementById('print-score-val');
+            const pVer = document.getElementById('print-verdict');
+
+            if (bar) { bar.style.width = score + "%"; }
+            if (printBar) { printBar.style.width = score + "%"; }
+            if (pVal) { pVal.innerText = score + "/100 Points"; }
+
+            if (score === 100) {
+                if (pVer) { pVer.innerText = "COMPLETE"; pVer.style.backgroundColor = "#dcfce7"; pVer.style.color = "#166534"; }
+                alert(`✅ QFD COMPLETE! Score: ${score}%\n\nExcellent work. The House of Quality is fully built.`);
+            } else {
+                if (pVer) { pVer.innerText = "IN PROGRESS"; pVer.style.backgroundColor = "#fff7ed"; pVer.style.color = "#9a3412"; }
+                alert(`💾 Progress Saved. Score: ${score}%\n\nTo Improve:\n${feedback.map(f => "- " + f).join('\n')}`);
+            }
+        }
+
+        window.onload = function () {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+            if (document.getElementById('printDate')) document.getElementById('printDate').innerText = dateStr;
+            if (document.getElementById('printDateFooter')) document.getElementById('printDateFooter').innerText = now.toLocaleDateString();
+            if (document.getElementById('print-date-summary')) document.getElementById('print-date-summary').innerText = now.toLocaleDateString();
+        };
+
+        init();
+        activateStep(1);
+
+        function openQFDInfo() {
+            document.getElementById('qfdInfoModal').style.display = 'flex';
+        }
+
+        function closeQFDInfo() {
+            document.getElementById('qfdInfoModal').style.display = 'none';
+        }
+    </script>
+
+    <!-- PREMIUM QFD INFO MODAL -->
+    <div id="qfdInfoModal" class="premium-info-overlay">
+        <div class="premium-info-box">
+            <span class="premium-modal-close" onclick="closeQFDInfo()">&times;</span>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="font-family: 'Orbitron', sans-serif; color: #3b82f6; font-size: 32px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px;">
+                    HOUSE OF QUALITY STRATEGY</h1>
+                <p style="color:var(--text-secondary); font-size:14px;">The Ultimate Bridge between Customer Needs and Technical Reality.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px;">
+                <div style="grid-column: span 2; background: rgba(59, 130, 246, 0.05); border-left: 4px solid #3b82f6; padding: 25px; border-radius: 16px;">
+                    <h3 style="color: #3b82f6; margin-top: 0; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; margin-bottom: 10px;">
+                        History of QFD</h3>
+                    <p style="font-size: 13px; line-height: 1.6; color: #475569; margin: 0;">
+                        Quality Function Deployment (QFD) was developed by <b>Yoji Akao</b> in 1966. It was designed to ensure that quality is built into the product from the design phase, rather than just inspected at the end. It ensures "The Voice of the Customer" is never lost in translation.
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px; color:white;">
+                    <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHAT IS IT?</h4>
+                    <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
+                        A structured methodology for translating customer requirements (WHATs) into specific technical specifications (HOWs).
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px; color:white;">
+                    <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">WHY USE IT?</h4>
+                    <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
+                        It prevents scope creep, reduces development time, and ensures the highest customer satisfaction by focusing on critical drivers.
+                    </p>
+                </div>
+
+                <div style="grid-column: span 2; background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px; color:white;">
+                    <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">THE ROOF?</h4>
+                    <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
+                        The "Roof" of the House identifies <b>Engineering Trade-offs</b>. It shows how improving one spec might negatively impact another.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="AssistantTools.js"></script>
+<script src="StudentAuth.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Pugh Matrix | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .header-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .meta-box {
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+
+        .meta-label {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+
+        .meta-box.active {
+            background: rgba(59, 130, 246, 0.1) !important;
+            border-color: #3b82f6 !important;
+            transform: translateY(-2px);
+        }
+
+        .meta-box.active .meta-value {
+            display: block !important;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInSimple 0.3s forwards;
+        }
+
+        @keyframes fadeInSimple {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .meta-value {
+            display: none;
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .glow-badge {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: 15px;
+        }
+
+        .pugh-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--surface-1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .pugh-table th,
+        .pugh-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pugh-table th {
+            background: var(--surface-2);
+            color: var(--accent);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .criteria-cell {
+            text-align: left !important;
+            font-weight: bold;
+            width: 250px;
+        }
+
+        .baseline-cell {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 800;
+            color: #aaa;
+        }
+
+        .score-input {
+            width: 60px;
+            padding: 8px;
+            background: var(--surface-2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .score-input:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .rank-1 {
+            background: #2ecc71;
+            color: #fff;
+        }
+
+        .rank-2 {
+            background: #f1c40f;
+            color: #000;
+        }
+
+        .rank-3 {
+            background: #e67e22;
+            color: #fff;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .stat-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin: 10px 0;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 24px;
+        }
+
+        .clickable-header {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .clickable-header:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+            color: white !important;
+            padding: 10px 24px !important;
+            border-radius: 50px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            border: none;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 40px rgba(59, 130, 246, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 16px;
+            filter: drop-shadow(0 0 5px white);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ADVANCED NAV BAR -->
+    <nav class="app-nav-bar">
+        <div class="nav-left">
+            <a href="Stats_Calculator_Main.html" class="nav-logo">⚖️ Lean Studio</a>
+            <a href="Tool_WorkflowHub.html" class="nav-link">📖 Workflow Guide</a>
+            <a href="Stats_Calculator_Main.html" class="nav-link">⚙️ Stats Engine</a>
+        </div>
+        <div class="nav-right">
+            <a href="Stats_Calculator_Main.html" class="nav-btn-back">🏠 Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 1300px; margin: 40px auto; padding: 0 20px;">
+        <!-- HEADER -->
+        <div class="flex-between"
+            style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+            <div>
+                <h1 style="display:flex; align-items:center; margin:0; font-family: 'Orbitron', sans-serif;">
+                    ⚖️ Pugh Matrix
+                    <span class="glow-badge">ANALYZE</span>
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    🔧 Decision Matrix Analysis. <span style="color: var(--accent);">Concept Selection.</span> Which
+                    solution wins?
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="architecture-intelligence-btn"
+                    onclick="explain('methodology'); setTimeout(() => document.querySelectorAll('.meta-box').forEach(b => b.classList.add('active')), 300)">
+                    <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+                </button>
+            </div>
+        </div>
+
+        <!-- META GRID -->
+        <div class="header-meta-grid">
+            <div class="meta-box" onclick="this.classList.toggle('active')">
+                <span class="meta-label"> What Is It?</span>
+                <div class="meta-value">A scoring matrix used to compare multiple design alternatives against a
+                    baseline.</div>
+            </div>
+            <div class="meta-box" onclick="this.classList.toggle('active')">
+                <span class="meta-label"> When To Use?</span>
+                <div class="meta-value">During IMPROVE phase when selecting the best solution from several candidates.
+                </div>
+            </div>
+            <div class="meta-box" onclick="this.classList.toggle('active')">
+                <span class="meta-label"> Why Use It?</span>
+                <div class="meta-value">To make objective, multi-criteria decisions instead of relying on gut feelings.
+                </div>
+            </div>
+            <div class="meta-box" onclick="this.classList.toggle('active')">
+                <span class="meta-label"> Requirements</span>
+                <div class="meta-value">1 Baseline design, 3+ criteria, 2+ alternative concepts. Use weights for
+                    precision.</div>
+            </div>
+
+            <div class="meta-box" onclick="this.classList.toggle('active')">
+                <span class="meta-label"> Scoring Key</span>
+                <div class="meta-value"><strong>+1</strong>: Better | <strong>0</strong>: Same | <strong>-1</strong>:
+                    Worse than Baseline.</div>
+            </div>
+            <div class="meta-box" onclick="this.classList.toggle('active')">
+                <span class="meta-label"> Interpretation</span>
+                <div class="meta-value">The concept with the highest <strong>Weighted Total</strong> is the strongest
+                    candidate.</div>
+            </div>
+            <div class="meta-box" onclick="this.classList.toggle('active')">
+                <span class="meta-label"> Reference</span>
+                <div class="meta-value">Stuart Pugh (1981). Ideal for iterative concept refinement.</div>
+            </div>
+            <div class="meta-box" style="background: rgba(46, 204, 113, 0.1); border-color: rgba(46, 204, 113, 0.3);">
+                <span class="meta-label" style="color:#2ecc71;"> Phase Relevance</span>
+                <div class="meta-value" style="color:white;">
+                    <strong>Analyze:</strong> Compare options.<br>
+                    <strong>Improve:</strong> Converge on best.
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 30px;">
+            <div class="card">
+                <div class="flex-between">
+                    <h3>Decision Matrix</h3>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label style="font-size: 12px; color: var(--text-secondary);">Load Scenario:</label>
+                        <select id="scenarioSelect" class="btn btn-ghost" style="padding: 5px 10px; font-size: 12px;"
+                            onchange="loadScenario()">
+                            <option value="">-- Custom --</option>
+                            <optgroup label="🏥 Medical Scenarios">
+                                <option value="med_pump">Infusion Pump Selection</option>
+                                <option value="med_monitor">Patient Monitoring System</option>
+                                <option value="med_tele">Telehealth Platform</option>
+                            </optgroup>
+                            <optgroup label="🌎 General Scenarios">
+                                <option value="gen_fleet">Delivery Fleet Vehicle</option>
+                                <option value="gen_erp">ERP Software Suite</option>
+                                <option value="gen_office">Office Space Layout</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <table class="pugh-table" id="pughTable">
+                    <thead>
+                        <tr>
+                            <th class="criteria-cell">Selection Criteria</th>
+                            <th class="clickable-header" onclick="explain('weight')" title="Importance (1-5)">Weight
+                                (1-5) ?</th>
+                            <th class="baseline-cell clickable-header" onclick="explain('baseline')"
+                                title="Reference Standard">Baseline (Current) ?</th>
+                            <th id="th-0" contenteditable="true">Concept A</th>
+                            <th id="th-1" contenteditable="true">Concept B</th>
+                            <th id="th-2" contenteditable="true">Concept C</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="criteria-cell" contenteditable="true">Cost to Implement</td>
+                            <td><input type="number" class="score-input weight-in" value="3" oninput="calculatePugh()">
+                            </td>
+                            <td class="baseline-cell">0</td>
+                            <td><input type="number" class="score-input score-in" data-col="0" value="0"
+                                    oninput="calculatePugh()"></td>
+                            <td><input type="number" class="score-input score-in" data-col="1" value="0"
+                                    oninput="calculatePugh()"></td>
+                            <td><input type="number" class="score-input score-in" data-col="2" value="0"
+                                    oninput="calculatePugh()"></td>
+                        </tr>
+                        <tr>
+                            <td class="criteria-cell" contenteditable="true">Ease of Use</td>
+                            <td><input type="number" class="score-input weight-in" value="5" oninput="calculatePugh()">
+                            </td>
+                            <td class="baseline-cell">0</td>
+                            <td><input type="number" class="score-input score-in" data-col="0" value="0"
+                                    oninput="calculatePugh()"></td>
+                            <td><input type="number" class="score-input score-in" data-col="1" value="0"
+                                    oninput="calculatePugh()"></td>
+                            <td><input type="number" class="score-input score-in" data-col="2" value="0"
+                                    oninput="calculatePugh()"></td>
+                        </tr>
+                        <tr>
+                            <td class="criteria-cell" contenteditable="true">Impact on Quality</td>
+                            <td><input type="number" class="score-input weight-in" value="4" oninput="calculatePugh()">
+                            </td>
+                            <td class="baseline-cell">0</td>
+                            <td><input type="number" class="score-input score-in" data-col="0" value="0"
+                                    oninput="calculatePugh()"></td>
+                            <td><input type="number" class="score-input score-in" data-col="1" value="0"
+                                    oninput="calculatePugh()"></td>
+                            <td><input type="number" class="score-input score-in" data-col="2" value="0"
+                                    oninput="calculatePugh()"></td>
+                        </tr>
+                        <tr>
+                            <td class="criteria-cell" contenteditable="true">Cycle Time Reduction</td>
+                            <td><input type="number" class="score-input weight-in" value="2" oninput="calculatePugh()">
+                            </td>
+                            <td class="baseline-cell">0</td>
+                            <td><input type="number" class="score-input score-in" data-col="0" value="0"
+                                    oninput="calculatePugh()"></td>
+                            <td><input type="number" class="score-input score-in" data-col="1" value="0"
+                                    oninput="calculatePugh()"></td>
+                            <td><input type="number" class="score-input score-in" data-col="2" value="0"
+                                    oninput="calculatePugh()"></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr style="background: rgba(255,255,255,0.03); font-weight:bold;">
+                            <td colspan="2" style="text-align:right;">Weighted Total Score:</td>
+                            <td class="baseline-cell">0</td>
+                            <td id="total-0">0</td>
+                            <td id="total-1">0</td>
+                            <td id="total-2">0</td>
+                        </tr>
+                        <tr style="background: rgba(255,255,255,0.05); font-weight:bold;">
+                            <td colspan="2" style="text-align:right;">Final Ranking:</td>
+                            <td class="baseline-cell">-</td>
+                            <td id="rank-0">-</td>
+                            <td id="rank-1">-</td>
+                            <td id="rank-2">-</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div style="margin-top: 15px; display:flex; gap: 10px;"> <button class="btn btn-ghost"
+                        onclick="addRow()">➕ Add Criterion</button> <button class="btn btn-primary"
+                        onclick="calculatePugh()">🚀 Refresh Totals</button> </div>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Winning Concept</div>
+                    <div class="stat-val" id="winner-name" style="color: #2ecc71;">-</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Best Score</div>
+                    <div class="stat-val" id="winner-score">-</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Convergence Status</div>
+                    <div class="stat-val" id="conv-status" style="font-size:18px;">Ready</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="flex-between">
+                    <h3>Concept Performance Visualization</h3>
+                    <div class="clickable-result" onclick="explain('chart')"
+                        style="font-size:11px; cursor:pointer; color:var(--accent);">What is this?</div>
+                </div>
+                <div style="height: 300px;"> <canvas id="pughChart"></canvas> </div>
+            </div>
+        </div>
+    </div>
+    <!-- EDUCATIONAL MODAL -->
+        <div class="modal-overlay" id="infoModal" onclick="if(event.target.id==='infoModal') this.style.display='none'">
+            <div class="modal-box"> <span class="close-btn"
+                    onclick="document.getElementById('infoModal').style.display='none'">&times;
+                </span>
+                <div style="text-align:center; margin-bottom:20px;">
+                    <h2 style="color:var(--accent); margin:0;" id="conceptTitle">Pugh Methodology</h2>
+                </div>
+                <div id="conceptContent" style="min-height:150px; color:#ccc; line-height:1.6; font-size:14px;">
+                    <!-- Content Injected via JS -->
+                </div>
+            </div>
+        </div>
+        <script>let chartInstance = null;
+
+            const scenarioDB = {
+                'med_pump': {
+
+                    concepts: ["Pump-X1",
+                        "CareFlow 2",
+                        "SmartDrip"],
+                    criteria: [{
+                        name: "Initial Cost", weight: 3, scores: [-1, 0, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Battery Life", weight: 5, scores: [1, 1, -1]
+                    }
+
+                        ,
+                    {
+                        name: "UI Intuition", weight: 5, scores: [1, 0, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Accuracy", weight: 4, scores: [0, 1, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Integration", weight: 2, scores: [-1, 1, 0]
+                    }
+
+                    ]
+                }
+
+                ,
+                'med_monitor': {
+
+                    concepts: ["Wireless-A",
+                        "Hybrid-B",
+                        "Mobile-C"],
+                    criteria: [{
+                        name: "Data Lag", weight: 5, scores: [0, 1, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Ease of Sanitization", weight: 4, scores: [1, 0, -1]
+                    }
+
+                        ,
+                    {
+                        name: "Security (HL7)", weight: 5, scores: [1, 1, 0]
+                    }
+
+                        ,
+                    {
+                        name: "Portability", weight: 3, scores: [1, 1, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Maintenance Cost", weight: 2, scores: [-1, 0, 0]
+                    }
+
+                    ]
+                }
+
+                ,
+                'med_tele': {
+
+                    concepts: ["V-Care",
+                        "CloudHealth",
+                        "DocLink"],
+                    criteria: [{
+                        name: "Patient Setup Time", weight: 4, scores: [1, 0, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Video Clarity", weight: 5, scores: [1, 1, 0]
+                    }
+
+                        ,
+                    {
+                        name: "EHR Integration", weight: 5, scores: [0, 1, 1]
+                    }
+
+                        ,
+                    {
+                        name: "License Cost", weight: 3, scores: [-1, 0, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Compliance/Privacy", weight: 5, scores: [1, 1, 1]
+                    }
+
+                    ]
+                }
+
+                ,
+                'gen_fleet': {
+
+                    concepts: ["EV-Van",
+                        "Diesel-HD",
+                        "Hybrid-S"],
+                    criteria: [{
+                        name: "Cargo Volume", weight: 5, scores: [0, 1, -1]
+                    }
+
+                        ,
+                    {
+                        name: "Fuel Economy", weight: 4, scores: [1, -1, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Safety Rating", weight: 4, scores: [1, 0, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Purchase Price", weight: 3, scores: [-1, 1, 0]
+                    }
+
+                        ,
+                    {
+                        name: "Repair Network", weight: 2, scores: [-1, 1, 1]
+                    }
+
+                    ]
+                }
+
+                ,
+                'gen_erp': {
+
+                    concepts: ["OracleCloud",
+                        "SAP S/4HANA",
+                        "Microsoft D365"],
+                    criteria: [{
+                        name: "Feature Depth", weight: 5, scores: [1, 1, 0]
+                    }
+
+                        ,
+                    {
+                        name: "Implementation Speed", weight: 3, scores: [-1, -1, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Global Support", weight: 4, scores: [1, 1, 1]
+                    }
+
+                        ,
+                    {
+                        name: "TCO (5yr)", weight: 4, scores: [-1, -1, 0]
+                    }
+
+                        ,
+                    {
+                        name: "User Customization", weight: 3, scores: [0, 0, 1]
+                    }
+
+                    ]
+                }
+
+                ,
+                'gen_office': {
+
+                    concepts: ["Open Plan",
+                        "Cubicles",
+                        "Hybrid"],
+                    criteria: [{
+                        name: "Collaboration", weight: 5, scores: [1, -1, 1]
+                    }
+
+                        ,
+                    {
+                        name: "Privacy", weight: 4, scores: [-1, 1, 0]
+                    }
+
+                        ,
+                    {
+                        name: "Noise Level", weight: 4, scores: [-1, 1, 0]
+                    }
+
+                        ,
+                    {
+                        name: "Cost per Desk", weight: 3, scores: [1, -1, 0]
+                    }
+
+                        ,
+                    {
+                        name: "Flexibility", weight: 3, scores: [1, -1, 1]
+                    }
+
+                    ]
+                }
+            }
+
+                ;
+
+            function loadScenario() {
+                const key = document.getElementById('scenarioSelect').value;
+                if (!key) return;
+                const s = scenarioDB[key];
+
+                // Concepts
+                document.getElementById('th-0').innerText = s.concepts[0];
+                document.getElementById('th-1').innerText = s.concepts[1];
+                document.getElementById('th-2').innerText = s.concepts[2];
+
+                // Table Rows
+                const tbody = document.querySelector('#pughTable tbody');
+                tbody.innerHTML = '';
+
+                s.criteria.forEach(c => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `<td class="criteria-cell" contenteditable="true">${c.name}</td><td><input type="number" class="score-input weight-in" value="${c.weight}" oninput="calculatePugh()"></td><td class="baseline-cell">0</td><td><input type="number" class="score-input score-in" data-col="0" value="${c.scores[0]}" oninput="calculatePugh()"></td><td><input type="number" class="score-input score-in" data-col="1" value="${c.scores[1]}" oninput="calculatePugh()"></td><td><input type="number" class="score-input score-in" data-col="2" value="${c.scores[2]}" oninput="calculatePugh()"></td>`;
+                    tbody.appendChild(row);
+                });
+
+                calculatePugh();
+            }
+
+            function addRow() {
+                const tbody = document.querySelector('#pughTable tbody');
+                const row = document.createElement('tr');
+                row.innerHTML = ` <td class="criteria-cell" contenteditable="true">New Criteria</td><td><input type="number" class="score-input weight-in" value="1" oninput="calculatePugh()"></td><td class="baseline-cell">0</td><td><input type="number" class="score-input score-in" data-col="0" value="0" oninput="calculatePugh()"></td><td><input type="number" class="score-input score-in" data-col="1" value="0" oninput="calculatePugh()"></td><td><input type="number" class="score-input score-in" data-col="2" value="0" oninput="calculatePugh()"></td>`;
+                tbody.appendChild(row);
+                calculatePugh();
+            }
+
+            function calculatePugh() {
+                const rows = document.querySelectorAll('#pughTable tbody tr');
+                const totals = [0,
+                    0,
+                    0];
+
+                rows.forEach(row => {
+                    const weight = parseFloat(row.querySelector('.weight-in').value) || 0;
+                    const scores = row.querySelectorAll('.score-in');
+
+                    scores.forEach((input, idx) => {
+                        const score = parseFloat(input.value) || 0;
+                        totals[idx] += (score * weight);
+                    });
+                });
+
+                // Update UI Totals
+                const totalCells = [document.getElementById('total-0'),
+                document.getElementById('total-1'),
+                document.getElementById('total-2')];
+
+                totalCells.forEach((cell, i) => {
+                    cell.innerText = totals[i];
+                    cell.style.color = totals[i] > 0 ? '#2ecc71' : (totals[i] < 0 ? '#e74c3c' : '#fff');
+                });
+
+                // Calculate Ranks
+                const scoreMap = totals.map((s, i) => ({
+                    score: s, id: i
+                }));
+                scoreMap.sort((a, b) => b.score - a.score);
+
+                const rankCells = [document.getElementById('rank-0'),
+                document.getElementById('rank-1'),
+                document.getElementById('rank-2')];
+
+                scoreMap.forEach((item, index) => {
+                    const rank = index + 1;
+
+                    rankCells[item.id].innerHTML = `<span class="rank-badge rank-${rank}">#${rank}</span>`;
+                });
+
+                // Winning Summary
+                const winner = scoreMap[0];
+                const concepts = document.querySelectorAll('#pughTable thead th');
+                const winnerName = concepts[winner.id + 3].innerText;
+
+                document.getElementById('winner-name').innerText = winnerName;
+                document.getElementById('winner-score').innerText = winner.score;
+
+                renderChart(totals);
+            }
+
+            function renderChart(totals) {
+                const ctx = document.getElementById('pughChart').getContext('2d');
+                const concepts = Array.from(document.querySelectorAll('#pughTable thead th')).slice(3).map(th => th.innerText);
+
+                if (chartInstance) chartInstance.destroy();
+
+                chartInstance = new Chart(ctx, {
+
+                    type: 'bar',
+                    data: {
+
+                        labels: concepts,
+                        datasets: [{
+                            label: 'Weighted Score',
+                            data: totals,
+                            backgroundColor: totals.map(v => v >= 0 ? 'rgba(46, 204, 113, 0.6)' : 'rgba(231, 76, 60, 0.6)'),
+                            borderColor: totals.map(v => v >= 0 ? '#2ecc71' : '#e74c3c'),
+                            borderWidth: 2
+                        }
+
+                        ]
+                    }
+
+                    ,
+                    options: {
+
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true, grid: {
+                                    color: 'rgba(255,255,255,0.05)'
+                                }
+                            }
+
+                            ,
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+
+                        ,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            const glossary = {
+
+                methodology: {
+                    title: 'Pugh Matrix Methodology 🚀',
+                    text: 'The Pugh Matrix is a qualitative decision-making tool. <br><br><b>Step 1:</b> Define a Baseline (Current State).<br><b>Step 2:</b> Score Alternatives as +1, 0, or -1.<br><b>Step 3:</b> Weight the criteria.<br><b>Step 4:</b> The highest weighted total is your winner.'
+                }
+
+                ,
+                weight: {
+                    title: "Criteria Weighting ⚖️",
+                    text: "Not all criteria are equal. <br><br><b>Scale (1-5):</b><br>1: Nice to have (Secondary).<br>5: Critical to Quality (CTQ).<br><br>Multiplying your score by weight ensures that the most important features drive the final decision."
+                }
+
+                ,
+                baseline: {
+                    title: "Baseline Reference 🏠",
+                    text: "The 'Baseline' is usually your current process or the industry standard. <br><br><b>Logic:</b> We assign the baseline a score of 0. Alternatives are then judged relative to this anchor. This forces objectivity by asking: 'Is Concept A better or worse than what we have today?'"
+                }
+
+                ,
+                chart: {
+                    title: "Convergence Visualization 📈",
+                    text: "The bar chart represents the net value of each concept. <br><br><b>MBB Strategy:</b> If scores are close, don't just pick the winner. Look for 'Hybridization'—take the best features from Concept B and merge them into Concept A to create a Super-Concept."
+                }
+            }
+
+                ;
+
+            function explain(key) {
+                const item = glossary[key];
+
+                if (item) {
+                    document.getElementById('conceptTitle').innerText = item.title;
+
+                    document.getElementById('conceptContent').innerHTML = `<div style="padding:15px; background:rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.1);">${item.text}</div>`;
+                    document.getElementById('infoModal').style.display = 'flex';
+                }
+            }
+
+            window.onload = calculatePugh;
+        </script>
+        <script src="AssistantTools.js"></script>
+
+<script src="StudentAuth.js"></script>
+</body>
+
+</html>

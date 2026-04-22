@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gauge Chart Tool | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="grid-measure">
+            <div class="guide-column">
+                <!-- GUIDE SECTION -->
+                <div class="explainer-section"
+                    style="background:#0f172a; padding:20px; border-radius:12px; margin-bottom:30px; border:1px solid #1e293b; color:white; font-family:'Inter', sans-serif;">
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+                        <div>
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                                <h1 style="margin:0; font-family:'Orbitron',sans-serif; font-size:24px; color:white;">
+                                    Yield Gauge Chart</h1>
+                                <span
+                                    style="background:#2563eb; color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:bold;">CONTROL</span>
+                            </div>
+                            <div style="color:#94a3b8; font-style:italic; font-size:14px;">"What gets measured, gets
+                                managed."</div>
+                        </div>
+                        <button onclick="window.print()" class="sticky-export">📷 Export PNG / Print</button>
+                    </div>
+                    <div
+                        style="background:#1e293b; padding:15px; border-radius:8px; margin-bottom:15px; border-left:4px solid #3b82f6;">
+                        <h4 style="margin:0 0 5px 0; color:#60a5fa; font-size:11px; text-transform:uppercase;">📜 Origin
+                            & Power</h4>
+                        <p style="margin:0; font-size:12px; color:#cbd5e1; line-height:1.5;">Visual Management (Andon)
+                            is a core pillar of the Toyota Production System. Gauge charts provide instant,
+                            "at-a-glance" status of whether a process is winning or losing, eliminating the need to
+                            decipher rows of data.</p>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:15px;">
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">🤔
+                                What is it?</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;">A semi-circle chart (Speedometer)
+                                indicating current performance against defined Red/Yellow/Green zones.</p>
+                        </div>
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">💡
+                                Why use it?</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;">To evoke an emotional/action-based
+                                response. Red = Stop & Fix. Green = Keep Going.</p>
+                        </div>
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 5px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">🕒
+                                When to use?</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;">Control Phase (Dashboards, Weekly
+                                Reports, Shop Floor Boards).</p>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 2fr; gap:15px;">
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <h4 style="margin:0 0 10px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">📋
+                                Pre-Requirements</h4>
+                            <p style="margin:0 0 15px 0; font-size:12px; color:#cbd5e1;">Clear specification limits
+                                (LSL/USL) or targets.</p>
+                            <h4 style="margin:0 0 10px 0; color:#ea580c; font-size:11px; text-transform:uppercase;">👮
+                                Strict Roles</h4>
+                            <p style="margin:0; font-size:12px; color:#cbd5e1;"><b>Process Owner:</b> Monitors the gauge
+                                daily.<br><b>Manager:</b> Reacts to Red conditions.</p>
+                        </div>
+                        <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #334155;">
+                            <details class="story-mode">
+                                <summary>🎮 How to Execute (Story Mode)</summary>
+                                <div
+                                    style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:10px;">
+                                    <div
+                                        style="background:#334155; padding:10px; border-radius:6px; position:relative;">
+                                        <div
+                                            style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                                            1</div>
+                                        <div style="margin-left:15px;">
+                                            <div style="color:white; font-weight:bold; font-size:11px;">Set Limits</div>
+                                            <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">Define what is
+                                                Good (Green) vs Bad (Red).</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="background:#334155; padding:10px; border-radius:6px; position:relative;">
+                                        <div
+                                            style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                                            2</div>
+                                        <div style="margin-left:15px;">
+                                            <div style="color:white; font-weight:bold; font-size:11px;">Input</div>
+                                            <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">Enter the
+                                                current actual value.</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="background:#334155; padding:10px; border-radius:6px; position:relative;">
+                                        <div
+                                            style="position:absolute; top:-5px; left:-5px; width:20px; height:20px; background:#f97316; color:white; border-radius:50%; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                                            3</div>
+                                        <div style="margin-left:15px;">
+                                            <div style="color:white; font-weight:bold; font-size:11px;">React</div>
+                                            <div style="color:#cbd5e1; font-size:10px; margin-top:2px;">If Red, initiate
+                                                Root Cause Analysis.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Close guide-column -->
+
+            <div class="tool-column">
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Parameters</h3>
+                        <div class="form-group"><label>Title</label><input type="text" id="gTitle"
+                                value="Process Sigma"></div>
+                        <div class="form-group"><label>Value (Needle)</label><input type="number" id="gValue" step="0.1"
+                                value="3.5"></div>
+                        <div class="form-group"><label>Min Value</label><input type="number" id="gMin" value="0"></div>
+                        <div class="form-group"><label>Max Value</label><input type="number" id="gMax" value="6"></div>
+
+                        <div class="grid-3">
+                            <div class="form-group"><label>Red Limit</label><input type="number" id="gRed" value="2">
+                            </div>
+                            <div class="form-group"><label>Yellow Limit</label><input type="number" id="gYel" value="4">
+                            </div>
+                            <div class="form-group"><label>Green Limit</label><input type="number" id="gGrn" value="6">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="drawGauge()"
+                            style="width:100%; margin-top:10px;">Render
+                            Gauge</button>
+                    </div>
+                    <div class="card">
+                        <div class="chart-controls">
+                            <div class="control-btn" onclick="downloadChart()">⬇️</div>
+                        </div>
+                        <div class="chart-container" style="position:relative; height:300px;"><canvas
+                                id="gaugeChart"></canvas>
+                        </div>
+                        <div style="text-align: center; font-size: 24px; margin-top: -30px; font-weight: bold; color: var(--text-primary);"
+                            id="valDisplay">3.5</div>
+                    </div>
+                </div>
+            </div> <!-- Close tool-column -->
+        </div> <!-- Close grid-measure -->
+    </div>
+    <script>
+        let chart;
+        window.onload = drawGauge;
+
+        function drawGauge() {
+            const val = parseFloat(document.getElementById('gValue').value);
+            const min = parseFloat(document.getElementById('gMin').value);
+            const max = parseFloat(document.getElementById('gMax').value);
+            const red = parseFloat(document.getElementById('gRed').value);
+            const yel = parseFloat(document.getElementById('gYel').value);
+            // Note: Chart.js doughnut gauge hack
+
+            // Simple 3 scetion doughnut
+            // Red Zone size = (red - min)
+            // Yellow zone size = (yel - red)
+            // Green zone size = (max - yel)
+
+            const d1 = red - min;
+            const d2 = yel - red;
+            const d3 = max - yel;
+
+            const ctx = document.getElementById('gaugeChart').getContext('2d');
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Bad', 'Warning', 'Good'],
+                    datasets: [{
+                        data: [d1, d2, d3],
+                        backgroundColor: ['#E74C3C', '#F1C40F', '#2ECC71'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270,
+                        cutout: '70%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    animation: { animateRotate: true, animateScale: true }
+                },
+                plugins: [{
+                    id: 'gaugeNeedle',
+                    afterDatasetDraw(chart, args, options) {
+                        const { ctx, config, data, chartArea: { top, bottom, left, right, width, height } } = chart;
+                        ctx.save();
+                        const total = max - min;
+                        const angle = Math.PI + (1 / total * (val - min) * Math.PI);
+                        const cx = width / 2;
+                        const cy = chart.chartArea.bottom - 10; // slightly up
+
+                        // Needle
+                        ctx.translate(cx, cy);
+                        ctx.rotate(angle);
+                        ctx.beginPath();
+                        ctx.moveTo(0, -5);
+                        ctx.lineTo(height - (height * 0.25), 0); // length
+                        ctx.lineTo(0, 5);
+                        ctx.fillStyle = 'white';
+                        ctx.fill();
+
+                        // Dot
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 10, 0, 10);
+                        ctx.fillStyle = 'white';
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }]
+            });
+
+            document.getElementById('valDisplay').innerText = val;
+        }
+        function downloadChart() {
+            const a = document.createElement('a');
+            a.download = 'GaugeChart.png';
+            a.href = document.getElementById('gaugeChart').toDataURL();
+            a.click();
+        }
+    </script>
+<script src="AssistantTools.js"></script><script src="StudentAuth.js"></script>`n</body>
+
+</html>

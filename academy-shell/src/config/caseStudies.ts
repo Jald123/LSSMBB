@@ -29,39 +29,39 @@ const DMAIC_PHASES: Phase[] = [
     {
         name: "Define",
         tools: [
-            { toolId: "charter", toolName: "Project Charter", priority: "essential", htmlFile: "Tool_ProjectCharter.html" },
-            { toolId: "sipoc", toolName: "SIPOC Map", priority: "essential", htmlFile: "Tool_SIPOC.html" },
-            { toolId: "voc", toolName: "VOC Analysis", priority: "recommended", htmlFile: "Tool_VOC.html" }
+            { toolId: "charter", toolName: "Project Charter", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" },
+            { toolId: "sipoc", toolName: "SIPOC Map", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=sipoc" },
+            { toolId: "voc", toolName: "VOC Analysis", priority: "recommended", htmlFile: "Tool_LeanWorkshop.html?tool=ctq" }
         ]
     },
     {
         name: "Measure",
         tools: [
-            { toolId: "data-collection", toolName: "Data Collection Plan", priority: "essential", htmlFile: "Tool_DataCollection.html" },
-            { toolId: "capability", toolName: "Process Capability", priority: "essential", htmlFile: "Tool_Capability.html" },
-            { toolId: "msa", toolName: "Gage R&R (MSA)", priority: "recommended", htmlFile: "Tool_MSA.html" }
+            { toolId: "data-collection", toolName: "Data Collection Plan", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=collect" },
+            { toolId: "capability", toolName: "Process Capability", priority: "essential", htmlFile: "Calculator_ProcessCapability.html" },
+            { toolId: "msa", toolName: "Gage R&R (MSA)", priority: "recommended", htmlFile: "Tool_MSA_Premium.html" }
         ]
     },
     {
         name: "Analyze",
         tools: [
-            { toolId: "fishbone", toolName: "Fishbone Diagram", priority: "essential", htmlFile: "Tool_Fishbone.html" },
-            { toolId: "pareto", toolName: "Pareto Analysis", priority: "essential", htmlFile: "Tool_Pareto.html" },
-            { toolId: "five-whys", toolName: "5 Whys Root Cause", priority: "recommended", htmlFile: "Tool_5Whys.html" }
+            { toolId: "fishbone", toolName: "Fishbone Diagram", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=fishbone" },
+            { toolId: "pareto", toolName: "Pareto Analysis", priority: "essential", htmlFile: "Tool_ParetoAnalysis.html" },
+            { toolId: "five-whys", toolName: "5 Whys Root Cause", priority: "recommended", htmlFile: "Tool_LeanWorkshop.html?tool=5whys" }
         ]
     },
     {
         name: "Improve",
         tools: [
-            { toolId: "fmea", toolName: "FMEA Analysis", priority: "essential", htmlFile: "Tool_FMEA.html" },
-            { toolId: "kaizen-event", toolName: "Kaizen Blitz Plan", priority: "recommended", htmlFile: "Tool_Kaizen.html" }
+            { toolId: "fmea", toolName: "FMEA Analysis", priority: "essential", htmlFile: "Tool_DFMEA_Premium.html" },
+            { toolId: "kaizen-event", toolName: "Kaizen Blitz Plan", priority: "recommended", htmlFile: "Tool_KaizenPrioritization_Premium.html" }
         ]
     },
     {
         name: "Control",
         tools: [
-            { toolId: "control-plan", toolName: "Control Plan", priority: "essential", htmlFile: "Tool_ControlPlan.html" },
-            { toolId: "spc", toolName: "SPC Charts", priority: "essential", htmlFile: "Tool_SPC.html" }
+            { toolId: "control-plan", toolName: "Control Plan", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" },
+            { toolId: "spc", toolName: "SPC Charts", priority: "essential", htmlFile: "Calculator_ControlCharts.html" }
         ]
     }
 ];

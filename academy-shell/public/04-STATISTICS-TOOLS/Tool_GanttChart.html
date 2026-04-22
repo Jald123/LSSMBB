@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Timelines | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <style>
+        /* LSSMBB GOLD STANDARD PREMIUM STYLES */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 5px rgba(255, 107, 53, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 5px rgba(255, 107, 53, 0.2);
+            }
+        }
+
+        .lss-intro-box {
+            background: linear-gradient(135deg, rgba(20, 20, 40, 0.95) 0%, rgba(30, 30, 60, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 5px solid var(--accent);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.8s ease-out;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .lss-intro-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .lss-intro-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .belt-badge-premium {
+            background: linear-gradient(45deg, #111, #333);
+            color: #ffd700;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.15);
+        }
+
+        .lss-intro-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #e0e0e0;
+            font-weight: 300;
+            padding-left: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lss-power-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 13px;
+            padding: 14px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-top: 25px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .lss-power-btn:hover {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .lss-power-content {
+            display: none;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #ddd;
+            border-left: 3px solid var(--accent);
+            animation: fadeInUp 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .lss-guide-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #FF6B35, #FCA311);
+            color: #000;
+            font-weight: 800;
+            padding: 16px 32px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+            cursor: pointer;
+            z-index: 999;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .lss-guide-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7);
+            background: linear-gradient(135deg, #ff8c61, #ffb74d);
+        }
+
+        /* Modal for Guide */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .guide-section-title {
+            color: var(--accent);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Guide Tabs */
+        .guide-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .guide-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px;
+            color: #aaa;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: 0.3s;
+            font-family: 'Orbitron';
+            font-size: 12px;
+        }
+
+        .guide-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .guide-tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .guide-content {
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 95%;
+            max-height: 95%;
+            overflow: auto;
+        }
+
+        .floating-legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 11px;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        .legend-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+        }
+
+        .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            color: #555;
+        }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #FF6B35, #FCA311) !important;
+            color: #000 !important;
+            padding: 16px 32px !important;
+            border-radius: 50px !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            z-index: 9999;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(255, 107, 53, 0.8), 0 0 50px rgba(252, 163, 17, 0.3); }
+            100% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            filter: brightness(1.1);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        /* EHR CLINICAL LAYOUT */
+        .ehr-container {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .ehr-input-panel {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+        }
+
+        .ehr-findings-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .findings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e3e6ea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .findings-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clinical-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .clinical-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .clinical-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .task-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+
+        .task-card:hover {
+            border-color: var(--accent);
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .task-card.level-1 {
+            margin-left: 20px;
+            border-left: 3px solid #3498db;
+            background: rgba(52, 152, 219, 0.05);
+            opacity: 0.95;
+        }
+
+        .task-card.level-2 {
+            margin-left: 40px;
+            border-left: 3px solid #9b59b6;
+            background: rgba(155, 89, 182, 0.03);
+            opacity: 0.9;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .task-card.level-1 {
+            border-left: 4px solid #3498db !important;
+            margin-left: 25px;
+            background: #fdfdfd;
+        }
+
+        .task-card.level-2 {
+            border-left: 4px solid #9b59b6 !important;
+            margin-left: 50px;
+            background: #fafafa;
+        }
+
+        .level-badge {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-right: 5px;
+        }
+
+        /* PHASE COLORS */
+        .phase-bg-define {
+            background-color: #e74c3c !important;
+            color: white !important;
+        }
+
+        .phase-bg-measure {
+            background-color: #f1c40f !important;
+            color: black !important;
+        }
+
+        .phase-bg-analyze {
+            background-color: #3498db !important;
+            color: white !important;
+        }
+
+        .phase-bg-improve {
+            background-color: #2ecc71 !important;
+            color: white !important;
+        }
+
+        .phase-bg-control {
+            background-color: #9b59b6 !important;
+            color: white !important;
+        }
+
+        /* GANTT TOOLTIP */
+        .gantt-tooltip {
+            position: fixed;
+            background: rgba(10, 10, 30, 0.98);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            z-index: 10000;
+            pointer-events: none;
+            display: none;
+            max-width: 320px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            transition: opacity 0.1s ease;
+        }
+
+        .dependency-hit-area {
+            cursor: help;
+        }
+
+        .dependency-path {
+            transition: stroke 0.2s, stroke-width 0.2s;
+        }
+
+        .error-flag-icon {
+            animation: pulse-red 1.5s infinite;
+            cursor: help;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                filter: drop-shadow(0 0 2px #ff4757);
+                transform: scale(1);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 8px #ff4757);
+                transform: scale(1.2);
+            }
+
+            100% {
+                filter: drop-shadow(0 0 2px #ff4757);
+                transform: scale(1);
+            }
+        }
+
+        /* TIMELINE STRATEGY STYLES */
+        .strategy-btn {
+            background: linear-gradient(135deg, #FFD700, #FCA311);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 20px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .strategy-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .strategy-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 20, 0.98);
+            display: none;
+            z-index: 3000;
+            overflow-y: auto;
+            backdrop-filter: blur(15px);
+            padding: 50px 20px;
+        }
+
+        .strategy-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            color: white;
+        }
+
+        .strategy-section {
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .strategy-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .strategy-hook {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .strategy-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 30px;
+            max-width: 800px;
+        }
+
+        .strategy-img-wrapper {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .strategy-img {
+            width: 100%;
+            display: block;
+        }
+
+        .strategy-close {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            z-index: 3001;
+            background: rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .strategy-close:hover {
+            background: #e74c3c;
+            transform: rotate(90deg);
+        }
+
+        .strategy-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .strategy-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 48px;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        /* LSS TOOLTIP SYSTEM */
+        .lss-tooltip-trigger {
+            color: var(--accent);
+            text-decoration: underline dotted #ff6b35;
+            cursor: pointer;
+            position: relative;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .lss-tooltip-box {
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 380px;
+            background: rgba(15, 15, 30, 0.98);
+            border: 2px solid var(--accent);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #eee;
+            display: none;
+            z-index: 5000;
+            pointer-events: auto;
+            backdrop-filter: blur(15px);
+            text-shadow: none;
+            text-align: left;
+        }
+
+        .lss-tooltip-box.active {
+            display: block;
+            animation: fadeInUp 0.3s forwards;
+        }
+
+        .lss-tooltip-box b {
+            color: var(--accent);
+        }
+
+        .lss-tooltip-box h4 {
+            margin: 0 0 10px 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .lss-tooltip-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #888;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .lss-tooltip-close:hover {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="chartTooltip" class="gantt-tooltip"></div>
+
+    <div class="container" style="max-width: 1800px;"> <!-- Wide layout -->
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">PROJECT MANAGEMENT</span>
+                <div style="height: 15px;"></div>
+                <h1>Project Timelines & Dependencies
+                    <button class="strategy-btn" onclick="openStrategy()"><span>📖</span> TIMELINE VISUAL
+                        STRATEGY</button>
+                </h1>
+            </div>
+                            <div style="background:var(--surface-2); padding:5px; border-radius:50px; border:1px solid var(--glass-border); display:flex; gap:5px; margin-right: 15px; display: inline-flex;">
+                    
+                    <button onclick="setTheme('twilight')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Twilight Mode"><i class="fas fa-moon"></i></button>
+                    <button onclick="setTheme('night')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Futuristic Dark (Night)"><i class="fas fa-space-shuttle"></i></button>
+                </div><button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">←
+                Dashboard</button>
+        </div>
+
+        <!-- LSSMBB HOOK & ORIGIN -->
+        <div class="lss-intro-box">
+            <div class="lss-intro-title">
+                <span>⏱️ Mastering Time & Flow</span>
+                <span class="belt-badge-premium">MBB Standard</span>
+            </div>
+            <p class="lss-intro-text">
+                A Project Charter defines "Where we are going," but the Gantt Chart defines "How long the journey
+                takes." This tool identifies the <b>Critical Path</b>—the specific sequence of tasks that, if delayed by
+                1 day, delays the entire project by 1 day.
+            </p>
+
+            <button class="lss-power-btn" onclick="togglePower()">
+                <span>🦅 Origin & Power: Why this tool exists</span>
+                <span id="powerIcon">▼</span>
+            </button>
+            <div id="powerContent" class="lss-power-content">
+                <b>Origin:</b> Validated by Henry Gantt (1917) for WWI logistics. Before this, factories ran on "gut
+                feel." It revolutionized the ability to predict delivery dates.<br><br>
+                <b>The Power of Visualization:</b>
+                <ul>
+                    <li><b>Dependency Logic:</b> Shows that you cannot "Pilot" (Phase 4) until you "Measure" (Phase 2).
+                    </li>
+                    <li><b>Resource Conflicts:</b> Reveals when one person is assigned to 3 tasks at once.</li>
+                    <li><b>Reality Check:</b> Most projects underestimate time by 50%. This tool forces you to map every
+                        day.</li>
+                </ul>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- GUIDE BUTTON & MODAL -->
+        <button class="architecture-intelligence-btn" onclick="showGuide()">
+            <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+        </button>
+
+        <div class="modal-overlay" id="guideModal" onclick="closeModal(event)">
+            <div class="modal-box">
+                <span class="slide-close"
+                    onclick="document.getElementById('guideModal').style.display='none'">&times;</span>
+                <h2 style="color:var(--accent); text-align:center; font-family:'Orbitron'">Master Black Belt
+                    Guide 🥋
+                </h2>
+                <p style="text-align:center; font-size:13px; color:#aaa; margin-bottom:20px;">Critical Path
+                    Management
+                </p>
+
+                <!-- TABS -->
+                <div class="guide-tabs">
+                    <button class="guide-tab active" onclick="switchGuideTab('strategy', event)">Strategic
+                        Guide</button>
+                    <button class="guide-tab" onclick="switchGuideTab('knowledge', event)">Reference
+                        Library</button>
+                </div>
+
+                <!-- CONTENT 1: STRATEGY -->
+                <div id="guide_strategy" class="guide-content">
+                    <div class="guide-section-title">🔎 THE "CRITICAL PATH"</div>
+                    <p style="font-size:14px; line-height:1.6;">Focus 80% of your energy on the "Critical Path"
+                        tasks.
+                        If a
+                        non-critical task slips by a week, it doesn't matter (Slack Time). If a Critical Task
+                        slips by
+                        an
+                        hour, you are late.</p>
+
+                    <div class="guide-section-title">⚠️ COMMON TRAPS</div>
+                    <ul style="font-size:13px; line-height:1.6; color:#ddd;">
+                        <li><b>Analysis Paralysis:</b> Listing every single email as a task. Keep tasks to >1
+                            day
+                            duration.
+                        </li>
+                        <li><b>Padding:</b> Adding "buffer" to every task. Instead, add one "Project Buffer" at
+                            the end.
+                        </li>
+                        <li><b>Ignoring Weekends:</b> This tool assumes working days. Remember that 5 days
+                            duration = 1
+                            calendar week.</li>
+                    </ul>
+                </div>
+
+                <!-- CONTENT 2: KNOWLEDGE -->
+                <div id="guide_knowledge" class="guide-content" style="display:none;">
+                    <div class="guide-section-title">🔗 VISUAL DEPENDENCY TYPES</div>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:4px;">
+                        <strong style="color:#2ecc71;">1. Finish-to-Start (FS)</strong>
+                        <p style="font-size:12px; margin:5px 0;">"Task B starts after Task A finishes."
+                            (Standard)</p>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:4px;">
+                        <strong style="color:#3498db;">2. Start-to-Start (SS)</strong>
+                        <p style="font-size:12px; margin:5px 0;">"Task B starts when Task A starts." (Parallel
+                            work)</p>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:8px; border-radius:4px;">
+                        <strong style="color:#f1c40f;">3. Finish-to-Finish (FF)</strong>
+                        <p style="font-size:12px; margin:5px 0;">"Task A and B must finish at the same time."
+                        </p>
+                    </div>
+
+                    <div class="guide-section-title">🌍 REAL-WORLD SCENARIOS</div>
+                    <div
+                        style="margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; border-left:3px solid #27ae60;">
+                        <strong>🏥 Hospital (Hospital Wing)</strong><br>
+                        <small>SS Dependency: "Staff Training" starts while "Equipment Installation" is still
+                            ongoing.</small>
+                    </div>
+                    <div
+                        style="margin-bottom:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; border-left:3px solid #e74c3c;">
+                        <strong>🏭 Manufacturing (New Line)</strong><br>
+                        <small>FS Dependency: "Pour Concrete" must finish 7 days before "Install Robots".
+                            (Critical Path
+                            risk)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EHR CLINICAL LAYOUT -->
+        <div class="ehr-container">
+            <!-- LEFT: TASK PARAMETERS -->
+            <div class="ehr-input-panel">
+                <div class="findings-header">📋 Project Tasks</div>
+
+                <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-ghost" onclick="clearTasks()" style="flex:1; font-size:12px;">Clear
+                            All</button>
+                        <select class="clinical-input" id="exampleSelector" onchange="loadSpecificExample(this.value)"
+                            style="flex:2; font-size:12px; height: 38px;">
+                            <option value="" disabled selected>Select Example Project...</option>
+                            <option value="med_discharge">✅ Ideal: Discharge Flow</option>
+                            <option value="med_safety">✅ Ideal: Medication Safety</option>
+                            <option value="med_er">✅ Ideal: ER Triage</option>
+                            <option value="med_leadlag">⚖️ Logic: Lead vs Lag Time</option>
+                            <option value="err_brooks">⚠️ Mistake: Resource Overload</option>
+                            <option value="err_logic">⚠️ Mistake: Dependency Gap</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="tasksList">
+                    <!-- Dynamic Task Inputs -->
+                </div>
+
+                <button class="btn btn-ghost" onclick="addTask()"
+                    style="width:100%; border:1px dashed #adb5bd; margin-bottom:15px; font-size:12px;">+ Add
+                    Task</button>
+
+                <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="renderGantt()">🔄
+                    Generate Timeline</button>
+            </div>
+
+            <!-- RIGHT: CLINICAL FINDINGS -->
+            <div class="ehr-findings-panel">
+                <!-- FINDING: GANTT VISUALIZATION -->
+                <div class="findings-section">
+                    <div class="findings-header">📊 Project Timeline Visualization</div>
+
+                    <!-- FLOATING LEGEND -->
+                    <div class="floating-legend">
+                        <div class="legend-header">Project Phases</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#e74c3c"></span>
+                            Define</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#f1c40f"></span>
+                            Measure
+                        </div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#3498db"></span>
+                            Analyze
+                        </div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#2ecc71"></span>
+                            Improve
+                        </div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#9b59b6"></span>
+                            Control
+                        </div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#34495e"></span>
+                            Critical
+                            Path</div>
+                    </div>
+
+                    <div id="svgWrapper" class="svg-container" onclick="openZoom()"
+                        style="background: radial-gradient(circle at center, #fff, #f8f9fa); border-radius:8px;">
+                        <!-- SVG Injected Here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ZOOM MODAL -->
+    <!-- TIMELINE VISUAL STRATEGY MODAL -->
+    <div id="strategyModal" class="strategy-overlay" onclick="closeStrategy(event)">
+        <span class="strategy-close"
+            onclick="document.getElementById('strategyModal').style.display='none'">&times;</span>
+        <div class="strategy-content" id="strategyInner">
+            <div class="strategy-header">
+                <h1>The Timeline Master Guide</h1>
+                <p style="color: #888; letter-spacing: 2px;">Visualizing Project Flow & Dependency Logic</p>
+            </div>
+
+            <!-- SECTION 1: CRITICAL PATH -->
+            <div class="strategy-section">
+                <div class="strategy-hook">⚖️ The Path of Life or Death</div>
+                <p class="strategy-text">
+                    This is the <b>Critical Path</b>. Great managers don't monitor every task equally—they focus 90%
+                    of
+                    their energy on the tasks with <span class="lss-tooltip-trigger"
+                        onclick="toggleLssTooltip(this, event)">Zero Slack
+                        <span class="lss-tooltip-box">
+                            <span class="lss-tooltip-close">&times;</span>
+                            <h4>⚖️ Zero Slack: The Medical "Critical Path"</h4>
+                            In an emergency surgery scheduled for 60 minutes from now:<br><br>
+                            <b>Sterilizing Instruments (60m):</b> Zero Slack. Any 1-minute delay means a 1-minute delay
+                            in surgery. <i>Critical Task.</i><br><br>
+                            <b>Checking Insurance (15m):</b> 45m Slack. The surgery still starts on time even if this is
+                            delayed. <i>Flexible Task.</i><br><br>
+                            <b>Key Takeaway:</b> Zero Slack tasks have no "buffer." If they slip, the patient care
+                            slips.
+                        </span>
+                    </span>.
+                </p>
+                <div class="strategy-img-wrapper">
+                    <img src="images/timelines/LSS_CriticalPath.png" class="strategy-img"
+                        alt="Critical Path Infographic">
+                </div>
+            </div>
+
+            <!-- SECTION 2: DEPENDENCY FLAVORS -->
+            <div class="strategy-section">
+                <div class="strategy-hook">🧪 The Four Flavors of Logic</div>
+                <p class="strategy-text">
+                    Sequence is the law. Understanding project logic goes beyond "this before that". Master the
+                    four universal relationships to build resilient schedules that survive real-world chaos.
+                </p>
+                <div class="strategy-img-wrapper">
+                    <img src="images/timelines/LSS_Dependencies.png" class="strategy-img" alt="Dependency Flavors">
+                </div>
+            </div>
+
+            <!-- SECTION 3: BROOKS'S LAW -->
+            <div class="strategy-section">
+                <div class="strategy-hook">🌊 Adding Water to a Drowning Project</div>
+                <p class="strategy-text">
+                    <b>Brooks's Law:</b> "Adding manpower to a late project makes it later."
+                    Learn why increasing team size creates communication overhead and training burdens that actually
+                    slow down delivery when the clock is ticking.
+                </p>
+                <div class="strategy-img-wrapper">
+                    <img src="images/timelines/LSS_BrooksLaw.png" class="strategy-img" alt="Brooks Law">
+                </div>
+            </div>
+
+            <!-- SECTION 4: LEAD vs LAG -->
+            <div class="strategy-section">
+                <div class="strategy-hook">⏱️ Cheating the Clock</div>
+                <p class="strategy-text">
+                    Master the art of <span class="lss-tooltip-trigger" onclick="toggleLssTooltip(this, event)">Lead
+                        Time
+                        <span class="lss-tooltip-box">
+                            <span class="lss-tooltip-close">&times;</span>
+                            <h4>⏱️ Lead Time: The "Head Start"</h4>
+                            <b>Example: Preparing an OR.</b><br>
+                            You don't wait for anesthesia (Task A) to be 100% finished before setting up instruments
+                            (Task B). You overlap them.<br><br>
+                            <b>Definition:</b> Starting a second task before the first is finished. This "compresses"
+                            the timeline.
+                        </span>
+                    </span> (overlapping tasks to compress timelines) and respect the
+                    science of <span class="lss-tooltip-trigger" onclick="toggleLssTooltip(this, event)">Lag Time
+                        <span class="lss-tooltip-box">
+                            <span class="lss-tooltip-close">&times;</span>
+                            <h4>⏳ Lag Time: The "Waiting" Period</h4>
+                            <b>Example: Plaster Cast.</b><br>
+                            After applying the cast (Task A), you must wait 24 hours for it to harden before Task B
+                            (Walking).<br><br>
+                            <b>Definition:</b> A mandatory delay between tasks. You aren't "working," but time must
+                            pass.
+                        </span>
+                    </span> (mandatory physical or biological waiting periods).
+                    Timing isn't just a number; it's a strategic resource.
+                </p>
+                <div class="strategy-img-wrapper">
+                    <img src="images/timelines/LSS_LeadLag.png" class="strategy-img" alt="Lead and Lag Time">
+                </div>
+            </div>
+
+            <!-- SECTION 5: CONE OF UNCERTAINTY -->
+            <div class="strategy-section">
+                <div class="strategy-hook">🌪️ Navigating the Fog of Initiation</div>
+                <p class="strategy-text">
+                    Early precision is a looming disaster. The <span class="lss-tooltip-trigger"
+                        onclick="toggleLssTooltip(this, event)">Cone of Uncertainty
+                        <span class="lss-tooltip-box">
+                            <span class="lss-tooltip-close">&times;</span>
+                            <h4>🌪️ Cone of Uncertainty: Project Estimation</h4>
+                            <b>Example: Patient's Length of Stay.</b><br>
+                            - Admission: Range is broad (2–10 days).<br>
+                            - Diagnosis: Range narrows (3–5 days).<br>
+                            - After Surgery: Accuracy peaks (4 days).<br><br>
+                            <b>Definition:</b> Knowledge increases over time, shrinking the "width" of uncertainty from
+                            guess to fact.
+                        </span>
+                    </span> teaches us to use ranges
+                    early and narrow our focus only as knowledge is gained. Respect the precision paradox.
+                </p>
+                <div class="strategy-img-wrapper">
+                    <img src="images/timelines/LSS_ConeUncertainty.png" class="strategy-img" alt="Cone of Uncertainty">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KNOWLEDGE BASE MERGED INTO GUIDE MODAL -->
+
+    <script>
+        let tasks = [];
+        const svgNS = "http://www.w3.org/2000/svg";
+
+        // INIT
+        loadExample();
+
+        function addTask(level = 0, insertAfter = -1, data = null) {
+            const id = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+            const t = data || {
+                id: id,
+                name: level === 0 ? `New Task` : (level === 1 ? `Sub-Task` : `Sub-Sub-Task`),
+                level: level,
+                phase: 'define',
+                start: new Date().toISOString().split('T')[0],
+                duration: 5,
+                progress: 0,
+                milestone: false,
+                dep: ''
+            };
+
+            if (insertAfter === -1) {
+                tasks.push(t);
+            } else {
+                tasks.splice(insertAfter + 1, 0, t);
+            }
+            renderInputs();
+        }
+
+        function renderInputs() {
+            const container = document.getElementById('tasksList');
+            container.innerHTML = '';
+
+            let mainCounter = 0;
+            let subCounter = 0;
+            let subSubCounter = 0;
+
+            tasks.forEach((t, index) => {
+                if (t.level === 0) {
+                    mainCounter++;
+                    subCounter = 0;
+                    subSubCounter = 0;
+                    t.displayIdLabel = `${mainCounter}`;
+                } else if (t.level === 1) {
+                    subCounter++;
+                    subSubCounter = 0;
+                    t.displayIdLabel = `${mainCounter}.${subCounter}`;
+                } else if (t.level === 2) {
+                    subSubCounter++;
+                    t.displayIdLabel = `${mainCounter}.${subCounter}.${subSubCounter}`;
+                }
+
+                const div = document.createElement('div');
+                div.className = `task-card level-${t.level || 0}`;
+
+                const badgeColor = t.level === 1 ? 'rgba(52, 152, 219, 0.7)' : (t.level === 2 ? 'rgba(155, 89, 182, 0.5)' : '#6c757d');
+                const badgeText = t.level === 1 ? 'Sub' : (t.level === 2 ? 'Sub-Sub' : 'Task');
+
+                div.innerHTML = `
+                    <div class="task-header">
+                        <div style="display:flex; align-items:center;">
+                            <span class="level-badge" style="background:${badgeColor}; color:white;">${badgeText}</span>
+                            <strong style="color:var(--accent); font-size:13px; margin-left: 8px;"># ${t.displayIdLabel}</strong>
+                        </div>
+                        <button onclick="deleteTask(${index})" style="background:none; border:none; color:#dc3545; cursor:pointer; font-size:18px; opacity:0.7; transition:0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom:8px;">
+                        <div class="clinical-label">Name</div>
+                        <input type="text" class="clinical-input" value="${t.name}" onchange="updateTask(${index}, 'name', this.value)" style="font-weight:${t.level === 0 ? '700' : '400'}">
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+                        <div>
+                            <div class="clinical-label">Phase</div>
+                            <select class="clinical-input phase-bg-${t.phase}" onchange="updateTask(${index}, 'phase', this.value); this.className='clinical-input phase-bg-'+this.value" style="padding:6px;">
+                                <option value="define" ${t.phase === 'define' ? 'selected' : ''}>Define</option>
+                                <option value="measure" ${t.phase === 'measure' ? 'selected' : ''}>Measure</option>
+                                <option value="analyze" ${t.phase === 'analyze' ? 'selected' : ''}>Analyze</option>
+                                <option value="improve" ${t.phase === 'improve' ? 'selected' : ''}>Improve</option>
+                                <option value="control" ${t.phase === 'control' ? 'selected' : ''}>Control</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div class="clinical-label">Dependency</div>
+                            <input type="text" class="clinical-input" placeholder="e.g. 1FS" value="${t.dep || ''}" onchange="updateTask(${index}, 'dep', this.value)">
+                        </div>
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px;">
+                        <div>
+                            <div class="clinical-label">Start</div>
+                            <input type="date" class="clinical-input" value="${t.start}" onchange="updateTask(${index}, 'start', this.value)" style="padding:6px; font-size:11px;">
+                        </div>
+                        <div>
+                            <div class="clinical-label">Days</div>
+                            <input type="number" class="clinical-input" value="${t.duration}" onchange="updateTask(${index}, 'duration', this.value)" style="padding:6px;">
+                        </div>
+                        <div>
+                            <div class="clinical-label">%</div>
+                            <input type="number" class="clinical-input" max="100" value="${t.progress}" onchange="updateTask(${index}, 'progress', this.value)" style="padding:6px;">
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; align-items:center; gap:5px;">
+                            <input type="checkbox" ${t.milestone ? 'checked' : ''} onchange="updateTask(${index}, 'milestone', this.checked)" style="width:auto;">
+                            <label class="clinical-label" style="margin:0;">Milestone</label>
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            ${t.level === 0 ? `<button class="btn btn-ghost" style="font-size:9px; padding:3px 6px; border:1px solid #3498db; color:#3498db;" onclick="addTask(1, ${index})">+ SUB</button>` : ''}
+                            ${t.level === 1 ? `<button class="btn btn-ghost" style="font-size:9px; padding:3px 6px; border:1px solid #9b59b6; color:#9b59b6;" onclick="addTask(2, ${index})">+ SUB-SUB</button>` : ''}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateTask(index, field, value) {
+            if (field === 'duration' || field === 'progress') value = Number(value);
+            tasks[index][field] = value;
+            // No auto render to avoid lag
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            renderInputs();
+        }
+
+        function clearTasks() {
+            tasks = [];
+            renderInputs();
+            document.getElementById('svgWrapper').innerHTML = '';
+        }
+
+        function loadExample() {
+            // Default load
+            loadSpecificExample('med_discharge');
+        }
+
+        function loadSpecificExample(type) {
+            const today = new Date();
+            const fmt = (days) => new Date(today.getTime() + (days * 86400000)).toISOString().split('T')[0];
+
+            let exampleTasks = [];
+
+            switch (type) {
+                case 'med_discharge':
+                    exampleTasks = [
+                        { id: 1, name: "Define Discharge Bottlenecks", phase: 'define', level: 0, start: fmt(0), duration: 3, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Observe Ward 4A Flow", phase: 'define', level: 1, start: fmt(1), duration: 2, progress: 100, milestone: false, dep: '1SS' },
+                        { id: 3, name: "Audit Physician Rounds", phase: 'define', level: 2, start: fmt(2), duration: 1, progress: 100, milestone: false, dep: '2FS' },
+                        { id: 4, name: "Measure Room Turnover Time", phase: 'measure', level: 0, start: fmt(3), duration: 5, progress: 60, milestone: false, dep: '1FS' },
+                        { id: 5, name: "Analyze Staff Sync Delays", phase: 'analyze', level: 0, start: fmt(8), duration: 6, progress: 0, milestone: false, dep: '4FS' },
+                        { id: 6, name: "Pilot E-Discharge System", phase: 'improve', level: 0, start: fmt(14), duration: 10, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 7, name: "Training: Nursing Staff", phase: 'improve', level: 1, start: fmt(15), duration: 4, progress: 0, milestone: false, dep: '6SS' },
+                        { id: 8, name: "Control & Standardize Process", phase: 'control', level: 0, start: fmt(24), duration: 7, progress: 0, milestone: false, dep: '6FS' },
+                        { id: 9, name: "Goal: 20% Reduction Achieved", phase: 'control', level: 0, start: fmt(31), duration: 0, progress: 0, milestone: true, dep: '8FS' }
+                    ];
+                    break;
+                case 'med_leadlag':
+                    exampleTasks = [
+                        { id: 1, name: "Sample Lab Tests", phase: 'measure', level: 0, start: fmt(0), duration: 2, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Incubation Period (Lag)", phase: 'analyze', level: 0, start: fmt(2), duration: 5, progress: 100, milestone: false, dep: '1FS+2' },
+                        { id: 3, name: "Equipment Setup (Lead)", phase: 'improve', level: 0, start: fmt(5), duration: 2, progress: 50, milestone: false, dep: '2FS-2' },
+                        { id: 4, name: "Critical Result Logged", phase: 'control', level: 0, start: fmt(7), duration: 0, progress: 0, milestone: true, dep: '3FS' }
+                    ];
+                    break;
+                case 'med_safety':
+                    exampleTasks = [
+                        { id: 1, name: "Scope Medication Errors", phase: 'define', level: 0, start: fmt(0), duration: 4, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Audit Patient Records", phase: 'measure', level: 0, start: fmt(4), duration: 7, progress: 30, milestone: false, dep: '1FS' },
+                        { id: 3, name: "Cross-Check Pharmacy Logs", phase: 'measure', level: 1, start: fmt(5), duration: 3, progress: 0, milestone: false, dep: '2SS' },
+                        { id: 4, name: "Verify Digital Signatures", phase: 'measure', level: 2, start: fmt(6), duration: 2, progress: 0, milestone: false, dep: '3FS' },
+                        { id: 5, name: "FMEA on Dispensing Flow", phase: 'analyze', level: 0, start: fmt(11), duration: 5, progress: 0, milestone: false, dep: '2FS' },
+                        { id: 6, name: "Implement Barcode Scanning", phase: 'improve', level: 0, start: fmt(16), duration: 12, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 7, name: "Software Integration", phase: 'improve', level: 1, start: fmt(16), duration: 5, progress: 0, milestone: false, dep: '6SS' },
+                        { id: 8, name: "Hardware Installation", phase: 'improve', level: 1, start: fmt(21), duration: 4, progress: 0, milestone: false, dep: '7FS' },
+                        { id: 9, name: "Weekly Safety Monitoring", phase: 'control', level: 0, start: fmt(32), duration: 6, progress: 0, milestone: false, dep: '6FS' },
+                        { id: 10, name: "Zero Critical Errors Locked", phase: 'control', level: 0, start: fmt(38), duration: 0, progress: 0, milestone: true, dep: '9FS' }
+                    ];
+                    break;
+                case 'med_er':
+                    exampleTasks = [
+                        { id: 1, name: "Map Arrival to Bed Time", phase: 'define', level: 0, start: fmt(0), duration: 3, progress: 100, milestone: false, dep: '' },
+                        { id: 2, name: "Stopwatch Triage Stages", phase: 'measure', level: 0, start: fmt(3), duration: 6, progress: 50, milestone: false, dep: '1FS' },
+                        { id: 3, name: "Patient Flow Audit", phase: 'measure', level: 1, start: fmt(4), duration: 3, progress: 100, milestone: false, dep: '2SS' },
+                        { id: 4, name: "Nurse Wait-Time Log", phase: 'measure', level: 2, start: fmt(5), duration: 2, progress: 100, milestone: false, dep: '3FS' },
+                        { id: 5, name: "Root Cause: Staff Handoffs", phase: 'analyze', level: 0, start: fmt(9), duration: 5, progress: 0, milestone: false, dep: '2FS' },
+                        { id: 6, name: "Standardize Handoff Tools", phase: 'analyze', level: 1, start: fmt(9), duration: 3, progress: 0, milestone: false, dep: '5SS' },
+                        { id: 7, name: "Rapid Triage Protocol", phase: 'improve', level: 0, start: fmt(14), duration: 8, progress: 0, milestone: false, dep: '5FS' },
+                        { id: 8, name: "Monitor Critical KPIs", phase: 'control', level: 0, start: fmt(22), duration: 5, progress: 0, milestone: false, dep: '7FS' },
+                        { id: 9, name: "Triage Target Met", phase: 'control', level: 0, start: fmt(27), duration: 0, progress: 0, milestone: true, dep: '8FS' }
+                    ];
+                    break;
+                case 'err_brooks':
+                    exampleTasks = [
+                        { id: 1, name: "Pilot: Digital Charting", phase: 'improve', level: 0, start: fmt(0), duration: 25, progress: 10, milestone: false, dep: '', errorTitle: "Brooks's Law Violation", errorMsg: "Attempting to fix a 25-day delay by adding 10 more staff members on Day 20. This will likely push delivery by 10 more days due to training overhead." },
+                        { id: 2, name: "Data Entry Training", phase: 'improve', level: 1, start: fmt(15), duration: 2, progress: 0, milestone: false, dep: '1SS' }
+                    ];
+                    break;
+                case 'err_logic':
+                    exampleTasks = [
+                        { id: 1, name: "Physician Buy-in", phase: 'define', level: 0, start: fmt(0), duration: 10, progress: 0, milestone: false, dep: '', errorTitle: "Logical Dependency Gap", errorMsg: "Implementation starts BEFORE Buy-in is finished. This creates a high risk of rejection and rework." },
+                        { id: 2, name: "Go-Live: New Portal", phase: 'improve', level: 0, start: fmt(5), duration: 5, progress: 0, milestone: false, dep: '1SS' }
+                    ];
+                    break;
+                default:
+                    return;
+            }
+
+            tasks = exampleTasks;
+            renderInputs();
+            setTimeout(renderGantt, 100);
+        }
+
+        /* ========================
+           SVG RENDER LOGIC
+           ======================== */
+        function renderGantt() {
+            if (tasks.length === 0) return;
+
+            const wrapper = document.getElementById('svgWrapper');
+            const rowHeight = 40;
+            const headerHeight = 30;
+            const dayWidth = 35; // Pixels per day (Increased for visibility)
+            const paddingLeft = 10;
+
+            // 1. Calculate Date Range
+            let minDate = new Date(tasks[0].start);
+            let maxDate = new Date(tasks[0].start);
+
+            tasks.forEach(t => {
+                const s = new Date(t.start);
+                const e = new Date(s.getTime() + (t.duration * 86400000));
+                if (s < minDate) minDate = s;
+                if (e > maxDate) maxDate = e;
+            });
+
+            // Pad range
+            minDate = new Date(minDate.getTime() - (2 * 86400000));
+            maxDate = new Date(maxDate.getTime() + (8 * 86400000));
+
+            const totalDays = Math.ceil((maxDate - minDate) / 86400000);
+            const width = Math.max(800, totalDays * dayWidth + 50);
+            const height = (tasks.length * rowHeight) + headerHeight + 50;
+
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("width", width);
+            svg.setAttribute("height", height);
+            svg.style.fontFamily = "Arial, sans-serif";
+
+            const getX = (dateStr) => {
+                const d = new Date(dateStr);
+                const diff = (d - minDate) / 86400000;
+                return paddingLeft + (diff * dayWidth);
+            };
+
+            // Grid & Header
+            const gridGroup = document.createElementNS(svgNS, "g");
+            for (let i = 0; i <= totalDays; i++) {
+                const x = paddingLeft + (i * dayWidth);
+                const d = new Date(minDate.getTime() + (i * 86400000));
+
+                const line = document.createElementNS(svgNS, "line");
+                line.setAttribute("x1", x); line.setAttribute("y1", headerHeight);
+                line.setAttribute("x2", x); line.setAttribute("y2", height);
+                line.setAttribute("stroke", "#eee");
+                line.setAttribute("stroke-width", 1);
+                if (d.getDay() === 0 || d.getDay() === 6) line.setAttribute("stroke", "#f5f5f5");
+                gridGroup.appendChild(line);
+
+                if (i % 1 === 0) { // Show all days if enough space or every 2nd
+                    const text = document.createElementNS(svgNS, "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", 20);
+                    text.setAttribute("font-size", "10");
+                    text.setAttribute("fill", "#999");
+                    text.textContent = `${d.getDate()}/${d.getMonth() + 1}`;
+                    gridGroup.appendChild(text);
+                }
+            }
+            svg.appendChild(gridGroup);
+
+            // Task Bars
+            const taskGroup = document.createElementNS(svgNS, "g");
+            const coords = {};
+
+            tasks.forEach((t, i) => {
+                const y = headerHeight + (i * rowHeight);
+                const startX = getX(t.start);
+                const endX = t.duration === 0 ? startX : getX(new Date(new Date(t.start).getTime() + (t.duration * 86400000)));
+                const barWidth = Math.max(0, endX - startX);
+
+                // Row Zebra
+                if (i % 2 === 0) {
+                    const rowBg = document.createElementNS(svgNS, "rect");
+                    rowBg.setAttribute("x", 0); rowBg.setAttribute("y", y);
+                    rowBg.setAttribute("width", width); rowBg.setAttribute("height", rowHeight);
+                    rowBg.setAttribute("fill", "#fafafa");
+                    taskGroup.appendChild(rowBg);
+                }
+
+                let fill = "url(#grad-define)";
+                if (t.phase === 'measure') fill = "url(#grad-measure)";
+                if (t.phase === 'analyze') fill = "url(#grad-analyze)";
+                if (t.phase === 'improve') fill = "url(#grad-improve)";
+                if (t.phase === 'control') fill = "url(#grad-control)";
+
+                coords[t.id] = {
+                    startX: startX, endX: t.milestone ? startX : endX,
+                    y: y + (rowHeight / 2)
+                };
+
+                if (t.milestone) {
+                    const size = 12;
+                    const cy = y + (rowHeight / 2);
+                    const pts = `${startX},${cy - size} ${startX + size},${cy} ${startX},${cy + size} ${startX - size},${cy}`;
+                    const poly = document.createElementNS(svgNS, "polygon");
+                    poly.setAttribute("points", pts);
+                    poly.setAttribute("fill", "url(#grad-milestone)");
+                    poly.setAttribute("filter", "drop-shadow(2px 2px 2px rgba(0,0,0,0.3))");
+                    poly.setAttribute("stroke", "#333");
+                    taskGroup.appendChild(poly);
+
+                    const texts = document.createElementNS(svgNS, "text");
+                    texts.setAttribute("x", startX + 15);
+                    texts.setAttribute("y", cy + 4);
+                    texts.setAttribute("font-size", "11");
+                    texts.setAttribute("font-weight", "bold");
+                    texts.textContent = `${t.displayIdLabel || ''} ${t.name}`;
+                    taskGroup.appendChild(texts);
+
+                } else {
+                    const barH = 18;
+                    const barY = y + (rowHeight - barH) / 2;
+                    const rect = document.createElementNS(svgNS, "rect");
+                    rect.setAttribute("x", startX);
+                    rect.setAttribute("y", barY);
+                    rect.setAttribute("width", barWidth);
+                    rect.setAttribute("height", barH);
+                    rect.setAttribute("fill", fill);
+                    rect.setAttribute("filter", "drop-shadow(1px 2px 3px rgba(0,0,0,0.2))");
+                    rect.setAttribute("rx", 4);
+                    rect.style.cursor = "pointer";
+
+                    // Tooltip Events
+                    rect.onmouseenter = (e) => showGanttTooltip(e, t);
+                    rect.onmousemove = (e) => moveGanttTooltip(e);
+                    rect.onmouseleave = () => hideGanttTooltip();
+
+                    taskGroup.appendChild(rect);
+
+                    // Error Flag Icon
+                    if (t.errorTitle) {
+                        const flagG = document.createElementNS(svgNS, "g");
+                        flagG.setAttribute("class", "error-flag-icon");
+
+                        const circle = document.createElementNS(svgNS, "circle");
+                        circle.setAttribute("cx", startX - 10);
+                        circle.setAttribute("cy", barY + (barH / 2));
+                        circle.setAttribute("r", 7.5);
+                        circle.setAttribute("fill", "#ff4757");
+                        flagG.appendChild(circle);
+
+                        const alertText = document.createElementNS(svgNS, "text");
+                        alertText.setAttribute("x", startX - 12.5);
+                        alertText.setAttribute("y", barY + (barH / 2) + 4);
+                        alertText.setAttribute("fill", "white");
+                        alertText.setAttribute("font-size", "10");
+                        alertText.setAttribute("font-weight", "bold");
+                        alertText.textContent = "!";
+                        flagG.appendChild(alertText);
+
+                        flagG.onmouseenter = (e) => showGanttTooltip(e, t);
+                        flagG.onmousemove = (e) => moveGanttTooltip(e);
+                        flagG.onmouseleave = () => hideGanttTooltip();
+
+                        taskGroup.appendChild(flagG);
+                    }
+
+                    const texts = document.createElementNS(svgNS, "text");
+                    let textX = startX + 5;
+                    let textColor = "white";
+
+                    if (barWidth < 50) { textX = endX + 5; textColor = "#333"; }
+
+                    texts.setAttribute("x", textX);
+                    texts.setAttribute("y", barY + (barH / 2) + 4);
+                    texts.setAttribute("font-size", t.level === 0 ? "11" : "9");
+                    texts.setAttribute("fill", textColor);
+                    texts.textContent = `${t.displayIdLabel || ''} ${t.name} (${t.progress}%)`;
+
+                    const progW = barWidth * (t.progress / 100);
+                    if (progW > 0) {
+                        const progRect = document.createElementNS(svgNS, "rect");
+                        progRect.setAttribute("x", startX);
+                        progRect.setAttribute("y", barY + barH - 4);
+                        progRect.setAttribute("width", progW);
+                        progRect.setAttribute("height", 4);
+                        progRect.setAttribute("fill", "rgba(255,255,255,0.7)");
+                        taskGroup.appendChild(progRect);
+                    }
+
+                    taskGroup.appendChild(rect);
+                    taskGroup.appendChild(texts);
+                }
+            });
+            svg.appendChild(taskGroup);
+
+            // Gradients Defs
+            const defs = document.createElementNS(svgNS, "defs");
+
+            const gradients = {
+                'define': ['#e74c3c', '#c0392b'],
+                'measure': ['#f1c40f', '#f39c12'],
+                'analyze': ['#3498db', '#2980b9'],
+                'improve': ['#2ecc71', '#27ae60'],
+                'control': ['#9b59b6', '#8e44ad'],
+                'milestone': ['#34495e', '#2c3e50']
+            };
+
+            for (const [key, colors] of Object.entries(gradients)) {
+                const grad = document.createElementNS(svgNS, "linearGradient");
+                grad.setAttribute("id", `grad-${key}`);
+                grad.setAttribute("x1", "0%"); grad.setAttribute("y1", "0%");
+                grad.setAttribute("x2", "0%"); grad.setAttribute("y2", "100%");
+
+                const stop1 = document.createElementNS(svgNS, "stop");
+                stop1.setAttribute("offset", "0%"); stop1.setAttribute("stop-color", colors[0]);
+                grad.appendChild(stop1);
+
+                const stop2 = document.createElementNS(svgNS, "stop");
+                stop2.setAttribute("offset", "100%"); stop2.setAttribute("stop-color", colors[1]);
+                grad.appendChild(stop2);
+
+                defs.appendChild(grad);
+            }
+
+            // Marker
+            const marker = document.createElementNS(svgNS, "marker");
+            marker.setAttribute("id", "arrowhead");
+            marker.setAttribute("markerWidth", "10");
+            marker.setAttribute("markerHeight", "7");
+            marker.setAttribute("refX", "9");
+            marker.setAttribute("refY", "3.5");
+            marker.setAttribute("orient", "auto");
+            const poly = document.createElementNS(svgNS, "polygon");
+            poly.setAttribute("points", "0 0, 10 3.5, 0 7");
+            poly.setAttribute("fill", "#555");
+            marker.appendChild(poly);
+            defs.appendChild(marker);
+
+            svg.appendChild(defs);
+
+            // Dependencies Group
+            const arrowGroup = document.createElementNS(svgNS, "g");
+
+            tasks.forEach((t, i) => {
+                if (t.dep) {
+                    const deps = t.dep.split(',');
+                    deps.forEach(dStr => {
+                        let type = "FS";
+                        let predId = parseInt(dStr);
+                        if (dStr.toUpperCase().includes("SS")) type = "SS";
+                        else if (dStr.toUpperCase().includes("FF")) type = "FF";
+                        else if (dStr.toUpperCase().includes("SF")) type = "SF";
+
+                        const match = dStr.match(/\d+/);
+                        if (match) predId = parseInt(match[0]);
+
+                        const predIdx = tasks.findIndex(x => x.id === predId);
+                        if (predIdx > -1) {
+                            const pCoord = coords[predId];
+                            const cCoord = coords[t.id];
+                            let x1, y1, x2, y2;
+
+                            if (type === 'FS' || type === 'FF') x1 = pCoord.endX;
+                            else x1 = pCoord.startX;
+                            y1 = pCoord.y;
+
+                            if (type === 'FS' || type === 'SS') x2 = cCoord.startX;
+                            else x2 = cCoord.endX;
+                            y2 = cCoord.y;
+
+                            const cp1x = x1 + 15;
+                            const cp2x = x2 - 15;
+                            const pathD = `M ${x1} ${y1} C ${cp1x} ${y1}, ${cp2x} ${y2}, ${x2} ${y2}`;
+
+                            // Transparent Thicker Hit Area for Easier Hover
+                            const hitArea = document.createElementNS(svgNS, "path");
+                            hitArea.setAttribute("d", pathD);
+                            hitArea.setAttribute("stroke", "transparent");
+                            hitArea.setAttribute("stroke-width", "12");
+                            hitArea.setAttribute("fill", "none");
+                            hitArea.setAttribute("class", "dependency-hit-area");
+
+                            // Visual Dependency Path
+                            const path = document.createElementNS(svgNS, "path");
+                            path.setAttribute("d", pathD);
+                            path.setAttribute("stroke", "#7f8c8d");
+                            path.setAttribute("stroke-width", "1.5");
+                            path.setAttribute("fill", "none");
+                            path.setAttribute("marker-end", "url(#arrowhead)");
+                            path.setAttribute("class", "dependency-path");
+
+                            // Interaction Data
+                            const depDetails = {
+                                type: 'dependency',
+                                logic: type,
+                                from: tasks[predIdx].name,
+                                to: t.name,
+                                dStr: dStr
+                            };
+
+                            // Multi-Area Responsive Hover
+                            hitArea.onmouseenter = (e) => {
+                                path.setAttribute("stroke", "var(--accent)");
+                                path.setAttribute("stroke-width", "3");
+                                showGanttTooltip(e, depDetails);
+                            };
+                            hitArea.onmousemove = (e) => moveGanttTooltip(e);
+                            hitArea.onmouseleave = () => {
+                                path.setAttribute("stroke", "#7f8c8d");
+                                path.setAttribute("stroke-width", "1.5");
+                                hideGanttTooltip();
+                            };
+
+                            arrowGroup.appendChild(path);
+                            arrowGroup.appendChild(hitArea);
+                        }
+                    });
+                }
+            });
+            svg.appendChild(arrowGroup);
+
+            wrapper.innerHTML = '';
+            wrapper.appendChild(svg);
+        }
+
+        // --- GANTT TOOLTIP LOGIC ---
+        function showGanttTooltip(e, t) {
+            const tooltip = document.getElementById('chartTooltip');
+            let content = "";
+
+            if (t.type === 'dependency') {
+                content += `<div style="margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px;">`;
+                content += `<strong style="color:var(--accent); font-size:14px;">🔗 Dependency Logic</strong></div>`;
+
+                let logicFull = "";
+                if (t.logic === "FS") logicFull = "<b>Finish-to-Start</b>: The standard logic. Task B cannot start until Task A is finished.";
+                if (t.logic === "SS") logicFull = "<b>Start-to-Start</b>: Parallel work. Task B starts at the same time Task A starts.";
+                if (t.logic === "FF") logicFull = "<b>Finish-to-Finish</b>: Simultaneous completion. Task B must finish exactly when Task A finishes.";
+                if (t.logic === "SF") logicFull = "<b>Start-to-Finish</b>: Task B cannot finish until Task A starts.";
+
+                content += `<div style="font-size:12px; line-height:1.5;">`;
+                content += `<span style="color:#3498db;">Predecessor:</span> <i>${t.from}</i><br>`;
+                content += `<span style="color:#2ecc71;">Successor:</span> <i>${t.to}</i><br><br>`;
+                content += `<p style="background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; margin:0; border:1px solid rgba(255,255,255,0.1);">${logicFull}</p>`;
+
+                if (t.dStr.includes('+') || t.dStr.includes('-')) {
+                    content += `<p style="color:#f1c40f; margin-top:10px; font-size:11px;">🔬 Includes specific <b>Lead/Lag</b> adjustments.</p>`;
+                }
+                content += `</div>`;
+            } else {
+                content += `<div style="margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px;">`;
+                content += `<strong style="color:var(--accent); font-size:14px;">${t.name}</strong></div>`;
+
+                content += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:11px; margin-bottom:10px;">`;
+                content += `<span>📅 Duration: <b>${t.duration}d</b></span>`;
+                content += `<span>📈 Progress: <b>${t.progress}%</b></span>`;
+                content += `</div>`;
+
+                content += `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:4px; font-size:11px;">`;
+
+                if (t.dep) {
+                    content += `<div style="margin-bottom:4px; color:#3498db;">🔗 Has <b>${t.dep.split(',').length}</b> predecessor(s).</div>`;
+                }
+
+                if (t.level === 0 || t.milestone) {
+                    content += `<div style="margin-top:5px; color:#e74c3c;">⚖️ <b>Zero Slack:</b> On Critical Path.</div>`;
+                }
+
+                if (t.phase === 'define' || t.phase === 'measure') {
+                    content += `<div style="margin-top:5px; border-top:1px solid rgba(255,255,255,0.1); padding-top:5px; color:#9b59b6;">🌪️ <b>Cone of Uncertainty:</b> High Variance.</div>`;
+                }
+                content += `</div>`;
+
+                if (t.errorTitle) {
+                    content += `<hr style="margin:10px 0; border:0; border-top:1px solid rgba(255,71,87,0.3);">`;
+                    content += `<b style="color:#ff4757;">⚠️ ${t.errorTitle}</b><br>`;
+                    content += `<span style="font-size:11px; line-height:1.4; display:block; margin-top:3px;">${t.errorMsg}</span>`;
+                }
+            }
+
+            tooltip.innerHTML = content;
+            tooltip.style.display = 'block';
+            moveGanttTooltip(e);
+        }
+
+        function moveGanttTooltip(e) {
+            const tooltip = document.getElementById('chartTooltip');
+            tooltip.style.left = (e.clientX + 15) + 'px';
+            tooltip.style.top = (e.clientY + 15) + 'px';
+        }
+
+        function hideGanttTooltip() {
+            document.getElementById('chartTooltip').style.display = 'none';
+        }
+
+        function openZoom() {
+            const svgContainer = document.getElementById('svgWrapper');
+            const zoomContent = document.getElementById('zoomContent');
+            zoomContent.innerHTML = svgContainer.innerHTML; // Clone
+            document.getElementById('zoomModal').style.display = 'flex';
+        }
+
+        function closeZoom(e) {
+            if (e.target.id === 'zoomModal') {
+                document.getElementById('zoomModal').style.display = 'none';
+            }
+        }
+
+        // --- NEW MBB FUNCTIONS ---
+        function togglePower() {
+            const content = document.getElementById('powerContent');
+            const icon = document.getElementById('powerIcon');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                icon.innerText = '▼';
+            } else {
+                content.style.display = 'block';
+                icon.innerText = '▲';
+            }
+        }
+
+        function showGuide() {
+            document.getElementById('guideModal').style.display = 'flex';
+        }
+
+        function switchGuideTab(tabId, event) {
+            document.querySelectorAll('.guide-content').forEach(e => e.style.display = 'none');
+            document.querySelectorAll('.guide-tab').forEach(e => e.classList.remove('active'));
+            document.getElementById('guide_' + tabId).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'guideModal') document.getElementById('guideModal').style.display = 'none';
+        }
+
+        // --- STRATEGY GUIDE LOGIC ---
+        function openStrategy() {
+            const modal = document.getElementById('strategyModal');
+            modal.style.display = 'block';
+
+            // Animation for sections
+            const sections = document.querySelectorAll('.strategy-section');
+            sections.forEach((s, i) => {
+                setTimeout(() => {
+                    s.classList.add('visible');
+                }, 200 * i);
+            });
+        }
+
+        function closeStrategy(e) {
+            if (e.target.id === 'strategyModal') {
+                document.getElementById('strategyModal').style.display = 'none';
+                // Close any open tooltips when closing modal
+                document.querySelectorAll('.lss-tooltip-box').forEach(b => b.classList.remove('active'));
+            }
+        }
+
+        // --- LSS TOOLTIP LOGIC ---
+        function toggleLssTooltip(trigger, event) {
+            event.stopPropagation();
+            const box = trigger.querySelector('.lss-tooltip-box');
+            const isActive = box.classList.contains('active');
+
+            // Close all other tooltips first
+            document.querySelectorAll('.lss-tooltip-box').forEach(b => b.classList.remove('active'));
+
+            if (!isActive) {
+                box.classList.add('active');
+            }
+        }
+
+        // Global click to close tooltips
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.lss-tooltip-box') && !e.target.closest('.lss-tooltip-trigger')) {
+                document.querySelectorAll('.lss-tooltip-box').forEach(b => b.classList.remove('active'));
+            }
+            // Also handle close icon click specifically
+            if (e.target.classList.contains('lss-tooltip-close')) {
+                e.target.closest('.lss-tooltip-box').classList.remove('active');
+            }
+        });
+    </script>
+    <script src="AssistantTools.js"></script>
+<script src="StudentAuth.js"></script>`n</body>
+
+</html>

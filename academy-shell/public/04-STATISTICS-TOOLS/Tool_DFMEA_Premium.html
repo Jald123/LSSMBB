@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFMEA (Detailed) Manager | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0F1115;
+            --surface-1: #1E222A;
+            --surface-2: #252A33;
+            --surface-3: #2C3340;
+            --accent: #E74C3C;
+            /* FMEA is Risk = Red */
+            --accent-glow: rgba(231, 76, 60, 0.3);
+            --text-primary: #EEEEEE;
+            --text-secondary: #AAAAAA;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --safe: #2ECC71;
+            --warn: #F39C12;
+            --risk: #E74C3C;
+        }
+
+        body {
+            background-color: var(--primary);
+            color: var(--text-primary);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* LSSMBB PREMIUM ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 5px var(--accent-glow);
+            }
+
+            50% {
+                box-shadow: 0 0 20px var(--accent-glow);
+            }
+
+            100% {
+                box-shadow: 0 0 5px var(--accent-glow);
+            }
+        }
+
+        /* GLASSMORPHISM CARD */
+        .card {
+            background: linear-gradient(135deg, rgba(30, 34, 42, 0.9) 0%, rgba(20, 20, 25, 0.95) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(231, 76, 60, 0.2);
+        }
+
+        /* PREMIUM HEADER */
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .phase-glow {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* INTRO BOX WITH HOOK */
+        .lss-intro-box {
+            background: linear-gradient(135deg, rgba(20, 20, 40, 0.95) 0%, rgba(30, 30, 60, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 5px solid var(--accent);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .lss-intro-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .lss-intro-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #d0d0d0;
+            font-weight: 300;
+        }
+
+        /* POWER & GUIDE BUTTONS */
+        .lss-power-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 13px;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-top: 20px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .lss-power-btn:hover {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .lss-power-content {
+            display: none;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0 0 8px 8px;
+            margin-top: -5px;
+            /* connects visually */
+            font-size: 14px;
+            line-height: 1.8;
+            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #E74C3C, #C0392B) !important;
+            color: white !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+            border: none;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(231, 76, 60, 0.7), 0 0 40px rgba(231, 76, 60, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        /* MODAL */
+        .guide-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .guide-box {
+            background: linear-gradient(135deg, #1e222a 0%, #2a2f3a 100%);
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 700px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .guide-title {
+            font-family: 'Orbitron';
+            color: var(--accent);
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .guide-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .guide-section h4 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .fmea-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .fmea-table th {
+            text-align: left;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--accent);
+            font-family: 'Orbitron';
+            font-size: 11px;
+            border-bottom: 2px solid var(--accent);
+            text-transform: uppercase;
+        }
+
+        .fmea-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: top;
+        }
+
+        .fmea-table input,
+        .fmea-table textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'Roboto';
+            resize: none;
+        }
+
+        .fmea-table input:focus,
+        .fmea-table textarea:focus {
+            background: rgba(255, 255, 255, 0.05);
+            outline: none;
+            border-radius: 4px;
+        }
+
+        .score-input {
+            width: 100% !important;
+            max-width: 50px;
+            text-align: center;
+            font-weight: bold;
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .rpn-cell {
+            font-weight: bold;
+            text-align: center;
+            font-size: 14px;
+            padding: 8px !important;
+            border-radius: 4px;
+        }
+
+        /* Risk Badge Colors */
+        .risk-high {
+            color: white !important;
+            background: #e74c3c !important;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+        }
+
+        .risk-med {
+            color: white !important;
+            background: #f39c12 !important;
+        }
+
+        .risk-low {
+            color: white !important;
+            background: #27ae60 !important;
+        }
+
+        .clickable-header {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .clickable-header:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 24px;
+        }
+
+        /* Select Dropdown */
+        .scenario-select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: 1px solid var(--glass-border);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .scenario-select option,
+        .scenario-select optgroup {
+            background: var(--surface-1);
+            color: white;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Roboto';
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.05);
+            color: #aaa;
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-accent {
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .btn-accent:hover {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" style="max-width: 1400px;">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 30px; align-items: flex-end;">
+            <div>
+                <span class="phase-glow">IMPROVE / CONTROL PHASE</span>
+                <h1
+                    style="font-size: 32px; margin: 0; background: -webkit-linear-gradient(0deg, #fff, #bbb); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    DFMEA (Detailed) Manager</h1>
+                <p style="color: var(--text-secondary); margin-top: 5px; letter-spacing: 1px;">Advanced Failure Modes &
+                    Effects Analysis</p>
+            </div>
+            <div>
+                <button class="architecture-intelligence-btn" onclick="openVisualExpl()" style="margin-right:15px; background: linear-gradient(135deg, #FFD700, #FFA500) !important; color: #000 !important; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;">
+                    <i class="fas fa-eye" style="filter:none !important; color:#000;"></i> Visual Expl.
+                </button>
+                <button class="architecture-intelligence-btn" onclick="openFMEAInfo()" style="margin-right:15px;">
+                    <i class="fas fa-shield-alt"></i> Architecture Intelligence
+                </button>
+                                <div style="background:var(--surface-2); padding:5px; border-radius:50px; border:1px solid var(--glass-border); display:flex; gap:5px; margin-right: 15px; display: inline-flex;">
+                    
+                    <button onclick="setTheme('twilight')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Twilight Mode"><i class="fas fa-moon"></i></button>
+                    <button onclick="setTheme('night')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Futuristic Dark (Night)"><i class="fas fa-space-shuttle"></i></button>
+                </div><button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
+                    Hub</button>
+            </div>
+        </div>
+
+        <!-- LSSMBB HOOK -->
+        <div class="lss-intro-box">
+            <div class="lss-intro-title">
+                <span>🛡️ The Shield of Risk</span>
+            </div>
+            <p class="lss-intro-text">
+                "Anything that <i>can</i> go wrong, <i>will</i> go wrong." – Murphy's Law. <br>The FMEA is not just a
+                form; it is a prediction engine. Apollo 13 didn't have an FMEA line item for "Oxygen Tank Explosion."
+                You should.
+            </p>
+
+            <button class="lss-power-btn" onclick="togglePower()">
+                <span>🦅 Origin & Power: From NASA to Now</span>
+                <span id="powerIcon">▼</span>
+            </button>
+            <div id="powerContent" class="lss-power-content">
+                <b>Origin (1949):</b> Developed by the US Military (Procedures for Performing Failure Mode Analysis).
+                Adpoted deeply by NASA (Apollo Program) to prevent catastrophic failure in space. Ford brought it to the
+                auto industry in the 1980s.<br><br>
+                <b>The Power:</b>
+                <ul>
+                    <li><b>Prevention over Inspection:</b> Most tools inspect quality <i>out</i>. FMEA designs quality
+                        <i>in</i> by predicting failure before it happens.
+                    </li>
+                    <li><b>RPN Logic:</b> It forces you to balance Severity (S), Occurrence (O), and Detection (D). It
+                        proves that a "rare" but "deadly" defect is still a priority.</li>
+                </ul>
+            </div>
+        </div>
+
+
+
+        <!-- GUIDE MODAL -->
+        <div class="guide-modal" id="guideModal" onclick="closeModal(event)">
+            <div class="guide-box">
+                <div style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:24px;"
+                    onclick="closeModal({target: {id: 'guideModal'}})">×</div>
+                <div class="guide-title">Master Black Belt Guide 🥋</div>
+                <p style="text-align:center; color:#aaa; margin-bottom:30px;">How to lead a Risk Assessment Analysis</p>
+
+                <div class="guide-section">
+                    <h4>1. SEVERITY = 10 (SAFETY)</h4>
+                    <p style="font-size:14px; line-height:1.6; color:#ccc;">
+                        If Severity is a 9 or 10 (Safety/Regulatory issue), you <b>MUST</b> take action to mitigate it,
+                        regardless of the RPN. Even if it happens once in a million years (Low Occurrence), you cannot
+                        accept a safety risk.
+                    </p>
+                </div>
+
+                <div class="guide-section">
+                    <h4>2. THE WEAKNESS OF "DETECTION"</h4>
+                    <p style="font-size:14px; line-height:1.6; color:#ccc;">
+                        Improving Detection (inspecting more) is the weakest form of mitigation. It relies on humans or
+                        sensors not failing. The goal of a Black Belt is to lower <b>Occurrence</b> (prevent the defect
+                        from being made) or lower <b>Severity</b> (design it so failure isn't fatal).
+                    </p>
+                </div>
+
+                <div class="guide-section">
+                    <h4>3. PARETO YOUR RISKS</h4>
+                    <p style="font-size:14px; line-height:1.6; color:#ccc;">
+                        Don't use an arbitrary RPN cutoff (like "Anything over 100"). Use a Pareto approach. Fix the top
+                        20% of your risk items first. Then re-evaluate.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 30px;">
+
+            <!-- MAIN: FMEA TABLE -->
+            <div class="card">
+                <div class="flex-between">
+                    <div>
+                        <h3>Failure Modes & Effects Analysis</h3>
+
+                        <!-- SCENARIO CONTROLS (MODERN DROPDOWN) -->
+                        <div
+                            style="margin-bottom: 20px; padding:15px; background:rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+                            <label
+                                style="font-size:12px; color:var(--text-secondary); display:block; margin-bottom:8px;">🎯
+                                Load Industry Scenario:</label>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <select id="scenarioSelect" class="btn btn-ghost"
+                                    style="width:250px; text-align:left; color:white;" onchange="loadScenario()">
+                                    <option value="">-- Custom Audit --</option>
+                                    <optgroup label="🏥 Healthcare Risk">
+                                        <option value="hc_falls">Patient Fall Prevention</option>
+                                        <option value="hc_surgery">Preventing Wrong-Site Surgery</option>
+                                        <option value="hc_meds">Medication Dispensing Errors</option>
+                                    </optgroup>
+                                    <optgroup label="🧪 General/Manufacturing">
+                                        <option value="gen_mfg">Automated Assembly Line</option>
+                                        <option value="gen_it">Cloud Infrastructure Security</option>
+                                    </optgroup>
+                                </select>
+                                <button id="btnNormal" class="btn btn-ghost"
+                                    style="font-size:11px; color:#2ecc71; border-color:rgba(46, 204, 113, 0.2);"
+                                    onclick="toggleVariant('normal')">🟢 Normal Data</button>
+                                <button id="btnSkewed" class="btn btn-ghost"
+                                    style="font-size:11px; color:#e74c3c; border-color:rgba(231, 76, 60, 0.2);"
+                                    onclick="toggleVariant('skewed')">🔴 Critical / Skewed</button>
+                            </div>
+                            <div id="scenarioDesc"
+                                style="font-size:11px; color:var(--accent); margin-top:10px; min-height:15px;">
+                                Select a scenario to load professional risk data.
+                            </div>
+                        </div>
+
+                        <input type="text" id="processName" placeholder="Enter Process Name (e.g. Pizza Delivery)"
+                            style="background:transparent; border:none; border-bottom:1px solid #555; color:white; width: 300px;">
+                    </div>
+                    <div>
+                        <button class="btn btn-ghost" onclick="addRiskRow()">+ Add Row</button>
+                        <button class="btn btn-accent" id="aiBtn" onclick="askAISuggestions()">🤖 AI Suggest
+                            Risks</button>
+                    </div>
+                </div>
+
+                <table class="fmea-table">
+                    <thead>
+                        <tr>
+                            <th width="10%">PROCESS STEP</th>
+                            <th width="15%">FAILURE MODE</th>
+                            <th width="20%">EFFECT</th>
+                            <th width="15%">CAUSE</th>
+                            <th width="7%" class="clickable-header" onclick="explain('severity')"
+                                title="Severity (1-10)">S ?</th>
+                            <th width="7%" class="clickable-header" onclick="explain('occurrence')"
+                                title="Occurrence (1-10)">O ?</th>
+                            <th width="7%" class="clickable-header" onclick="explain('detection')"
+                                title="Detection (1-10)">D ?</th>
+                            <th width="7%" class="clickable-header" onclick="explain('rpn')"
+                                title="Risk Priority Number">RPN ?</th>
+                            <th width="12%">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fmeaBody">
+                        <!-- Rows generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SIDEBAR: HEATMAP -->
+            <div>
+                <div class="card">
+                    <div class="flex-between">
+                        <h3>🔥 Risk Heatmap</h3>
+                        <div class="clickable-result" onclick="explain('heatmap')"
+                            style="font-size:11px; cursor:pointer; color:var(--accent);">What is this?</div>
+                    </div>
+
+                    <!-- SUMMARY STATS -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <div
+                            style="flex: 1; background: rgba(231, 76, 60, 0.1); padding: 10px; border-radius: 6px; text-align: center; border: 1px solid rgba(231, 76, 60, 0.2);">
+                            <div style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase;">High
+                                Risks</div>
+                            <div id="highRiskCount" style="font-size: 18px; font-weight: bold; color: #e74c3c;">0</div>
+                        </div>
+                        <div
+                            style="flex: 1; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 6px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase;">Total
+                                RPN</div>
+                            <div id="totalRPN" style="font-size: 18px; font-weight: bold; color: white;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-controls">
+                        <div class="control-btn" onclick="magnify('riskMatrixChart', 'Risk Heatmap')">🔍</div>
+                        <div class="control-btn" onclick="downloadChart('riskMatrixChart', 'Risk Heatmap')">⬇️</div>
+                    </div>
+                    <div style="height: 300px; position:relative;">
+                        <div class="chart-container"><canvas id="riskMatrixChart"></canvas></div>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 12px; color: var(--text-secondary); text-align: center;">
+                        Calculated Risks sorted by RPN (Sev × Occ × Det).
+                    </div>
+                </div>
+
+                <!-- REPORT & EXPORT SECTION -->
+                <div class="card" style="margin-top:20px; border-top:4px solid var(--accent); background: #0f172a;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2 style="margin:0; color:#e2e8f0; font-size:18px;">Report & Export</h2>
+                    </div>
+
+                    <div style="margin-bottom:20px;">
+                        <div
+                            style="display:flex; justify-content:space-between; color:#94a3b8; font-size:12px; margin-bottom:5px;">
+                            <label>Risk Analyst Name:</label>
+                            <span id="reportProgress">0% Complete</span>
+                        </div>
+                        <input type="text" id="analystName" placeholder="MBB / Quality Manager Name..."
+                            style="width:100%; padding:12px; background:#1e293b; border:1px solid #334155; color:white; border-radius:6px; margin-bottom:10px;">
+                        <div style="width:100%; height:8px; background:#334155; border-radius:4px;">
+                            <div id="progressFill"
+                                style="width:0%; height:100%; background:var(--accent); border-radius:4px; transition: width 0.3s;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:15px;">
+                        <button class="btn btn-primary" style="flex:1; background:#ea580c; border:none;"
+                            onclick="alert('Risk Profile Validated & Saved.')">
+                            💾 Save & Validate
+                        </button>
+                        <button class="btn btn-ghost" style="flex:1; border:1px solid var(--text-secondary);"
+                            onclick="printReport()">
+                            🖨️ Print PDF Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- INFOGRAPHIC EXPLANATION MODAL -->
+    <div class="modal-overlay" id="hypothesisInfoModal"
+        onclick="if(event.target.id==='hypothesisInfoModal') this.style.display='none'" style="z-index:2000;">
+        <div class="modal-box" style="max-width:800px; width:95%; border: 3px solid #e74c3c;">
+            <span class="close-btn" style="float:right; cursor:pointer;"
+                onclick="document.getElementById('hypothesisInfoModal').style.display='none'">&times;</span>
+            <div style="text-align:center; margin-bottom:20px;">
+                <h2 style="color:var(--accent); margin:0;" id="conceptTitle">FMEA Strategy 🛡️</h2>
+                <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">Severity x Occurrence x
+                    Detection</p>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div id="conceptContent" style="min-height:250px;">
+                <!-- Content Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAGNIFY MODAL -->
+    <div id="magnifyModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-box"
+            style="max-width: 90%; width: auto; background: rgba(0,0,0,0.95); border-color: var(--accent);">
+            <span class="close-btn"
+                onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+            <h3 id="magnifyTitle" style="text-align: center; color: var(--accent); margin-bottom: 20px;">Chart View</h3>
+            <img id="magnifyImg" src="" style="width: 100%; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+        </div>
+    </div>
+
+    <script>
+        let matrixChart = null;
+        let currentScenario = null;
+        let currentRiskLevel = 'standard';
+
+        // MASTER FMEA DATABASE
+        const scenarioDB = {
+            'hc_falls': {
+                name: "Patient Fall Prevention",
+                desc: "Analyzing risks in geriatric/orthopedic wards.",
+                normal: [
+                    { step: "Admission", mode: "Incorrect Risk Score", effect: "Missed high risk patient", cause: "Rushed Triage", s: 7, o: 3, d: 5 },
+                    { step: "Patient Room", mode: "Bed exit without alarm", effect: "Unassisted fall", cause: "Device Failure", s: 8, o: 2, d: 3 }
+                ],
+                skewed: [
+                    { step: "Patient Room", mode: "Floor left wet", effect: "Immediate Slip/Fracture", cause: "Housekeeping Error", s: 9, o: 8, d: 9 },
+                    { step: "Call Bell", mode: "Ignored/Slow response", effect: "Patient gets up alone", cause: "Staff Shortage", s: 8, o: 7, d: 8 }
+                ]
+            },
+            'hc_surgery': {
+                name: "Preventing Wrong-Site Surgery",
+                desc: "Surgical safety check list audit.",
+                normal: [
+                    { step: "Pre-Op", mode: "Marker fades", effect: "Unclear surgical site", cause: "Poor ink quality", s: 10, o: 2, d: 2 },
+                    { step: "OR Transition", mode: "Consent missing", effect: "Surgery delayed", cause: "Paperwork tray", s: 6, o: 3, d: 2 }
+                ],
+                skewed: [
+                    { step: "OR Time-Out", mode: "Skipped Step", effect: "Wrong site surgery", cause: "Emergency distraction", s: 10, o: 6, d: 9 },
+                    { step: "Imaging", mode: "Reversed X-ray", effect: "Wrong side operated", cause: "Software mirroring", s: 10, o: 5, d: 8 }
+                ]
+            },
+            'hc_meds': {
+                name: "Medication Dispensing",
+                desc: "Barcoding and bedside delivery.",
+                normal: [
+                    { step: "Pharmacy Pick", mode: "Look-alike drug", effect: "Wrong med delivered", cause: "Manual error", s: 9, o: 2, d: 4 },
+                    { step: "Bedside Scan", mode: "Barcode unreadable", effect: "Manual override", cause: "Printer issue", s: 8, o: 4, d: 3 }
+                ],
+                skewed: [
+                    { step: "Transcription", mode: "Digit Error", effect: "10x Overdose", cause: "Lack of decimal zero", s: 10, o: 6, d: 8 },
+                    { step: "Nurse Admin", mode: "Patient Mismatch", effect: "Allergic reaction", cause: "Wristband skipped", s: 9, o: 7, d: 9 }
+                ]
+            },
+            'gen_mfg': {
+                name: "Automated Assembly Line",
+                desc: "High volume electronic assembly.",
+                normal: [
+                    { step: "Pick & Place", mode: "Component Offset", effect: "Poor Solder Joint", cause: "Nozzle Wear", s: 6, o: 4, d: 3 },
+                    { step: "Heat Cure", mode: "Temp Variation", effect: "Weak board", cause: "Heater age", s: 7, o: 3, d: 4 }
+                ],
+                skewed: [
+                    { step: "Pick & Place", mode: "Broken Chip", effect: "Field Failure", cause: "Vacuum loss", s: 9, o: 8, d: 9 },
+                    { step: "Testing", mode: "Fake Pass", effect: "DOA Arrival", cause: "Sensor faulty", s: 8, o: 7, d: 7 }
+                ]
+            },
+            'gen_it': {
+                name: "Cloud Infrastructure",
+                desc: "SaaS platform uptime and data security.",
+                normal: [
+                    { step: "Load Balancing", mode: "Single Point Failure", effect: "Service downtime", cause: "Config Error", s: 8, o: 2, d: 4 },
+                    { step: "Monitoring", mode: "Late Alert", effect: "Slow CPU", cause: "Sampling lag", s: 5, o: 4, d: 3 }
+                ],
+                skewed: [
+                    { step: "Root Access", mode: "Key Leak", effect: "Full Data Breach", cause: "Unprotected .env", s: 10, o: 7, d: 9 },
+                    { step: "Database", mode: "Ransomware", effect: "Data Wipe", cause: "Phishing", s: 10, o: 6, d: 9 }
+                ]
+            }
+        };
+
+        let currentVariant = 'normal';
+
+        function loadScenario() {
+            const key = document.getElementById('scenarioSelect').value;
+            if (!key) return;
+            document.getElementById('scenarioDesc').innerText = scenarioDB[key].desc;
+            applyData(key, currentVariant);
+        }
+
+        function toggleVariant(v) {
+            currentVariant = v;
+            document.getElementById('btnNormal').style.background = (v === 'normal') ? 'rgba(46,204,113,0.1)' : 'var(--surface-1)';
+            document.getElementById('btnSkewed').style.background = (v === 'skewed') ? 'rgba(231,76,60,0.1)' : 'var(--surface-1)';
+            const key = document.getElementById('scenarioSelect').value;
+            if (key) applyData(key, v);
+        }
+
+        function applyData(key, variant) {
+            const data = scenarioDB[key][variant];
+            document.getElementById('processName').value = scenarioDB[key].name;
+            document.getElementById('fmeaBody').innerHTML = '';
+            data.forEach(d => addRiskRow(d));
+            calculateRPN();
+        }
+
+        function openFMEAInfo() {
+            document.getElementById('hypothesisInfoModal').style.display = 'flex';
+            showConcept('fmea');
+        }
+
+        const concepts = {
+            fmea: {
+                title: "🛡️ Failure Mode & Effects Analysis (FMEA)",
+                ideal: "Ideally use when: Designing a new process or troubleshooting a complex recurring failure to prioritize risk mitigation.",
+                life: {
+                    title: "🚗 Driving a Car",
+                    text: "Severity: 10 (Crash). Occurrence: Low. Detection: Moderate (Brake warning). RPN helps you decide if you need better brakes or just new oil.",
+                    icon: "🏎️"
+                },
+                health: {
+                    title: "🏥 Operating Room",
+                    text: "Severity: 10 (Life). We target 'Occurrence' through checklists (Zero Errors) because 'Detection' happens after the patient is open.",
+                    icon: "🚑"
+                }
+            }
+        };
+
+        function showConcept(key) {
+            const c = concepts[key];
+            const contentDiv = document.getElementById('conceptContent');
+            const titleDiv = document.getElementById('conceptTitle');
+            titleDiv.innerText = c.title;
+
+            contentDiv.innerHTML = `
+                <div style="background:#1e293b; padding:15px; border-radius:8px; margin-bottom:20px; text-align:center; border:1px dashed #64748b;">
+                    <strong style="color:#facc15;">💡 ${c.ideal}</strong>
+                </div>
+
+                <div class="grid-2" style="gap:20px; margin-top:20px; display:grid; grid-template-columns:1fr 1fr;">
+                    <div style="background:#0f172a; padding:20px; border-radius:8px; border-top:4px solid #f97316;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.life.icon}</div>
+                        <h3 style="color:#f97316; margin-top:0;">Daily Life</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.life.text}</p>
+                    </div>
+                    <div style="background:#0f172a; padding:20px; border-radius:8px; border-top:4px solid #3b82f6;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.health.icon}</div>
+                        <h3 style="color:#3b82f6; margin-top:0;">Healthcare</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.health.text}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Updated RPN Calculation to trigger UI updates
+        function calculateRPN() {
+            let total = 0;
+            let criticalCount = 0;
+            const rows = document.querySelectorAll('#fmeaBody tr');
+
+            rows.forEach(tr => {
+                const sIn = tr.querySelector('.s-in');
+                const oIn = tr.querySelector('.o-in');
+                const dIn = tr.querySelector('.d-in');
+
+                if (!sIn || !oIn || !dIn) return;
+
+                const s = parseInt(sIn.value) || 1;
+                const o = parseInt(oIn.value) || 1;
+                const d = parseInt(dIn.value) || 1;
+                const rpnCol = tr.querySelector('.rpn-cell');
+                const rpn = s * o * d;
+
+                rpnCol.innerText = rpn;
+                rpnCol.className = 'rpn-cell'; // reset
+                if (rpn >= 100) { rpnCol.classList.add('risk-high'); criticalCount++; }
+                else if (rpn >= 40) rpnCol.classList.add('risk-med');
+                else rpnCol.classList.add('risk-low');
+
+                total += rpn;
+            });
+
+            document.getElementById('totalRPN').innerText = total;
+            document.getElementById('highRiskCount').innerText = criticalCount;
+            updateHeatmap();
+            updateProgress();
+        }
+
+        function updateProgress() {
+            let p = 0;
+            if (document.getElementById('analystName').value) p += 20;
+            if (document.getElementById('processName').value) p += 20;
+            const rows = document.querySelectorAll('#fmeaBody tr');
+            if (rows.length > 0) p += 60;
+            document.getElementById('progressFill').style.width = p + '%';
+            document.getElementById('reportProgress').innerText = p + '% Complete';
+        }
+
+        function printReport() {
+            const analyst = document.getElementById('analystName').value || 'Safety Auditor';
+            const process = document.getElementById('processName').value || 'Process Under Review';
+            const date = new Date().toLocaleDateString();
+            const matrixImg = document.getElementById('riskMatrixChart').toDataURL();
+
+            const rows = Array.from(document.querySelectorAll('#fmeaBody tr')).map(tr => {
+                const inputs = tr.querySelectorAll('input, textarea');
+                return {
+                    step: inputs[0].value,
+                    mode: inputs[1].value,
+                    effect: inputs[2].value,
+                    cause: inputs[3].value,
+                    s: inputs[4].value,
+                    o: inputs[5].value,
+                    d: inputs[6].value,
+                    rpn: inputs[4].value * inputs[5].value * inputs[6].value,
+                    action: inputs[7].value
+                };
+            });
+
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                <head>
+                    <title>FMEA Strategic Risk Report</title>
+                    <style>
+                        body { font-family: 'Inter', sans-serif; padding: 40px; color: #1e293b; background: #fff; }
+                        .header { border-bottom: 4px solid #ef4444; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; }
+                        .title { font-size: 28px; font-weight: 800; color: #0f172a; text-transform: uppercase; }
+                        .meta { text-align: right; font-size: 14px; color: #64748b; }
+                        .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+                        .summary-card { padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; }
+                        .label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; }
+                        .value { font-size: 32px; font-weight: 800; color: #ef4444; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 12px; }
+                        th { background: #1e293b; color: white; padding: 12px; text-align: left; }
+                        td { padding: 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+                        .critical-bg { background: #fef2f2; }
+                        .rpn-bold { font-weight: 800; color: #ef4444; }
+                        .footer { margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; font-size: 12px; color: #94a3b8; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div>
+                            <div class="title">🛡️ FMEA Risk Profile Report</div>
+                            <div style="font-size:18px; color:#64748b; margin-top:5px;">Process: ${process}</div>
+                        </div>
+                        <div class="meta">
+                            Date: ${date}<br>
+                            Lead Auditor: ${analyst}<br>
+                            Report ID: FMEA-RM-${Math.floor(Math.random() * 9999)}
+                        </div>
+                    </div>
+
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <div class="label">High Risk Points (RPN > 150)</div>
+                            <div class="value">${rows.filter(r => r.rpn >= 150).length}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="label">Total Risk Exposure</div>
+                            <div class="value">${document.getElementById('totalRPN').innerText}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="label">Average RPN</div>
+                            <div class="value">${(document.getElementById('totalRPN').innerText / rows.length).toFixed(1)}</div>
+                        </div>
+                    </div>
+
+                    <h3>⚠️ Critical Failure Modes Audit</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Step</th>
+                                <th>Failure Mode</th>
+                                <th>S</th>
+                                <th>O</th>
+                                <th>D</th>
+                                <th>RPN</th>
+                                <th>Strategic Prevention Plan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rows.map(r => `
+                                <tr class="${r.rpn >= 150 ? 'critical-bg' : ''}">
+                                    <td>${r.step}</td>
+                                    <td><strong>${r.mode}</strong><br><small>${r.effect}</small></td>
+                                    <td>${r.s}</td>
+                                    <td>${r.o}</td>
+                                    <td>${r.d}</td>
+                                    <td class="rpn-bold">${r.rpn}</td>
+                                    <td>${r.action || 'No Action Defined - INVESTIGATE'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div style="page-break-before: always; text-align:center;">
+                        <h3>🔥 Risk Density Heatmap</h3>
+                        <img src="${matrixImg}" style="width:100%; max-width:600px; border:1px solid #e2e8f0; border-radius:12px;">
+                        <p style="font-size:13px; color:#64748b; margin-top:15px; text-align:left; padding:20px; background:#f8fafc; border-radius:8px;">
+                            <strong>Auditor Interpretation:</strong> The heatmap signifies the concentration of failure modes. 
+                            Concentrations in the top-right quadrant require redesign of the process (Fault Tolerance), 
+                            while items in the top-left require improved inspection protocols (Detection).
+                        </p>
+                    </div>
+
+                    <div class="footer">
+                        Statistical Excellence Portfolio | Lean Six Sigma Master Black Belt Series<br>
+                        Confidential Quality Improvement Document
+                    </div>
+                <script src="AssistantTools.js"><\/script><\/body>
+                </html>
+            `);
+            win.document.close();
+            win.focus();
+            setTimeout(() => { win.print(); }, 500);
+        }
+
+        const glossary = {
+            severity: { title: "Severity (S)", text: "How harmful is the failure? 1 = Annoyance, 10 = Safety Hazard/Death." },
+            occurrence: { title: "Occurrence (O)", text: "How often does it happen? 1 = Extremely Rare, 10 = Happens Every Time." },
+            detection: { title: "Detection (D)", text: "Can we find it before it reaches the customer? 1 = Obvious, 10 = Hidden Defect." },
+            rpn: { title: "Risk Priority Number (RPN)", text: "RPN = S x O x D. Focus resources on items with higher RPN scores (usually > 100)." },
+            heatmap: { title: "Risk Heatmap", text: "Bubble position shows S vs O. Bubble size shows Detection difficulty (larger = harder to find)." }
+        };
+
+        function explain(key) {
+            const item = glossary[key];
+            if (item) {
+                document.getElementById('conceptTitle').innerText = item.title;
+                document.getElementById('conceptContent').innerHTML = `<div style="padding:20px; background:rgba(255,255,255,0.05); border-radius:8px; line-height:1.6;">${item.text}</div>`;
+                document.getElementById('hypothesisInfoModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'infoModal' || e.type === 'click') {
+                document.getElementById('infoModal').style.display = 'none';
+            }
+        }
+
+        function addRiskRow(data = {}) {
+            const tbody = document.getElementById('fmeaBody');
+            const tr = document.createElement('tr');
+
+            const step = data.step || '';
+            const mode = data.mode || '';
+            const effect = data.effect || '';
+            const cause = data.cause || '';
+            const s = data.s || 5;
+            const o = data.o || 5;
+            const d = data.d || 5;
+            const rpn = s * o * d;
+
+            tr.innerHTML = `
+                <td><textarea rows="2" placeholder="Step...">${step}</textarea></td>
+                <td><textarea rows="2" placeholder="Failure Mode...">${mode}</textarea></td>
+                <td><textarea rows="2" placeholder="Effect...">${effect}</textarea></td>
+                <td><textarea rows="2" placeholder="Cause...">${cause}</textarea></td>
+                <td><input type="number" class="score-input s-in" value="${s}" min="1" max="10" onchange="calculateRPN()"></td>
+                <td><input type="number" class="score-input o-in" value="${o}" min="1" max="10" onchange="calculateRPN()"></td>
+                <td><input type="number" class="score-input d-in" value="${d}" min="1" max="10" onchange="calculateRPN()"></td>
+                <td class="rpn-cell">${rpn}</td>
+                <td><textarea rows="2" placeholder="Actions..."></textarea></td>
+            `;
+            tbody.appendChild(tr);
+            calculateRPN();
+        }
+
+
+
+        function updateHeatmap() {
+            if (typeof Chart === 'undefined') {
+                console.warn('Chart.js not loaded yet...');
+                return;
+            }
+
+            const rows = document.querySelectorAll('#fmeaBody tr');
+            let dataPoints = [];
+
+            rows.forEach((tr, i) => {
+                const sIn = tr.querySelector('.s-in');
+                const oIn = tr.querySelector('.o-in');
+                const dIn = tr.querySelector('.d-in');
+                if (!sIn || !oIn || !dIn) return;
+
+                const s = parseInt(sIn.value) || 0;
+                const o = parseInt(oIn.value) || 0;
+                const d = parseInt(dIn.value) || 0;
+                const rpn = s * o * d;
+
+                // Find the second textarea (Failure Mode) or fallback to generic label
+                const textareas = tr.querySelectorAll('textarea');
+                const mode = (textareas.length > 1) ? textareas[1].value : `Item ${i + 1}`;
+
+                if (s > 0 && o > 0) {
+                    dataPoints.push({
+                        x: o, // Occurrence
+                        y: s, // Severity
+                        r: Math.max(d * 2, 4), // Radius (min size 4)
+                        label: mode,
+                        rpn: rpn
+                    });
+                }
+            });
+
+            // Render Chart
+            const canvas = document.getElementById('riskMatrixChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            if (matrixChart) {
+                matrixChart.destroy();
+            }
+
+            matrixChart = new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Critical Risks',
+                        data: dataPoints,
+                        backgroundColor: dataPoints.map(p => p.rpn > 100 ? 'rgba(231, 76, 60, 0.8)' : (p.rpn > 40 ? 'rgba(243, 156, 18, 0.8)' : 'rgba(46, 204, 113, 0.8)')),
+                        borderColor: 'rgba(255,255,255,0.4)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            min: 0,
+                            max: 10,
+                            title: { display: true, text: 'OCCURRENCE', color: '#888', font: { size: 10, family: 'Orbitron' } },
+                            grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+                            ticks: { color: '#666', stepSize: 1 }
+                        },
+                        y: {
+                            min: 0,
+                            max: 10,
+                            title: { display: true, text: 'SEVERITY', color: '#888', font: { size: 10, family: 'Orbitron' } },
+                            grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+                            ticks: { color: '#666', stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 17, 21, 0.9)',
+                            titleFont: { family: 'Orbitron' },
+                            bodyFont: { family: 'Roboto' },
+                            callbacks: {
+                                label: function (ctx) {
+                                    const pt = ctx.raw;
+                                    return `Mode: ${pt.label} (RPN: ${pt.rpn})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function askAISuggestions() {
+            const process = document.getElementById('processName').value.trim();
+            const btn = document.getElementById('aiBtn');
+
+            if (!process) { alert("Please enter a Process Name first."); return; }
+
+            btn.innerHTML = "🧠 Thinking...";
+            btn.disabled = true;
+
+            const prompt = `
+            Act as a Risk Manager. For the process "${process}", list 3 potential failure modes.
+            Return ONLY a JSON array of objects with keys: "step", "mode", "effect", "cause", "s", "o", "d".
+            Estimate S, O, D scores (1-10) realistically.
+        `;
+
+            try {
+                const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await response.json();
+
+                let rawText = data.candidates[0].content.parts[0].text;
+                rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                const suggestions = JSON.parse(rawText);
+
+                suggestions.forEach(item => addRiskRow(item));
+
+            } catch (e) {
+                console.error(e);
+                alert("AI Suggestion Failed. Check API Key or Try Again.");
+            } finally {
+                btn.innerHTML = "🤖 AI Suggest Risks";
+                btn.disabled = false;
+            }
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
+            if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+        }
+
+        function magnify(canvasId, title) {
+            const original = document.getElementById(canvasId);
+            const modalImg = document.getElementById('magnifyImg');
+            modalImg.src = original.toDataURL();
+            document.getElementById('magnifyTitle').innerText = title;
+            document.getElementById('magnifyModal').style.display = 'flex';
+        }
+
+        function downloadChart(canvasId, title) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = title.replace(/\s+/g, '_') + '_Chart.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function exportCSV() {
+            alert("Exporting Risk Register to CSV... (Placeholder implemented)");
+        }
+
+        // --- NEW MEMBER FUNCTIONS ---
+        function togglePower() {
+            const content = document.getElementById('powerContent');
+            const icon = document.getElementById('powerIcon');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                icon.innerText = '▼';
+            } else {
+                content.style.display = 'block';
+                icon.innerText = '▲';
+            }
+        }
+
+        function showGuide() {
+            document.getElementById('guideModal').style.display = 'flex';
+        }
+
+
+        function closeModal(e) {
+            const ids = ['guideModal', 'hypothesisInfoModal', 'magnifyModal', 'infoModal'];
+            if (ids.includes(e.target.id) || e.target.classList.contains('close-btn')) {
+                ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.display = 'none';
+                });
+            }
+        }
+
+        window.onload = () => {
+            // Wait slightly for Chart.js to be ready if CDN is being slow
+            setTimeout(() => {
+                addRiskRow({
+                    step: 'Patient Admission',
+                    mode: 'Incorrect Triage',
+                    effect: 'Delayed Treatment',
+                    cause: 'System Lag',
+                    s: 8,
+                    o: 3,
+                    d: 4
+                });
+            }, 500);
+        };
+    </script>
+
+    <script src="AssistantTools.js"></script>
+    <script>
+        function openVisualExpl() {
+            document.getElementById('visualExplModal').style.display = 'flex';
+        }
+    </script>
+
+    <!-- VISUAL EXPLANATION MODAL -->
+    <div class="modal-overlay" id="visualExplModal" onclick="if(event.target===this) this.style.display='none'" style="z-index:5000; backdrop-filter: blur(15px); background: rgba(0,0,0,0.9);">
+        <div class="modal-box" style="max-width:1000px; width:95%; background:transparent; border:none; padding:0; box-shadow:none;">
+            <div style="position:relative;">
+                <span style="position:absolute; top:-40px; right:0; cursor:pointer; font-size:32px; color:white; font-weight:bold; z-index:10;" onclick="document.getElementById('visualExplModal').style.display='none'">&times;</span>
+                <div style="border-radius:20px; overflow:hidden; border:2px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+                    <img src="images/dfmea_info.png" style="width:100%; display:block;" alt="DFMEA Manager Infographic">
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="StudentAuth.js"></script>`n</body>
+
+</html>

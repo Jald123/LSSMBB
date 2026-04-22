@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
@@ -181,6 +181,13 @@ model DoDeliverable {
   completedAt  DateTime? @map("completed_at")
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  // Retry System Fields
+  attempts     Int       @default(0)
+  maxAttempts  Int       @default(4)
+  score        Float?
+  feedback     String?
+  retryHistory Json?     @map("retry_history") // Array of previous attempts
 
   project      DoProject @relation(fields: [projectId], references: [id])
 

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementation Plan | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* MODERN SUITE LAYOUT */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 340px;
+            height: 100vh;
+            overflow: hidden;
+            background: #050505;
+        }
+
+        .sidebar-left {
+            background: #0a0a0a;
+            border-right: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .main-workspace {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .report-sidebar {
+            background: #0a0a0a;
+            border-left: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            color: #3b82f6;
+            font-family: 'Orbitron';
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .premium-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Inter';
+        }
+
+        .premium-select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #3b82f6;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Inter';
+            font-weight: 600;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        /* PLAN TABLE */
+        .plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .plan-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+        }
+
+        .plan-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .plan-cell {
+            padding: 15px;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+        }
+
+        .status-progress {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .status-done {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .status-late {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <div class="sidebar-left">
+            <div style="font-family:'Orbitron'; font-size:16px; color:#3b82f6; margin-bottom:30px; text-align:center;">
+                PLANNING SUITE</div>
+
+            <div class="card"
+                style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); padding:15px;">
+                <span class="sidebar-label">Quick Load Plans</span>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadTemplate('software')">💻 Software Rollout</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadTemplate('5s')">🧹 5S Event Deployment</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadTemplate('training')">🎓 Training Program</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadTemplate('process')">⚙️ New Line Install</button>
+                </div>
+            </div>
+
+            <button class="btn btn-ghost" style="margin-top:auto;" onclick="window.history.back()"><i
+                    class="fas fa-arrow-left"></i>  Dashboard</button>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main-workspace">
+            <header style="margin-bottom:30px; display:flex; justify-content:space-between; align-items:flex-end;">
+                <div>
+                    <span style="color:#3b82f6; font-size:12px; font-weight:700;">IMPROVE / CONTROL PHASE</span>
+                    <h1 style="font-family:'Orbitron'; margin:5px 0 0 0;">Implementation Plan</h1>
+                    <p style="color:#94a3b8; margin:5px 0 0 0;">Define tasks, assign owners, and track execution to
+                        completion.</p>
+                </div>
+                <div style="text-align:right;">
+                    <button class="btn" onclick="addTask()">+ Add Task</button>
+                </div>
+            </header>
+
+            <div
+                style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:16px; padding:25px; margin-bottom:30px;">
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:20px;">
+                    <div>
+                        <span class="sidebar-label">Project Name</span>
+                        <input type="text" id="projName" class="premium-input" placeholder="e.g. ERP Migration">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Project Lead</span>
+                        <input type="text" id="projLead" class="premium-input" placeholder="e.g. Jane Doe">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Start Date</span>
+                        <input type="date" id="startDate" class="premium-input">
+                    </div>
+                    <div>
+                        <span class="sidebar-label">Go-Live Target</span>
+                        <input type="date" id="endDate" class="premium-input">
+                    </div>
+                </div>
+            </div>
+
+            <table class="plan-table">
+                <thead>
+                    <tr style="text-align:left; color:#94a3b8; font-size:11px; text-transform:uppercase;">
+                        <th style="padding:15px;">Task Description</th>
+                        <th style="padding:15px;">Owner</th>
+                        <th style="padding:15px; width:120px;">Due Date</th>
+                        <th style="padding:15px; width:120px;">Status</th>
+                        <th style="padding:15px; width:50px;"></th>
+                    </tr>
+                </thead>
+                <tbody id="taskBody">
+                    <!-- JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- REPORT SIDEBAR -->
+        <div class="report-sidebar">
+            <h2 class="sidebar-title">Status Report</h2>
+
+            <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:32px; font-weight:800; color:#3b82f6;" id="completionRate">0%</div>
+                <div class="sidebar-label">Completion Rate</div>
+            </div>
+
+            <div style="margin-top:20px;">
+                <span class="sidebar-label">Task Breakdown</span>
+                <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px; color:#ccc;">
+                    <span>Wait: <b id="cntWait">0</b></span>
+                    <span>WIP: <b id="cntWip" style="color:#3b82f6;">0</b></span>
+                    <span>Done: <b id="cntDone" style="color:#10b981;">0</b></span>
+                </div>
+            </div>
+
+            <button class="btn" style="margin-top:auto;" onclick="window.print()">🖨️ Print Plan</button>
+        </div>
+    </div>
+
+    <script>
+        let tasks = [];
+
+        function addTask(task = {}) {
+            const newTask = {
+                desc: task.desc || '',
+                owner: task.owner || '',
+                due: task.due || '',
+                status: task.status || 'pending',
+                id: Date.now() + Math.random()
+            };
+            tasks.push(newTask);
+            renderTasks();
+        }
+
+        function removeTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            renderTasks();
+        }
+
+        function updateTask(id, field, value) {
+            const t = tasks.find(t => t.id === id);
+            if (t) {
+                t[field] = value;
+                renderStats();
+            }
+        }
+
+        function renderTasks() {
+            const tbody = document.getElementById('taskBody');
+            tbody.innerHTML = '';
+
+            tasks.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.className = 'plan-row';
+                tr.innerHTML = `
+                    <td class="plan-cell">
+                        <input type="text" class="premium-input" value="${t.desc}" oninput="updateTask(${t.id}, 'desc', this.value)" placeholder="Task details...">
+                    </td>
+                    <td class="plan-cell">
+                        <input type="text" class="premium-input" value="${t.owner}" oninput="updateTask(${t.id}, 'owner', this.value)" placeholder="Assignee">
+                    </td>
+                    <td class="plan-cell">
+                        <input type="date" class="premium-input" value="${t.due}" oninput="updateTask(${t.id}, 'due', this.value)">
+                    </td>
+                    <td class="plan-cell">
+                        <select class="premium-select" onchange="updateTask(${t.id}, 'status', this.value)" style="font-size:11px; padding:5px;">
+                            <option value="pending" ${t.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="progress" ${t.status === 'progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="done" ${t.status === 'done' ? 'selected' : ''}>Complete</option>
+                            <option value="late" ${t.status === 'late' ? 'selected' : ''}>Late</option>
+                        </select>
+                    </td>
+                    <td class="plan-cell">
+                        <button onclick="removeTask(${t.id})" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            renderStats();
+        }
+
+        function renderStats() {
+            const total = tasks.length;
+            if (total === 0) {
+                document.getElementById('completionRate').innerText = '0%';
+                return;
+            }
+
+            const done = tasks.filter(t => t.status === 'done').length;
+            const wip = tasks.filter(t => t.status === 'progress').length;
+            const wait = tasks.filter(t => t.status === 'pending').length;
+
+            const rate = Math.round((done / total) * 100);
+
+            document.getElementById('completionRate').innerText = rate + '%';
+            document.getElementById('cntWait').innerText = wait;
+            document.getElementById('cntWip').innerText = wip;
+            document.getElementById('cntDone').innerText = done;
+        }
+
+        const templates = {
+            'software': [
+                { desc: 'Define Requirements', owner: 'Product Owner', status: 'done' },
+                { desc: 'Vendor Selection', owner: 'IT Manager', status: 'done' },
+                { desc: 'Develop Integration MVP', owner: 'Dev Team', status: 'progress' },
+                { desc: 'UAT Testing', owner: 'QA Lead', status: 'pending' },
+                { desc: 'Training Materials', owner: 'Change Mgmt', status: 'pending' },
+                { desc: 'Go-Live', owner: 'Project Lead', status: 'pending' }
+            ],
+            '5s': [
+                { desc: 'Select Area & Team', owner: 'Kaizen Lead', status: 'done' },
+                { desc: 'Sort: Red Tag Event', owner: 'Team', status: 'pending' },
+                { desc: 'Set in Order: Floor Marking', owner: 'Facilities', status: 'pending' },
+                { desc: 'Shine: Deep Clean', owner: 'Team', status: 'pending' },
+                { desc: 'Standardize: Photos & SOPs', owner: 'Supervisor', status: 'pending' },
+                { desc: 'Sustain: Warning System', owner: 'Kaizen Lead', status: 'pending' }
+            ],
+            'training': [
+                { desc: 'Assess Skill Gaps', owner: 'HR BP', status: 'progress' },
+                { desc: 'Develop Curriculum', owner: 'Trainer', status: 'pending' },
+                { desc: 'Schedule Sessions', owner: 'Coord', status: 'pending' },
+                { desc: 'Deliver Training', owner: 'Trainer', status: 'pending' },
+                { desc: 'Post-Training Assessment', owner: 'HR BP', status: 'pending' }
+            ],
+            'process': [
+                { desc: 'Order Equipment', owner: 'Purchasing', status: 'done' },
+                { desc: 'Site Prep (Electrical/Air)', owner: 'Facilities', status: 'progress' },
+                { desc: 'Install Machine', owner: 'Vendor', status: 'pending' },
+                { desc: 'Safety Sign-off', owner: 'EHS Manager', status: 'pending' },
+                { desc: 'Operator Training', owner: 'Supervisor', status: 'pending' }
+            ]
+        };
+
+        function loadTemplate(key) {
+            tasks = [];
+            const templ = templates[key];
+            if (templ) {
+                templ.forEach(t => addTask(t));
+                // Set fake dates
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('startDate').value = today;
+            }
+        }
+
+        // Init
+        loadTemplate('software');
+    </script>
+<script src="AssistantTools.js"></script>
+<script src="StudentAuth.js"></script>
+</body>
+
+</html>

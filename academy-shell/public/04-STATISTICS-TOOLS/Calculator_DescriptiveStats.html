@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descriptive Statistics | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
+
+    <script>
+        // --- SCENARIO DATA (Normal vs Skewed) ---
+        let currentScenario = null;
+        let currentType = 'normal'; // default
+
+        const scenarios = {
+            'manufacturing': {
+                name: "Manufacturing (Pistons)",
+                normal: {
+                    data: "9.98, 10.01, 10.00, 10.02, 9.99, 10.00, 10.01, 10.03, 9.98, 10.00, 10.02, 10.01, 9.99, 10.00, 10.04, 9.97, 10.01, 9.99, 10.00, 10.02",
+                    desc: "<b>Manufacturing (Stable):</b> Process is centered and predictable. Ideal state.",
+                    context: {
+                        mean: "<b>Context:</b> Centered exactly on target (10.00mm).",
+                        stdDev: "<b>Context:</b> Low variation indicates good machine maintenance.",
+                        skew: "<b>Context:</b> Symmetrical data (Skew ~ 0). No tool wear detected.",
+                        histo: "<b>Context:</b> Classic Bell Curve shape.",
+                        run: "<b>Context:</b> Flat line with random noise. Stable."
+                    }
+                },
+                skewed: {
+                    data: "9.98, 10.00, 10.01, 10.02, 10.05, 10.08, 10.12, 10.15, 10.20, 10.25, 10.00, 10.01, 10.02, 10.03, 10.05, 10.00, 9.99, 10.01, 10.02, 10.05",
+                    desc: "<b>Manufacturing (Unstable):</b> Tool wear is causing dimensions to drift larger.",
+                    context: {
+                        mean: "<b>Context:</b> Mean is shifting higher than target > 10.00mm.",
+                        stdDev: "<b>Context:</b> Variation is increasing due to drill bit degradation.",
+                        skew: "<b>Context:</b> Positive Skew! The tail drags right as parts get bigger.",
+                        histo: "<b>Context:</b> Bars shifting right. Non-Normal.",
+                        run: "<b>Context:</b> Look for the upward slope (Trend)."
+                    }
+                }
+            },
+            'healthcare': {
+                name: "Healthcare (Wait Times)",
+                normal: {
+                    data: "14, 15, 16, 15, 14, 15, 16, 15, 15, 14, 15, 16, 14, 15, 15, 16, 14, 15, 16, 15",
+                    desc: "<b>Healthcare (Ideal):</b> Controlled flow. Patients processed consistently.<br><br>📊 <b>Study Setup:</b> 20 Patients | Target: 15 min | Tolerance: ±2 min",
+                    context: {
+                        mean: "<b>Context:</b> Stable ~15min wait time. Process is on-target.",
+                        median: "<b>Context:</b> Equals the Mean (15.00). Predictable patient experience.",
+                        stdDev: "<b>Context:</b> Very low sigma (0.73). Standardized triage SOP working.",
+                        cv: "<b>Context:</b> CV 4.8% = Excellent consistency. Process under control.",
+                        skew: "<b>Context:</b> Skewness 0.00 = Perfectly symmetric. No shifts.",
+                        kurt: "<b>Context:</b> Kurtosis -1.19 = Slightly flat peak (Platykurtic). Data spread evenly.",
+                        histo: "<b>Context:</b> Classic Bell Curve. Data follows normal distribution.",
+                        box: "<b>Context:</b> Compact box with equal whiskers. No outliers.",
+                        run: "<b>Context:</b> Flat line with random noise around mean. Stable process.",
+                        qq: "<b>Context:</b> Points follow the diagonal line. Confirms normality.",
+                        ad: "<b>Context:</b> P-Value 0.990 >> 0.05. Data IS Normal. Use parametric tests."
+                    },
+                    recommendation: {
+                        chart: "Histogram",
+                        reason: "Best choice for symmetric normal data. Shows the bell curve clearly."
+                    }
+                },
+                skewed: {
+                    data: "12, 15, 14, 18, 110, 13, 16, 14, 45, 19, 15, 14, 17, 22, 14, 15, 16, 13, 14, 85",
+                    desc: "<b>Healthcare (Real World):</b> Average day with emergencies causing delays.<br><br>📊 <b>Study Setup:</b> 20 Patients | Target: 15 min | Tolerance: ±2 min",
+                    context: {
+                        mean: "<b>Context:</b> Mean is misleading (27.4 min) due to emergency cases.",
+                        median: "<b>Context:</b> Median (15 min) is the TRUE typical wait. Use this!",
+                        skew: "<b>Context:</b> High positive skew. Long right tail from emergencies.",
+                        outlier: "<b>Context:</b> 110 and 85 min waits are statistical outliers (critical cases).",
+                        box: "<b>Context:</b> Long upper whisker + stars showing outliers."
+                    },
+                    recommendation: {
+                        chart: "Box Plot",
+                        reason: "Best for skewed data with outliers. Clearly shows the extreme values."
+                    }
+                }
+            },
+            'med_vitals': {
+                name: "🏥 Med: Patient BP (Systolic)",
+                normal: {
+                    data: "120, 122, 118, 121, 119, 120, 122, 118, 121, 119, 120, 123, 117, 121, 120, 118, 122, 119, 121, 120",
+                    desc: "<b>Med: BP Monitoring:</b> Stable patient vitals. Within normal physiological range.",
+                    context: {
+                        mean: "<b>Context:</b> Average 120 mmHg is the clinical target.",
+                        skew: "<b>Context:</b> Symmetric data indicates stable hemodynamic state."
+                    }
+                },
+                skewed: {
+                    data: "120, 122, 118, 165, 119, 120, 122, 180, 121, 119, 120, 175, 117, 121, 120, 190, 122, 119, 121, 200",
+                    desc: "<b>Med: BP Monitoring:</b> Patient experiencing hypertensive crisis/spikes.",
+                    context: {
+                        mean: "<b>Context:</b> Mean is skewed high due to severe hypertensive episodes.",
+                        outlier: "<b>Context:</b> 190 and 200 mmHg are life-threatening outliers."
+                    }
+                }
+            },
+            'med_lab': {
+                name: "🏥 Med: Lab TAT (STAT)",
+                normal: {
+                    data: "25, 28, 26, 27, 24, 25, 29, 26, 27, 25, 28, 24, 26, 27, 25, 28, 26, 27, 25, 24",
+                    desc: "<b>Med: Lab Turnaround:</b> Consistent STAT results under 30-min target.",
+                    context: {
+                        mean: "<b>Context:</b> Mean of 26 minutes meets the clinical SLA."
+                    }
+                },
+                skewed: {
+                    data: "25, 28, 26, 95, 24, 110, 29, 26, 85, 25, 28, 120, 26, 27, 25, 28, 105, 27, 25, 24",
+                    desc: "<b>Med: Lab Turnaround:</b> Equipment failure causing massive delays in some batches.",
+                    context: {
+                        skew: "<b>Context:</b> Massive Right Skew. Outliers exceed target by 4x."
+                    }
+                }
+            },
+            'med_response': {
+                name: "🏥 Med: Nurse Call Response",
+                normal: {
+                    data: "2, 3, 2, 4, 3, 2, 3, 2, 4, 3, 2, 3, 2, 3, 2, 4, 3, 2, 3, 2",
+                    desc: "<b>Med: Response Time:</b> Excellent bedside response. Sub-5 minute performance.",
+                    context: {
+                        mean: "<b>Context:</b> 2.7 min average shows high patient safety compliance."
+                    }
+                },
+                skewed: {
+                    data: "2, 3, 2, 15, 25, 2, 30, 2, 18, 3, 2, 3, 45, 3, 2, 22, 3, 2, 3, 2",
+                    desc: "<b>Med: Response Time:</b> Understaffing during shift change causing critical delays.",
+                    context: {
+                        median: "<b>Context:</b> Median remains low (3m), but Mean is blown to 10m+ by delays."
+                    }
+                }
+            },
+            'med_pharmacy': {
+                name: "🏥 Med: Pharmacy Dispensing",
+                normal: {
+                    data: "10, 12, 11, 10, 13, 11, 12, 10, 11, 12, 10, 12, 11, 10, 13, 11, 12, 10, 11, 12",
+                    desc: "<b>Med: Pharmacy:</b> Standard prescription fills. High efficiency.",
+                    context: {
+                        cv: "<b>Context:</b> Very low variation (CV < 10%). Reliable service."
+                    }
+                },
+                skewed: {
+                    data: "10, 12, 11, 10, 65, 11, 80, 10, 11, 75, 10, 12, 90, 10, 13, 11, 12, 55, 11, 12",
+                    desc: "<b>Med: Pharmacy:</b> Narcotic verification causing outlier delays.",
+                    context: {
+                        outlier: "<b>Context:</b> Outliers are the complex dual-signoff prescriptions."
+                    }
+                }
+            },
+            'med_surgical': {
+                name: "🏥 Med: Surgical Setup (OR)",
+                normal: {
+                    data: "45, 48, 46, 47, 44, 45, 49, 46, 47, 45, 48, 44, 46, 47, 45, 48, 46, 47, 45, 44",
+                    desc: "<b>Med: OR Setup:</b> Standard OR prep time. Process is capable.",
+                    context: {
+                        mean: "<b>Context:</b> 46 min setup time is within best-practice benchmarks."
+                    }
+                },
+                skewed: {
+                    data: "45, 48, 46, 120, 44, 150, 49, 46, 110, 45, 48, 44, 46, 135, 45, 48, 46, 47, 45, 44",
+                    desc: "<b>Med: OR Setup:</b> Instrument contamination leading to OR cleaning cycles.",
+                    context: {
+                        skew: "<b>Context:</b> Significant Right Skew from cleaning re-certification time."
+                    }
+                }
+            },
+            'service': {
+                name: "Service (Call Center)",
+                normal: {
+                    data: "120, 118, 122, 119, 121, 120, 119, 122, 118, 120, 121, 119, 120, 120, 118",
+                    desc: "<b>Service (Scripted):</b> All calls are simple password resets.",
+                    context: {
+                        mean: "<b>Context:</b> Solid 120s average.",
+                        cv: "<b>Context:</b> Extremely low CV. Agents are essentially robots.",
+                        kurt: "<b>Context:</b> High Kurtosis (Leptokurtic) - heavily peaked."
+                    }
+                },
+                skewed: {
+                    data: "120, 115, 122, 450, 118, 125, 119, 121, 115, 300, 120, 122, 118, 120, 125",
+                    desc: "<b>Service (Complex):</b> Mix of easy calls and angry customers.",
+                    context: {
+                        mean: "<b>Context:</b> AHT blown up by long troubleshooting calls.",
+                        skew: "<b>Context:</b> Right Skew (Technical issues take time).",
+                        outlier: "<b>Context:</b> 450s and 300s calls are the outliers."
+                    }
+                }
+            }
+        };
+
+        const generic_glossary = {
+            "count": {
+                title: "Count (N)",
+                text: "The total size of your sample.<br><b>Assessment:</b><br>&bull; N < 30: Too small for reliable Z-tests (Use T-tests).<br>&bull; N > 30: Generally sufficient for Normal Approximation.",
+                visual: `<svg width="200" height="60" viewBox="0 0 200 60" style="margin-top:10px;">
+                    <rect x="10" y="25" width="15" height="25" fill="#3498db" opacity="0.5"/>
+                    <rect x="30" y="15" width="15" height="35" fill="#3498db" opacity="0.7"/>
+                    <rect x="50" y="5" width="15" height="45" fill="#3498db"/>
+                    <rect x="70" y="10" width="15" height="40" fill="#3498db"/>
+                    <rect x="90" y="20" width="15" height="30" fill="#3498db" opacity="0.7"/>
+                    <line x1="120" y1="30" x2="190" y2="30" stroke="#888" stroke-width="1"/>
+                    <text x="155" y="25" fill="#888" font-size="10" text-anchor="middle">N = Sample Size</text>
+                    <text x="155" y="45" fill="#22c55e" font-size="11" text-anchor="middle">N ≥ 30 is ideal</text>
+                </svg>`
+            },
+            "mean": {
+                title: "Mean (Average)",
+                text: "The center of gravity.<br><b>Assessment:</b> Compare this to your Target.<br>&bull; If Mean != Target, the process is Off-Center.<br>&bull; Highly sensitive to outliers.",
+                visual: `<svg width="200" height="70" viewBox="0 0 200 70" style="margin-top:10px;">
+                    <path d="M10,60 Q50,10 100,10 Q150,10 190,60" fill="none" stroke="#3498db" stroke-width="2"/>
+                    <line x1="100" y1="5" x2="100" y2="65" stroke="#22c55e" stroke-width="2" stroke-dasharray="4"/>
+                    <circle cx="100" cy="35" r="4" fill="#22c55e"/>
+                    <text x="100" y="70" fill="#22c55e" font-size="10" text-anchor="middle">Mean (Center)</text>
+                    <text x="30" y="55" fill="#888" font-size="9">Low</text>
+                    <text x="170" y="55" fill="#888" font-size="9">High</text>
+                </svg>`
+            },
+            "median": {
+                title: "Median",
+                text: "The exact middle value.<br><b>Assessment:</b><br>&bull; If Median ≈ Mean: Data is likely Symmetrical.<br>&bull; If Median ≠ Mean: Data is Skewed (Trust Median over Mean).",
+                visual: `<svg width="200" height="70" viewBox="0 0 200 70" style="margin-top:10px;">
+                    <rect x="10" y="30" width="180" height="20" fill="#1e293b" stroke="#444"/>
+                    <circle cx="30" cy="40" r="4" fill="#3498db"/>
+                    <circle cx="60" cy="40" r="4" fill="#3498db"/>
+                    <circle cx="90" cy="40" r="4" fill="#3498db"/>
+                    <circle cx="100" cy="40" r="6" fill="#22c55e" stroke="#fff" stroke-width="2"/>
+                    <circle cx="110" cy="40" r="4" fill="#3498db"/>
+                    <circle cx="140" cy="40" r="4" fill="#3498db"/>
+                    <circle cx="170" cy="40" r="4" fill="#3498db"/>
+                    <text x="100" y="65" fill="#22c55e" font-size="10" text-anchor="middle">Median (50th %)</text>
+                </svg>`
+            },
+            "stdDev": {
+                title: "Standard Deviation (σ)",
+                text: "The average distance of points from the Mean.<br><b>Assessment:</b><br>&bull; High Sigma = High Variation (Bad consistency).<br>&bull; Low Sigma = Consistent Process.",
+                visual: `<svg width="200" height="80" viewBox="0 0 200 80" style="margin-top:10px;">
+                    <text x="10" y="12" fill="#888" font-size="9">Low σ (Good)</text>
+                    <path d="M10,35 Q50,5 100,5 Q150,5 190,35" fill="none" stroke="#22c55e" stroke-width="2"/>
+                    <text x="10" y="52" fill="#888" font-size="9">High σ (Bad)</text>
+                    <path d="M10,75 Q50,55 100,55 Q150,55 190,75" fill="none" stroke="#ef4444" stroke-width="2"/>
+                    <line x1="100" y1="0" x2="100" y2="40" stroke="#22c55e" stroke-width="1" stroke-dasharray="3"/>
+                    <line x1="100" y1="50" x2="100" y2="80" stroke="#ef4444" stroke-width="1" stroke-dasharray="3"/>
+                </svg>`
+            },
+            "range": {
+                title: "Range",
+                text: "The gap between Max and Min.<br><b>Assessment:</b><br>&bull; Gives a quick sense of total spread, but ignores the distribution shape.",
+                visual: `<svg width="200" height="50" viewBox="0 0 200 50" style="margin-top:10px;">
+                    <line x1="20" y1="25" x2="180" y2="25" stroke="#3498db" stroke-width="3"/>
+                    <circle cx="20" cy="25" r="6" fill="#ef4444"/>
+                    <circle cx="180" cy="25" r="6" fill="#22c55e"/>
+                    <text x="20" y="45" fill="#ef4444" font-size="10" text-anchor="middle">Min</text>
+                    <text x="180" y="45" fill="#22c55e" font-size="10" text-anchor="middle">Max</text>
+                    <text x="100" y="15" fill="#888" font-size="10" text-anchor="middle">← Range →</text>
+                </svg>`
+            },
+            "cv": {
+                title: "Coefficient of Variation (CV)",
+                text: "Standard Deviation divided by Mean (%).<br><b>Assessment:</b><br>&bull; CV < 10%: Excellent Consistency.<br>&bull; CV 10-30%: Average.<br>&bull; CV > 30%: High Variation/Unstable.",
+                visual: `<svg width="200" height="50" viewBox="0 0 200 50" style="margin-top:10px;">
+                    <rect x="10" y="15" width="50" height="25" fill="#22c55e" rx="3"/>
+                    <text x="35" y="32" fill="white" font-size="9" text-anchor="middle">&lt;10%</text>
+                    <rect x="70" y="15" width="50" height="25" fill="#eab308" rx="3"/>
+                    <text x="95" y="32" fill="white" font-size="9" text-anchor="middle">10-30%</text>
+                    <rect x="130" y="15" width="50" height="25" fill="#ef4444" rx="3"/>
+                    <text x="155" y="32" fill="white" font-size="9" text-anchor="middle">&gt;30%</text>
+                </svg>`
+            },
+            "skew": {
+                title: "Skewness",
+                text: "Measures symmetry.<br><b>Assessment:</b><br>&bull; 0: Perfect Bell Curve.<br>&bull; > 0.5: Right Skewed (Tail right).<br>&bull; < -0.5: Left Skewed (Tail left).",
+                visual: `<svg width="200" height="70" viewBox="0 0 200 70" style="margin-top:10px;">
+                    <text x="33" y="10" fill="#888" font-size="8">Left Skew</text>
+                    <path d="M10,50 Q60,50 70,20 Q80,50 100,50" fill="none" stroke="#eab308" stroke-width="2"/>
+                    <text x="100" y="10" fill="#888" font-size="8">Normal</text>
+                    <path d="M110,50 Q130,10 150,50" fill="none" stroke="#22c55e" stroke-width="2"/>
+                    <text x="165" y="10" fill="#888" font-size="8">Right Skew</text>
+                    <path d="M160,50 Q170,20 180,50 Q190,50 200,50" fill="none" stroke="#eab308" stroke-width="2"/>
+                </svg>`
+            },
+            "kurt": {
+                title: "Kurtosis",
+                text: "Measures the peakedness or tails.<br><b>Assessment:</b><br>&bull; 0: Normal.<br>&bull; High (+): Sharp peak, heavy tails (Outlier prone).<br>&bull; Low (-): Flat peak, thin tails.",
+                visual: `<svg width="200" height="70" viewBox="0 0 200 70" style="margin-top:10px;">
+                    <text x="30" y="12" fill="#888" font-size="8">Platykurtic</text>
+                    <path d="M10,55 Q30,35 50,35 Q70,35 90,55" fill="none" stroke="#3498db" stroke-width="2"/>
+                    <text x="130" y="12" fill="#888" font-size="8">Normal</text>
+                    <path d="M110,55 Q130,20 150,55" fill="none" stroke="#22c55e" stroke-width="2"/>
+                    <text x="180" y="12" fill="#888" font-size="8">Leptokurtic</text>
+                    <path d="M160,55 Q170,5 180,55" fill="none" stroke="#ef4444" stroke-width="2"/>
+                </svg>`
+            },
+            "ad": {
+                title: "Anderson-Darling Test",
+                text: "Statistical test for Normality.<br><b>Assessment:</b><br>&bull; P-Value > 0.05: Data IS Normal (Good).<br>&bull; P-Value < 0.05: Data is NOT Normal (Use Non-Parametric tests).",
+                visual: `<svg width="200" height="50" viewBox="0 0 200 50" style="margin-top:10px;">
+                    <rect x="10" y="10" width="80" height="30" fill="#22c55e" rx="4"/>
+                    <text x="50" y="30" fill="white" font-size="10" text-anchor="middle">P > 0.05 ✓</text>
+                    <rect x="110" y="10" width="80" height="30" fill="#ef4444" rx="4"/>
+                    <text x="150" y="30" fill="white" font-size="10" text-anchor="middle">P < 0.05 ✗</text>
+                </svg>`
+            },
+            "outlier": {
+                title: "Outliers",
+                text: "Data points that don't belong.<br><b>Assessment:</b><br>&bull; Calculated as 1.5x IQR.<br>&bull; ANY outlier should be investigated for Special Cause variation.",
+                visual: `<svg width="200" height="60" viewBox="0 0 200 60" style="margin-top:10px;">
+                    <line x1="30" y1="30" x2="140" y2="30" stroke="#888" stroke-width="2"/>
+                    <rect x="60" y="20" width="50" height="20" fill="#2ecc71" stroke="#22c55e" stroke-width="2"/>
+                    <line x1="85" y1="20" x2="85" y2="40" stroke="white" stroke-width="2"/>
+                    <circle cx="10" cy="30" r="5" fill="#ef4444"/>
+                    <circle cx="170" cy="30" r="5" fill="#ef4444"/>
+                    <text x="10" y="50" fill="#ef4444" font-size="9" text-anchor="middle">Outlier</text>
+                    <text x="170" y="50" fill="#ef4444" font-size="9" text-anchor="middle">Outlier</text>
+                </svg>`
+            },
+            "histo": {
+                title: "Histogram",
+                text: "Shows the shape of distribution.<br><b>Assessment:</b><br>&bull; Look for the Yellow Bell Curve.<br>&bull; If bars follow the curve, data is Normal.<br>&bull; If bars shift left/right, it is Skewed.",
+                visual: `<svg width="200" height="70" viewBox="0 0 200 70" style="margin-top:10px;">
+                    <rect x="20" y="50" width="20" height="15" fill="#3498db"/>
+                    <rect x="45" y="35" width="20" height="30" fill="#3498db"/>
+                    <rect x="70" y="15" width="20" height="50" fill="#3498db"/>
+                    <rect x="95" y="10" width="20" height="55" fill="#3498db"/>
+                    <rect x="120" y="25" width="20" height="40" fill="#3498db"/>
+                    <rect x="145" y="40" width="20" height="25" fill="#3498db"/>
+                    <path d="M20,60 Q80,0 170,60" fill="none" stroke="#f1c40f" stroke-width="2" stroke-dasharray="4"/>
+                </svg>`
+            },
+            "box": {
+                title: "Box Plot (Box & Whisker)",
+                text: "Visualizes spread and outliers.<br><b>Anatomy:</b><br>&bull; <b>Box:</b> Middle 50% of data (IQR).<br>&bull; <b>Line:</b> The Median.<br>&bull; <b>Whiskers:</b> Range of non-outlier data.<br>&bull; <b>Dots/Stars:</b> Outliers.",
+                visual: `<svg width="200" height="60" viewBox="0 0 200 60" style="margin-top:10px;">
+                    <line x1="30" y1="30" x2="60" y2="30" stroke="white" stroke-width="2"/>
+                    <rect x="60" y="15" width="80" height="30" fill="#2ecc71" stroke="white" stroke-width="2"/>
+                    <line x1="100" y1="15" x2="100" y2="45" stroke="white" stroke-width="3"/>
+                    <line x1="140" y1="30" x2="170" y2="30" stroke="white" stroke-width="2"/>
+                    <line x1="30" y1="20" x2="30" y2="40" stroke="white" stroke-width="2"/>
+                    <line x1="170" y1="20" x2="170" y2="40" stroke="white" stroke-width="2"/>
+                    <text x="100" y="55" fill="#888" font-size="9" text-anchor="middle">IQR (Middle 50%)</text>
+                </svg>`
+            },
+            "run": {
+                title: "Run Chart",
+                text: "Shows data over time.<br><b>Assessment:</b><br>&bull; Look for trends (up/down).<br>&bull; Look for shifts (jumps in mean).<br>&bull; Look for instability.",
+                visual: `<svg width="200" height="60" viewBox="0 0 200 60" style="margin-top:10px;">
+                    <line x1="10" y1="30" x2="190" y2="30" stroke="#888" stroke-width="1" stroke-dasharray="4"/>
+                    <polyline points="10,40 30,25 50,35 70,20 90,30 110,25 130,35 150,28 170,32 190,22" fill="none" stroke="#9b59b6" stroke-width="2"/>
+                    <circle cx="10" cy="40" r="3" fill="#9b59b6"/>
+                    <circle cx="70" cy="20" r="3" fill="#9b59b6"/>
+                    <circle cx="190" cy="22" r="3" fill="#9b59b6"/>
+                </svg>`
+            },
+            "qq": {
+                title: "Normal Probability Plot",
+                text: "Visual Normality Test.<br><b>Assessment:</b><br>&bull; <b>Straight Line:</b> Normal.<br>&bull; <b>Banana Shape:</b> Skewed.<br>&bull; <b>S-Shape:</b> Heavy/Light Tails.",
+                visual: `<svg width="200" height="60" viewBox="0 0 200 60" style="margin-top:10px;">
+                    <line x1="10" y1="55" x2="190" y2="10" stroke="#888" stroke-width="1" stroke-dasharray="4"/>
+                    <circle cx="20" cy="50" r="4" fill="#e67e22"/>
+                    <circle cx="45" cy="42" r="4" fill="#e67e22"/>
+                    <circle cx="70" cy="36" r="4" fill="#e67e22"/>
+                    <circle cx="100" cy="30" r="4" fill="#e67e22"/>
+                    <circle cx="130" cy="24" r="4" fill="#e67e22"/>
+                    <circle cx="155" cy="18" r="4" fill="#e67e22"/>
+                    <circle cx="180" cy="12" r="4" fill="#e67e22"/>
+                    <text x="100" y="70" fill="#22c55e" font-size="9" text-anchor="middle">Points on line = Normal</text>
+                </svg>`
+            }
+        };
+
+        function explain(key) {
+            const item = generic_glossary[key];
+            if (item) {
+                document.getElementById('modalTitle').innerText = item.title;
+                let content = item.text;
+
+                // ADD VISUAL SVG
+                if (item.visual) {
+                    content += "<div style='margin-top:15px; padding:10px; background:rgba(0,0,0,0.3); border-radius:8px; text-align:center;'>" + item.visual + "</div>";
+                }
+
+                // DYNAMIC CONTEXT INJECTION
+                if (currentScenario && scenarios[currentScenario]) {
+                    // Check if specific context exists for the current Type (normal/skewed)
+                    const sceneData = scenarios[currentScenario][currentType];
+                    if (sceneData && sceneData.context && sceneData.context[key]) {
+                        content += "<div style='margin-top:10px; padding:10px; background:rgba(52, 152, 219, 0.1); border-left:3px solid #3498db; font-size:13px;'>" + sceneData.context[key] + "</div>";
+                    }
+                }
+
+                document.getElementById('modalContent').innerHTML = content;
+                document.getElementById('infoModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'infoModal' || e.type === 'click') {
+                document.getElementById('infoModal').style.display = 'none';
+            }
+            if (e.target.id === 'magnifyModal' || e.type === 'click') {
+                document.getElementById('magnifyModal').style.display = 'none';
+            }
+        }
+
+        function magnify(canvasId, title) {
+            const original = document.getElementById(canvasId);
+            const modalImg = document.getElementById('magnifyImg');
+            modalImg.src = original.toDataURL();
+            document.getElementById('magnifyTitle').innerText = title;
+            document.getElementById('magnifyModal').style.display = 'flex';
+        }
+
+        function downloadChart(canvasId, title) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = title.replace(/\s+/g, '_') + '_Chart.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+
+    <style>
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+            font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-val {
+            font-size: 26px;
+            font-weight: 700;
+            color: white;
+            margin: 8px 0;
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .interp-box {
+            background: rgba(46, 204, 113, 0.1);
+            border-left: 3px solid var(--success);
+            padding: 10px;
+            font-size: 14px;
+            margin-top: 10px;
+            border-radius: 4px;
+            color: #DDD;
+        }
+
+        .interp-warn {
+            background: rgba(231, 76, 60, 0.1);
+            border-left-color: var(--error);
+        }
+
+        .chart-card {
+            background: var(--surface-2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .chart-card:hover {
+            border-color: var(--accent);
+        }
+
+        .chart-help-icon {
+            background: rgba(255, 107, 53, 0.2);
+            color: var(--accent);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: help;
+            margin-left: 5px;
+            position: relative;
+        }
+
+        .chart-help-tooltip {
+            display: none;
+            position: absolute;
+            top: 25px;
+            left: 0;
+            width: 250px;
+            background: #0f172a;
+            border: 1px solid var(--accent);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            line-height: 1.5;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .chart-help-icon:hover .chart-help-tooltip {
+            display: block;
+        }
+
+        .chart-container {
+            height: 250px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .magnify-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 8px;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        .magnify-btn:hover {
+            color: white;
+            background: var(--primary);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 24px;
+        }
+
+        .active-btn {
+            border: 1px solid white !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Select Dropdown */
+        .scenario-select {
+            width: 100%;
+            padding: 10px;
+            background: var(--surface-2);
+            color: white;
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .scenario-select option {
+            background: var(--surface-1);
+            color: white;
+        }
+
+        /* Help Panel */
+        .help-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .help-btn:hover {
+            transform: scale(1.1);
+            background: #fff;
+            color: var(--accent);
+        }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON v1.1 */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #FF6B35, #FCA311) !important;
+            color: #000 !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(255, 107, 53, 0.8), 0 0 50px rgba(252, 163, 17, 0.3); }
+            100% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: scale(1.05) translateY(-5px);
+            filter: brightness(1.1);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        .slide-panel {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 450px;
+            height: 100vh;
+            background: var(--surface-1);
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            transition: 0.4s;
+            overflow-y: auto;
+            padding: 30px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slide-panel.open {
+            right: 0;
+        }
+
+        .slide-close {
+            font-size: 24px;
+            cursor: pointer;
+            float: right;
+            color: var(--text-secondary);
+        }
+
+        .story-step {
+            border-left: 2px solid var(--accent);
+            padding-left: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        /* PROFESSIONAL PRINT STYLES */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background: white !important;
+                color: #333 !important;
+                font-size: 11pt;
+                padding: 0;
+                margin: 0;
+            }
+
+            .app-nav-bar,
+            .help-btn,
+            .slide-panel,
+            .modal-overlay,
+            .btn,
+            .scenario-select,
+            .chart-controls,
+            .intro-grid,
+            .chart-help-icon,
+            #slidePanel,
+            .print-section button,
+            .print-section .data-progress-bar,
+            .print-section input[type="text"] {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .card,
+            .chart-card,
+            .stat-box {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+
+            h1,
+            h2,
+            h3 {
+                color: #1a1a1a !important;
+                page-break-after: avoid;
+            }
+
+            /* PRINT HEADER */
+            .print-header {
+                display: block !important;
+                background: linear-gradient(135deg, #1e3a5f, #0f172a);
+                color: white;
+                padding: 20px;
+                margin-bottom: 20px;
+                border-radius: 0;
+            }
+
+            .print-header h1 {
+                color: white !important;
+                margin: 0;
+                font-size: 20pt;
+            }
+
+            .print-header .report-meta {
+                font-size: 10pt;
+                margin-top: 10px;
+                opacity: 0.9;
+            }
+
+            /* STATS GRID */
+            .stats-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            .stat-box {
+                background: #f8f9fa !important;
+                padding: 12px !important;
+                border: 1px solid #e0e0e0 !important;
+            }
+
+            .stat-label {
+                color: #666 !important;
+                font-size: 9pt !important;
+            }
+
+            .stat-val {
+                color: #1a1a1a !important;
+                font-size: 14pt !important;
+            }
+
+            .stat-sub {
+                color: #888 !important;
+            }
+
+            /* CHARTS */
+            .chart-card {
+                background: #f8f9fa !important;
+                page-break-inside: avoid;
+                margin-bottom: 15px;
+            }
+
+            .chart-container {
+                height: 200px !important;
+                background: white !important;
+            }
+
+            .interp-box {
+                background: #e8f5e9 !important;
+                border-left-color: #4caf50 !important;
+                color: #333 !important;
+                font-size: 9pt;
+            }
+
+            .interp-warn {
+                background: #ffebee !important;
+                border-left-color: #f44336 !important;
+            }
+
+            /* AI SUMMARY */
+            #aiOutput {
+                background: #f5f5f5 !important;
+                border: 1px solid #ddd !important;
+            }
+
+            #ai-results table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            #ai-results td {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                color: #333 !important;
+                padding: 8px !important;
+            }
+
+            #sum-verdict {
+                background: #f8f9fa !important;
+                border: 2px solid #4caf50 !important;
+            }
+
+            #sum-verdict-text {
+                color: #333 !important;
+            }
+
+            /* PAGE FOOTER */
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+        }
+
+        /* PREMIUM COMPONENTS */
+        .premium-input {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 8px !important;
+            padding: 12px 16px !important;
+            color: white !important;
+            font-size: 15px !important;
+            transition: all 0.3s !important;
+        }
+
+        .premium-input:focus {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
+        }
+
+        .ai-coach-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-family: 'Orbitron';
+            font-size: 11px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-coach-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+        }
+
+        .workspace-footer {
+            margin-top: 30px;
+            padding: 20px 30px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-radius: 12px;
+        }
+
+        .footer-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-print {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        /* PRINT HEADER (Hidden on screen) */
+        .print-header {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="app-nav-bar">
+        <div class="nav-left">
+            <a href="Stats_Calculator_Main.html" class="nav-logo">⚡ Lean Studio</a>
+            <a href="Tool_WorkflowHub.html" class="nav-link">Workflow Guide</a>
+            <a href="Stats_Calculator_Main.html" class="nav-link">Stats Engine</a>
+        </div>
+        <div class="nav-right">
+            <a href="Stats_Calculator_Main.html" class="nav-btn-back">← Dashboard</a>
+        </div>
+    </nav>
+
+    <div id="slidePanel" class="slide-panel">
+        <span class="slide-close"
+            onclick="document.getElementById('slidePanel').classList.toggle('open')">&times;</span>
+        <h2 style="color:var(--accent);">📈 Descriptive Statistics Guide</h2>
+        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Understand the true nature of your
+            data: Center, Spread, and Shape.</p>
+
+        <!-- SECTION 1: CENTRAL TENDENCY -->
+        <div style="margin-bottom:30px; border-bottom:1px solid #444; padding-bottom:20px;">
+            <h3 style="color:var(--accent); display:flex; align-items:center;">
+                <span style="background:#333; padding:5px; border-radius:4px; margin-right:10px;">🎯</span>
+                Center (Tendency)
+            </h3>
+            <div class="story-step"><strong>What:</strong> Where is the "middle" of the data? (Mean, Median, Mode).
+            </div>
+
+            <h4 style="color:#f1c40f; margin-top:15px; font-size:14px;">How to Interpret:</h4>
+            <ol style="font-size:13px; color:#ccc; padding-left:20px; line-height:1.6;">
+                <li><strong>Mean (Average):</strong> Sum / Count. Best for Normal Data.</li>
+                <li><strong>Median (Middle):</strong> The exact middle value. Best for Skewed Data (e.g., Salaries).
+                </li>
+                <li><strong>Comparison:</strong> If Mean > Median, data is skewed Right (Positive). If Mean < Median,
+                        Skewed Left.</li>
+            </ol>
+
+            <div
+                style="margin-top:10px; background:rgba(231, 76, 60, 0.1); border-left:3px solid #e74c3c; padding:10px; font-size:12px;">
+                <strong>⚠️ Important Consideration:</strong> Outliers pull the Mean aggressively. Never trust the
+                Average alone if you have extreme values.
+            </div>
+        </div>
+
+        <!-- SECTION 2: SPREAD / VARIATION -->
+        <div style="margin-bottom:30px; border-bottom:1px solid #444; padding-bottom:20px;">
+            <h3 style="color:var(--accent); display:flex; align-items:center;">
+                <span style="background:#333; padding:5px; border-radius:4px; margin-right:10px;">📏</span>
+                Spread (Variation)
+            </h3>
+            <div class="story-step"><strong>What:</strong> How consistent is the process? (Std Dev, Range, Variance).
+            </div>
+
+            <h4 style="color:#f1c40f; margin-top:15px; font-size:14px;">How to Interpret:</h4>
+            <ol style="font-size:13px; color:#ccc; padding-left:20px; line-height:1.6;">
+                <li><strong>Std Dev (σ):</strong> Average distance of points from the center. Low = Consistent.</li>
+                <li><strong>Range:</strong> Max - Min. A quick check for extremes.</li>
+                <li><strong>CV (Coeff of Var):</strong> (StdDev / Mean). Allows you to compare variation between
+                    different units (e.g., Meters vs Kg).</li>
+            </ol>
+
+            <div
+                style="margin-top:10px; background:rgba(231, 76, 60, 0.1); border-left:3px solid #e74c3c; padding:10px; font-size:12px;">
+                <strong>⚠️ Important Consideration:</strong> A process can be "On Target" (Good Mean) but "High
+                Variation" (Bad Std Dev). Use the Histogram to see the width.
+            </div>
+        </div>
+
+        <!-- SECTION 3: NORMALITY & SHAPE -->
+        <div style="margin-bottom:30px;">
+            <h3 style="color:var(--accent); display:flex; align-items:center;">
+                <span style="background:#333; padding:5px; border-radius:4px; margin-right:10px;">🔔</span>
+                Normality & Shape
+            </h3>
+            <div class="story-step"><strong>What:</strong> Does the data follow the Bell Curve? (Anderson-Darling Test).
+            </div>
+
+            <h4 style="color:#f1c40f; margin-top:15px; font-size:14px;">How to Interpret:</h4>
+            <ol style="font-size:13px; color:#ccc; padding-left:20px; line-height:1.6;">
+                <li><strong>P-Value:</strong> If P < 0.05, data is NOT Normal (Reject Null Hypothesis).</li>
+                <li><strong>Skewness:</strong> 0 = Symmetrical. +/- 0.5 is fairly symmetrical. +/- 1.0 is highly skewed.
+                </li>
+                <li><strong>Kurtosis:</strong> Measures the "Peak". High Kurtosis = Sharp peak (Leptokurtic).</li>
+            </ol>
+            <div
+                style="margin-top:10px; background:rgba(231, 76, 60, 0.1); border-left:3px solid #e74c3c; padding:10px; font-size:12px;">
+                <strong>⚠️ Important Consideration:</strong> Most Stats Tests (T-Test, ANOVA, Cp/Cpk) ASSUME Normality.
+                If P < 0.05, you must transform data or use Non-Parametric tests. </div>
+            </div>
+
+            <!-- REAL WORLD & ROLES -->
+            <div style="margin-top:30px; padding-top:20px; border-top:2px solid #555;">
+                <h3 style="color:#fff;">Strict Role Definitions</h3>
+                <ul style="font-size:12px; color:#aaa; list-style:none; padding:0;">
+                    <li style="margin-bottom:8px;">🟢 <strong>Green Belt:</strong> Collects 30+ samples and checks
+                        Normality.</li>
+                    <li style="margin-bottom:8px;">⚫ <strong>Black Belt:</strong> Analyses Non-Normal data using
+                        Transformations (Box-Cox).</li>
+                    <li style="margin-bottom:8px;">👮 <strong>Process Owner:</strong> Uses Control Charts (Mean) for
+                        daily monitoring.</li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <!-- HEADER -->
+            <div class="flex-between" style="margin-bottom: 20px;">
+                <div>
+                    <div class="flex-between"
+                        style="background:#0f172a; padding:30px; border-radius:12px; border:1px solid #1e293b; margin-bottom:30px;">
+                        <div>
+                            <span
+                                style="background:#2563eb; color:white; padding:4px 12px; border-radius:6px; font-size:12px; font-weight:bold; text-transform:uppercase;">PHASE:
+                                ANALYZE</span>
+                            <div style="height: 10px;"></div>
+                            <h1 style="margin:0; font-family:'Orbitron',sans-serif; font-size:32px; color:white;">
+                                Descriptive Statistics <span class="ai-badge">AI ENABLED</span></h1>
+                            <p style="color: #94a3b8; font-style:italic; font-size:14px; margin-top:5px;">Master Your
+                                Data. Start Summarizing. Reveal the "Unknowns".</p>
+                        </div>
+                        <div style="text-align: right; display: flex; flex-direction: column; gap: 15px; align-items: flex-end;">
+                            <button class="architecture-intelligence-btn" onclick="toggleSlidePanel()">
+                                <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+                            </button>
+                                            <div style="background:var(--surface-2); padding:5px; border-radius:50px; border:1px solid var(--glass-border); display:flex; gap:5px; margin-right: 15px; display: inline-flex;">
+                    
+                    <button onclick="setTheme('twilight')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Twilight Mode"><i class="fas fa-moon"></i></button>
+                    <button onclick="setTheme('night')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Futuristic Dark (Night)"><i class="fas fa-space-shuttle"></i></button>
+                </div><button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'"
+                                style="border:1px solid rgba(255,255,255,0.1);">
+                                <i class="fas fa-th"></i> DASHBOARD
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- EDUCATIONAL GRID -->
+                    <div class="intro-grid">
+                        <div class="intro-card">
+                            <div class="intro-title">🔍 What Is It?</div>
+                            <div class="intro-text">Summarizes the central tendency (Mean) and spread (Std Dev) of a
+                                dataset.</div>
+                        </div>
+                        <div class="intro-card">
+                            <div class="intro-title">⏱️ When To Use?</div>
+                            <div class="intro-text">At the start of ANY analysis to check data quality, normality, and
+                                outliers.
+                            </div>
+                        </div>
+                        <div class="intro-card">
+                            <div class="intro-title">💡 Why Use It?</div>
+                            <div class="intro-text">You can't fix a process you don't understand. Converts raw numbers
+                                into
+                                shapes.
+                            </div>
+                        </div>
+                        <div class="intro-card">
+                            <div class="intro-title">📋 Key Metrics</div>
+                            <div class="intro-text">Mean (Center), Std Dev (Spread), Skewness (Shape), Kurtosis
+                                (Peakedness).</div>
+                        </div>
+                        <div class="intro-card">
+                            <div class="intro-title">📐 Confidence Interval</div>
+                            <div class="intro-text">The range where the "True Mean" likely exists (at 95% confidence).
+                            </div>
+                        </div>
+                        <div class="intro-card">
+                            <div class="intro-title">🧠 Normality Test</div>
+                            <div class="intro-text">Checks if data follows the Bell Curve. Required for many hypothesis
+                                tests.</div>
+                        </div>
+                        <div class="intro-card">
+                            <div class="intro-title">🎯 Reference Values</div>
+                            <div class="intro-text">Normal Skewness = ±0.5. Outliers > 1.5*IQR. P-Value < 0.05=Not
+                                    Normal.</div>
+                            </div>
+                            <div class="intro-card intro-card-phase">
+                                <div class="intro-title">🚀 Phase Relevance</div>
+                                <div class="intro-text">Measure Phase Baseline. Analysis Phase Characterization.</div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 20px; align-items: start;">
+                            <div class="card input-data-card shrunk">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="margin: 0;">1. Input Data</h3>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <label
+                                            style="font-size:12px; color:var(--text-secondary); margin-bottom: 0;">Select
+                                            Scenario:</label>
+                                        <select id="scenarioSelect" class="premium-input" onchange="loadScenario()"
+                                            style="margin: 0; width: 220px; height: 45px;">
+                                            <option value="">-- Custom Input --</option>
+                                            <option value="manufacturing">⚙️ Manufacturing (Pistons)</option>
+                                            <option value="healthcare">🏥 Healthcare (Wait Times)</option>
+                                            <option value="med_vitals">🏥 Med: Patient BP</option>
+                                            <option value="med_lab">🏥 Med: Lab TAT</option>
+                                            <option value="med_response">🏥 Med: Nurse Call</option>
+                                            <option value="med_pharmacy">🏥 Med: Pharmacy</option>
+                                            <option value="med_surgical">🏥 Med: OR Setup</option>
+                                            <option value="service">🎧 Service (Call Center)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                                    <div>
+                                        <textarea id="dataInput" rows="5" class="premium-input"
+                                            style="width: 100%; font-family: monospace; font-size: 14px;"
+                                            placeholder="10.5, 11.2, 10.8..."></textarea>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                                        <div id="scenarioDesc"
+                                            style="font-size: 13px; color: var(--accent); min-height: 35px; line-height: 1.4;">
+                                            Select a scenario to load example data or type your own.
+                                        </div>
+                                        <div style="display: flex; gap: 10px;">
+                                            <button id="btnNormal" class="btn btn-ghost"
+                                                style="flex:1; font-size:12px; color: var(--success);"
+                                                onclick="toggleType('normal')">🟢 Normal</button>
+                                            <button id="btnSkewed" class="btn btn-ghost"
+                                                style="flex:1; font-size:12px; color: var(--error);"
+                                                onclick="toggleType('skewed')">🔴 Skewed</button>
+                                        </div>
+                                        <div style="display: flex; gap: 10px;">
+                                            <button class="btn btn-ghost" style="flex: 1; font-size:11px;"
+                                                onclick="autoFixData()">✨ Auto-Fix</button>
+                                            <button class="btn btn-primary" onclick="calcStats()"
+                                                style="flex: 1; justify-content: center;">🚀 Calculate</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RESULTS PANEL: GRID OF STATS -->
+                            <div id="resultsPanel" style="display:none; width: 100%;">
+                                <!-- PRINT HEADER (Only shows on print) -->
+                                <div class="print-header">
+                                    <h1>📊 Descriptive Statistics Report</h1>
+                                    <div class="report-meta">
+                                        <div>Generated: <span id="print-date">--</span></div>
+                                        <div>Created By: <span id="print-created-by">--</span></div>
+                                        <div>Scenario: <span id="print-scenario">Custom Data</span></div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                                    <!-- SECTION 1: CENTRAL TENDENCY & SPREAD -->
+                                    <div>
+                                        <div class="flex-between" style="margin-bottom: 15px;">
+                                            <h3 style="margin: 0;">2. Key Statistics</h3>
+                                            <button class="ai-coach-btn" onclick="askAICoach()" id="aiBtn">
+                                                <i class="fas fa-robot"></i> Ask Gemini Coach
+                                            </button>
+                                        </div>
+                                        <div class="stats-grid">
+                                            <div class="stat-box" onclick="explain('count')">
+                                                <div class="stat-label">Count (N)</div>
+                                                <div class="stat-val" id="resN">-</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('mean')">
+                                                <div class="stat-label">Mean (Avg)</div>
+                                                <div class="stat-val" id="resMean">-</div>
+                                                <div class="stat-sub" id="resCI">± 0.00</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('median')">
+                                                <div class="stat-label">Median</div>
+                                                <div class="stat-val" id="resMedian">-</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('stdDev')">
+                                                <div class="stat-label">Std Dev (σ)</div>
+                                                <div class="stat-val" id="resStdDev">-</div>
+                                                <div class="stat-sub" id="resVar">Var: -</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('range')">
+                                                <div class="stat-label">Range</div>
+                                                <div class="stat-val" id="resRange">-</div>
+                                                <div class="stat-sub" id="resMinMax">Min-Max</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('cv')">
+                                                <div class="stat-label">CV %</div>
+                                                <div class="stat-val" id="resCV">-</div>
+                                                <div class="stat-sub">Variation</div>
+                                            </div>
+                                            <div class="stat-box" id="modeBox">
+                                                <div class="stat-label">Mode</div>
+                                                <div class="stat-val" id="resMode" style="font-size: 18px;">-</div>
+                                                <div class="stat-sub">Frequency</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- SECTION 2: SHAPE & NORMALITY -->
+                                    <div>
+                                        <h3>3. Shape & Normality</h3>
+                                        <div class="stats-grid">
+                                            <div class="stat-box" onclick="explain('skew')">
+                                                <div class="stat-label">Skewness</div>
+                                                <div class="stat-val" id="resSkew">-</div>
+                                                <div class="stat-sub" id="skewDesc">Normal</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('kurt')">
+                                                <div class="stat-label">Kurtosis</div>
+                                                <div class="stat-val" id="resKurt">-</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('ad')">
+                                                <div class="stat-label">Normality</div>
+                                                <div class="stat-val" id="resAD" style="font-size: 18px;">-</div>
+                                                <div class="stat-sub" id="resP">P-Value: -</div>
+                                            </div>
+                                            <div class="stat-box" onclick="explain('outlier')">
+                                                <div class="stat-label">Outliers</div>
+                                                <div class="stat-val" id="resOutliers">-</div>
+                                                <div class="stat-sub">IQR Method</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SECTION 3: GRAPHS -->
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                    <div class="chart-card">
+                                        <div class="flex-between">
+                                            <div
+                                                style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center;">
+                                                Histogram (Frequency Distribution)
+                                                <span class="chart-help-icon">?
+                                                    <div class="chart-help-tooltip">
+                                                        <b>📊 Histogram</b><br><br>
+                                                        <b>What:</b> Shows how data is distributed across value ranges
+                                                        (bins).<br><br>
+                                                        <b>Look For:</b><br>
+                                                        • <b>Bell Shape:</b> Normal distribution<br>
+                                                        • <b>Skewed Left/Right:</b> Data piled on one side<br>
+                                                        • <b>Multiple Peaks:</b> Mixed populations<br><br>
+                                                        <b>Yellow Line:</b> Normal curve overlay for comparison.
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="chart-controls">
+                                            <div class="control-btn" onclick="magnify('histoCanvas', 'Histogram')">🔍
+                                            </div>
+                                            <div class="control-btn"
+                                                onclick="downloadChart('histoCanvas', 'Histogram')">⬇️
+                                            </div>
+                                        </div>
+                                        <div class="chart-container"><canvas id="histoCanvas"></canvas></div>
+                                        <div class="interp-box" id="interpHisto" onclick="explain('histo')"
+                                            style="cursor:help;">
+                                            Interpretation Loading...</div>
+                                    </div>
+                                    <!-- BOX PLOT -->
+                                    <div class="chart-card">
+                                        <div class="flex-between">
+                                            <div
+                                                style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center;">
+                                                Box Plot (Spread & Outliers)
+                                                <span class="chart-help-icon">?
+                                                    <div class="chart-help-tooltip">
+                                                        <b>📦 Box Plot</b><br><br>
+                                                        <b>What:</b> Shows spread, center, and outliers at a
+                                                        glance.<br><br>
+                                                        <b>Anatomy:</b><br>
+                                                        • <b>Box:</b> Middle 50% (IQR)<br>
+                                                        • <b>Line in Box:</b> Median<br>
+                                                        • <b>Whiskers:</b> Range (excl. outliers)<br>
+                                                        • <b>Stars/Dots:</b> Outliers (> 1.5×IQR)<br><br>
+                                                        <b>Best For:</b> Comparing groups or spotting extreme values.
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="chart-controls">
+                                            <div class="control-btn" onclick="magnify('boxCanvasRaw', 'Box Plot')">🔍
+                                            </div>
+                                            <div class="control-btn"
+                                                onclick="downloadChart('boxCanvasRaw', 'Box Plot')">⬇️
+                                            </div>
+                                        </div>
+                                        <div class="chart-container" style="background: rgba(0,0,0,0.3);">
+                                            <canvas id="boxCanvasRaw"></canvas>
+                                        </div>
+                                        <div class="interp-box" id="interpBox" onclick="explain('box')"
+                                            style="cursor:help;">
+                                            Interpretation Loading...</div>
+                                    </div>
+                                    <div class="chart-card">
+                                        <div class="flex-between">
+                                            <div
+                                                style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center;">
+                                                Run Chart (Moving Average / Trend)
+                                                <span class="chart-help-icon">?
+                                                    <div class="chart-help-tooltip">
+                                                        <b>📉 Run Chart</b><br><br>
+                                                        <b>What:</b> Shows data points in time order to detect
+                                                        patterns.<br><br>
+                                                        <b>Look For:</b><br>
+                                                        • <b>Trend:</b> Data going up/down over time<br>
+                                                        • <b>Shift:</b> Sudden jump in level<br>
+                                                        • <b>Cycles:</b> Repeating patterns<br>
+                                                        • <b>Random:</b> Points scattered around mean (stable)<br><br>
+                                                        <b>Dashed Line:</b> Mean reference line.
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="chart-controls">
+                                            <div class="control-btn" onclick="magnify('runCanvas', 'Run Chart')">🔍
+                                            </div>
+                                            <div class="control-btn" onclick="downloadChart('runCanvas', 'Run Chart')">
+                                                ⬇️
+                                            </div>
+                                        </div>
+                                        <div class="chart-container"><canvas id="runCanvas"></canvas></div>
+                                        <div class="interp-box" id="interpRun" onclick="explain('run')"
+                                            style="cursor:help;">
+                                            Interpretation Loading...</div>
+                                    </div>
+                                    <div class="chart-card">
+                                        <div class="flex-between">
+                                            <div
+                                                style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center;">
+                                                Normal Probability Plot
+                                                <span class="chart-help-icon">?
+                                                    <div class="chart-help-tooltip">
+                                                        <b>📈 Normal Probability Plot (QQ)</b><br><br>
+                                                        <b>What:</b> Visual test for normality. Plots data vs
+                                                        theoretical normal quantiles.<br><br>
+                                                        <b>Interpretation:</b><br>
+                                                        • <b>Straight Line:</b> Data is Normal ✅<br>
+                                                        • <b>S-Shape:</b> Heavy or light tails<br>
+                                                        • <b>Banana Curve:</b> Skewed data<br><br>
+                                                        <b>Use When:</b> Confirming assumptions for T-tests, ANOVA, etc.
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="chart-controls">
+                                            <div class="control-btn" onclick="magnify('qqCanvas', 'QQ Plot')">🔍</div>
+                                            <div class="control-btn" onclick="downloadChart('qqCanvas', 'QQ Plot')">⬇️
+                                            </div>
+                                        </div>
+                                        <div class="chart-container"><canvas id="qqCanvas"></canvas></div>
+                                        <div class="interp-box" id="interpQQ" onclick="explain('qq')"
+                                            style="cursor:help;">
+                                            Interpretation Loading...</div>
+                                    </div>
+                                </div>
+
+                                <!-- STANDARDIZED FOOTER -->
+                                <div class="workspace-footer no-print">
+                                    <div class="footer-input-group">
+                                        <i class="fas fa-user" style="color:#64748b; font-size:12px;"></i>
+                                        <input type="text" id="userNameFooter" class="footer-input"
+                                            placeholder="Enter Your Name"
+                                            oninput="document.getElementById('createdBy').value = this.value; updateCreatedBy();">
+                                    </div>
+                                    <button class="action-btn btn-save" onclick="saveAndEvaluate()">
+                                        <i class="fas fa-save"></i> Save & Evaluate
+                                    </button>
+                                    <button class="action-btn btn-print" onclick="printReport()">
+                                        <i class="fas fa-print"></i> Print Report
+                                    </button>
+                                    <div style="margin-left: auto; display: flex; align-items: center; gap: 15px;">
+                                        <div style="width: 1px; height: 35px; background: rgba(255,255,255,0.1);"></div>
+                                        <img src="images/hql_logo_footer.png"
+                                            style="height: 48px; opacity: 0.9; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));"
+                                            alt="HQL Logo">
+                                    </div>
+                                </div>
+
+                                <div style="margin: 30px 0;">
+                                    <div
+                                        style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:5px; color:#94a3b8;">
+                                        <span>ANALYSIS COMPLETION</span>
+                                        <span id="progressText">0%</span>
+                                    </div>
+                                    <div
+                                        style="width:100%; background:#0f172a; height:6px; border-radius:3px; overflow:hidden;">
+                                        <div id="progressBar"
+                                            style="width:0%; height:100%; background:#10b981; transition:width 0.3s;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" id="createdBy">
+                                <div id="data-progress-bar" style="display:none;"></div>
+                                <div id="progress-text" style="display:none;"></div>
+
+                                <!-- AI EXECUTIVE SUMMARY - SPSS/MINITAB STYLE -->
+                                <div class="card"
+                                    style="margin-top: 20px; border: 2px solid #334155; background: #0f172a; font-family: 'Consolas', 'Courier New', monospace;">
+                                    <!-- HEADER BAR -->
+                                    <div
+                                        style="background: linear-gradient(90deg, #1e3a5f, #0f172a); padding: 12px 15px; margin: -20px -20px 15px -20px; border-radius: 8px 8px 0 0; border-bottom: 2px solid #3b82f6;">
+                                        <div
+                                            style="display: flex; justify-content: space-between; align-items: center;">
+                                            <h3
+                                                style="margin: 0; color: #60a5fa; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;">
+                                                📋 Statistical Analysis Report</h3>
+                                            <span style="font-size: 11px; color: #94a3b8;">Auto-Generated Summary</span>
+                                        </div>
+                                    </div>
+
+                                    <div id="aiOutput" style="font-size: 13px; color: #e2e8f0;">
+                                        <div id="ai-default" style="padding: 20px; text-align: center; color: #64748b;">
+                                            <div style="font-size: 40px; margin-bottom: 10px;">📈</div>
+                                            Run the analysis to generate an automated statistical summary.
+                                        </div>
+                                        <div id="ai-results" style="display: none;">
+                                            <!-- EXECUTIVE SUMMARY TABLE -->
+                                            <div style="margin-bottom: 15px;">
+                                                <div
+                                                    style="font-size: 11px; color: #60a5fa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px;">
+                                                    Executive Summary</div>
+                                                <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                                                    <tr style="background: #1e293b;">
+                                                        <td
+                                                            style="padding: 8px; border: 1px solid #334155; width: 30%;">
+                                                            Data Quality</td>
+                                                        <td id="sum-quality"
+                                                            style="padding: 8px; border: 1px solid #334155;">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding: 8px; border: 1px solid #334155;">Central
+                                                            Tendency</td>
+                                                        <td id="sum-center"
+                                                            style="padding: 8px; border: 1px solid #334155;">-</td>
+                                                    </tr>
+                                                    <tr style="background: #1e293b;">
+                                                        <td style="padding: 8px; border: 1px solid #334155;">Variation
+                                                            Assessment</td>
+                                                        <td id="sum-variation"
+                                                            style="padding: 8px; border: 1px solid #334155;">-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding: 8px; border: 1px solid #334155;">Normality
+                                                            Status</td>
+                                                        <td id="sum-normality"
+                                                            style="padding: 8px; border: 1px solid #334155;">-</td>
+                                                    </tr>
+                                                    <tr style="background: #1e293b;">
+                                                        <td style="padding: 8px; border: 1px solid #334155;">Outlier
+                                                            Detection</td>
+                                                        <td id="sum-outliers"
+                                                            style="padding: 8px; border: 1px solid #334155;">-</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <!-- VERDICT -->
+                                            <div id="sum-verdict"
+                                                style="background: linear-gradient(135deg, rgba(30,58,95,0.8), rgba(15,23,42,0.9)); border: 2px solid #22c55e; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                                                <div
+                                                    style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <div>
+                                                        <div
+                                                            style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
+                                                            Analysis Verdict</div>
+                                                        <div id="sum-verdict-text"
+                                                            style="font-size: 16px; font-weight: bold; margin-top: 4px; color: #22c55e;">
+                                                            --</div>
+                                                    </div>
+                                                    <div id="sum-verdict-icon" style="font-size: 40px;">✅</div>
+                                                </div>
+                                            </div>
+                                            <!-- RECOMMENDED CHART -->
+                                            <div
+                                                style="font-size: 11px; color: #60a5fa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px;">
+                                                Recommended Visualization</div>
+                                            <div id="sum-chart-rec"
+                                                style="padding: 10px; background: rgba(0,0,0,0.3); border-radius: 6px; font-size: 12px;">
+                                                -</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EXPLANATION MODAL -->
+                        <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+                            <div class="modal-box">
+                                <span class="close-btn"
+                                    onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+                                <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
+                                <p id="modalContent"
+                                    style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">
+                                    Content...
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- MAGNIFY MODAL -->
+                        <div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
+                            <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
+                                <span class="close-btn"
+                                    onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+                                <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
+                                <img id="magnifyImg"
+                                    style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+                            </div>
+                        </div>
+
+                        <script>
+                            let histoChart, runChart, qqChart;
+
+                            function toggleType(type) {
+                                currentType = type;
+
+                                // Visual feedback on buttons
+                                document.getElementById('btnNormal').classList.remove('active-btn');
+                                document.getElementById('btnSkewed').classList.remove('active-btn');
+                                if (type === 'normal') document.getElementById('btnNormal').classList.add('active-btn');
+                                else document.getElementById('btnSkewed').classList.add('active-btn');
+
+                                if (currentScenario) {
+                                    // Load the specific scenario variant
+                                    const s = scenarios[currentScenario][type];
+                                    document.getElementById('dataInput').value = s.data;
+                                    document.getElementById('scenarioDesc').innerHTML = s.desc;
+                                    calcStats();
+                                } else {
+                                    // Load generic fallback
+                                    loadGenericExample(type);
+                                }
+                            }
+
+                            function loadScenario() {
+                                const sel = document.getElementById('scenarioSelect').value;
+                                currentScenario = sel;
+                                // Default to normal when switching scenarios
+                                toggleType('normal');
+
+                                if (!sel) {
+                                    currentScenario = null;
+                                    document.getElementById('dataInput').value = "";
+                                    document.getElementById('scenarioDesc').innerHTML = "Custom Input Scenarios.";
+                                    document.getElementById('resultsPanel').style.display = 'none';
+                                }
+                            }
+
+                            function loadGenericExample(type) {
+                                document.getElementById('scenarioDesc').innerHTML = "Reflecting on " + type.charAt(0).toUpperCase() + type.slice(1) + " Data (Generic)";
+                                if (type === 'normal') {
+                                    document.getElementById('dataInput').value = "10, 12, 11, 13, 10, 11, 12, 14, 11, 12, 13, 12, 11, 10, 12, 13, 11, 12, 12, 11";
+                                } else {
+                                    document.getElementById('dataInput').value = "5, 5, 5, 6, 5, 6, 5, 5, 20, 22, 5, 6, 5, 5, 6, 7, 5, 5";
+                                }
+                                calcStats();
+                            }
+
+                            function autoFixData() {
+                                let val = document.getElementById('dataInput').value;
+                                val = val.replace(/,/g, '\n').split('\n').filter(x => x.trim() !== '' && !isNaN(x)).join(', ');
+                                document.getElementById('dataInput').value = val;
+                            }
+
+                            function calcStats() {
+                                let raw = document.getElementById('dataInput').value;
+                                let data = raw.replace(/\n/g, ',').split(',').map(x => parseFloat(x)).filter(x => !isNaN(x));
+
+                                if (data.length < 3) { alert("Please enter at least 3 numbers for a valid statistical audit."); return; }
+
+                                const n = data.length;
+                                const sum = data.reduce((a, b) => a + b, 0);
+                                const mean = sum / n;
+                                const sorted = [...data].sort((a, b) => a - b);
+                                
+                                // Central Tendency
+                                const median = jStat.percentile(data, 0.50);
+                                
+                                // Mode calculation (Multi-modal support)
+                                const counts = {};
+                                data.forEach(v => counts[v] = (counts[v] || 0) + 1);
+                                let maxFreq = 0;
+                                for (let v in counts) if (counts[v] > maxFreq) maxFreq = counts[v];
+                                let modes = [];
+                                for (let v in counts) if (counts[v] === maxFreq) modes.push(Number(v));
+                                const modeDisplay = (maxFreq === 1 || modes.length === n) ? "None" : modes.join(", ");
+
+                                // Variation & Precision
+                                const variance = data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (n - 1);
+                                const stdDev = Math.sqrt(variance);
+                                const cv = (stdDev / mean) * 100;
+                                
+                                // Exact Confidence Interval (95% T-distribution)
+                                const se = stdDev / Math.sqrt(n);
+                                const tCrit = jStat.studentt.inv(0.975, n - 1);
+                                const ci = tCrit * se;
+
+                                // High Precision Shape (Sample Adjusted Fisher-Pearson)
+                                let skew = 0, kurt = 0;
+                                if (n > 2) {
+                                    const m3 = data.reduce((a, b) => a + Math.pow(b - mean, 3), 0) / n;
+                                    const m2 = variance * (n - 1) / n;
+                                    const g1 = m3 / Math.pow(m2, 1.5);
+                                    skew = (Math.sqrt(n * (n - 1)) / (n - 2)) * g1;
+                                }
+                                if (n > 3) {
+                                    const m4 = data.reduce((a, b) => a + Math.pow(b - mean, 4), 0) / n;
+                                    const m2 = variance * (n - 1) / n;
+                                    const g2 = (m4 / Math.pow(m2, 2)) - 3;
+                                    kurt = ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * g2 + 6);
+                                }
+
+                                // Robust Normality Inference
+                                const ses = Math.sqrt((6 * n * (n - 1)) / ((n - 2) * (n + 1) * (n + 3)));
+                                const zSkew = skew / ses;
+                                const pVal = Math.max(0.001, 2 * (1 - jStat.normal.cdf(Math.abs(zSkew), 0, 1)));
+
+                                // Outlier Audit (Tukey's Method)
+                                const q1 = jStat.percentile(data, 0.25);
+                                const q3 = jStat.percentile(data, 0.75);
+                                const iqr = q3 - q1;
+                                const lowFence = q1 - 1.5 * iqr;
+                                const highFence = q3 + 1.5 * iqr;
+                                const outliers = data.filter(x => x < lowFence || x > highFence);
+
+                                // Whiskers for Box Plot
+                                let whiskerLow = sorted.find(x => x >= lowFence) || sorted[0];
+                                let whiskerHigh = [...sorted].reverse().find(x => x <= highFence) || sorted[n - 1];
+
+                                // Dashboard Population
+                                document.getElementById('resultsPanel').style.display = 'block';
+                                document.getElementById('resN').innerText = n;
+                                document.getElementById('resMean').innerText = mean.toFixed(4);
+                                document.getElementById('resMedian').innerText = median.toFixed(4);
+                                document.getElementById('resMode').innerText = modeDisplay;
+                                document.getElementById('resCI').innerText = "± " + ci.toFixed(4) + " (95% T)";
+                                document.getElementById('resStdDev').innerText = stdDev.toFixed(4);
+                                document.getElementById('resVar').innerText = "V: " + variance.toFixed(4);
+                                document.getElementById('resCV').innerText = cv.toFixed(2) + "%";
+                                document.getElementById('resRange').innerText = (sorted[n - 1] - sorted[0]).toFixed(2);
+                                document.getElementById('resMinMax').innerText = sorted[0] + " to " + sorted[n - 1];
+                                document.getElementById('resSkew').innerText = skew.toFixed(3);
+                                document.getElementById('skewDesc').innerText = Math.abs(skew) < 0.5 ? "Symmetric" : (skew > 0 ? "Right Skew" : "Left Skew");
+                                document.getElementById('resKurt').innerText = kurt.toFixed(3);
+                                document.getElementById('resP').innerText = "P-Value: " + pVal.toFixed(3);
+                                document.getElementById('resAD').innerText = pVal < 0.05 ? "Significant Non-Normal" : "Normality Likely";
+                                document.getElementById('resAD').style.color = pVal < 0.05 ? "var(--error)" : "var(--success)";
+                                document.getElementById('resOutliers').innerText = outliers.length;
+                                document.getElementById('resOutliers').style.color = outliers.length > 0 ? "var(--error)" : "white";
+
+                                renderCharts(data, sorted, mean, stdDev, skew, outliers.length);
+                                drawHighResBoxPlot(sorted[0], q1, median, q3, sorted[n - 1], whiskerLow, whiskerHigh, outliers);
+                                updateInterpretations(mean, stdDev, skew, outliers.length, pVal, cv, kurt);
+                                generateAutoSummary(n, mean, median, stdDev, cv, skew, kurt, pVal, outliers.length);
+                                updateProgress(100);
+                            }
+
+                            function updateInterpretations(mean, std, skew, outCount, pVal, cv, kurt) { const scenarioContext = (currentScenario && scenarios[currentScenario][currentType].context) ? scenarios[currentScenario][currentType].context : null;
+                                let hText = Math.abs(skew) < 0.5 ? "The data appears <b>Symmetric (Normal)</b>. The Bell curve is centered." : (skew > 0 ? "The data is <b>Positively Skewed</b> (Tail to the right)." : "The data is <b>Negatively Skewed</b> (Tail to the left).");
+                                document.getElementById('interpHisto').innerHTML = hText;
+                                document.getElementById('interpHisto').className = Math.abs(skew) < 0.5 ? "interp-box" : "interp-box interp-warn";
+
+                                let bText = outCount === 0 ? "No statistical outliers detected." : `<b>Warning:</b> ${outCount} outliers detected. Investigate these points.`;
+                                document.getElementById('interpBox').innerHTML = bText;
+                                document.getElementById('interpBox').className = outCount === 0 ? "interp-box" : "interp-box interp-warn";
+
+                                let cvText = cv < 10 ? "<b>Low Variation:</b> (CV < 10%)." : (cv < 30 ? "<b>Moderate Variation.</b>" : "<b>High Variation (CV > 30%).</b>");
+                                document.getElementById('interpRun').innerHTML = "Check for trends. " + cvText;
+
+                                let qText = pVal > 0.05 ? "Points follow the line. <b>Assume Normality</b>." : "Points deviate. <b>Data is NOT Normal</b>.";
+                                document.getElementById('interpQQ').innerHTML = qText;
+                                document.getElementById('interpQQ').className = pVal > 0.05 ? "interp-box" : "interp-box interp-warn";
+                            }
+
+                            function renderCharts(data, sorted, mean, stdDev, skew, outCount) {
+                                // 1. Histogram
+                                const ctxH = document.getElementById('histoCanvas').getContext('2d');
+                                if (histoChart) histoChart.destroy();
+                                const min = sorted[0]; const max = sorted[sorted.length - 1];
+                                const numBins = 10; const binSize = (max - min) / numBins || 1;
+                                const bins = new Array(numBins).fill(0); const labels = []; const bellCurve = [];
+                                for (let i = 0; i < numBins; i++) {
+                                    const l = min + (i * binSize); const r = min + ((i + 1) * binSize);
+                                    labels.push(l.toFixed(1));
+                                    let count = 0; data.forEach(v => { if (v >= l && (i === numBins - 1 ? v <= r : v < r)) count++; });
+                                    bins[i] = count;
+                                    const pdf = jStat.normal.pdf(l + (binSize / 2), mean, stdDev);
+                                    bellCurve.push(pdf * data.length * binSize);
+                                }
+                                histoChart = new Chart(ctxH, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: labels,
+                                        datasets: [
+                                            { type: 'line', label: 'Normal Curve', data: bellCurve, borderColor: '#F1C40F', borderDash: [5, 5], borderWidth: 2, pointRadius: 0, tension: 0.4 },
+                                            { label: 'Actual Data', data: bins, backgroundColor: '#3498DB', borderRadius: 4 }
+                                        ]
+                                    },
+                                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } } }
+                                });
+
+                                // 3. Run Chart
+                                const ctxR = document.getElementById('runCanvas').getContext('2d');
+                                if (runChart) runChart.destroy();
+                                runChart = new Chart(ctxR, {
+                                    type: 'line',
+                                    data: {
+                                        labels: data.map((_, i) => i + 1),
+                                        datasets: [{ label: 'Value', data: data, borderColor: '#9B59B6', backgroundColor: 'rgba(155, 89, 182, 0.1)', tension: 0.1, pointRadius: 3 }, { label: 'Mean', data: new Array(data.length).fill(mean), borderColor: '#white', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 }]
+                                    },
+                                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                                });
+
+                                // 4. QQ Plot
+                                const ctxQ = document.getElementById('qqCanvas').getContext('2d');
+                                if (qqChart) qqChart.destroy();
+                                const qqData = sorted.map((val, i) => { const p = (i + 0.5) / sorted.length; const z = jStat.normal.inv(p, 0, 1); return { x: z, y: val }; });
+                                qqChart = new Chart(ctxQ, {
+                                    type: 'scatter',
+                                    data: { datasets: [{ label: 'Data Points', data: qqData, backgroundColor: '#E67E22' }] },
+                                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: 'Theoretical Quantiles (Z)' } }, y: { title: { display: true, text: 'Sample Data' } } }, plugins: { legend: { display: false } } }
+                                });
+                            }
+
+                            // CUSTOM TEXTBOOK STYLE BOX PLOT DRAWER
+                            function drawHighResBoxPlot(min, q1, med, q3, max, wLow, wHigh, outliers) {
+                                const cvs = document.getElementById('boxCanvasRaw');
+                                const ctx = cvs.getContext('2d');
+
+                                // Adjust resolution
+                                const dpr = window.devicePixelRatio || 1;
+                                const rect = cvs.parentElement.getBoundingClientRect();
+                                cvs.width = rect.width * dpr;
+                                cvs.height = rect.height * dpr;
+                                ctx.scale(dpr, dpr);
+
+                                // Colors
+                                const C_BOX = '#2ECC71'; const C_LINE = '#FFFFFF'; const C_TEXT = '#CCCCCC'; const C_OUTLIER = '#E74C3C';
+
+                                // Scale X
+                                const range = max - min;
+                                const padding = range * 0.1 || 1;
+                                const xMin = min - padding;
+                                const xMax = max + padding;
+                                const finalRange = xMax - xMin;
+
+                                function getX(val) {
+                                    return 40 + ((val - xMin) / finalRange) * (rect.width - 80);
+                                }
+
+                                const Y_MID = 80;
+                                const BOX_H = 60;
+                                const AXIS_Y = 160;
+
+                                ctx.clearRect(0, 0, rect.width, rect.height);
+
+                                // 1. Draw Axis
+                                ctx.beginPath();
+                                ctx.strokeStyle = C_TEXT; ctx.lineWidth = 1;
+                                ctx.moveTo(40, AXIS_Y); ctx.lineTo(rect.width - 40, AXIS_Y);
+                                ctx.stroke();
+
+                                // Arrows
+                                ctx.beginPath(); ctx.moveTo(rect.width - 45, AXIS_Y - 5); ctx.lineTo(rect.width - 40, AXIS_Y); ctx.lineTo(rect.width - 45, AXIS_Y + 5); ctx.stroke();
+                                ctx.beginPath(); ctx.moveTo(45, AXIS_Y - 5); ctx.lineTo(40, AXIS_Y); ctx.lineTo(45, AXIS_Y + 5); ctx.stroke();
+
+                                // 2. Draw Whiskers
+                                ctx.beginPath(); ctx.strokeStyle = C_LINE; ctx.lineWidth = 2;
+                                ctx.moveTo(getX(wLow), Y_MID); ctx.lineTo(getX(q1), Y_MID); // Low Line
+                                ctx.moveTo(getX(wHigh), Y_MID); ctx.lineTo(getX(q3), Y_MID); // High Line
+                                ctx.stroke();
+
+                                // Whisker Caps
+                                ctx.beginPath();
+                                ctx.moveTo(getX(wLow), Y_MID - 10); ctx.lineTo(getX(wLow), Y_MID + 10);
+                                ctx.moveTo(getX(wHigh), Y_MID - 10); ctx.lineTo(getX(wHigh), Y_MID + 10);
+                                ctx.stroke();
+
+                                // 3. Draw Box
+                                ctx.fillStyle = 'rgba(46, 204, 113, 0.2)';
+                                ctx.strokeStyle = C_BOX; ctx.lineWidth = 2;
+                                ctx.fillRect(getX(q1), Y_MID - BOX_H / 2, getX(q3) - getX(q1), BOX_H);
+                                ctx.strokeRect(getX(q1), Y_MID - BOX_H / 2, getX(q3) - getX(q1), BOX_H);
+
+                                // 4. Median Line
+                                ctx.beginPath(); ctx.strokeStyle = C_LINE; ctx.lineWidth = 2;
+                                ctx.moveTo(getX(med), Y_MID - BOX_H / 2); ctx.lineTo(getX(med), Y_MID + BOX_H / 2);
+                                ctx.stroke();
+
+                                // 5. Draw Outliers
+                                ctx.fillStyle = C_OUTLIER;
+                                ctx.font = '16px Arial';
+                                outliers.forEach(v => {
+                                    const x = getX(v);
+                                    ctx.fillText('*', x - 4, Y_MID + 6);
+                                    ctx.font = '10px Arial'; ctx.fillStyle = C_OUTLIER;
+                                    ctx.fillText(v, x - 5, Y_MID - 20);
+                                });
+
+                                // 6. Labels with Arrows/Ticks
+                                ctx.fillStyle = C_TEXT; ctx.textAlign = 'center'; ctx.font = '11px sans-serif';
+
+                                function drawHackLabel(val, label, yOffset = 0) {
+                                    const x = getX(val);
+                                    ctx.beginPath(); ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
+                                    ctx.setLineDash([2, 2]);
+                                    ctx.moveTo(x, Y_MID + BOX_H / 2 + 5);
+                                    ctx.lineTo(x, AXIS_Y - 5);
+                                    ctx.stroke(); ctx.setLineDash([]);
+
+                                    // Tick
+                                    ctx.beginPath(); ctx.moveTo(x, AXIS_Y - 3); ctx.lineTo(x, AXIS_Y + 3); ctx.stroke();
+
+                                    ctx.fillText(label, x, AXIS_Y + 15 + yOffset);
+                                    ctx.fillStyle = '#FFF'; ctx.fillText(val.toFixed(1), x, AXIS_Y + 30 + yOffset);
+                                    ctx.fillStyle = C_TEXT;
+                                }
+
+                                drawHackLabel(min, "Min");
+                                drawHackLabel(q1, "Q1");
+                                drawHackLabel(med, "Median", 15);
+                                drawHackLabel(q3, "Q3");
+                                drawHackLabel(max, "Max");
+
+                                // 7. Middle 50% Text
+                                const w = getX(q3) - getX(q1);
+                                if (w > 60) {
+                                    ctx.font = '10px sans-serif'; ctx.fillStyle = C_BOX;
+                                    ctx.fillText("IQR (Middle 50%)", getX(q1) + w / 2, Y_MID - BOX_H / 2 - 10);
+                                }
+                            }
+
+                            // AUTO-GENERATE SUMMARY (SPSS/Minitab Style)
+                            function generateAutoSummary(n, mean, median, stdDev, cv, skew, kurt, pVal, outCount) {
+                                document.getElementById('ai-default').style.display = 'none';
+                                document.getElementById('ai-results').style.display = 'block';
+
+                                // Data Quality
+                                let qualityText = n >= 30 ? `<span style="color:#22c55e;">✓ Sample size adequate (n=${n} ≥ 30)</span>` :
+                                    n >= 15 ? `<span style="color:#eab308;">⚠ Sample size marginal (n=${n}). Proceed with caution.</span>` :
+                                        `<span style="color:#ef4444;">✗ Sample too small (n=${n} < 15). Results may be statistically unstable.</span>`;
+                                document.getElementById('sum-quality').innerHTML = qualityText;
+
+                                // Central Tendency
+                                let centerDiff = Math.abs(mean - median);
+                                let centerText = centerDiff < (0.05 * mean) ? `Mean (${mean.toFixed(4)}) ≈ Median (${median.toFixed(4)}). <span style="color:#22c55e;">✓ High Central Precision.</span>` :
+                                    `Mean (${mean.toFixed(4)}) ≠ Median (${median.toFixed(4)}). <span style="color:#eab308;">Possible asymmetry. Use Median for reporting.</span>`;
+                                document.getElementById('sum-center').innerHTML = centerText;
+
+                                // Variation
+                                let varText = cv < 10 ? `CV = ${cv.toFixed(2)}%. <span style="color:#22c55e;">✓ World-Class Consistency (< 10%)</span>` :
+                                    cv < 30 ? `CV = ${cv.toFixed(2)}%. <span style="color:#eab308;">⚠ Industrial Average Variation (10-30%)</span>` :
+                                        `CV = ${cv.toFixed(2)}%. <span style="color:#ef4444;">✗ High Variance (> 30%). Process requires optimization.</span>`;
+                                document.getElementById('sum-variation').innerHTML = varText;
+
+                                // Normality
+                                let normText = pVal > 0.05 ? `P-Value = ${pVal.toFixed(4)}. <span style="color:#22c55e;">✓ Data follows Normal Distribution (P > 0.05)</span>` :
+                                    `P-Value = ${pVal.toFixed(4)}. <span style="color:#ef4444;">✗ Significant Non-Normality (P < 0.05). Use non-parametric methods.</span>`;
+                                document.getElementById('sum-normality').innerHTML = normText;
+
+                                // Outliers
+                                let outText = outCount === 0 ? `<span style="color:#22c55e;">✓ No outliers (z > 3σ) detected.</span>` :
+                                    `<span style="color:#ef4444;">✗ ${outCount} potential outlier(s) detected. Examine for special cause variation.</span>`;
+                                document.getElementById('sum-outliers').innerHTML = outText;
+
+                                // Overall Verdict
+                                let concerns = 0;
+                                if (n < 15) concerns++;
+                                if (cv > 25) concerns++;
+                                if (pVal < 0.05) concerns++;
+                                if (outCount > 0) concerns++;
+                                if (Math.abs(skew) > 1.0) concerns++;
+
+                                const verdictBox = document.getElementById('sum-verdict');
+                                const verdictText = document.getElementById('sum-verdict-text');
+                                const verdictIcon = document.getElementById('sum-verdict-icon');
+
+                                if (concerns === 0) {
+                                    verdictText.textContent = 'OPTIMAL - High-precision data matches parametric assumptions. Proceed to Capability Analysis.';
+                                    verdictText.style.color = '#22c55e';
+                                    verdictBox.style.borderColor = '#22c55e';
+                                    verdictIcon.textContent = '💎';
+                                } else if (concerns <= 2) {
+                                    verdictText.textContent = 'CAPABLE BUT VARIABLE - Minor statistical shifts detected. Monitor process stability.';
+                                    verdictText.style.color = '#eab308';
+                                    verdictBox.style.borderColor = '#eab308';
+                                    verdictIcon.textContent = '⚠️';
+                                } else {
+                                    verdictText.textContent = 'NON-CAPABLE - Significant statistical risk. Data fails normality or shows outliers.';
+                                    verdictText.style.color = '#ef4444';
+                                    verdictBox.style.borderColor = '#ef4444';
+                                    verdictIcon.textContent = '🛑';
+                                }
+
+                                // Chart Recommendation
+                                let chartRec = '';
+                                if (Math.abs(skew) < 0.5 && outCount === 0) {
+                                    chartRec = '📊 <b>Histogram</b> - Perfectly aligned for symmetric data. Displays distribution spread.';
+                                } else if (outCount > 0) {
+                                    chartRec = '📦 <b>Box Plot</b> - Essential for outlier visualization. Identifies extreme variances.';
+                                } else {
+                                    chartRec = '📉 <b>Run Chart</b> - Necessary to track time-series stability in skewed processes.';
+                                }
+
+                                // Check for scenario recommendation
+                                if (currentScenario && scenarios[currentScenario][currentType].recommendation) {
+                                    const rec = scenarios[currentScenario][currentType].recommendation;
+                                    chartRec = `📊 <b>${rec.chart}</b> - ${rec.reason}`;
+                                }
+
+                                document.getElementById('sum-chart-rec').innerHTML = chartRec;
+                            }
+
+                            async function askAICoach() {
+                                const btn = document.getElementById('aiBtn');
+                                const output = document.getElementById('ai-results');
+                                const defaultView = document.getElementById('ai-default');
+
+                                // Get stats values for the prompt
+                                const n = document.getElementById('resN').innerText;
+                                const mean = document.getElementById('resMean').innerText;
+                                const std = document.getElementById('resStdDev').innerText;
+                                const ad = document.getElementById('resAD').innerText;
+
+                                if (document.getElementById('resultsPanel').style.display === 'none') {
+                                    alert("Please calculate statistics first.");
+                                    return;
+                                }
+
+                                btn.disabled = true;
+                                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+
+                                // Scroll to results if needed
+                                output.scrollIntoView({ behavior: 'smooth' });
+
+                                const prompt = `Act as a Lean Six Sigma Master Black Belt. 
+                            I have Descriptive Statistics for a process:
+                            - Sample Size (N): ${n}
+                            - Mean: ${mean}
+                            - Std Dev: ${std}
+                            - Normality Status: ${ad}
+                            
+                            Provide a concise 4-sentence professional interpretation focused on process stability, capability potential, and data quality.`;
+
+                                try {
+                                    const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            contents: [{ parts: [{ text: prompt }] }]
+                                        })
+                                    });
+
+                                    const data = await response.json();
+                                    if (data.candidates && data.candidates[0].content.parts[0].text) {
+                                        // Add AI Advice to the summary panel
+                                        const adviceText = data.candidates[0].content.parts[0].text;
+                                        const verdictText = document.getElementById('sum-verdict-text');
+                                        verdictText.innerHTML = `<div style="font-weight:normal; font-size:13px; margin-top:10px; color:#e2e8f0; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">${adviceText}</div>`;
+                                    } else {
+                                        alert("AI Coach failed to provide insights. API Error.");
+                                    }
+                                } catch (error) {
+                                    console.error("AI Error:", error);
+                                    alert("AI connection failed.");
+                                } finally {
+                                    btn.disabled = false;
+                                    btn.innerHTML = '<i class="fas fa-robot"></i> Ask Gemini Coach';
+                                }
+                            }
+
+                            function updateProgress(pct) {
+                                const bar = document.getElementById('progressBar');
+                                const text = document.getElementById('progressText');
+                                if (bar) bar.style.width = pct + '%';
+                                if (text) text.textContent = pct + '%';
+
+                                // Sync creator name to footer
+                                const name = document.getElementById('createdBy').value;
+                                if (document.getElementById('userNameFooter')) {
+                                    document.getElementById('userNameFooter').value = name;
+                                }
+                            }
+
+                            function saveAndEvaluate() {
+                                const resultsPanel = document.getElementById('resultsPanel');
+                                if (resultsPanel.style.display === 'none') {
+                                    alert('Please run the analysis first before saving.');
+                                    return;
+                                }
+                                // Show success modal
+                                const n = document.getElementById('resN').textContent;
+                                const mean = document.getElementById('resMean').textContent;
+                                const verdict = document.getElementById('sum-verdict-text').textContent;
+
+                                alert(`✅ Analysis Saved Successfully!\n\nSummary:\n• Sample Size: ${n}\n• Mean: ${mean}\n• Verdict: ${verdict}\n\nYou can now print as PDF or continue analysis.`);
+                            }
+
+                            function updateCreatedBy() {
+                                const name = document.getElementById('createdBy').value || 'Not Specified';
+                                document.getElementById('print-created-by').textContent = name;
+                            }
+
+                            function printReport() {
+                                const resultsPanel = document.getElementById('resultsPanel');
+                                if (resultsPanel.style.display === 'none') {
+                                    alert('Please run the analysis first before printing.');
+                                    return;
+                                }
+
+                                // Update print metadata
+                                const now = new Date();
+                                const dateStr = now.toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                                document.getElementById('print-date').textContent = dateStr;
+
+                                // Set scenario
+                                const scenarioText = currentScenario ?
+                                    scenarios[currentScenario].name + ' (' + (currentType === 'normal' ? 'Normal' : 'Skewed') + ')' :
+                                    'Custom Data';
+                                document.getElementById('print-scenario').textContent = scenarioText;
+
+                                // Trigger print
+                                window.print();
+                            }
+                        </script>
+                        <script src="AssistantTools.js"></script>
+</body>
+
+</html>
+
+

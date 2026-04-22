@@ -37,13 +37,16 @@ export async function PUT(
             return NextResponse.json({ error: "Deliverable not found" }, { status: 404 });
         }
 
-        await prisma.doDeliverable.update({
+        await (prisma.doDeliverable as any).update({
             where: { id: deliverable.id },
             data: {
                 formData: data,
                 status: 'complete',
                 completedAt: new Date(),
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                attempts: {
+                    increment: 1
+                }
             }
         });
 

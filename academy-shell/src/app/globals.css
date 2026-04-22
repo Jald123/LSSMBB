@@ -1,3 +1,4 @@
+/* stylelint-disable */
 @import "tailwindcss";
 
 @theme {
@@ -34,6 +35,19 @@
     --font-interface: "Inter", system-ui, sans-serif;
 
     --shadow-apple: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+    /* --- NEXUS DESIGN TOKENS --- */
+    --color-nexus-navy: #020617;
+    --color-nexus-surface: #0f172a;
+    --color-nexus-card: rgba(30, 41, 59, 0.4);
+    --color-nexus-border: rgba(255, 255, 255, 0.1);
+    --color-nexus-cyan: #22d3ee;
+    --color-nexus-gold: #f59e0b;
+    --color-nexus-purple: #a855f7;
+    --color-nexus-success: #10b981;
+    --color-nexus-text-primary: #f8fafc;
+    --color-nexus-text-secondary: #94a3b8;
+    --shadow-nexus-glow: 0 0 20px rgba(34, 211, 238, 0.2);
 }
 
 @layer base {
@@ -69,21 +83,20 @@
     }
 
     .dark {
-        /* ⌨️ Dark Mode: Linear/Notion Style */
-        --background: #0d0d0d;
-        --foreground: #ededed;
-        --surface: #1a1a1a;
-        --border: #262626;
-        --primary: #3b82f6;
-        --primary-foreground: #ffffff;
-        --secondary: #1a1a1a;
-        --secondary-foreground: #ededed;
-        --muted: #a1a1aa;
-        --muted-foreground: #ededed;
-        --accent: #3b82f6;
+        /* ⌨️ Dark Mode: Obsidian Protocol (Nexus) */
+        --background: #020617;
+        --foreground: #f8fafc;
+        --surface: #0f172a;
+        --card: #1e293b;
+        --border: #334155;
+        --primary: #22d3ee;
+        --primary-foreground: #020617;
+        --secondary: #3b82f6;
+        --secondary-foreground: #ffffff;
+        --muted: #475569;
+        --muted-foreground: #94a3b8;
+        --accent: #a855f7;
         --accent-foreground: #ffffff;
-        --card: #111111;
-        --card-foreground: #ededed;
         --radius: 8px;
     }
 }

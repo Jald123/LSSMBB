@@ -43,8 +43,8 @@ export async function POST(request: Request) {
         });
 
         return response;
-    } catch (error) {
+    } catch (error: any) {
         console.error("Auth error:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
     }
 }

@@ -25,7 +25,7 @@ export async function GET(
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const deliverable = await prisma.doDeliverable.findFirst({
+        const deliverable: any = await prisma.doDeliverable.findFirst({
             where: {
                 projectId: id,
                 toolId: toolId
@@ -39,7 +39,12 @@ export async function GET(
         return NextResponse.json({
             status: deliverable.status,
             formData: deliverable.formData,
-            lastSaved: deliverable.updatedAt
+            lastSaved: deliverable.updatedAt,
+            attempts: deliverable.attempts,
+            maxAttempts: deliverable.maxAttempts,
+            score: deliverable.score,
+            feedback: deliverable.feedback,
+            retryHistory: deliverable.retryHistory
         });
     } catch (error) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

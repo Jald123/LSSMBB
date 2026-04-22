@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Belt Command Center | LSS Executive Dashboard</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.7);
+            --brand-cyan: #22d3ee;
+            --brand-magenta: #ec4899;
+            --brand-gold: #f59e0b;
+            --brand-emerald: #10b981;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .nav-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, var(--brand-cyan), var(--brand-magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--brand-emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--brand-emerald);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Main Dashboard Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr 340px;
+            gap: 24px;
+            padding: 24px 40px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar / Global Stats */
+        .stats-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(34, 211, 238, 0.4);
+            box-shadow: var(--neon-shadow);
+        }
+
+        .section-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Radar Chart Wrapper */
+        .radar-canvas {
+            width: 100%;
+            height: 220px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Center Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* DMAIC Tracker */
+        .dmaic-timeline {
+            display: flex;
+            justify-content: space-between;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .dmaic-line {
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+
+        .dmaic-progress {
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            width: 45%;
+            /* Dynamic */
+            height: 2px;
+            background: linear-gradient(90deg, var(--brand-cyan), var(--brand-magenta));
+            box-shadow: 0 0 15px var(--brand-cyan);
+            z-index: 2;
+        }
+
+        .phase-node {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .node-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #020617;
+            border: 2px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-family: 'Orbitron', sans-serif;
+            transition: 0.4s;
+            cursor: pointer;
+        }
+
+        .phase-node.active .node-circle {
+            border-color: var(--brand-cyan);
+            color: var(--brand-cyan);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+        }
+
+        .phase-node.complete .node-circle {
+            background: var(--brand-emerald);
+            border-color: var(--brand-emerald);
+            color: white;
+        }
+
+        .phase-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .phase-node.active .phase-label {
+            color: var(--text-main);
+        }
+
+        /* Mission List */
+        .mission-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 12px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .mission-item:hover {
+            background: rgba(34, 211, 238, 0.05);
+            border-color: rgba(34, 211, 238, 0.2);
+        }
+
+        .mission-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--brand-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mission-info h4 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .mission-info p {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        /* Right Sidebar: Quick Actions & Intelligence */
+        .right-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .tool-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tool-btn:hover {
+            background: var(--brand-magenta);
+            border-color: var(--brand-magenta);
+            color: white;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .right-sidebar {
+                grid-column: span 2;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-sidebar,
+            .main-content,
+            .right-sidebar {
+                grid-column: span 1;
+            }
+        }
+
+        /* Interactive Gauges */
+        .gauge-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke: var(--brand-cyan);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            transition: stroke-dashoffset 1s ease-out;
+        }
+
+        .gauge-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .gauge-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            display: block;
+        }
+
+        .gauge-unit {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        /* Scanline Animation */
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(34, 211, 238, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="vignette"></div>
+
+    <nav class="nav-top">
+        <div class="brand">
+            <h1>Black Belt Command Center</h1>
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <div class="status-pill">
+                <div class="status-dot"></div>
+                <span>CYBERNETIC SESSION ACTIVE</span>
+            </div>
+            <div class="status-pill" style="border-color: var(--brand-magenta);">
+                <i data-lucide="shield" style="width: 14px; color: var(--brand-magenta);"></i>
+                <span style="color: var(--brand-magenta);">SECURITY LEVEL: MBB</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard-grid">
+        <!-- Sidebar: Global Stats -->
+        <aside class="stats-sidebar">
+            <div class="glass-card">
+                <div class="scanline"></div>
+                <div class="section-header">
+                    <span>OVERALL SIGMA STANDING</span>
+                    <i data-lucide="activity" style="width: 14px;"></i>
+                </div>
+                <div class="gauge-container">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="gauge-bg" cx="50" cy="50" r="45"></circle>
+                        <circle id="sigma-gauge" class="gauge-fill" cx="50" cy="50" r="45"
+                            style="stroke-dashoffset: 80;"></circle>
+                    </svg>
+                    <div class="gauge-text">
+                        <span class="gauge-val">4.8</span>
+                        <span class="gauge-unit">Sigma</span>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <p style="font-size: 0.75rem; color: var(--brand-cyan);">99.9937% YIELD</p>
+                    <p style="font-size: 0.65rem; color: var(--text-dim);">DPMO: 6,210</p>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="section-header">
+                    <span>SKILLS PROFICIENCY</span>
+                    <i data-lucide="zap" style="width: 14px;"></i>
+                </div>
+                <div class="radar-canvas" id="radar-container">
+                    <!-- Radar Chart SVG will be injected here -->
+                    <svg width="200" height="200" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1">
+                        </circle>
+                        <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1">
+                        </circle>
+                        <circle cx="100" cy="100" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1">
+                        </circle>
+                        <!-- Axis -->
+                        <line x1="100" y1="100" x2="100" y2="20" stroke="rgba(255,255,255,0.1)"></line>
+                        <line x1="100" y1="100" x2="180" y2="100" stroke="rgba(255,255,255,0.1)"></line>
+                        <line x1="100" y1="100" x2="100" y2="180" stroke="rgba(255,255,255,0.1)"></line>
+                        <line x1="100" y1="100" x2="20" y2="100" stroke="rgba(255,255,255,0.1)"></line>
+                        <!-- Area -->
+                        <polygon points="100,40 160,100 100,160 50,100" fill="rgba(34, 211, 238, 0.2)"
+                            stroke="var(--brand-cyan)" stroke-width="2"></polygon>
+                    </svg>
+                </div>
+                <div
+                    style="display: flex; justify-content: space-around; font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800;">
+                    <span>Mapping</span>
+                    <span>Stats</span>
+                    <span>Lean</span>
+                    <span>Soft</span>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="section-header">
+                    <span>MASTERY BADGES</span>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div
+                        style="width: 45px; height: 45px; background: rgba(34, 211, 238, 0.1); border: 1px solid var(--brand-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--brand-cyan);">
+                        <i data-lucide="award" style="width: 24px;"></i>
+                    </div>
+                    <div
+                        style="width: 45px; height: 45px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--brand-emerald); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--brand-emerald);">
+                        <i data-lucide="check-circle-2" style="width: 24px;"></i>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center: DMAIC Roadmap -->
+        <section class="main-content">
+            <div class="glass-card">
+                <div class="section-header">
+                    <span>DMAIC STRATEGIC JOURNEY</span>
+                    <span style="color: var(--brand-magenta);">PHASE: MEASURE</span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                    <button class="btn-primary" onclick="location.href='Tool_BlackBeltCommandCenter.html'"
+                        style="background: linear-gradient(90deg, #22d3ee, #ec4899); border:none; padding:10px 20px; color:white; font-family:'Orbitron'; font-weight:800; font-size:10px; border-radius:8px; display:flex; align-items:center; gap:8px; background-clip: padding-box;">
+                        <i data-lucide="layout-dashboard" style="width:14px;"></i> COMMAND CENTER
+                    </button>
+                    <div class="user-profile">
+                        <div class="avatar">MBB</div>
+                    </div>
+                </div>
+                <div class="dmaic-timeline">
+                    <div class="dmaic-line"></div>
+                    <div id="dmaic-progress-bar" class="dmaic-progress"></div>
+
+                    <div class="phase-node complete">
+                        <div class="node-circle" title="Define Strategy">D</div>
+                        <span class="phase-label">Define</span>
+                    </div>
+                    <div class="phase-node active">
+                        <div class="node-circle" title="Measurement Precision">M</div>
+                        <span class="phase-label">Measure</span>
+                    </div>
+                    <div class="phase-node">
+                        <div class="node-circle">A</div>
+                        <span class="phase-label">Analyze</span>
+                    </div>
+                    <div class="phase-node">
+                        <div class="node-circle">I</div>
+                        <span class="phase-label">Improve</span>
+                    </div>
+                    <div class="phase-node">
+                        <div class="node-circle">C</div>
+                        <span class="phase-label">Control</span>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top: 20px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 12px; border-left: 4px solid var(--brand-cyan);">
+                    <h3 style="font-size: 1rem; margin-bottom: 8px;">Active Directive: Stabilize Data Pulse</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-dim); line-height: 1.5;">Completing the Analyst's
+                        Armory calibration for MSA and Descriptive Stats. Proving measurement system reliability before
+                        proceeding to Root Cause Analysis.</p>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="section-header">
+                    <span>RECENT BOOTCAMP MISSIONS</span>
+                    <i data-lucide="external-link" style="width: 14px; cursor: pointer;"></i>
+                </div>
+                <div class="mission-list">
+                    <div class="mission-item">
+                        <div class="mission-icon"><i data-lucide="target"></i></div>
+                        <div class="mission-info">
+                            <h4>Sniper Calibration (MSA)</h4>
+                            <p>Completed with 98% Stability Rating. G&R variance within tolerances.</p>
+                        </div>
+                        <div style="margin-left: auto; color: var(--brand-cyan); font-weight: 800; font-size: 0.8rem;">
+                            +150 XP</div>
+                    </div>
+                    <div class="mission-item">
+                        <div class="mission-icon"
+                            style="background: rgba(16, 185, 129, 0.1); color: var(--brand-emerald);"><i
+                                data-lucide="map"></i></div>
+                        <div class="mission-info">
+                            <h4>Tactical SIPOC Mapping</h4>
+                            <p>Pizza Delivery Process flow digitized and optimized.</p>
+                        </div>
+                        <div
+                            style="margin-left: auto; color: var(--brand-emerald); font-weight: 800; font-size: 0.8rem;">
+                            CLEARED</div>
+                    </div>
+                    <div class="mission-item">
+                        <div class="mission-icon"
+                            style="background: rgba(245, 158, 11, 0.1); color: var(--brand-gold);"><i
+                                data-lucide="zap"></i></div>
+                        <div class="mission-info">
+                            <h4>Scope Creep Defender</h4>
+                            <p>Project Charter authorized. Bias eliminated from problem statement.</p>
+                        </div>
+                        <div style="margin-left: auto; color: var(--brand-gold); font-weight: 800; font-size: 0.8rem;">
+                            AUTHORIZED</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Side: Tool Access & Intelligence -->
+        <aside class="right-sidebar">
+            <div class="glass-card" style="border-left: 4px solid var(--brand-magenta);">
+                <div class="section-header">
+                    <span>INTELLIGENCE FEED</span>
+                    <i data-lucide="cpu" style="width: 14px;"></i>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div
+                        style="font-size: 0.75rem; color: var(--text-dim); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+                        <span style="color: var(--brand-magenta); font-weight: 800;">[ALERT]</span> High variation
+                        detected in Stage 4. Sigma Level dropped to 3.2.
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-dim);">
+                        <span style="color: var(--brand-cyan); font-weight: 800;">[INTEL]</span> Pareto Analysis
+                        suggests 80% of defects originate from Material Batch #09.
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="section-header">
+                    <span>RAPID TOOL ACCESS</span>
+                </div>
+                <div class="tool-grid">
+                    <div class="tool-btn" onclick="location.href='Tool_ProjectCharter_Premium.html'">Charter Pro</div>
+                    <div class="tool-btn" onclick="location.href='Calculator_SigmaLevel.html'">Sigma Calc</div>
+                    <div class="tool-btn" onclick="location.href='Tool_MSA_Premium.html'">Gage R&R</div>
+                    <div class="tool-btn" onclick="location.href='Tool_ParetoAnalysis.html'">Pareto X</div>
+                    <div class="tool-btn" onclick="location.href='Tool_VSM.html'">Map Visualizer</div>
+                    <div class="tool-btn" onclick="location.href='Tool_DOE_Premium.html'">Exp Designer</div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="text-align: center; border-color: rgba(245, 158, 11, 0.3);">
+                <i data-lucide="flame" style="width: 32px; color: var(--brand-gold); margin-bottom: 10px;"></i>
+                <h4 style="font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 5px;">STREAK: 12 DAYS</h4>
+                <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;">
+                    <div style="width: 60%; height: 100%; background: var(--brand-gold); border-radius: 2px;"></div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // LIVE OPERATIONAL CLOCK
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const dateStr = now.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+            document.querySelector('.status-pill span').innerText = `OPS TIME: ${timeStr} | ${dateStr}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // DYNAMIC RADAR CHART
+        const skills = [
+            { label: 'Mapping', val: 0.8 },
+            { label: 'Stats', val: 0.65 },
+            { label: 'Lean', val: 0.85 },
+            { label: 'Soft', val: 0.5 },
+            { label: 'Leadership', val: 0.7 }
+        ];
+
+        function drawRadar() {
+            const container = document.getElementById('radar-container');
+            const size = 220;
+            const center = size / 2;
+            const radius = 80;
+            const angleStep = (Math.PI * 2) / skills.length;
+
+            let gridCircles = '';
+            for (let i = 1; i <= 4; i++) {
+                gridCircles += `<circle cx="${center}" cy="${center}" r="${(radius / 4) * i}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" />`;
+            }
+
+            let axisLines = '';
+            let points = [];
+            skills.forEach((s, i) => {
+                const angle = i * angleStep - Math.PI / 2;
+                const x = center + Math.cos(angle) * radius;
+                const y = center + Math.sin(angle) * radius;
+                axisLines += `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.1)" stroke-dasharray="2,2" />`;
+
+                const valX = center + Math.cos(angle) * (radius * s.val);
+                const valY = center + Math.sin(angle) * (radius * s.val);
+                points.push(`${valX},${valY}`);
+            });
+
+            const polyPoints = points.join(' ');
+
+            container.innerHTML = `
+                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.2))">
+                    <defs>
+                        <radialGradient id="radarGrad" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="rgba(34, 211, 238, 0.4)" />
+                            <stop offset="100%" stop-color="rgba(34, 211, 238, 0.05)" />
+                        </radialGradient>
+                    </defs>
+                    ${gridCircles}
+                    ${axisLines}
+                    <polygon points="${polyPoints}" fill="url(#radarGrad)" stroke="var(--brand-cyan)" stroke-width="2" style="transition: all 1s ease-in-out">
+                        <animate attributeName="points" dur="2s" values="110,110 110,110 110,110 110,110 110,110;${polyPoints}" calcMode="spline" keySplines="0.4 0 0.2 1" />
+                    </polygon>
+                    ${skills.map((s, i) => {
+                const angle = i * angleStep - Math.PI / 2;
+                const x = center + Math.cos(angle) * (radius + 20);
+                const y = center + Math.sin(angle) * (radius + 20);
+                return `<text x="${x}" y="${y}" fill="var(--text-dim)" font-size="8" font-weight="800" text-anchor="middle" font-family="Orbitron">${s.label.toUpperCase()}</text>`;
+            }).join('')}
+                </svg>
+            `;
+        }
+
+        drawRadar();
+
+        // Animate Sigma Gauge
+        setTimeout(() => {
+            const gauge = document.getElementById('sigma-gauge');
+            // 4.8 out of 6.0 is 80%. Stroke dasharray for r=45 is 2*PI*45 = 282.7
+            const pct = 4.8 / 6.0;
+            const offset = 283 * (1 - pct);
+            gauge.style.strokeDashoffset = offset;
+        }, 500);
+
+        // DMAIC Progress Animation
+        setTimeout(() => {
+            const progressBar = document.getElementById('dmaic-progress-bar');
+            progressBar.style.width = '35%'; // At Measure phase
+        }, 1000);
+
+        // Interactive Missions
+        document.querySelectorAll('.mission-item').forEach(item => {
+            item.onclick = () => {
+                const title = item.querySelector('h4').innerText;
+                const modal = document.createElement('div');
+                modal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:2000; display:flex; align-items:center; justify-content:center; animation:fadeIn 0.3s forwards;";
+                modal.innerHTML = `
+                    <div style="background:var(--bg-dark); border:1px solid var(--brand-cyan); padding:40px; border-radius:30px; max-width:500px; text-align:center; box-shadow:0 0 50px rgba(34, 211, 238, 0.3);">
+                        <div style="font-family:'Orbitron'; font-size:1.5rem; color:var(--brand-cyan); margin-bottom:20px;">MISSION DEBRIEF</div>
+                        <h2 style="margin-bottom:15px; font-family:'Inter';">${title}</h2>
+                        <p style="color:var(--text-dim); line-height:1.6; margin-bottom:30px;">This module results have been synchronized with your Master Black Belt profile. Your analytical precision in this area has improved by 14%.</p>
+                        <button onclick="this.parentElement.parentElement.remove()" style="background:var(--brand-cyan); color:black; border:none; padding:12px 40px; border-radius:10px; font-family:'Orbitron'; font-weight:900; cursor:pointer; transition:0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">ACKNOWLEDGE CODE</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            };
+        });
+
+        // Add CSS keyframe for fadeIn
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        `;
+        document.head.appendChild(style);
+    </script>
+<script src="StudentAuth.js"></script>`n
+<script src="AssistantTools.js"></script></body>
+
+</html>

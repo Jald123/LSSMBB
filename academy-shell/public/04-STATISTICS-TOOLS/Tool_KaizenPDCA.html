@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaizen & PDCA Hub | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* MODERN SUITE LAYOUT */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 340px;
+            height: 100vh;
+            overflow: hidden;
+            background: #050505;
+        }
+
+        .sidebar-left {
+            background: #0a0a0a;
+            border-right: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .main-workspace {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .report-sidebar {
+            background: #0a0a0a;
+            border-left: 1px solid var(--glass-border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            color: #10b981;
+            font-family: 'Orbitron';
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* INFOGRAPHIC MODAL */
+        .info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.98);
+            display: none;
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .info-box-premium {
+            width: 95%;
+            max-width: 1000px;
+            background: #0f172a;
+            border-radius: 32px;
+            border: 2px solid #10b981;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(16, 185, 129, 0.2);
+        }
+
+        .info-header-pro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .info-title-pro {
+            font-family: 'Orbitron';
+            color: #10b981;
+            font-size: 28px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .info-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .info-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .info-tab-btn.active {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .info-grid-pro {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-card-pro {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid #10b981;
+        }
+
+        .info-card-pro h4 {
+            color: #10b981;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin: 0 0 10px;
+        }
+
+        .info-card-pro p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .example-box {
+            grid-column: span 2;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            display: none;
+        }
+
+        .example-box.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .close-pro {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 30px;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-pro:hover {
+            color: white;
+        }
+
+        /* PDCA CIRCLE */
+        .pdca-cycle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            width: 600px;
+            /* 400 * 1.5 */
+            height: 600px;
+            /* 400 * 1.5 */
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .pdca-quad {
+            border: 3px solid #334155;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.02);
+            position: relative;
+        }
+
+        .pdca-quad:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .pdca-quad h3 {
+            font-family: 'Orbitron';
+            margin: 0;
+            font-size: 24px;
+            /* 16 * 1.5 */
+        }
+
+        .pdca-quad i {
+            font-size: 45px;
+            /* 30 * 1.5 */
+            margin-bottom: 15px;
+        }
+
+        .active-quad {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .pdca-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            /* 80 * 1.5 */
+            height: 120px;
+            /* 80 * 1.5 */
+            background: #050505;
+            border: 4px solid #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron';
+            font-size: 18px;
+            /* 12 * 1.5 */
+            z-index: 20;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .premium-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Inter';
+            margin-bottom: 15px;
+        }
+
+        .action-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .action-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+            color: white !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+            border: none;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.7), 0 0 40px rgba(16, 185, 129, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.6) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR LEFT -->
+        <div class="sidebar-left">
+            <div style="font-family:'Orbitron'; font-size:16px; color:#10b981; margin-bottom:30px; text-align:center;">
+                CI STUDIO</div>
+
+            <div class="card"
+                style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); padding:15px;">
+                <span class="sidebar-label">Kaizen Event Toolbox</span>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="window.location.href='https://lssmbb.vercel.app/04-STATISTICS-TOOLS/Tool_KaizenGemba_Premium.html'">👣
+                        Gemba Walk: Waste ID</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="window.location.href='https://lssmbb.vercel.app/04-STATISTICS-TOOLS/Tool_KaizenPrioritization_Premium.html'">⚖️
+                        Prioritization
+                        Matrix</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="window.location.href='https://lssmbb.vercel.app/04-STATISTICS-TOOLS/Tool_KaizenVerify_Premium.html'">📊
+                        Verify: Metrics</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="window.location.href='https://lssmbb.vercel.app/04-STATISTICS-TOOLS/Tool_LeanWorkshop.html?tool=5s'">🧼
+                        5S Event (Audit)</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="window.location.href='https://lssmbb.vercel.app/04-STATISTICS-TOOLS/Tool_SOP_Premium.html'">📝
+                        Standard Work</button>
+                </div>
+            </div>
+
+            <div class="card"
+                style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); padding:15px; margin-top:20px;">
+                <span class="sidebar-label">Global Initiatives</span>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(0)">🏥 ER Turnaround Cycle</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(1)">🏥 Med Errors (PDCA)</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(2)">🏥 Discharge Standard</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(3)">⚙️ SMED Blitz Event</button>
+                    <button class="btn btn-ghost" style="font-size:11px; padding:10px; justify-content:flex-start;"
+                        onclick="loadExample(4)">📦 Pack Time Redux</button>
+                </div>
+            </div>
+
+            <button class="btn btn-ghost" style="margin-top:auto;"
+                onclick="window.location.href='Tool_Improve_Control_Suite.html'"><i class="fas fa-arrow-left"></i>
+                Hub</button>
+        </div>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="main-workspace">
+            <header class="flex-between" style="margin-bottom:30px;">
+                <div>
+                    <span class="phase-glow"
+                        style="background:#10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);">IMPROVE PHASE</span>
+                    <h1>Kaizen & PDCA Hub</h1>
+                    <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">Executing continuous
+                        improvement cycles with scientific rigor.</p>
+                </div>
+                <button class="architecture-intelligence-btn" onclick="openInfo()">
+                    <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+                </button>
+            </header>
+
+            <div style="display:grid; grid-template-columns: auto 1fr; gap:30px; align-items: start;">
+                <div class="card fit-card"
+                    style="display:flex; flex-direction:column; justify-content:center; padding: 40px;">
+                    <div class="pdca-cycle">
+                        <div class="pdca-quad active-quad" id="quad-plan" onclick="activateQuad('plan')">
+                            <i class="fas fa-pencil-alt" style="color:#3b82f6;"></i>
+                            <h3 style="color:#3b82f6;">PLAN</h3>
+                        </div>
+                        <div class="pdca-quad" id="quad-do" onclick="activateQuad('do')">
+                            <i class="fas fa-hammer" style="color:#f59e0b;"></i>
+                            <h3 style="color:#f59e0b;">DO</h3>
+                        </div>
+                        <div class="pdca-quad" id="quad-act" onclick="activateQuad('act')"
+                            style="grid-row:2; grid-column:1;">
+                            <i class="fas fa-rocket" style="color:#10b981;"></i>
+                            <h3 style="color:#10b981;">ACT</h3>
+                        </div>
+                        <div class="pdca-quad" id="quad-check" onclick="activateQuad('check')"
+                            style="grid-row:2; grid-column:2;">
+                            <i class="fas fa-search" style="color:#ef4444;"></i>
+                            <h3 style="color:#ef4444;">CHECK</h3>
+                        </div>
+                        <div class="pdca-center">INITIATIVE</div>
+                    </div>
+                </div>
+
+                <div class="card" id="detailsCard">
+                    <h2 id="quadTitle" style="color:#3b82f6; font-family:'Orbitron';">PLANNING PHASE</h2>
+                    <span class="sidebar-label">Objective / Hypothesis</span>
+                    <textarea id="quadInput" class="premium-input" style="height:120px; resize:none;"
+                        placeholder="Detail the hypothesis and experimental setup here..."></textarea>
+
+                    <span class="sidebar-label">Active Tasks</span>
+                    <div id="taskList">
+                        <!-- Tasks go here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REPORT SIDEBAR -->
+        <div class="report-sidebar">
+            <h2 class="sidebar-title">Cycle Audit</h2>
+
+            <div class="input-group">
+                <span class="sidebar-label">Initiative Lead:</span>
+                <input type="text" id="analystName" class="premium-input" placeholder="Enter name...">
+            </div>
+
+            <div class="card" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);">
+                <span class="sidebar-label">Cycle Health</span>
+                <div style="font-size:32px; font-weight:800; color:#10b981;">VIBRANT</div>
+                <p style="font-size:10px; color:var(--text-secondary); margin-top:5px;">Scientific hypothesis is
+                    validated and documentation is current.</p>
+            </div>
+
+            <div style="display:grid; gap:12px; margin-top:auto;">
+                <button class="btn btn-primary" style="background:#10b981;" onclick="saveRegistrar()"><i
+                        class="fas fa-save"></i> Log Cycle Step</button>
+                <button class="btn btn-ghost" onclick="window.print()"><i class="fas fa-file-export"></i> Print A3
+                    Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STRATEGIC INFO POPUP -->
+    <div id="infoModal" class="info-overlay">
+        <div class="info-box-premium">
+            <span class="close-pro" onclick="closeInfo()">&times;</span>
+            <div class="info-header-pro">
+                <div class="info-title-pro">Kaizen & PDCA Philosophy</div>
+                <div class="info-tabs">
+                    <button class="info-tab-btn active" onclick="switchExample('general')">🍎 Global Principle</button>
+                    <button class="info-tab-btn" onclick="switchExample('healthcare')">🏥 Healthcare Context</button>
+                </div>
+            </div>
+            <div class="info-grid-pro">
+                <div class="info-card-pro">
+                    <h4>What is it?</h4>
+                    <p>Kaizen means "change for better." PDCA (Plan-Do-Check-Act) is the scientific method behind that
+                        change.</p>
+                </div>
+                <div class="info-card-pro">
+                    <h4>Why use it?</h4>
+                    <p>To avoid "flavor of the month" fixes. PDCA ensures that logic and data drive improvements, not
+                        opinions.</p>
+                </div>
+                <div class="info-card-pro">
+                    <h4>When to add?</h4>
+                    <p>The "heartbeat" of the <strong>Improve</strong> phase. Every project solution should go through
+                        at least one PDCA pilot.</p>
+                </div>
+                <div class="info-card-pro">
+                    <h4>History of Origin</h4>
+                    <p>Walter Shewhart developed the cycle at Bell Labs; W. Edwards Deming took it to Japan (often
+                        called the Deming Cycle).</p>
+                </div>
+
+                <div id="ex-general" class="example-box active">
+                    <h4 style="color:#10b981; margin-bottom:15px;">🍎 The Apple Stacking Pilot</h4>
+                    <p style="font-size:14px; color:#cbd5e1; line-height:1.6;"><b>Plan:</b> Build a pyramid 5-layers
+                        high to save space. <b>Do:</b> Try on one shelf. <b>Check:</b> Count bruises after 24 hrs.
+                        <b>Act:</b> If bruising is high, lower to 3-layers and try again.
+                    </p>
+                </div>
+                <div id="content-healthcare" class="example-box">
+                    <h4 style="color:#10b981; margin-bottom:15px;">🏥 Hand Hygiene Compliance</h4>
+                    <p style="font-size:14px; color:#cbd5e1; line-height:1.6;"><b>Plan:</b> Install gel dispensers at
+                        bedside instead of door. <b>Do:</b> Protocol pilot in Ward A. <b>Check:</b> Audit compliance via
+                        UV markers. <b>Act:</b> If compliance > 95%, rollout to Wards B & C.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuad = 'plan';
+        const quadData = {
+            plan: { title: 'PLANNING PHASE', color: '#3b82f6', text: '', tasks: ['Define Root Cause', 'Develop Hypothesis', 'Design Pilot Experiment'] },
+            do: { title: 'EXECUTION PHASE', color: '#f59e0b', text: '', tasks: ['Launch Pilot Ward', 'Train Staff on Protocol', 'Monitor Safety Gaps'] },
+            check: { title: 'ANALYSIS PHASE', color: '#ef4444', text: '', tasks: ['Compare Baseline vs Pilot', 'Identify Variance', 'Listen to Staff Feedback'] },
+            act: { title: 'STANDARD PHASE', color: '#10b981', text: '', tasks: ['Lock in SOP', 'Scale to Total Hospital', 'Set Audit Schedule'] }
+        };
+
+        function activateQuad(id) {
+            // Save current
+            quadData[currentQuad].text = document.getElementById('quadInput').value;
+
+            document.querySelectorAll('.pdca-quad').forEach(q => q.classList.remove('active-quad'));
+            document.getElementById('quad-' + id).classList.add('active-quad');
+            currentQuad = id;
+
+            const data = quadData[id];
+            document.getElementById('quadTitle').innerText = data.title;
+            document.getElementById('quadTitle').style.color = data.color;
+            document.getElementById('quadInput').value = data.text;
+
+            const list = document.getElementById('taskList');
+            list.innerHTML = '';
+            data.tasks.forEach(t => {
+                list.innerHTML += `<div class="action-item"><span>${t}</span><input type="checkbox"></div>`;
+            });
+        }
+
+        function openInfo() {
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeInfo() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        function switchExample(type) {
+            document.querySelectorAll('.info-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.example-box').forEach(e => e.classList.remove('active'));
+            event.target.classList.add('active');
+            if (type === 'healthcare') document.getElementById('content-healthcare').classList.add('active');
+            else document.getElementById('ex-general').classList.add('active');
+        }
+
+        const examples = [
+            { name: "ER Turnaround Cycle", plan: "Reduce discharge time from 45 min to 30 min by parallelizing discharge paperwork.", do: "Pilot in Pod A for 1 week.", check: "Mean reduced to 32 min, but paperwork error rose 5%.", act: "Refine checklist and scale to Pod B." },
+            { name: "Med Errors (PDCA)", plan: "Reduce look-alike/sound-alike errors via barcode double-scan.", do: "Implement logic in Pediatrics Ward.", check: "Zero dispense errors over 30 days.", act: "Full hospital rollout." },
+            { name: "Discharge Standard", plan: "Standardize patient discharge education using visual aids.", do: "Nurses use new deck for 10 patients.", check: "Patient recall score increased by 40%.", act: "Upload to EMR as mandatory step." },
+            { name: "SMED Blitz Event", plan: "Reduce changeover time of MRI machine calibration from 180 min to 90 min.", do: "Video record current process; move internal steps to external.", check: "Time reduced to 105 min in first 3 trials.", act: "Standardize tool-cart layout and schedule next blitz." },
+            { name: "Pack Time Redux", plan: "Reduce shipping label errors by 50% using scanning logic.", do: "Install 2 test stations in Zone D.", check: "Errors dropped by 80%; throughput increased 12%.", act: "Remove manual logs; scale to Zone A-C." }
+        ];
+
+        function loadExample(idx) {
+            const ex = examples[idx];
+            if (!ex) return;
+            quadData.plan.text = ex.plan;
+            quadData.do.text = ex.do;
+            quadData.check.text = ex.check;
+            quadData.act.text = ex.act;
+            activateQuad('plan');
+        }
+
+        window.onload = () => activateQuad('plan');
+
+        function saveRegistrar() {
+            alert('Cycle Progressive Log Saved!');
+        }
+    </script>
+    <script src="AssistantTools.js"></script>
+
+<script src="StudentAuth.js"></script>
+</body>
+
+</html>

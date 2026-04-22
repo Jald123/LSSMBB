@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Achievement | LSS Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
+        :root {
+            --bg-dark: #020617;
+            --card-bg: #0f172a;
+            --accent-blue: #3b82f6;
+            --accent-gold: #d4a853;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* ── CONTROLS BAR ─────────────────────────── */
+        .controls-bar {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .back-link:hover { color: white; }
+
+        .controls-group { display: flex; gap: 12px; }
+        .ctrl-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ctrl-btn:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+        .ctrl-btn.primary { background: linear-gradient(135deg, var(--accent-blue), #6366f1); border: none; box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
+
+        /* ── CERTIFICATE CONTAINER ────────────────── */
+        .certificate-frame {
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 1.414 / 1;
+            background: #fffdf8;
+            border-radius: 4px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            color: #1a1a2e;
+        }
+
+        /* Decorative gold border */
+        .cert-border {
+            position: absolute;
+            inset: 12px;
+            border: 3px solid var(--accent-gold);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+        .cert-border::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border: 1px solid rgba(212, 168, 83, 0.3);
+        }
+
+        /* Corner ornaments */
+        .corner-ornament {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-color: var(--accent-gold);
+            border-style: solid;
+        }
+        .corner-ornament.tl { top: 25px; left: 25px; border-width: 3px 0 0 3px; }
+        .corner-ornament.tr { top: 25px; right: 25px; border-width: 3px 3px 0 0; }
+        .corner-ornament.bl { bottom: 25px; left: 25px; border-width: 0 0 3px 3px; }
+        .corner-ornament.br { bottom: 25px; right: 25px; border-width: 0 3px 3px 0; }
+
+        /* Content Layout */
+        .cert-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 60px 80px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Header */
+        .cert-org {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .cert-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+            line-height: 1.1;
+        }
+
+        .cert-subheading {
+            font-size: 14px;
+            color: #64748b;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 35px;
+        }
+
+        /* Seal */
+        .cert-seal {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 25px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 15px rgba(212, 168, 83, 0.3);
+        }
+
+        /* Recipient */
+        .cert-presented {
+            font-size: 13px;
+            color: #94a3b8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .cert-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--accent-gold);
+            padding-bottom: 8px;
+            display: inline-block;
+        }
+
+        .cert-org-name {
+            font-size: 15px;
+            color: #475569;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+
+        /* Belt Badge */
+        .cert-belt-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+        }
+
+        .belt-yellow-badge { background: #fefce8; color: #854d0e; border: 2px solid #facc15; }
+        .belt-green-badge { background: #f0fdf4; color: #166534; border: 2px solid #10b981; }
+        .belt-black-badge { background: #f1f5f9; color: #0f172a; border: 2px solid #334155; }
+        .belt-mbb-badge { background: #eef2ff; color: #3730a3; border: 2px solid #6366f1; }
+
+        /* Description */
+        .cert-description {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #475569;
+            max-width: 550px;
+            margin-bottom: 30px;
+        }
+
+        /* Footer Row */
+        .cert-footer-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin-top: auto;
+        }
+
+        .cert-footer-item {
+            text-align: center;
+        }
+
+        .cert-footer-line {
+            width: 160px;
+            height: 1px;
+            background: #cbd5e1;
+            margin-bottom: 8px;
+        }
+
+        .cert-footer-label {
+            font-size: 10px;
+            color: #94a3b8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .cert-footer-value {
+            font-size: 13px;
+            color: #334155;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        /* ── NOT ELIGIBLE STATE ───────────────────── */
+        .not-eligible {
+            max-width: 500px;
+            text-align: center;
+            padding: 60px;
+        }
+        .not-eligible i { font-size: 50px; color: var(--accent-gold); margin-bottom: 25px; }
+        .not-eligible h2 { font-family: 'Orbitron', sans-serif; margin-bottom: 10px; font-size: 22px; }
+        .not-eligible p { color: var(--text-dim); font-size: 14px; line-height: 1.7; margin-bottom: 25px; }
+        .progress-bar-lg { width: 100%; height: 12px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; margin-top: 15px; }
+        .progress-fill-lg { height: 100%; border-radius: 6px; transition: width 1s ease; }
+
+        /* ── PRINT STYLES ─────────────────────────── */
+        @media print {
+            body { background: white; padding: 0; }
+            .controls-bar { display: none; }
+            .certificate-frame { box-shadow: none; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls-bar" id="controls">
+        <a href="Student_Dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="controls-group" id="controlButtons" style="display:none;">
+            <button class="ctrl-btn" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+            <button class="ctrl-btn primary" onclick="downloadCert()"><i class="fas fa-download"></i> Download PDF</button>
+        </div>
+    </div>
+
+    <div id="cert-area">
+        <!-- Dynamically injected: certificate or not-eligible state -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profile = JSON.parse(localStorage.getItem('LSS_Profile'));
+            const progress = JSON.parse(localStorage.getItem('LSS_Progress')) || {};
+
+            if (!profile) {
+                window.location.href = 'Tool_BoxPlot.html';
+                return;
+            }
+
+            const entries = Object.entries(progress);
+            const proficientCount = entries.filter(([, d]) => d.score >= 70).length;
+            const totalTools = 53;
+            const masteryPct = Math.round((proficientCount / totalTools) * 100);
+
+            // Eligibility thresholds per belt
+            const beltThresholds = {
+                'Yellow Belt': 5,
+                'Green Belt': 15,
+                'Black Belt': 30,
+                'Master Black Belt': 45
+            };
+
+            const targetBelt = profile.belt || 'Green Belt';
+            const threshold = beltThresholds[targetBelt] || 15;
+            const isEligible = proficientCount >= threshold;
+
+            if (isEligible) {
+                renderCertificate(profile, proficientCount, targetBelt);
+                document.getElementById('controlButtons').style.display = 'flex';
+            } else {
+                renderNotEligible(profile, proficientCount, threshold, targetBelt);
+            }
+        });
+
+        function renderCertificate(profile, completedTools, belt) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const certId = `LSS-${now.getFullYear()}-${(profile.id || '').replace('STU-', '')}`;
+
+            let beltClass = 'belt-green-badge';
+            let beltIcon = '🟢';
+            if (belt.includes('Yellow')) { beltClass = 'belt-yellow-badge'; beltIcon = '🟡'; }
+            else if (belt.includes('Black') && !belt.includes('Master')) { beltClass = 'belt-black-badge'; beltIcon = '⚫'; }
+            else if (belt.includes('Master')) { beltClass = 'belt-mbb-badge'; beltIcon = '🏆'; }
+
+            document.getElementById('cert-area').innerHTML = `
+            <div class="certificate-frame" id="certificate">
+                <div class="cert-border"></div>
+                <div class="corner-ornament tl"></div>
+                <div class="corner-ornament tr"></div>
+                <div class="corner-ornament bl"></div>
+                <div class="corner-ornament br"></div>
+
+                <div class="cert-content">
+                    <div class="cert-org">Lean Six Sigma Interactive Platform</div>
+                    <h1 class="cert-heading">Certificate of Achievement</h1>
+                    <p class="cert-subheading">Professional Mastery Recognition</p>
+
+                    <img src="images/cert_seal.png" class="cert-seal" alt="LSS Seal">
+
+                    <p class="cert-presented">This certifies that</p>
+                    <h2 class="cert-name">${profile.name}</h2>
+                    <p class="cert-org-name">${profile.org || 'Independent Practitioner'}</p>
+
+                    <div class="cert-belt-badge ${beltClass}">
+                        <span>${beltIcon}</span> ${belt}
+                    </div>
+
+                    <p class="cert-description">
+                        Has demonstrated comprehensive proficiency across <strong>${completedTools} analytical tools</strong> 
+                        in the Lean Six Sigma methodology, encompassing the DMAIC framework phases of 
+                        Define, Measure, Analyze, Improve, and Control. This certification validates 
+                        applied knowledge through hands-on statistical analysis and process improvement techniques.
+                    </p>
+
+                    <div class="cert-footer-row">
+                        <div class="cert-footer-item">
+                            <div class="cert-footer-value">${dateStr}</div>
+                            <div class="cert-footer-line"></div>
+                            <div class="cert-footer-label">Date of Completion</div>
+                        </div>
+                        <div class="cert-footer-item">
+                            <div class="cert-footer-value">${certId}</div>
+                            <div class="cert-footer-line"></div>
+                            <div class="cert-footer-label">Certificate ID</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderNotEligible(profile, current, threshold, belt) {
+            const pct = Math.min(Math.round((current / threshold) * 100), 100);
+            let fillColor = '#facc15';
+            if (belt.includes('Green')) fillColor = '#10b981';
+            else if (belt.includes('Black') && !belt.includes('Master')) fillColor = '#64748b';
+            else if (belt.includes('Master')) fillColor = '#8b5cf6';
+
+            document.getElementById('cert-area').innerHTML = `
+            <div class="not-eligible">
+                <i class="fas fa-award"></i>
+                <h2>Almost There, ${profile.name.split(' ')[0]}!</h2>
+                <p>You've completed <strong>${current}</strong> tools with Proficient+ status. 
+                   You need <strong>${threshold}</strong> to qualify for your <strong>${belt}</strong> certificate.</p>
+                
+                <div style="text-align:left; width:100%;">
+                    <div style="display:flex; justify-content:space-between; font-size:12px; color:#94a3b8; margin-bottom:6px;">
+                        <span>${belt} Progress</span>
+                        <span>${current} / ${threshold} tools</span>
+                    </div>
+                    <div class="progress-bar-lg">
+                        <div class="progress-fill-lg" style="width: ${pct}%; background: ${fillColor};"></div>
+                    </div>
+                </div>
+
+                <br>
+                <a href="Student_Dashboard.html" class="ctrl-btn primary" style="text-decoration:none; display:inline-flex; margin-top:10px;"><i class="fas fa-chart-line"></i> Go to Dashboard</a>
+            </div>
+            `;
+        }
+
+        function downloadCert() {
+            window.print();
+        }
+    </script>
+
+<script src="AssistantTools.js"></script></body>
+</html>

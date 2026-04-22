@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPC Control Charts (I-MR) | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <!-- Chart.js v4.4.0 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <style>
+        /* INTRO GRID - EXPANDED (8 Cards) */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .math-block {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            color: #BBB;
+            font-size: 11px;
+        }
+
+        /* STATS RESULTS */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: var(--surface-1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            background: rgba(27, 107, 130, 0.1);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            margin: 8px 0;
+        }
+
+        .stat-hint {
+            font-size: 10px;
+            color: var(--primary);
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .stat-box:hover .stat-hint {
+            opacity: 1;
+            height: auto;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .alert-box {
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid #E74C3C;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .clickable-result {
+            cursor: pointer;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+        }
+
+        .clickable-result:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .scenario-select {
+            width: 100%;
+            padding: 10px;
+            background: var(--surface-2);
+            color: white;
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .scenario-select option {
+            background: var(--surface-1);
+            color: white;
+        }
+
+        /* PREMIUM ARCHITECTURE INTELLIGENCE BUTTON v1.1 */
+        .architecture-intelligence-btn {
+            background: linear-gradient(135deg, #FF6B35, #FCA311) !important;
+            color: #000 !important;
+            padding: 12px 28px !important;
+            border-radius: 50px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5) !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            animation: architecturePulse 2s infinite ease-in-out;
+            font-family: 'Orbitron', sans-serif !important;
+        }
+
+        @keyframes architecturePulse {
+            0% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(255, 107, 53, 0.8), 0 0 50px rgba(252, 163, 17, 0.3); }
+            100% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.4); }
+        }
+
+        .architecture-intelligence-btn:hover {
+            transform: scale(1.05) translateY(-5px);
+            filter: brightness(1.1);
+            box-shadow: 0 20px 50px rgba(255, 107, 53, 0.7) !important;
+        }
+
+        .architecture-intelligence-btn i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 5px white);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" style="max-width: 1200px;">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span class="phase-glow">PHASE: CONTROL</span>
+                <div style="height: 15px;"></div>
+                <h1 style="display: flex; align-items: center; gap: 15px;">I-MR Control Charts <span class="ai-badge">SPC ENGINE</span> <button class="btn btn-ghost" style="font-size: 11px; padding: 4px 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;" onclick="document.getElementById('visualExplModal').style.display='flex'"><i class="fas fa-image"></i> Visual Expl.</button></h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Monitor Stability. <span style="color: var(--accent);">Detect Signals.</span> Differentiate Signal
+                    from Noise.
+                </p>
+            </div>
+            <div style="text-align: right; display: flex; flex-direction: column; gap: 15px; align-items: flex-end;">
+                <button class="architecture-intelligence-btn" onclick="openSPCInfo()">
+                    <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+                </button>
+                                <div style="background:var(--surface-2); padding:5px; border-radius:50px; border:1px solid var(--glass-border); display:flex; gap:5px; margin-right: 15px; display: inline-flex;">
+                    
+                    <button onclick="setTheme('twilight')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Twilight Mode"><i class="fas fa-moon"></i></button>
+                    <button onclick="setTheme('night')" class="btn btn-ghost" style="border-radius:50px; padding:6px 12px; font-size:12px; border:none; box-shadow:none;" title="Futuristic Dark (Night)"><i class="fas fa-space-shuttle"></i></button>
+                </div><button class="btn btn-ghost" onclick="window.location.href='Stats_Calculator_Main.html'">← Tools
+                    Hub</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID (8 Cards) -->
+        <div class="intro-grid">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What Is It?</div>
+                <div class="intro-text">Two plots tracking individual values (I-Chart) and the range between neighbors
+                    (MR-Chart).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When To Use?</div>
+                <div class="intro-text">For continuous data where samples are collected one by one (e.g. daily revenue,
+                    batch pH).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why Use It?</div>
+                <div class="intro-text">Tells you if variation is "Common Cause" (Normal) or "Special Cause"
+                    (Actionable).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">📋 Requirements</div>
+                <div class="intro-text">Continuous data. Normality assumed. Data must be in time-order.</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="intro-card">
+                <div class="intro-title">📐 Standard Equation</div>
+                <div class="math-block">UCL = x̄ + 2.66 * MR̄</div>
+                <div class="math-block">LCL = x̄ - 2.66 * MR̄</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🧠 Interpretation</div>
+                <div class="intro-text">Points within limits = Stable.<br>Points outside = Unstable (Check outlier).
+                </div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🎯 Reference Values</div>
+                <div class="intro-text">Nelson Rule #1: Any point > 3σ from center line is a failure.</div>
+            </div>
+            <div class="intro-card intro-card-phase">
+                <div class="intro-title">🛡️ Nelson Rules</div>
+                <div class="intro-text">Rule 1: Point > 3σ<br>Rule 2: 9 points same side<br>Rule 3: 6 points trending
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: start;">
+
+            <!-- SIDEBAR -->
+            <div class="card input-data-card">
+                <div class="flex-between">
+                    <h3>1. Scenario & Data</h3>
+                </div>
+
+                <label style="font-size:12px; color:var(--text-secondary);">Select Industry Scenario:</label>
+                <select id="scenarioSelect" class="scenario-select" onchange="loadScenario()">
+                    <option value="">-- Custom Data --</option>
+                    <option value="manufacturing">⚙️ Manufacturing (pH Level)</option>
+                    <option value="healthcare">🏥 Healthcare (Lab TAT)</option>
+                    <option value="service">🎧 Service (Claim Time)</option>
+                </select>
+                <textarea id="dataInput" rows="15"
+                    style="width: 100%; padding: 10px; background: var(--surface-1); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 6px; font-family: monospace;"
+                    placeholder="24.5, 25.1, 24.8..."></textarea>
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-ghost" style="flex:1; font-size:11px; color: var(--success);"
+                        onclick="loadExample('stable')">🟢 Stable Process</button>
+                    <button class="btn btn-ghost" style="flex:1; font-size:11px; color: var(--error);"
+                        onclick="loadExample('unstable')">🔴 Unstable Process</button>
+                </div>
+                <button class="btn btn-ghost" style="width:100%; margin-top:5px; font-size:11px;"
+                    onclick="autoFixData()">✨ Auto-Fix Formatting</button>
+
+                <button class="btn btn-primary" onclick="generateCharts()"
+                    style="width: 100%; justify-content: center; margin-top: 20px;">
+                    🚀 Generate Charts
+                </button>
+            </div>
+
+            <!-- CHARTS AREA -->
+            <div>
+                <!-- ALERT BOX -->
+                <div id="alertBox" class="alert-box">
+                    <strong style="color: #E74C3C">⚠️ Process Out of Control!</strong>
+                    <p id="alertMsg" style="margin: 5px 0 0 0; font-size: 13px; color: #FFCDD2;">Points detected beyond
+                        control limits.</p>
+                </div>
+
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="flex-between">
+                        <h4>I-Chart (Individual Values)</h4>
+                        <span style="font-size:12px; color:var(--text-secondary); cursor:pointer;"
+                            onclick="explain('I-Chart', 'Plots each individual data point over time.<br><b>Center Line:</b> The average.<br><b>Limits:</b> 3 Sigma boundaries calculated from the Moving Range.')">ℹ️
+                            Info</span>
+                    </div>
+                    <div class="chart-controls">
+                        <div class="control-btn" onclick="magnify('iChartCanvas', 'I-Chart (Individual Values)')">🔍
+                        </div>
+                        <div class="control-btn" onclick="downloadChart('iChartCanvas', 'I-Chart (Individual Values)')">
+                            ⬇️</div>
+                    </div>
+                    <div style="height: 300px;"><canvas id="iChartCanvas"></canvas></div>
+
+                    <!-- I-Chart Stats -->
+                    <div class="stat-grid">
+                        <div class="stat-box clickable-result" onclick="explain('ucl')">
+                            <div class="stat-label">UCL ❓</div>
+                            <div class="stat-val" id="resUCL" style="color: #E74C3C">-</div>
+                            <div class="stat-hint">Upper Limit</div>
+                        </div>
+                        <div class="stat-box clickable-result" onclick="explain('mean')">
+                            <div class="stat-label">Mean (CL) ❓</div>
+                            <div class="stat-val" id="resMean" style="color: #2ECC71">-</div>
+                            <div class="stat-hint">Average</div>
+                        </div>
+                        <div class="stat-box clickable-result" onclick="explain('lcl')">
+                            <div class="stat-label">LCL ❓</div>
+                            <div class="stat-val" id="resLCL" style="color: #E74C3C">-</div>
+                            <div class="stat-hint">Lower Limit</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AUTO FINDINGS SUMMARY -->
+                <div id="analysisSummary"
+                    style="padding:15px; background:var(--surface-3); border-radius:6px; font-size:13px; line-height:1.5; color:var(--text-primary); margin-bottom:20px; display:none; border-left: 3px solid var(--accent);">
+                </div>
+
+                <div class="card">
+                    <div class="flex-between">
+                        <h4>MR-Chart (Moving Range)</h4>
+                        <span style="font-size:12px; color:var(--text-secondary); cursor:pointer;"
+                            onclick="explain('MR-Chart', 'Plots the absolute difference between consecutive points (e.g. |Day2 - Day1|).<br>shows process <b>consistency</b> (volatility).')">ℹ️
+                            Info</span>
+                    </div>
+                    <div style="height: 200px;"><canvas id="mrChartCanvas"></canvas></div>
+
+                    <div class="stat-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="stat-box"
+                            onclick="explain('MR-Bar', 'The average of all moving ranges.<br>This estimates the short-term variation (Sigma) of the process.')">
+                            <div class="stat-label">Avg Moving Range (MR-Bar)</div>
+                            <div class="stat-val" id="resMR">-</div>
+                        </div>
+                        <div class="stat-box"
+                            onclick="explain('UCL (Range)', 'The maximum expected jump between two consecutive points.<br>If a range point exceeds this, the process has become unstable/volatile.')">
+                            <div class="stat-label">UCL (Range)</div>
+                            <div class="stat-val" id="resUCL_MR" style="color: #E74C3C">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REPORT & EXPORT SECTION -->
+                <div id="reportSection" class="card no-print"
+                    style="margin-top:20px; border-top: 3px solid var(--accent);">
+                    <div class="flex-between" style="margin-bottom:15px;">
+                        <div style="font-size:18px; font-weight:bold; color:var(--accent);">Lead Auditor / MBB Report
+                        </div>
+                        <button class="btn btn-ghost" onclick="askAICoach()">Ask AI Coach</button>
+                    </div>
+
+                    <div id="aiOutput"
+                        style="margin-bottom:20px; padding:15px; background:var(--surface-3); border-radius:8px; display:none; border-left:4px solid var(--accent); font-size:13px; color:#cbd5e1;">
+                        <!-- AI Insights -->
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:end;">
+                        <div>
+                            <label style="font-size:11px; color:var(--text-secondary);">Project Lead:</label>
+                            <input type="text" id="analystName" placeholder="Enter name..."
+                                style="width:100%; padding:10px; background:var(--surface-1); border:1px solid rgba(255, 255, 255, 0.1); border-radius:6px; color:white; margin-top:5px;">
+                        </div>
+                        <button class="btn btn-primary" style="width:100%; height:42px;" onclick="printReport()">🖨️ PDF
+                            Audit Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </div>
+
+    <!-- INFOGRAPHIC EXPLANATION MODAL -->
+    <div class="modal-overlay" id="hypothesisInfoModal"
+        onclick="if(event.target.id==='hypothesisInfoModal') this.style.display='none'" style="z-index:2000;">
+        <div class="modal-box" style="max-width:800px; width:95%; border: 3px solid var(--accent);">
+            <span class="close-btn" style="float:right; cursor:pointer; font-size:24px;"
+                onclick="document.getElementById('hypothesisInfoModal').style.display='none'">&times;</span>
+            <div style="text-align:center; margin-bottom:20px;">
+                <h2 style="color:var(--accent); margin:0;" id="conceptTitle">SPC Mastery 🛡️</h2>
+                <p style="color:var(--text-secondary); font-size:14px; margin-top:5px;">Protecting process gains through
+                    Statistical Control.</p>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div id="conceptContent" style="min-height:250px;">
+                <!-- Content Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- INFO MODAL -->
+    <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+        <div class="modal-box">
+            <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+            <h2 id="modalTitle" style="color:var(--accent); margin-bottom:15px;">Concept Detail</h2>
+            <div id="modalContent" style="font-size:14px; line-height:1.6; color:#cbd5e1;">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAGNIFY MODAL -->
+    <div class="modal-overlay" id="magnifyModal" onclick="closeModal(event)" style="z-index: 1001;">
+        <div class="modal-box" style="max-width: 800px; width: 95%; background: var(--surface-1);">
+            <span class="close-btn"
+                onclick="document.getElementById('magnifyModal').style.display='none'">&times;</span>
+            <h3 id="magnifyTitle" style="color: var(--accent); margin-bottom: 10px;">Chart Zoom</h3>
+            <img id="magnifyImg" style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);" />
+        </div>
+    </div>
+
+    <script>
+        let iChart = null;
+        let mrChart = null;
+        let currentScenario = null;
+
+        // SCENARIOS DATABASE
+        const scenarios = {
+            'manufacturing': {
+                name: "Chemical pH Level",
+                data: "7.1, 7.2, 7.0, 7.3, 7.8, 7.2, 7.1, 7.0, 6.9, 7.2, 7.3, 7.1, 7.0, 7.2, 8.5",
+                context: "Chemical Process: pH MUST be stable between 6.5 and 7.5. Sudden spikes indicate contamination.",
+                reason: "Spikes above UCL suggest 'Special Cause' variation (e.g., a valve failure), not just random noise."
+            },
+            'healthcare': {
+                name: "Lab Test Turnaround (Mins)",
+                data: "45, 48, 50, 42, 47, 46, 90, 48, 50, 49, 45, 47, 46, 48, 44",
+                context: "Lab Efficiency: TAT should be consistent. A spike to 90 mins is a major delay.",
+                reason: "A single point far outside limits means a specific event occurred (e.g., machine breakdown) that needs investigation."
+            },
+            'service': {
+                name: "Claim Processing (Days)",
+                data: "3.5, 3.2, 3.8, 3.1, 3.4, 3.6, 3.3, 5.0, 5.2, 5.5, 5.8, 6.0, 6.2, 6.5, 6.8",
+                context: "Claims Dept: We see a steady upward trend (Drift). This is worse than a single spike.",
+                reason: "Consecutive points increasing indicates the process is deteriorating (Trend Rule), possibly due to backlog buildup."
+            },
+            'callcenter': {
+                name: "Call Hold Time (Secs)",
+                data: "120, 115, 125, 130, 122, 118, 124, 250, 120, 115, 125, 119, 121",
+                context: "Call Center: Hold times are usually stable around 2 mins. The 250s spike is a outlier.",
+                reason: "A sudden spike in hold time could indicate a specific network issue or a complex case that tied up a senior agent."
+            },
+            'retail': {
+                name: "Store Traffic (Hourly)",
+                data: "120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180",
+                context: "Retail Store: A steady increase in hourly foot traffic during a promotion.",
+                reason: "A sustained trend of 6 or more points indicates a non-random shift in the process, which is exactly what a promotion should do!"
+            }
+        };
+
+        function loadExample(type) {
+            if (type === 'stable') {
+                const base = 50;
+                const data = Array.from({ length: 15 }, () => (base + (Math.random() - 0.5) * 5).toFixed(1));
+                document.getElementById('dataInput').value = data.join(', ');
+            } else {
+                const base = 50;
+                const data = Array.from({ length: 15 }, () => (base + (Math.random() - 0.5) * 5).toFixed(1));
+                // Inject violations
+                data[7] = (base + 20).toFixed(1);
+                data[8] = (base + 22).toFixed(1);
+                document.getElementById('dataInput').value = data.join(', ');
+            }
+            generateCharts();
+        }
+
+        // GLOSSARY
+        const glossary = {
+            "ucl": { title: "UCL (Upper Control Limit)", text: "The maximum value for a stable process (Mean + 3 Sigma).<br><br><b>Interpretation:</b> Any point above this line is a <b>Special Cause</b> violation. It means something abnormal happened that the process wasn't designed for (e.g., machine failure, power surge)." },
+            "lcl": { title: "LCL (Lower Control Limit)", text: "The minimum value for a stable process (Mean - 3 Sigma).<br><br><b>Interpretation:</b> Points below this line are statistically rare. They indicate a significant shift down in the process value, which could be good if you are tracking 'Wait Time' or bad if you are tracking 'Strength'." },
+            "mean": { title: "Center Line (Mean)", text: "The average performance of your process.<br><br><b>Interpretation:</b> In a stable process, points should randomly bounce above and below this line. If you see too many points on one side, it indicates a <b>Shift</b> in the process mean." },
+            "mr": { title: "Moving Range (Volatility)", text: "Measures the difference between consecutive points.<br><br><b>Interpretation:</b> High MR values mean the process is erratic. If a point on the MR chart is above the UCL, there was a sudden jump between two units that is beyond normal expectations." },
+            "I-Chart": { title: "Individual Value Chart (I-Chart)", text: "This chart monitors the stability of the process over time by plotting each measurement individually.<br><br><b>Strategic Value:</b> It helps differentiate between 'Signal' and 'Noise'. If points stay within the red dashed lines, the process is stable and predictable (Noise). If points break the lines, you have a Signal that requires investigation." },
+            "MR-Chart": { title: "Moving Range Chart (MR-Chart)", text: "This chart monitors process consistency (volatility).<br><br><b>Strategic Value:</b> While the I-Chart shows where the process is, the MR-Chart shows how much it 'twitches'. High volatility makes a process impossible to improve because you cannot predict what it will do next." }
+        };
+
+        function explain(key, simpleText) {
+            const item = glossary[key] || { title: key, text: simpleText };
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalContent').innerHTML = item.text;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function openSPCInfo() {
+            document.getElementById('hypothesisInfoModal').style.display = 'flex';
+            showConcept('spc');
+        }
+
+        const concepts = {
+            spc: {
+                title: "🛡️ The Shield: Control Charts",
+                ideal: "Ideally use when: You have stabilized a process and need to ensure it doesn't drift back to chaos. It 'shouts' when something actually breaks.",
+                life: {
+                    title: "⚖️ Weight Tracking",
+                    text: "Your weight bounces +/- 1lb daily (Noise). But if you gain 10lbs in a week, that is a 'Signal'. SPC helps you ignore the daily bounce and act only on the 10lb spike.",
+                    icon: "⚖️"
+                },
+                health: {
+                    title: "🏥 Post-Op Infection Rate",
+                    text: "Monitoring daily outcomes. If we see a cluster of infections in 3 days, SPC mathematically alerts us that this isn't random luck—something changed in the OR.",
+                    icon: "🧬"
+                }
+            }
+        };
+
+        function showConcept(key) {
+            const c = concepts[key];
+            const contentDiv = document.getElementById('conceptContent');
+            const titleDiv = document.getElementById('conceptTitle');
+            titleDiv.innerText = c.title;
+
+            contentDiv.innerHTML = `
+                <div style="background:#064e3b; padding:15px; border-radius:8px; margin-bottom:20px; text-align:center; border:1px dashed #059669;">
+                    <strong style="color:#6ee7b7;">💡 ${c.ideal}</strong>
+                </div>
+
+                <div class="grid-2" style="gap:20px; margin-top:20px; display:grid; grid-template-columns:1fr 1fr;">
+                    <div style="background:#1e293b; padding:20px; border-radius:8px; border-top:4px solid #10b981;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.life.icon}</div>
+                        <h3 style="color:#6ee7b7; margin-top:0;">Daily Life Application</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.life.text}</p>
+                    </div>
+                    <div style="background:#1e293b; padding:20px; border-radius:8px; border-top:4px solid #06b6d4;">
+                        <div style="text-align:center; font-size:40px; margin-bottom:10px;">${c.health.icon}</div>
+                        <h3 style="color:#22d3ee; margin-top:0;">Healthcare Application</h3>
+                        <p style="color:#cbd5e1; font-size:13px; line-height:1.5;">${c.health.text}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none';
+            if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+        }
+
+        function magnify(canvasId, title) {
+            const original = document.getElementById(canvasId);
+            const modalImg = document.getElementById('magnifyImg');
+            modalImg.src = original.toDataURL();
+            document.getElementById('magnifyTitle').innerText = title;
+            document.getElementById('magnifyModal').style.display = 'flex';
+        }
+
+        function downloadChart(canvasId, title) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = title.replace(/\s+/g, '_') + '_Chart.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function loadScenario() {
+            const sel = document.getElementById('scenarioSelect').value;
+            currentScenario = sel;
+            if (!sel) return;
+
+            document.getElementById('dataInput').value = scenarios[sel].data;
+        }
+
+        function autoFixData() {
+            let val = document.getElementById('dataInput').value;
+            val = val.replace(/,/g, '\n').split('\n').filter(x => x.trim() !== '' && !isNaN(x)).join(', ');
+            document.getElementById('dataInput').value = val;
+        }
+
+        function generateCharts() {
+            const raw = document.getElementById('dataInput').value;
+            const data = raw.replace(/\n/g, ',').split(',').map(Number).filter(x => !isNaN(x));
+
+            if (data.length < 3) { alert("Need at least 3 points."); return; }
+
+            const n = data.length;
+            const mean = data.reduce((a, b) => a + b, 0) / n;
+
+            const mr = [];
+            for (let i = 1; i < n; i++) mr.push(Math.abs(data[i] - data[i - 1]));
+            const mrBar = mr.reduce((a, b) => a + b, 0) / mr.length;
+
+            // Constants for I-MR (n=2)
+            const E2 = 2.66;
+            const D4 = 3.267;
+
+            const ucl = mean + (E2 * mrBar);
+            const lcl = mean - (E2 * mrBar);
+            const ucl_mr = D4 * mrBar;
+
+            document.getElementById('resMean').innerText = mean.toFixed(2);
+            document.getElementById('resUCL').innerText = ucl.toFixed(2);
+            document.getElementById('resLCL').innerText = lcl.toFixed(2);
+            document.getElementById('resMR').innerText = mrBar.toFixed(2);
+            document.getElementById('resUCL_MR').innerText = ucl_mr.toFixed(2);
+
+            // AUTO FINDINGS
+            generateAutoFindings(data, mean, ucl, lcl);
+
+            renderIChart(data, mean, ucl, lcl);
+            renderMRChart(mr, mrBar, ucl_mr);
+        }
+
+        function generateAutoFindings(data, mean, ucl, lcl) {
+            const div = document.getElementById('analysisSummary');
+            let violations = [];
+            let isStable = true;
+
+            // Rule 1: Beyond Limits
+            let rule1 = 0;
+            data.forEach((d, i) => { if (d > ucl || d < lcl) rule1++; });
+            if (rule1 > 0) {
+                violations.push(`• <b>Rule 1 Violation:</b> ${rule1} point(s) are outside control limits (Special Cause).`);
+                isStable = false;
+            }
+
+            // Rule 2: Trend (Simplistic check for 6 increasing/decreasing)
+            let trend = 0;
+            for (let i = 5; i < data.length; i++) {
+                if ((data[i] > data[i - 1] && data[i - 1] > data[i - 2] && data[i - 2] > data[i - 3] && data[i - 3] > data[i - 4] && data[i - 4] > data[i - 5])) {
+                    trend++;
+                }
+            }
+            if (trend > 0) {
+                violations.push(`• <b>Rule 3 Violation (Trend):</b> Detected consecutive increasing points. Process may be drifting.`);
+                isStable = false;
+            }
+
+            let html = "<b>Stability Analysis:</b><br>";
+            if (isStable) {
+                html += "<span style='color:var(--success)'>• <b>Process is Stable.</b> Variation is predictable (Common Cause). No action needed.</span>";
+                document.getElementById('alertBox').style.display = 'none';
+            } else {
+                html += violations.join("<br>");
+                document.getElementById('alertBox').style.display = 'block';
+                document.getElementById('alertMsg').innerText = "Special Cause Variation Detected.";
+            }
+
+            div.innerHTML = html;
+            div.style.display = 'block';
+        }
+
+        function renderIChart(data, mean, ucl, lcl) {
+            const ctx = document.getElementById('iChartCanvas').getContext('2d');
+            if (iChart) iChart.destroy();
+
+            const labels = data.map((_, i) => i + 1);
+
+            iChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Individual Value',
+                        data: data,
+                        borderColor: '#29B6F6',
+                        backgroundColor: '#29B6F6',
+                        borderWidth: 2,
+                        pointBackgroundColor: data.map(v => (v > ucl || v < lcl) ? '#E74C3C' : '#29B6F6'),
+                        pointRadius: data.map(v => (v > ucl || v < lcl) ? 6 : 4),
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                uclLine: { type: 'line', yMin: ucl, yMax: ucl, borderColor: '#E74C3C', borderDash: [5, 5], borderWidth: 1, label: { content: 'UCL', enabled: true, position: 'end', color: '#E74C3C' } },
+                                lclLine: { type: 'line', yMin: lcl, yMax: lcl, borderColor: '#E74C3C', borderDash: [5, 5], borderWidth: 1, label: { content: 'LCL', enabled: true, position: 'end', color: '#E74C3C' } },
+                                meanLine: { type: 'line', yMin: mean, yMax: mean, borderColor: '#2ECC71', borderWidth: 1, label: { content: 'Mean', enabled: true, position: 'start', color: '#2ECC71' } }
+                            }
+                        },
+                        legend: { display: false }
+                    },
+                    onClick: () => explain('ucl')
+                }
+            });
+        }
+
+        function renderMRChart(mr, mrBar, ucl) {
+            const ctx = document.getElementById('mrChartCanvas').getContext('2d');
+            if (mrChart) mrChart.destroy();
+
+            const labels = mr.map((_, i) => i + 2);
+
+            mrChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Moving Range',
+                        data: mr,
+                        borderColor: '#AB47BC',
+                        backgroundColor: 'rgba(171, 71, 188, 0.2)',
+                        fill: true,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                uclLine: { type: 'line', yMin: ucl, yMax: ucl, borderColor: '#E74C3C', borderDash: [5, 5], label: { content: 'UCL', enabled: true, color: '#E74C3C' } },
+                                meanLine: { type: 'line', yMin: mrBar, yMax: mrBar, borderColor: '#2ECC71', label: { content: 'Avg MR', enabled: true, color: '#2ECC71' } }
+                            }
+                        },
+                        legend: { display: false }
+                    },
+                    onClick: () => explain('mr')
+                }
+            });
+        }
+        async function askAICoach() {
+            const box = document.getElementById('aiOutput');
+            const summary = document.getElementById('analysisSummary').innerText;
+            const dataStr = document.getElementById('dataInput').value.split(',').slice(-5).join(',');
+
+            box.style.display = 'block';
+            box.innerHTML = "Consulting Master Black Belt Repository...";
+
+            const prompt = `
+                Act as a Six Sigma Master Black Belt. We are auditing an I-MR Control Chart.
+                Stability Summary: ${summary}.
+                The last 5 data points were: ${dataStr}.
+                In two professional sentences, explain the most likely risk to process performance and what the next 'Control Plan' step should be.
+            `;
+
+            try {
+                const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const resData = await response.json();
+                box.innerHTML = `<strong>MBB Audit Insight:</strong><br>${resData.candidates[0].content.parts[0].text}`;
+            } catch (e) {
+                box.innerHTML = "Coach is currently offline.";
+            }
+        }
+
+        function printReport() {
+            const analyst = document.getElementById('analystName').value || 'SPC Lead';
+            const date = new Date().toLocaleDateString();
+            const scenario = document.getElementById('scenarioSelect').options[document.getElementById('scenarioSelect').selectedIndex].text;
+            const mean = document.getElementById('resMean').innerText;
+            const ucl = document.getElementById('resUCL').innerText;
+            const lcl = document.getElementById('resLCL').innerText;
+            const stability = document.getElementById('analysisSummary').innerText;
+            const insight = document.getElementById('aiOutput').innerText || "No AI insight generated.";
+
+            const iCanvas = document.getElementById('iChartCanvas');
+            const mrCanvas = document.getElementById('mrChartCanvas');
+
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                <head>
+                    <title>SPC Audit - ${analyst}</title>
+                    <style>
+                        body { font-family: 'Outfit', 'Segoe UI', sans-serif; padding: 40px; color: #1e293b; line-height: 1.5; }
+                        .header { border-bottom: 4px solid #10b981; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; }
+                        .title { font-size: 24px; font-weight: 800; color: #064e3b; text-transform: uppercase; }
+                        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
+                        .card { background: #f0fdf4; border: 1px solid #dcfce7; border-radius: 12px; padding: 25px; }
+                        .stat { font-size: 32px; font-weight: 800; color: #10b981; }
+                        .executive { background: #f8fafc; border-left: 6px solid #10b981; padding: 25px; border-radius: 12px; margin-top: 30px; }
+                        .chart-img { width: 100%; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 30px; }
+                        .footer { margin-top: 50px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div>
+                            <div class="title">🛡️ Process Control Audit</div>
+                            <div style="font-size:14px; color:#64748b;">Tool: I-MR (Individuals & Moving Range)</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:12px; font-weight:bold; color:#10b981;">SECURITY LEVEL: VERIFIED</div>
+                            <div style="font-size:11px; color:#64748b; margin-top:5px;"><b>MBB Lead:</b> ${analyst} | <b>Date:</b> ${date}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        <div class="card">
+                            <h3 style="color:#065f46; margin-top:0;">Stability Metrics</h3>
+                            <div><span style="font-size:12px; color:#64748b;">CL (Mean):</span> <span class="stat">${mean}</span></div>
+                            <div><span style="font-size:12px; color:#64748b;">UCL:</span> <span style="font-size:24px; color:#ef4444;">${ucl}</span></div>
+                            <div><span style="font-size:12px; color:#64748b;">LCL:</span> <span style="font-size:24px; color:#ef4444;">${lcl}</span></div>
+                        </div>
+                        <div class="card">
+                            <h3 style="color:#065f46; margin-top:0;">Context</h3>
+                            <p><strong>Scenario:</strong> ${scenario}</p>
+                            <p><strong>Stability Analysis:</strong><br>${stability}</p>
+                        </div>
+                    </div>
+
+                    <div class="executive">
+                        <h3 style="color:#064e3b; margin-top:0;">🔍 Audit Interpretation</h3>
+                        <p>${insight}</p>
+                    </div>
+
+                    <h3 style="text-align:center; color:#064e3b; margin-top:40px;">Stability Visualization (I-Chart)</h3>
+                    <img class="chart-img" src="${iCanvas.toDataURL()}">
+                    
+                    <h3 style="text-align:center; color:#064e3b; margin-top:40px;">Volatility Visualization (MR-Chart)</h3>
+                    <img class="chart-img" src="${mrCanvas.toDataURL()}">
+
+                    <div class="footer">
+                        Statistical Process Control | Master Black Belt Portfolio | Continuous Improvement Protocol
+                    </div>
+                <script src="AssistantTools.js"><\/script><\/body>
+                </html>
+            `);
+            win.document.close();
+            win.focus();
+            setTimeout(() => { win.print(); }, 500);
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'hypothesisInfoModal') document.getElementById('hypothesisInfoModal').style.display = 'none';
+            if (e.target.id === 'magnifyModal') document.getElementById('magnifyModal').style.display = 'none';
+        }
+    </script>
+
+    <div id="visualExplModal" class="modal-overlay" style="z-index: 9999; display: none; align-items: center; justify-content: center; background: rgba(2,6,23,0.95); backdrop-filter: blur(10px);">
+        <div class="modal-box" style="max-width: 90%; max-height: 90vh; overflow-y: auto; padding: 20px; text-align: center; background: #0f172a; border: 2px solid #3b82f6; position: relative;">
+            <span class="close-btn" onclick="document.getElementById('visualExplModal').style.display='none'" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer;">&times;</span>
+            <img src="images/imr_control_charts_info.jpg" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        </div>
+    </div>
+</body>
+
+</html>
