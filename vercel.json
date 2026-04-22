@@ -1,7 +1,7 @@
 {
     "version": 2,
-    "buildCommand": "cd nexus-shell && npm install && npm run build",
-    "outputDirectory": "nexus-shell/dist",
+    "buildCommand": "cd academy-shell && npm install && npm run build",
+    "outputDirectory": "academy-shell/dist",
     "rewrites": [
         {
             "source": "/(04-STATISTICS-TOOLS|02-TEMPLATES)/(.*)",
