@@ -863,7 +863,7 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText
 // 5. PARETO GAME (THE FOCUS)
 // ----------------------------------------------------------------------------
 
-const ParetoGame = ({ round, setRound, setScore, setIsComplete }) => {
+const ParetoGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: any) => {
     const [selected, setSelected] = useState([]);
     const bars = [
         { label: 'CRASHES', val: 320, vital: true },
@@ -923,7 +923,7 @@ const ParetoGame = ({ round, setRound, setScore, setIsComplete }) => {
 // 6. FISHBONE GAME (THE ANATOMY)
 // ----------------------------------------------------------------------------
 
-const FishboneGame = ({ round, setRound, setScore, setIsComplete, setHoverText }) => {
+const FishboneGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: any) => {
     const clues = [
         { t: "Barista didn't sleep", c: "MAN" },
         { t: "Oven thermostat is broken", c: "MACHINE" },
