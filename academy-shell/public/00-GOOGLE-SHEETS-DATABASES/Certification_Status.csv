@@ -1,3 +1,0 @@
-CertStatusID,UserID,BeltLevel,Status,CompletionPercent,MissingItems,MentorID,MentorDecision,MentorFeedback,AdminDecision,AdminFeedback,IssuanceMode,CertificateNumber,CertificateFileURL,IssuedAt
-CS_USR001_YELLOW,USR001,Yellow,InProgress,0.5,"Project Gate Define, Final Quiz",USR002,Pending,-,Pending,-,Auto,-,-,-
-CS_USR001_GREEN,USR001,Green,NotStarted,0,-,-,-,-,-,-,Hybrid,-,-,-

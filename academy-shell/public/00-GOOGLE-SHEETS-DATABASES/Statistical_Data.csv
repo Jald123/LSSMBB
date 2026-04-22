@@ -1,7 +1,0 @@
-DataID,ProjectID,MetricName,DateRecorded,Value,Unit,DataType,ProcessStep,BatchNumber
-DATA_001,PROJ_001,ProcessingTime,2025-01-20,8.5,days,Continuous,Invoice_Data_Entry,Batch_01
-DATA_002,PROJ_001,ProcessingTime,2025-01-21,7.8,days,Continuous,Invoice_Data_Entry,Batch_01
-DATA_003,PROJ_001,ProcessingTime,2025-01-22,8.2,days,Continuous,Invoice_Data_Entry,Batch_01
-DATA_004,PROJ_001,Defects,2025-01-20,3,count,Discrete,Invoice_Approval,Batch_01
-DATA_005,PROJ_001,Defects,2025-01-21,1,count,Discrete,Invoice_Approval,Batch_01
-DATA_006,PROJ_001,Defects,2025-01-22,2,count,Discrete,Invoice_Approval,Batch_01

@@ -1,5 +1,0 @@
-{
-    "version": 2,
-    "buildCommand": "cd academy-shell && npm install && npm run build",
-    "outputDirectory": "academy-shell/.next"
-}

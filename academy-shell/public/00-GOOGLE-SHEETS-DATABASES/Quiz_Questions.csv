@@ -1,2 +1,0 @@
-QuestionID,BeltLevel,ModuleID,QuestionText,QuestionType,AnswerA,AnswerB,AnswerC,AnswerD,CorrectAnswer,Explanation,DifficultyLevel,XPReward
-Q_YB_M01_001,Yellow Belt,YB_M01,What does DMAIC stand for?,Multiple Choice,"Define, Measure, Analyze, Improve, Control","Data, Management, Analysis, Integration, Consistency",[Other wrong answer],[Other wrong answer],A,DMAIC is the five-phase improvement cycle...,Easy,50

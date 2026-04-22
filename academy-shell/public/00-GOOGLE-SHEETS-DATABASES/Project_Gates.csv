@@ -1,9 +1,0 @@
-GateID,BeltLevel,DMAICPhase,GateName,RequiredTemplates,RequiredEvidence,MentorApprovalRequired,AdminApprovalRequired,Order
-GATE_YB_DEFINE,Yellow,Define,Define Phase Review,"TPL_001_CHARTER,TPL_002_SIPOC","Problem Statement, Scope",TRUE,FALSE,1
-GATE_YB_FINAL,Yellow,Control,Final Project Sign-off,"TPL_005_CONTROL_PLAN","Full Project Report",TRUE,TRUE,2
-GATE_GB_DEFINE,Green,Define,Define Gate,"TPL_001_CHARTER","Business Case, Financial Impact",TRUE,FALSE,1
-GATE_GB_MEASURE,Green,Measure,Measure Gate,"TPL_003_DATA_PLAN","MSA Results, Baseline Sigma",TRUE,FALSE,2
-GATE_GB_ANALYZE,Green,Analyze,Analyze Gate,"TPL_004_FISHBONE","Hypothesis Tests Results",TRUE,FALSE,3
-GATE_GB_IMPROVE,Green,Improve,Improve Gate,"TPL_006_DOE","Pilot Results",TRUE,FALSE,4
-GATE_GB_CONTROL,Green,Control,Control Gate,"TPL_005_CONTROL_PLAN","Sustained Results (3 months)",TRUE,TRUE,5
-GATE_BB_FINAL,Black,Control,Final Board Defense,"ALL","Strategic Impact Report",TRUE,TRUE,1

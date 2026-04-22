@@ -1,2 +1,0 @@
-CourseID,BeltLevel,ModuleNumber,ModuleTitle,Description,LearningObjectives,ContentHTML,EstimatedMinutes,VideoURL,InteractiveExerciseID,AssignmentTemplateID,QuizID,PrerequisiteModuleID,DifficultyLevel,XPReward,Order
-YB_M01,Yellow Belt,1,Foundations of Lean Six Sigma,[Long description],[Comma-separated objectives],[HTML content for lesson],45,https://youtube.com/...,EXR_YB_M01_01,TPL_PROJECT_CHARTER,QUIZ_YB_M01,YB_M00,Beginner,100,1

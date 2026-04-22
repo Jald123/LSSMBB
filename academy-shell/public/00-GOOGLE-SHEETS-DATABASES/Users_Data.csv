@@ -1,4 +1,0 @@
-UserID,FirstName,LastName,Email,Role,IsActive,PhoneNumber,Company,JobTitle,RegistrationDate,CurrentBeltLevel,YellowBeltStatus,GreenBeltStatus,BlackBeltStatus,TotalXPPoints,CertificateURL,PreferredLanguage
-USR001,Ahmed,Al-Rashid,ahmed@email.com,Learner,TRUE,+966501234567,Saudi Aramco,Process Engineer,2025-01-15,Yellow,In Progress,Not Started,Not Started,1250,/cert/USR001_YB.pdf,Arabic
-USR002,Sarah,Connor,sarah@test.com,Mentor,TRUE,+1555123456,Lean Corp,Master Black Belt,2025-01-10,Black,Completed,Completed,Completed,5000,-,English
-USR003,Admin,User,admin@platform.com,Admin,TRUE,-,Platform,Admin,2025-01-01,Black,Completed,Completed,Completed,0,-,English

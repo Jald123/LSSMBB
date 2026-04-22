@@ -1,9 +1,0 @@
-RuleID,TriggerActivityType,ConditionExpr,XPValue,MaxPerDay,IsActive,Description
-XP_001,CompleteLesson,-,20,5,TRUE,Complete a single lesson page
-XP_002,CompleteModule,-,100,2,TRUE,Finish an entire module
-XP_003,SubmitQuiz,-,50,3,TRUE,Submit a quiz attempt
-XP_004,PassQuiz,"[FormattedScore] >= 80",50,3,TRUE,Bonus for passing a quiz
-XP_005,SubmitTemplate,-,75,5,TRUE,Submit a completed template
-XP_006,MentorApproval,-,25,10,TRUE,Bonus for mentor approval
-XP_007,DailyLogin,-,10,1,TRUE,Daily login bonus
-XP_008,ProjectGate,-,200,1,TRUE,Complete a project phase gate

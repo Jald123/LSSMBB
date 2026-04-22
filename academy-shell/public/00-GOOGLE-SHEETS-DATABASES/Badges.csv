@@ -1,9 +1,0 @@
-BadgeID,BadgeName,BeltLevel,Icon,CriteriaType,CriteriaValue,Description,IsActive
-BDG_001,Define Phase Starter,Yellow,🏁,ModulesCompleted,3,Earned after completing 3 modules,TRUE
-BDG_002,Quiz Master,Yellow,🧠,AvgQuizScore,90,Maintain average quiz score > 90%,TRUE
-BDG_003,Template Practitioner,Green,📝,TemplatesCompleted,5,Complete 5 different templates,TRUE
-BDG_004,Streak Starter,All,🔥,StreakDays,3,Login for 3 consecutive days,TRUE
-BDG_005,Week Warrior,All,🔥,StreakDays,7,Login for 7 consecutive days,TRUE
-BDG_006,Project Pioneer,Yellow,🚀,ProjectsActive,1,Start your first improvement project,TRUE
-BDG_007,Data Analyst,Green,📊,ModulesCompleted,10,Complete all Analyze phase modules,TRUE
-BDG_008,Mentor's Favorite,All,🌟,MentorApprovals,5,Get 5 items approved by mentor,TRUE
