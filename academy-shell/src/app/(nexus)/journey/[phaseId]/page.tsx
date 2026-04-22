@@ -29,7 +29,7 @@ const PhaseOrbitView = () => {
     const phaseKey = phaseId?.toLowerCase();
     const phase = activeSet[phaseKey] || Object.values(activeSet)[0];
 
-    const containerVariants = {
+    const containerVariants: any = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
@@ -37,7 +37,7 @@ const PhaseOrbitView = () => {
         }
     };
 
-    const nodeVariants = {
+    const nodeVariants: any = {
         hidden: { opacity: 0, y: 20, scale: 0.95 },
         visible: {
             opacity: 1,
