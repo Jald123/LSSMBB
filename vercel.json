@@ -1,7 +1,7 @@
 {
     "version": 2,
     "buildCommand": "cd academy-shell && npm install && npm run build",
-    "outputDirectory": "academy-shell/dist",
+    "outputDirectory": "academy-shell/.next",
     "rewrites": [
         {
             "source": "/(04-STATISTICS-TOOLS|02-TEMPLATES)/(.*)",
