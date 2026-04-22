@@ -446,7 +446,7 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: a
                         key={bucket}
                         label={bucket}
                         content={placed[bucket]}
-                        onDrop={(item) => handleDrop(bucket, item)}
+                        onDrop={(item: string) => handleDrop(bucket, item)}
                     />
                 ))}
             </div>
@@ -934,7 +934,7 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete, setHoverText }
     ];
 
     const currentClue = clues[round - 1];
-    const [selected, setSelected] = useState(null);
+    const [selected, setSelected] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleCategory = (cat: string) => {
