@@ -277,15 +277,15 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete, setHoverText }:
     const [items, setItems] = useState(currentData.items);
     const [sortedCount, setSortedCount] = useState(0);
 
-    const handleSort = (type, item) => {
+    const handleSort = (type: string, item: any) => {
         const isSignal = item.v;
         const isCorrectTarget = (type === 'file' && isSignal) || (type === 'garbage' && !isSignal);
 
         if (isCorrectTarget) {
-            setScore(s => s + 20);
+            setScore((s: number) => s + 20);
             setHoverText(`VALIDATED: ${item.t} correctly classified.`);
         } else {
-            setScore(s => Math.max(0, s - 10));
+            setScore((s: number) => Math.max(0, s - 10));
             setHoverText(`REJECTED: ${item.t} is ${isSignal ? 'a valid signal' : 'subjective noise'}.`);
         }
 
@@ -295,7 +295,7 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete, setHoverText }:
         if (sortedCount + 1 >= 6) {
             if (round < 2) {
                 setTimeout(() => {
-                    setRound(r => r + 1);
+                    setRound((r: number) => r + 1);
                     setSortedCount(0);
                     setItems(rawRounds[1].items);
                     setHoverText(null);
@@ -315,7 +315,7 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete, setHoverText }:
             <div className="w-full flex justify-between items-stretch px-10 gap-10">
                 <div 
                     onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
-                    onDrop={(e) => {
+                    onDrop={(e: any) => {
                         try {
                             const data = JSON.parse(e.dataTransfer.getData("application/json"));
                             handleSort('garbage', data);
@@ -337,7 +337,7 @@ const CharterGame = ({ round, setRound, setScore, setIsComplete, setHoverText }:
 
                 <div 
                     onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
-                    onDrop={(e) => {
+                    onDrop={(e: any) => {
                         try {
                             const data = JSON.parse(e.dataTransfer.getData("application/json"));
                             handleSort('file', data);
@@ -358,7 +358,7 @@ const SortingItem = ({ item, setHoverText }: any) => {
     return (
         <motion.div
             draggable
-            onDragStart={(e) => {
+            onDragStart={(e: any) => {
                 e.dataTransfer.setData("application/json", JSON.stringify(item));
                 e.dataTransfer.effectAllowed = "move";
             }}
@@ -394,12 +394,12 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: a
     ];
 
     const currentScenario = scenarios[round - 1];
-    const [placed, setPlaced] = useState({});
+    const [placed, setPlaced] = useState<Record<string, any>>({});
     const [items, setItems] = useState(Object.keys(currentScenario.mapping));
 
-    const handleDrop = (bucket, item) => {
-        if (currentScenario.mapping[item] === bucket) {
-            setScore(s => s + 25);
+    const handleDrop = (bucket: string, item: any) => {
+        if ((currentScenario.mapping as any)[item] === bucket) {
+            setScore((s: number) => s + 25);
             setHoverText(`VALID MAPPING: ${item} is a ${bucket}`);
             const newPlaced = { ...placed, [bucket]: item };
             setPlaced(newPlaced);
@@ -408,7 +408,7 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: a
             if (Object.keys(newPlaced).length >= 5) {
                 if (round < 5) {
                     setTimeout(() => {
-                        setRound(r => r + 1);
+                        setRound((r: number) => r + 1);
                         setPlaced({});
                         setItems(Object.keys(scenarios[round].mapping));
                         setHoverText(null);
@@ -418,7 +418,7 @@ const SipocGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: a
                 }
             }
         } else {
-            setScore(s => Math.max(0, s - 10));
+            setScore((s: number) => Math.max(0, s - 10));
             setHoverText(`CONFLICT: ${item} does not belong in ${bucket}`);
         }
     };
@@ -528,7 +528,7 @@ const MsaGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: any
         return () => clearInterval(interval);
     }, [variation, isStabilized]);
 
-    const handleCalibrate = (val) => {
+    const handleCalibrate = (val: number) => {
         setSliderVal(val);
         setVariation(50 - (val / 2));
         if (val >= 98) {
@@ -540,9 +540,9 @@ const MsaGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: any
     };
 
     const nextRound = () => {
-        setScore(s => s + 30);
+        setScore((s: number) => s + 30);
         if (round < 5) {
-            setRound(r => r + 1);
+            setRound((r: number) => r + 1);
             setVariation(50);
             setSliderVal(0);
             setIsStabilized(false);
@@ -652,9 +652,9 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText
     };
 
     const nextMission = () => {
-        setScore(s => s + 100);
+        setScore((s: number) => s + 100);
         if (round < 5) {
-            setRound(r => r + 1);
+            setRound((r: number) => r + 1);
             setPrecision(25);
             setSteering(80);
             setIsDocked(false);
@@ -664,7 +664,7 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText
         }
     };
 
-    const generateBellPathUnified = (visualSteering, visualPrecision, w = 600, h = 240) => {
+    const generateBellPathUnified = (visualSteering: number, visualPrecision: number, w = 600, h = 240) => {
         const sigma = visualPrecision;
         const mean = visualSteering;
 
@@ -864,7 +864,7 @@ const CapabilityGame = ({ round, setRound, setScore, setIsComplete, setHoverText
 // ----------------------------------------------------------------------------
 
 const ParetoGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: any) => {
-    const [selected, setSelected] = useState([]);
+    const [selected, setSelected] = useState<number[]>([]);
     const bars = [
         { label: 'CRASHES', val: 320, vital: true },
         { label: 'LATENCY', val: 80, vital: false },
@@ -873,14 +873,14 @@ const ParetoGame = ({ round, setRound, setScore, setIsComplete, setHoverText }: 
         { label: 'WIFI', val: 20, vital: false }
     ];
 
-    const handleBarClick = (i) => {
+    const handleBarClick = (i: number) => {
         if (selected.includes(i)) return;
         if (bars[i].vital) {
-            setScore(s => s + 50);
+            setScore((s: number) => s + 50);
             setSelected([...selected, i]);
             setHoverText(`VITAL FEW TARGET LOCKED: ${bars[i].label}`);
         } else {
-            setScore(s => Math.max(0, s - 10));
+            setScore((s: number) => Math.max(0, s - 10));
             setHoverText(`TRIVIAL MANY DETECTED: Resource reallocation required.`);
         }
     };
@@ -937,24 +937,24 @@ const FishboneGame = ({ round, setRound, setScore, setIsComplete, setHoverText }
     const [selected, setSelected] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
 
-    const handleCategory = (cat) => {
+    const handleCategory = (cat: string) => {
         if (isProcessing) return;
         setSelected(cat);
         setIsProcessing(true);
 
         setTimeout(() => {
             if (cat === currentClue.c) {
-                setScore(s => s + 25);
+                setScore((s: number) => s + 25);
                 setHoverText("ROOT CAUSE IDENTIFIED: VALID CATEGORY MATCH.");
                 if (round < clues.length) {
-                    setRound(r => r + 1);
+                    setRound((r: number) => r + 1);
                     setSelected(null);
                     setIsProcessing(false);
                 } else {
                     setIsComplete(true);
                 }
             } else {
-                setScore(s => Math.max(0, s - 15));
+                setScore((s: number) => Math.max(0, s - 15));
                 setHoverText(`INVESTIGATION FAILED: Evidence does not fit ${cat}.`);
                 setSelected(null);
                 setIsProcessing(false);
