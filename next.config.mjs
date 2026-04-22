@@ -8,6 +8,11 @@ const nextConfig = {
                 destination: '/academy',
                 permanent: true,
             },
+            {
+                source: '/04-STATISTICS-TOOLS/:path*',
+                destination: '/workspace/:path*',
+                permanent: false,
+            }
         ];
     },
 };

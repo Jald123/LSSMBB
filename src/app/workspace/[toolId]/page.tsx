@@ -11,6 +11,8 @@ import {
     CheckCircle2,
     Home,
     ArrowUp,
+    Library,
+    Link,
     Sun,
     Moon,
     Calculator,
@@ -335,11 +337,11 @@ const ToolWorkspace = () => {
                 </div>
 
                 <div className="flex-1 flex justify-center items-center gap-6">
-                    <div className="flex items-center gap-1">
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold shadow-[0_0_10px_rgba(236,72,153,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><FileText className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'calculator' ? null : 'calculator')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'calculator' ? 'bg-cyan-500/20 text-cyan-400 font-bold shadow-[0_0_10px_rgba(6,182,212,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Calculator className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'draw' ? null : 'draw')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-lime-500/20 text-lime-400 font-bold shadow-[0_0_10px_rgba(132,204,22,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><PenTool className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'sniper' ? null : 'sniper')} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'sniper' ? 'bg-violet-500/20 text-violet-400 font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Search className="w-4 h-4" /></button>
+                    <div className="flex items-center gap-1.5 bg-black/20 p-1 rounded-xl border border-white/5 mx-2">
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold shadow-[0_0_10px_rgba(236,72,153,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><FileText className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'library' ? null : 'library')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'library' ? 'bg-amber-500/20 text-amber-400 font-bold' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Library className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'links' ? null : 'links')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'links' ? 'bg-blue-500/20 text-blue-400 font-bold' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Link className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'sniper' ? null : 'sniper')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'sniper' ? 'bg-violet-500/20 text-violet-400 font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Search className="w-4 h-4" /></button>
                     </div>
                     <div className="w-px h-8 bg-nexus-border/50 mx-2" />
                     <div className="flex items-center gap-1">

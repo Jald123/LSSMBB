@@ -124,7 +124,7 @@
             </div>
             <div class="header-actions">
                 <a href="Student_Certificate.html" class="btn btn-outline" style="border-color: rgba(212,168,83,0.3); color: #d4a853;"><i class="fas fa-award"></i> Certificate</a>
-                <a href="Tool_WorkflowHub.html" class="btn btn-outline"><i class="fas fa-th"></i> Tools Hub</a>
+                <a href="/workspace/workflow" class="btn btn-outline"><i class="fas fa-th"></i> Tools Hub</a>
                 <button class="btn btn-primary" onclick="window.location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button>
             </div>
         </header>
@@ -234,10 +234,26 @@
                     }
                     
                     // Fallback for known specialized tools
-                    if (name.includes('Kaizen') && toolUrl === '#') toolUrl = 'Tool_KaizenPDCA.html';
-                    if (name.includes('Stakeholder') && toolUrl === '#') toolUrl = 'Tool_StakeholderAnalysis.html';
-                    if (name.includes('SOP') && toolUrl === '#') toolUrl = 'Tool_SOP_Premium.html';
-                    if (name.includes('Financials') && toolUrl === '#') toolUrl = 'Tool_Financials_ROI.html';
+                    const toolMap = {
+                        'Kaizen': 'kaizen',
+                        'Stakeholder': 'stakeholders',
+                        'SOP': 'sop',
+                        'Financials': 'cba',
+                        'Project Charter': 'charter',
+                        'Box Plot': 'boxplot',
+                        'MSA': 'msa',
+                        'FMEA': 'fmea',
+                        'Hypothesis': 'hypothesis'
+                    };
+                    
+                    if (toolUrl === '#' || toolUrl.endsWith('.html')) {
+                        for (const [key, id] of Object.entries(toolMap)) {
+                            if (name.includes(key)) {
+                                toolUrl = `/workspace/${id}`;
+                                break;
+                            }
+                        }
+                    }
                 
                 // Attempt logic
                 const attemptNum = data.attempt || 1;
