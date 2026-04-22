@@ -1,0 +1,7 @@
+MenuID,Title,Subtitle,Icon,TargetView,Order
+MENU_001,Start Your Journey,Choose your path,🎓,Belt_Selection_View,1
+MENU_002,Course Content,80-240 hours of training,📚,Courses_View,2
+MENU_003,Active Projects,Track your progress,📈,Projects_Dashboard,3
+MENU_004,Badges & Certificates,Your accomplishments,🎖️,Achievements_View,4
+MENU_005,200+ Templates,Ready-to-use forms,🛠️,Templates_Library,5
+MENU_006,Discussion Forum,"Ask questions, share ideas",💬,Forum_View,6

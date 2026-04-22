@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS OS | Redirecting...</title>
+    <meta http-equiv="refresh" content="0; url=04-STATISTICS-TOOLS/NexusOS_Landing.html">
+    <style>
+        body {
+            background-color: #020617;
+            color: #22d3ee;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(34, 211, 238, 0.1);
+            border-top: 3px solid #22d3ee;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        h1 {
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 0;
+            opacity: 0.8;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader">
+        <div class="spinner"></div>
+        <h1>Initializing Nexus OS</h1>
+    </div>
+    <script>
+        // Intelligent Redirect
+        setTimeout(() => {
+            window.location.href = "04-STATISTICS-TOOLS/NexusOS_Landing.html";
+        }, 500);
+    </script>
+
+<script src="AssistantTools.js"></script></body>
+</html>

@@ -1,0 +1,15 @@
+FormulaID,FormulaName,FormulaType,Category,UseCase,Equation,Parameters
+STAT_001,Mean (Average),Descriptive,Central Tendency,Calculate average,=SUM(Data)/COUNT(Data),Data range
+STAT_002,Standard Deviation,Descriptive,Variation,Measure spread,=SQRT(SUM((x-mean)²)/n),Data range
+STAT_003,Cp (Capability Index),Capability,Process Capability,Without centering,(USL-LSL)/(6σ),"USL, LSL, StdDev"
+STAT_004,Cpk (Capability Index),Capability,Process Capability,With centering,"MIN((USL-mean)/(3σ), (mean-LSL)/(3σ))","USL, LSL, Mean, StdDev"
+STAT_005,Ppk (Performance Index),Capability,Performance,Short-term,Similar to Cpk,Data range
+STAT_006,Sigma Level,Capability,Quality,Defect rate,NORMSINV(1-DPM/1000000),DPM value
+STAT_007,Z-Score,Statistical,Standardization,Normalize data,(x - mean) / StdDev,"Value, Mean, StdDev"
+STAT_008,t-Test,Hypothesis Test,Comparison,Compare 2 means,t = (mean1-mean2)/(SE),Two datasets
+STAT_009,ANOVA,Hypothesis Test,Comparison,Compare 3+ means,F = MSgroup/MSerror,Multiple groups
+STAT_010,Chi-Square Test,Hypothesis Test,Categorical,Test independence,χ² = Σ(O-E)²/E,Contingency table
+STAT_011,Correlation (r),Relationship,Association,Test linear relationship,r = COV(x,y)/(σx×σy),Two variables
+STAT_012,Regression (R²),Relationship,Prediction,Predict from one variable,R² = 1 - (SSres/SStot),X and Y data
+STAT_013,DPM (Defects Per Million),Quality,Defect Rate,Calculate from data,(Defects/Units)*1000000,"Defects, Total Units"
+STAT_014,Process Capability,Quality,Sigma Conversion,Convert to sigma,Sigma = NORMSINV(DPM/1000000),Defect rate

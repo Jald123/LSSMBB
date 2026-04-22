@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FMEA Generator | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <style>
+        /* INTRO GRID */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* FMEA TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border: 1px solid #444;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+
+        td {
+            border: 1px solid #444;
+            padding: 5px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 5px;
+            font-family: inherit;
+            font-size: 12px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .score-cell {
+            width: 50px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .rpn-cell {
+            font-weight: bold;
+            text-align: center;
+            color: var(--warning);
+        }
+
+        .high-risk {
+            color: #E74C3C;
+        }
+
+        .add-row-btn {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed #666;
+            color: #AAA;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+
+        .add-row-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" style="max-width: 1400px;">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span
+                    style="font-size: 11px; letter-spacing: 1px; color: var(--warning); border: 1px solid var(--warning); padding: 2px 6px; border-radius: 4px;">PHASE:
+                    ANALYZE</span>
+                <div style="height: 5px;"></div>
+                <h1>FMEA Tool <span class="ai-badge">AI RISK MANAGER</span></h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Failure Modes & Effects Analysis. <span style="color: var(--accent);">Predict the Future.</span> Fix
+                    it before it breaks.
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-ghost" onclick="window.location.href='Templates_Landing.html'">← Back</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID -->
+        <div class="intro-grid">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What Is It?</div>
+                <div class="intro-text">A systematic tool to identify where a process might fail and how bad it would
+                    be.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When To Use?</div>
+                <div class="intro-text">Before implementing a new process, or when analyzing risks in a current one.
+                </div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why Use It?</div>
+                <div class="intro-text">Prioritizes risks mathematically (RPN) so you focus resources on the biggest
+                    threats first.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">📋 Formula</div>
+                <div class="intro-text"><strong>RPN = Severity × Occurrence × Detection</strong> (Scale 1-10).</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="intro-card">
+                <div class="intro-title">📐 Severity (SEV)</div>
+                <div class="intro-text">1 = No Effect.<br>10 = Hazardous/Safety Issue (Catastrophic).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🧠 Occurrence (OCC)</div>
+                <div class="intro-text">1 = Extremely unlikely (1 in a million).<br>10 = Inevitable (Every day).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🎯 Detection (DET)</div>
+                <div class="intro-text">1 = Certain to catch it (Auto-Stop).<br>10 = Cannot be detected until customer
+                    gets it.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🚀 Phase Relevance</div>
+                <div class="intro-text"><strong>Analyze:</strong> Identify risks.<br><strong>Improve:</strong> Implement
+                    controls to lower RPN.</div>
+            </div>
+        </div>
+
+        <!-- AI WRITER -->
+        <div class="card"
+            style="margin-bottom: 20px; background: linear-gradient(90deg, #1e1e24 0%, #162447 100%); border: 1px solid var(--primary);">
+            <div class="flex-between">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="font-size: 24px;">✨</div>
+                    <div>
+                        <h3 style="margin-bottom: 5px; color: white;">AI Risk Detector</h3>
+                        <p style="font-size: 12px; color: #aaa; margin: 0;">Enter a process step, and Gemini will
+                            predict failure modes and suggest controls.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="aiPrompt" placeholder="e.g. Atm Withdrawal Process..."
+                        style="width: 300px; padding: 10px; border-radius: 4px; border: none;">
+                    <button class="btn btn-primary" id="btnGenerate" onclick="generateWithAI()">Identify Risks
+                        🪄</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN FORM -->
+        <div style="overflow-x: auto;">
+            <table id="fmeaTable">
+                <thead>
+                    <tr>
+                        <th style="width:150px;">Process Step / Input</th>
+                        <th style="width:150px;">Potential Failure Mode<br><small>(What goes wrong?)</small></th>
+                        <th>Potential Effect<br><small>(Impact on Customer)</small></th>
+                        <th title="Severity (1-10)">S</th>
+                        <th>Potential Causes<br><small>(Why it happens?)</small></th>
+                        <th title="Occurrence (1-10)">O</th>
+                        <th>Current Controls<br><small>(Prevention/Detection)</small></th>
+                        <th title="Detection (1-10)">D</th>
+                        <th title="Risk Priority Number" style="background: rgba(231, 76, 60, 0.1);">RPN</th>
+                        <th>Actions Recommended</th>
+                        <th style="width:30px;"></th>
+                    </tr>
+                </thead>
+                <tbody id="fmeaBody">
+                    <!-- Rows injected via JS -->
+                </tbody>
+            </table>
+            <button class="add-row-btn" onclick="addRow()">+ Add Process Step</button>
+        </div>
+
+        <!-- ACTIONS -->
+        <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: flex-end;">
+            <button class="btn btn-ghost" onclick="loadExample()">📄 Load Example</button>
+            <button class="btn btn-ghost" onclick="clearForm()">🗑️ Clear</button>
+            <button class="btn btn-primary" onclick="printCharter()">🖨️ Print / Save PDF</button>
+        </div>
+
+    </div>
+
+    <!-- EXPLANATION MODAL -->
+    <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+        <div class="modal-box">
+            <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+            <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
+            <p id="modalContent" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">Content...</p>
+        </div>
+    </div>
+
+    <script>
+        let rowCount = 0;
+
+        function explain(title, content) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeModal(e) { if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none'; }
+        function printCharter() { window.print(); }
+
+        function addRow(data = {}) {
+            rowCount++;
+            const tbody = document.getElementById('fmeaBody');
+            const tr = document.createElement('tr');
+            tr.id = `row-${rowCount}`;
+
+            tr.innerHTML = `
+            <td><textarea placeholder="Step...">${data.step || ''}</textarea></td>
+            <td><textarea placeholder="Mode...">${data.mode || ''}</textarea></td>
+            <td><textarea placeholder="Effect...">${data.effect || ''}</textarea></td>
+            <td><input type="number" min="1" max="10" class="score-cell" onchange="calcRPN(${rowCount})" id="sev-${rowCount}" value="${data.s || ''}"></td>
+            <td><textarea placeholder="Root Cause...">${data.cause || ''}</textarea></td>
+            <td><input type="number" min="1" max="10" class="score-cell" onchange="calcRPN(${rowCount})" id="occ-${rowCount}" value="${data.o || ''}"></td>
+            <td><textarea placeholder="Controls...">${data.control || ''}</textarea></td>
+            <td><input type="number" min="1" max="10" class="score-cell" onchange="calcRPN(${rowCount})" id="det-${rowCount}" value="${data.d || ''}"></td>
+            <td class="rpn-cell" id="rpn-${rowCount}">-</td>
+            <td><textarea placeholder="Action Plan...">${data.action || ''}</textarea></td>
+            <td style="text-align:center; cursor:pointer; color:#E74C3C;" onclick="deleteRow(${rowCount})">×</td>
+        `;
+            tbody.appendChild(tr);
+            if (data.s && data.o && data.d) calcRPN(rowCount);
+        }
+
+        function deleteRow(id) {
+            document.getElementById(`row-${id}`).remove();
+        }
+
+        function calcRPN(id) {
+            const s = parseFloat(document.getElementById(`sev-${id}`).value) || 0;
+            const o = parseFloat(document.getElementById(`occ-${id}`).value) || 0;
+            const d = parseFloat(document.getElementById(`det-${id}`).value) || 0;
+
+            const rpn = s * o * d;
+            const cell = document.getElementById(`rpn-${id}`);
+            cell.innerText = rpn;
+
+            if (rpn > 100) cell.classList.add('high-risk');
+            else cell.classList.remove('high-risk');
+        }
+
+        function clearForm() {
+            document.getElementById('fmeaBody').innerHTML = '';
+            rowCount = 0;
+            addRow(); // Keep one empty row
+        }
+
+        function loadExample() {
+            clearForm();
+            addRow({
+                step: "ATD Dispense Cash",
+                mode: "Cash Jam",
+                effect: "Customer doesn't get money, angry",
+                s: 7,
+                cause: "Old rollers worn out",
+                o: 4,
+                control: "Annual maintenance",
+                d: 5,
+                action: "Increase maintenance frequency"
+            });
+            addRow({
+                step: "Input PIN",
+                mode: "Wrong PIN entered 3x",
+                effect: "Card swallowed",
+                s: 4,
+                cause: "User forgot PIN",
+                o: 6,
+                control: "Screen warning",
+                d: 1, // Detected via software immediately
+                action: "Allow unlock via App"
+            });
+        }
+
+        async function generateWithAI() {
+            const topic = document.getElementById('aiPrompt').value;
+            if (!topic) { alert("Please enter a process topic first."); return; }
+
+            const btn = document.getElementById('btnGenerate');
+            btn.innerHTML = "Analyzing Risks...";
+            btn.disabled = true;
+
+            const prompt = `Act as an FMEA Expert. Analyze the process: "${topic}".
+        Identify 3 potential failure modes.
+        Return JSON array of objects with keys: step, mode, effect, s (1-10), cause, o (1-10), control, d (1-10), action.`;
+
+            try {
+                const res = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await res.json();
+                const text = data.candidates[0].content.parts[0].text;
+
+                const cleanJson = text.replace(/```json/g, '').replace(/```/g, '');
+                const arr = JSON.parse(cleanJson);
+
+                clearForm();
+                arr.forEach(item => addRow(item));
+
+            } catch (e) {
+                alert("AI Generation failed. Please try again.");
+                console.error(e);
+            }
+            finally { btn.innerHTML = "Identify Risks 🪄"; btn.disabled = false; }
+        }
+
+        // Init with one row
+        window.onload = function () { addRow(); };
+    </script>
+
+
+<script src="AssistantTools.js"></script><script src="/shared/tool-bridge.js"></script>
+</body>
+
+</html>

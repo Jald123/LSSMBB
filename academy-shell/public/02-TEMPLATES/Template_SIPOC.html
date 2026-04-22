@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPOC Diagram Generator | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <style>
+        /* INTRO GRID - EXPANDED (8 Cards) */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* SIPOC TABLE STYLES */
+        .sipoc-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .sipoc-col {
+            background: var(--surface-1);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sipoc-header {
+            text-align: center;
+            font-weight: bold;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .sipoc-header span {
+            display: block;
+            font-size: 40px;
+            margin-bottom: 5px;
+            opacity: 0.2;
+        }
+
+        textarea.sipoc-item {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid #444;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 300px;
+            margin-bottom: 10px;
+        }
+
+        textarea.sipoc-item:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span
+                    style="font-size: 11px; letter-spacing: 1px; color: var(--warning); border: 1px solid var(--warning); padding: 2px 6px; border-radius: 4px;">PHASE:
+                    DEFINE</span>
+                <div style="height: 5px;"></div>
+                <h1 style="display:flex; align-items:center; gap:15px;">
+                    SIPOC Diagram <span class="ai-badge">AI WRITER</span>
+                    <button class="visual-expl-btn" onclick="openVisualExpl()" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border:none; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family:'Orbitron', sans-serif; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); transition: transform 0.2s;">
+                        <i class="fas fa-eye"></i> VISUAL EXPL.
+                    </button>
+                    <style> .visual-expl-btn:hover { transform: translateY(-2px) scale(1.05); filter: brightness(1.1); } </style>
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Map the High-Level View. <span style="color: var(--accent);">Define Boundaries.</span> See the big
+                    picture.
+                </p>
+            </div>
+            <div style="text-align: right; display: flex; gap: 10px; align-items: center;">
+                <button class="architecture-intelligence-btn" onclick="openSIPOCInfo()">
+                    <i class="fas fa-lightbulb"></i> Architecture Intelligence 💡
+                </button>
+                <button class="btn btn-ghost" onclick="window.location.href='Templates_Landing.html'">← Back</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID (8 Cards) -->
+        <div class="intro-grid">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What Is It?</div>
+                <div class="intro-text">A high-level process map identifying Suppliers, Inputs, Process, Outputs, and
+                    Customers.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When To Use?</div>
+                <div class="intro-text">In the Define phase, BEFORE detailed mapping. It helps define the project scope
+                    (Start/Stop).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why Use It?</div>
+                <div class="intro-text">Clarifies "Who gives what to whom?" ensuring no critical input or customer is
+                    missed.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">📋 Steps</div>
+                <div class="intro-text">Start with Process (Center), then Outputs/Customers, then Inputs/Suppliers.
+                </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="intro-card" onclick="openVisualExpl()" style="cursor:pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                <div class="intro-title" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>📐 The 30,000ft View</span>
+                    <i class="fas fa-eye" style="font-size:10px; opacity:0.6;"></i>
+                </div>
+                <div class="intro-text">Keep it simple. The "Process" column should only have 5-7 high-level steps. <span style="color:var(--accent); font-weight:bold; display:block; margin-top:4px;">(Click for Visual Expl.)</span></div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🧠 Scope Definition</div>
+                <div class="intro-text">The first and last steps in the "Process" column define the exact boundaries of
+                    your project.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🎯 Reference Values</div>
+                <div class="intro-text">Inputs = Material/Info/Data needed. Outputs = Products/Services/Docs delivered.
+                </div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🚀 Phase Relevance</div>
+                <div class="intro-text"><strong>Define:</strong> Sets the scope.<br><strong>Measure:</strong> Identifies
+                    where to collect data (Inputs/Outputs).</div>
+            </div>
+        </div>
+
+        <!-- AI WRITER -->
+        <div class="card"
+            style="margin-bottom: 20px; background: linear-gradient(90deg, #1e1e24 0%, #162447 100%); border: 1px solid var(--primary);">
+            <div class="flex-between">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="font-size: 24px;">✨</div>
+                    <div>
+                        <h3 style="margin-bottom: 5px; color: white;">AI Autocomplete</h3>
+                        <p style="font-size: 12px; color: #aaa; margin: 0;">Enter a process name, and Gemini will map
+                            out the full SIPOC for you.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="aiPrompt" placeholder="e.g. Making a Pizza..."
+                        style="width: 300px; padding: 10px; border-radius: 4px; border: none;">
+                    <button class="btn btn-primary" id="btnGenerate" onclick="generateWithAI()">Draft SIPOC 🪄</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN FORM -->
+        <div class="sipoc-container">
+            <!-- SUPPLIERS -->
+            <div class="sipoc-col">
+                <div class="sipoc-header"><span>S</span>Suppliers</div>
+                <textarea id="suppliers" class="sipoc-item"
+                    placeholder="WHO provides the inputs?&#10;- Vendor A&#10;- Dept B"></textarea>
+                <button class="btn-ghost" style="width:100%; font-size:10px;"
+                    onclick="explain('Suppliers', 'The entities that provide the Inputs.<br>Can be external vendors, internal departments, or even systems.')">ℹ️
+                    Info</button>
+            </div>
+
+            <!-- INPUTS -->
+            <div class="sipoc-col">
+                <div class="sipoc-header"><span>I</span>Inputs</div>
+                <textarea id="inputs" class="sipoc-item"
+                    placeholder="WHAT is needed to start?&#10;- Raw Materials&#10;- Specifications&#10;- Data"></textarea>
+                <button class="btn-ghost" style="width:100%; font-size:10px;"
+                    onclick="explain('Inputs', 'The materials, information, or resources required by the process to function.<br>If an input is bad, the output will be bad (GIGO).')">ℹ️
+                    Info</button>
+            </div>
+
+            <!-- PROCESS -->
+            <div class="sipoc-col" style="border-color: var(--primary); background: rgba(50, 168, 198, 0.05);">
+                <div class="sipoc-header" style="color: var(--primary);"><span>P</span>Process</div>
+                <textarea id="process" class="sipoc-item"
+                    placeholder="High Level Steps (5-7 max):&#10;1. Receive Order&#10;2. Verify Material&#10;3. Assemble&#10;4. Inspect&#10;5. Ship"></textarea>
+                <button class="btn-ghost" style="width:100%; font-size:10px;"
+                    onclick="explain('Process', 'The high-level activities that transform Inputs into Outputs.<br>Limit this to 5-7 major steps. Don\'t get into the weeds yet.')">ℹ️
+                    Info</button>
+            </div>
+
+            <!-- OUTPUTS -->
+            <div class="sipoc-col">
+                <div class="sipoc-header"><span>O</span>Outputs</div>
+                <textarea id="outputs" class="sipoc-item"
+                    placeholder="WHAT is produced?&#10;- Finished Product&#10;- Reports&#10;- Waste"></textarea>
+                <button class="btn-ghost" style="width:100%; font-size:10px;"
+                    onclick="explain('Outputs', 'The results of the process.<br>Includes the good product, but also waste, scrap, and documentation.')">ℹ️
+                    Info</button>
+            </div>
+
+            <!-- CUSTOMERS -->
+            <div class="sipoc-col">
+                <div class="sipoc-header"><span>C</span>Customers</div>
+                <textarea id="customers" class="sipoc-item"
+                    placeholder="WHO receives the output?&#10;- End User&#10;- Next Dept&#10;- Auditor"></textarea>
+                <button class="btn-ghost" style="width:100%; font-size:10px;"
+                    onclick="explain('Customers', 'The people or processes that receive the Outputs.<br>Understanding their requirements (VOC) is critical.')">ℹ️
+                    Info</button>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: flex-end;">
+            <button class="btn btn-ghost" onclick="loadExample()">📄 Load Example</button>
+            <button class="btn btn-ghost" onclick="clearForm()">🗑️ Clear</button>
+            <button class="btn btn-primary" onclick="printCharter()">🖨️ Print / Save PDF</button>
+        </div>
+
+    </div>
+
+    <!-- EXPLANATION MODAL -->
+    <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+        <div class="modal-box">
+            <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+            <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
+            <p id="modalContent" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">Content...</p>
+        </div>
+    </div>
+
+    <script>
+        function explain(title, content) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeModal(e) { if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none'; }
+        function clearForm() { document.querySelectorAll('textarea').forEach(el => el.value = ''); }
+        function printCharter() { window.print(); }
+
+        function loadExample() {
+            // Pizza Example
+            document.getElementById('suppliers').value = "Flour Vendor\nCheese Vendor\nUtility Company\nCustomer (Order)";
+            document.getElementById('inputs').value = "Dough Ingredients\nToppings\nElectricity/Gas\nOrder Ticket";
+            document.getElementById('process').value = "1. Receive Order\n2. Prep Dough\n3. Add Toppings\n4. Bake Pizza\n5. Box & Cut\n6. Deliver";
+            document.getElementById('outputs').value = "Hot Pizza\nReceipt\nDirty Dishes\nHeat/Smell";
+            document.getElementById('customers').value = "Hungry Customer\nAudit Team (Receipt)\nDishwasher (Dishes)";
+        }
+
+        async function generateWithAI() {
+            const topic = document.getElementById('aiPrompt').value;
+            if (!topic) { alert("Please enter a process topic first."); return; }
+
+            const btn = document.getElementById('btnGenerate');
+            btn.innerHTML = "Generating...";
+            btn.disabled = true;
+
+            const prompt = `Act as a Six Sigma Consultant. Create a SIPOC Table for: "${topic}".
+        Return JSON format with keys: suppliers, inputs, process, outputs, customers.
+        Values should be arrays of strings or single strings with newlines.`;
+
+            try {
+                const res = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await res.json();
+                const text = data.candidates[0].content.parts[0].text;
+
+                const cleanJson = text.replace(/```json/g, '').replace(/```/g, '');
+                const obj = JSON.parse(cleanJson);
+
+                const fmt = (val) => Array.isArray(val) ? val.join('\n') : val;
+
+                document.getElementById('suppliers').value = fmt(obj.suppliers || "");
+                document.getElementById('inputs').value = fmt(obj.inputs || "");
+                document.getElementById('process').value = fmt(obj.process || "");
+                document.getElementById('outputs').value = fmt(obj.outputs || "");
+                document.getElementById('customers').value = fmt(obj.customers || "");
+
+            } catch (e) {
+                alert("AI Generation failed. Please try again.");
+                console.error(e);
+            }
+            finally { btn.innerHTML = "Draft SIPOC 🪄"; btn.disabled = false; }
+        }
+    </script>
+
+    <script>
+        function openVisualExpl() {
+            document.getElementById('visualExplModal').style.display = 'flex';
+        }
+    </script>
+
+    <!-- VISUAL EXPLANATION MODAL -->
+    <div class="modal-overlay" id="visualExplModal" onclick="if(event.target===this) this.style.display='none'" style="z-index:5000; backdrop-filter: blur(15px); background: rgba(0,0,0,0.9);">
+        <div class="modal-box" style="max-width:1000px; width:95%; background:transparent; border:none; padding:0; box-shadow:none;">
+            <div style="position:relative;">
+                <span style="position:absolute; top:-40px; right:0; cursor:pointer; font-size:32px; color:white; font-weight:bold; z-index:10;" onclick="document.getElementById('visualExplModal').style.display='none'">&times;</span>
+                <div style="border-radius:20px; overflow:hidden; border:2px solid rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+                    <img src="../04-STATISTICS-TOOLS/images/sipoc_30000_view.jpg" style="width:100%; display:block;" alt="SIPOC 30,000-Foot View Infographic">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PREMIUM SIPOC INFO MODAL -->
+    <div id="sipocInfoModal" class="premium-info-overlay">
+        <div class="premium-info-box">
+            <span class="premium-modal-close" onclick="closeSIPOCInfo()">&times;</span>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="font-family: 'Orbitron', sans-serif; color: #3b82f6; font-size: 32px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px;">
+                    SIPOC STRATEGY</h1>
+                <p style="color:var(--text-secondary); font-size:14px;">Master the High-Level Process Architecture.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px;">
+                <div style="grid-column: span 2; background: rgba(59, 130, 246, 0.05); border-left: 4px solid #3b82f6; padding: 25px; border-radius: 16px;">
+                    <h3 style="color: #3b82f6; margin-top: 0; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; margin-bottom: 10px;">
+                        The Role of SIPOC</h3>
+                    <p style="font-size: 13px; line-height: 1.6; color: #cbd5e1; margin: 0;">
+                        The SIPOC is the first tool used in the <b>Define</b> phase of DMAIC. It prevents "scope creep" by clearly defining the boundaries (Start and Stop points) of the process. If it's not on the SIPOC, it's not in the project.
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px; color:white;">
+                    <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">ORDER MATTERS</h4>
+                    <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
+                        Most pros fill it out as P-O-C-I-S. Start with the Process, then look at what it produces (Outputs) and who gets them (Customers).
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid #3b82f6; border-radius: 16px; border-left-width: 6px; padding: 20px; color:white;">
+                    <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 12px; font-weight: 800;">30,000 FEET</h4>
+                    <p style="font-size: 12px; line-height: 1.5; color: #cbd5e1; margin: 0;">
+                        A SIPOC should have no more than 7 steps. If you have 20 steps, you are doing a "Process Map", not a SIPOC.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Analogy Section -->
+            <div style="background: rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                 <h4 style="color: #f59e0b; margin-bottom: 10px; font-size:12px;">🥧 THE BAKING ANALOGY</h4>
+                 <p style="font-size:13px; color:#94a3b8;"><b>Suppliers:</b> Grocery Store. <b>Inputs:</b> Egg, Flour. <b>Process:</b> Mix, Bake. <b>Outputs:</b> Cake. <b>Customers:</b> Party Guests.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSIPOCInfo() {
+            document.getElementById('sipocInfoModal').style.display = 'flex';
+        }
+        function closeSIPOCInfo() {
+            document.getElementById('sipocInfoModal').style.display = 'none';
+        }
+    </script>
+
+<script src="AssistantTools.js"></script><script src="/shared/tool-bridge.js"></script>
+</body>
+
+</html>

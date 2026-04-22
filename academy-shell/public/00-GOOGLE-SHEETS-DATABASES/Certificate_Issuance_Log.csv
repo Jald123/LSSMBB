@@ -1,0 +1,2 @@
+IssueID,CertStatusID,TriggerType,TriggeredBy,CreatedAt,FileURL,Notes
+ISS_001,CS_TEST_OLD,Auto,System,2024-12-01 10:00:00,/certs/archive/old_cert.pdf,Legacy import

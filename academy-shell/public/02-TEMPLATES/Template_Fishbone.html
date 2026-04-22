@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fishbone Diagram Generator | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <style>
+        /* INTRO GRID */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* FISHBONE LAYOUT */
+        .fishbone-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 150px;
+            gap: 20px;
+            background: var(--surface-1);
+            padding: 30px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* The Spine */
+        .spine {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 160px;
+            height: 4px;
+            background: var(--accent);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .fish-head {
+            grid-column: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent);
+            color: white;
+            border-radius: 50% 0 0 50%;
+            height: 150px;
+            width: 150px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 10px;
+            border: 4px solid #fff;
+            position: relative;
+            z-index: 1;
+            align-self: center;
+        }
+
+        /* Bone Groups */
+        .bone-group {
+            background: var(--surface-2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .bone-title {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        textarea.bone-input {
+            width: 100%;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #444;
+            color: white;
+            padding: 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--surface-2);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span
+                    style="font-size: 11px; letter-spacing: 1px; color: var(--warning); border: 1px solid var(--warning); padding: 2px 6px; border-radius: 4px;">PHASE:
+                    ANALYZE</span>
+                <div style="height: 5px;"></div>
+                <h1>Fishbone Diagram <span class="ai-badge">AI BRAINSTORM</span></h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">
+                    Root Cause Analysis. <span style="color: var(--accent);">The 6 Ms.</span> Find the source of the
+                    problem.
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-ghost" onclick="window.location.href='Templates_Landing.html'">← Back</button>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL GRID -->
+        <div class="intro-grid">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What Is It?</div>
+                <div class="intro-text">A visual tool (Cause-and-Effect Diagram) to brainstorm potential causes of a
+                    problem.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When To Use?</div>
+                <div class="intro-text">During the Analyze phase, when you know WHAT is wrong but not WHY.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why Use It?</div>
+                <div class="intro-text">Prevents "Tunnel Vision" by forcing you to look at 6 different categories of
+                    causes.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">📋 The 6 Ms</div>
+                <div class="intro-text">Man, Machine, Method, Material, Measurement, Mother Nature (Environment).</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="intro-card">
+                <div class="intro-title">📐 Structure</div>
+                <div class="intro-text">The "Head" is the problem (Effect). The "Bones" are the categories of causes.
+                </div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🧠 Brainstorming</div>
+                <div class="intro-text">Use with a team. Ask "Why?" for each branch to drill down deeper.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🎯 Next Steps</div>
+                <div class="intro-text">After listing causes, circle the top 3 "Likely Suspects" to investigate with
+                    data.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🚀 Phase Relevance</div>
+                <div class="intro-text"><strong>Analyze:</strong> Generate hypotheses to test with statistics (e.g.
+                    t-Test).</div>
+            </div>
+        </div>
+
+        <!-- AI WRITER -->
+        <div class="card"
+            style="margin-bottom: 20px; background: linear-gradient(90deg, #1e1e24 0%, #162447 100%); border: 1px solid var(--primary);">
+            <div class="flex-between">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="font-size: 24px;">✨</div>
+                    <div>
+                        <h3 style="margin-bottom: 5px; color: white;">AI Root Cause Detective</h3>
+                        <p style="font-size: 12px; color: #aaa; margin: 0;">Enter the problem effect, and Gemini will
+                            brainstorm potential causes for you.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="aiPrompt" placeholder="e.g. Car won't start..."
+                        style="width: 300px; padding: 10px; border-radius: 4px; border: none;">
+                    <button class="btn btn-primary" id="btnGenerate" onclick="generateWithAI()">Find Causes 🪄</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN FORM -->
+        <div class="fishbone-container">
+            <div class="spine"></div>
+
+            <!-- TOP ROW (3) -->
+            <div class="bone-group">
+                <div class="bone-title">👷 MAN (People) <span
+                        onclick="explain('Man', 'Fatigue, training, skill level, stress, shift patterns.')"
+                        style="cursor:help">ℹ️</span></div>
+                <textarea id="man" class="bone-input" placeholder="- Lack of training&#10;- Fatigue"></textarea>
+            </div>
+            <div class="bone-group">
+                <div class="bone-title">🤖 MACHINE (Equipment) <span
+                        onclick="explain('Machine', 'breakdowns, calibration, tool wear, settings.')"
+                        style="cursor:help">ℹ️</span></div>
+                <textarea id="machine" class="bone-input"
+                    placeholder="- Calibration off&#10;- Broken sensor"></textarea>
+            </div>
+
+            <div class="fish-head" id="headDisplay">
+                PROBLEM EFFECT
+            </div>
+
+            <!-- MIDDLE ROW (2) -->
+            <div class="bone-group">
+                <div class="bone-title">📝 METHOD (Process) <span
+                        onclick="explain('Method', 'SOPs, workflow, safety rules, bottlenecks.')"
+                        style="cursor:help">ℹ️</span></div>
+                <textarea id="method" class="bone-input" placeholder="- Outdated SOP&#10;- Unclear steps"></textarea>
+            </div>
+            <div class="bone-group">
+                <div class="bone-title">🧱 MATERIAL <span
+                        onclick="explain('Material', 'Raw goods, chemical quality, parts specs, suppliers.')"
+                        style="cursor:help">ℹ️</span></div>
+                <textarea id="material" class="bone-input" placeholder="- Bad batch&#10;- Wrong spec"></textarea>
+            </div>
+
+            <!-- BOTTOM ROW (2) -->
+            <div style="grid-column: 1;">
+                <div class="bone-group">
+                    <div class="bone-title">📏 MEASUREMENT <span
+                            onclick="explain('Measurement', 'Gage R&R issues, bias, poor readability, bad metric.')"
+                            style="cursor:help">ℹ️</span></div>
+                    <textarea id="measurement" class="bone-input"
+                        placeholder="- Gage broken&#10;- Bad definition"></textarea>
+                </div>
+            </div>
+            <div style="grid-column: 2;">
+                <div class="bone-group">
+                    <div class="bone-title">🌳 MOTHER NATURE (Env) <span
+                            onclick="explain('Mother Nature', 'Temperature, humidity, noise, lighting, vibration.')"
+                            style="cursor:help">ℹ️</span></div>
+                    <textarea id="environ" class="bone-input" placeholder="- Too humid&#10;- Loud noise"></textarea>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ACTIONS -->
+        <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: flex-end;">
+            <button class="btn btn-ghost" onclick="loadExample()">📄 Load Example</button>
+            <button class="btn btn-ghost" onclick="clearForm()">🗑️ Clear</button>
+            <button class="btn btn-primary" onclick="printCharter()">🖨️ Print / Save PDF</button>
+        </div>
+
+    </div>
+
+    <!-- EXPLANATION MODAL -->
+    <div class="modal-overlay" id="infoModal" onclick="closeModal(event)">
+        <div class="modal-box">
+            <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+            <h3 id="modalTitle" style="color: var(--accent); margin-bottom: 10px;">Title</h3>
+            <p id="modalContent" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;">Content...</p>
+        </div>
+    </div>
+
+    <script>
+        function explain(title, content) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeModal(e) { if (e.target.id === 'infoModal') document.getElementById('infoModal').style.display = 'none'; }
+        function clearForm() {
+            document.querySelectorAll('textarea').forEach(el => el.value = '');
+            document.getElementById('headDisplay').innerText = "PROBLEM EFFECT";
+        }
+        function printCharter() { window.print(); }
+
+        // Update Project Title
+        document.getElementById('aiPrompt').addEventListener('input', function (e) {
+            document.getElementById('headDisplay').innerText = e.target.value || "PROBLEM EFFECT";
+        });
+
+        function loadExample() {
+            document.getElementById('aiPrompt').value = "Burnt Pizza";
+            document.getElementById('headDisplay').innerText = "Burnt Pizza";
+
+            document.getElementById('man').value = "- Distracted Chef\n- New Employee\n- Forgot timer";
+            document.getElementById('machine').value = "- Oven thermostat broken\n- Hot spots in oven\n- Timer alarm too quiet";
+            document.getElementById('method').value = "- Oven temp set too high\n- Cooking time not standardized\n- Rack position wrong";
+            document.getElementById('material').value = "- Dough too thin\n- Sugar content too high (burns fast)\n- Cheese too dry";
+            document.getElementById('measurement').value = "- Thermometer uncalibrated\n- Clock on wall slow";
+            document.getElementById('environ').value = "- Kitchen chaotic/busy\n- Poor lighting near oven";
+        }
+
+        async function generateWithAI() {
+            const topic = document.getElementById('aiPrompt').value;
+            if (!topic) { alert("Please enter a problem first."); return; }
+
+            const btn = document.getElementById('btnGenerate');
+            btn.innerHTML = "Brainstorming...";
+            btn.disabled = true;
+
+            const prompt = `Act as a Root Cause Analysis Expert. Create a Fishbone Diagram (6Ms) for the problem: "${topic}".
+        Return JSON format with keys: man, machine, method, material, measurement, environment.
+        Values should be arrays of strings (causes).`;
+
+            try {
+                const res = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await res.json();
+                const text = data.candidates[0].content.parts[0].text;
+
+                const cleanJson = text.replace(/```json/g, '').replace(/```/g, '');
+                const obj = JSON.parse(cleanJson);
+
+                const fmt = (val) => Array.isArray(val) ? val.join('\n- ') : val;
+
+                document.getElementById('man').value = "- " + fmt(obj.man || "");
+                document.getElementById('machine').value = "- " + fmt(obj.machine || "");
+                document.getElementById('method').value = "- " + fmt(obj.method || "");
+                document.getElementById('material').value = "- " + fmt(obj.material || "");
+                document.getElementById('measurement').value = "- " + fmt(obj.measurement || "");
+                document.getElementById('environ').value = "- " + fmt(obj.environment || "");
+
+            } catch (e) {
+                alert("AI Generation failed. Please try again.");
+                console.error(e);
+            }
+            finally { btn.innerHTML = "Find Causes 🪄"; btn.disabled = false; }
+        }
+    </script>
+
+
+<script src="AssistantTools.js"></script><script src="/shared/tool-bridge.js"></script>
+</body>
+
+</html>

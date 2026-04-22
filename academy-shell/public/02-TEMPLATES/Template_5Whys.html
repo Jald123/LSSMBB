@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Whys Analysis | Black Belt Studio</title>
+    <link rel="stylesheet" href="twilight_theme.css">
+    <script src="config.js"></script>
+    <style>
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .intro-card {
+            background: var(--surface-2);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+            font-size: 12px;
+        }
+
+        .intro-title {
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .why-step {
+            background: var(--surface-1);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .step-num {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent);
+            width: 40px;
+            text-align: center;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-arrow {
+            position: absolute;
+            bottom: -20px;
+            left: 40px;
+            color: #444;
+            font-size: 20px;
+            z-index: 10;
+        }
+
+        input.why-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid #444;
+            color: white;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input.why-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <div>
+                <span
+                    style="font-size: 11px; letter-spacing: 1px; color: var(--warning); border: 1px solid var(--warning); padding: 2px 6px; border-radius: 4px;">PHASE:
+                    ANALYZE</span>
+                <div style="height: 5px;"></div>
+                <h1>5 Whys Analysis <span class="ai-badge">AI DRILL DOWN</span></h1>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 5px;">Dig Deeper. <span
+                        style="color: var(--accent);">Find the Root.</span> Don't stop at the symptom.</p>
+            </div>
+            <div style="text-align: right;"><button class="btn btn-ghost"
+                    onclick="window.location.href='Templates_Landing.html'">← Back</button></div>
+        </div>
+
+        <!-- 8-Card Intro -->
+        <div class="intro-grid">
+            <div class="intro-card">
+                <div class="intro-title">🔍 What Is It?</div>
+                <div class="intro-text">An iterative interrogation technique to explore cause-and-effect relationships.
+                </div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">⏱️ When To Use?</div>
+                <div class="intro-text">For simple to moderate problems. (For complex ones, use Fishbone or DOE).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">💡 Why Use It?</div>
+                <div class="intro-text">Most "solutions" only fix symptoms (Band-Aids). 5 Whys gets to the root
+                    infection.</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">📋 The Method</div>
+                <div class="intro-text">State the problem, then ask "Why did that happen?" 5 times (or until you find
+                    the root).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">1️⃣ Why?</div>
+                <div class="intro-text">"The fuse blew." (Symptom)</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">3️⃣ Why?</div>
+                <div class="intro-text">"The bearing was dry." (Mechanism)</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">5️⃣ Why?</div>
+                <div class="intro-text">"No lubrication schedule existed." (Root Cause - Systemic).</div>
+            </div>
+            <div class="intro-card">
+                <div class="intro-title">🚀 Phase Relevance</div>
+                <div class="intro-text"><strong>Analyze:</strong> Verify the root cause before fixing it.</div>
+            </div>
+        </div>
+
+        <!-- AI WRITER -->
+        <div class="card"
+            style="margin-bottom: 20px; background: linear-gradient(90deg, #1e1e24 0%, #162447 100%); border: 1px solid var(--primary);">
+            <div class="flex-between">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div style="font-size: 24px;">✨</div>
+                    <div>
+                        <h3 style="margin-bottom: 5px; color: white;">AI Root Finder</h3>
+                        <p style="font-size: 12px; color: #aaa; margin: 0;">State the problem statement, and AI will
+                            perform the 5 Whys.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="aiPrompt" placeholder="e.g. My car won't start..."
+                        style="width: 300px; padding: 10px; border-radius: 4px; border: none;">
+                    <button class="btn btn-primary" id="btnGenerate" onclick="generateWithAI()">Deep Dive 🪄</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN FORM -->
+        <div class="card">
+            <h3>Problem Statement</h3>
+            <input type="text" id="problem" class="why-input"
+                style="border: 1px solid var(--error); margin-bottom: 30px;"
+                placeholder="What is the specific problem?">
+
+            <div id="whysContainer">
+                <!-- Rows -->
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: flex-end;">
+            <button class="btn btn-ghost" onclick="loadExample()">📄 Load Example</button>
+            <button class="btn btn-ghost" onclick="clearForm()">🗑️ Clear</button>
+            <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+        </div>
+    </div>
+
+    <script>
+        function renderWhy(idx, text = "") {
+            return `
+        <div class="why-step">
+            <div class="step-num">${idx}</div>
+            <div class="step-content">
+                <div style="font-size:10px; color:#888; margin-bottom:5px; text-transform:uppercase;">Why did that happen?</div>
+                <input type="text" id="why-${idx}" class="why-input" placeholder="Because..." value="${text}">
+            </div>
+            ${idx < 5 ? '<div class="step-arrow">⬇</div>' : ''}
+        </div>`;
+        }
+
+        function init() {
+            let h = '';
+            for (let i = 1; i <= 5; i++) h += renderWhy(i);
+            document.getElementById('whysContainer').innerHTML = h;
+        }
+
+        function clearForm() {
+            document.getElementById('problem').value = '';
+            init();
+        }
+
+        function loadExample() {
+            document.getElementById('problem').value = "The Washington Monument was disintegrating.";
+            document.getElementById('why-1').value = "Harsh chemicals were used to clean it.";
+            document.getElementById('why-2').value = "To clean off huge amounts of bird droppings.";
+            document.getElementById('why-3').value = "Birds ate the spiders there.";
+            document.getElementById('why-4').value = "Spiders ate the gnats attracted to the lights.";
+            document.getElementById('why-5').value = "Lights turned on at dusk (attracting gnats). [Solution: Delay lights 1 hr]";
+        }
+
+        async function generateWithAI() {
+            const topic = document.getElementById('aiPrompt').value;
+            if (!topic) { alert("Enter a problem."); return; }
+            const btn = document.getElementById('btnGenerate');
+            btn.innerHTML = "Thinking..."; btn.disabled = true;
+
+            const prompt = `Act as Root Cause Expert. Perform 5 Whys for: "${topic}". Return JSON: { "problem": "${topic}", "whys": ["...","...","...","...","..."] }`;
+
+            try {
+                const res = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const d = await res.json();
+                const txt = d.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '');
+                const obj = JSON.parse(txt);
+
+                document.getElementById('problem').value = obj.problem;
+                obj.whys.forEach((w, i) => {
+                    if (i < 5) document.getElementById(`why-${i + 1}`).value = w;
+                });
+
+            } catch (e) { console.error(e); alert("AI Failed"); }
+            finally { btn.innerHTML = "Deep Dive 🪄"; btn.disabled = false; }
+        }
+
+        init();
+    </script>
+
+<script src="AssistantTools.js"></script><script src="/shared/tool-bridge.js"></script>
+</body>
+
+</html>

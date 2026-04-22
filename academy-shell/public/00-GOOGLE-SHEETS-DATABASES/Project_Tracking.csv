@@ -1,0 +1,2 @@
+ProjectID,UserID,ProjectTitle,BeltLevel,Status,DMACIPhase,StartDate,PlannedEndDate,ActualEndDate,ProjectCharter,CurrentMetricBaseline,TargetMetric,ProjectedSavings,SaveingsType,PercentComplete,MentorID
+PROJ_001,USR001,Reduce Processing Time in HR,Green Belt,In Progress,Analyze,2025-01-20,2025-06-20,,[Link to filled charter],15.5,8.2,250000,SAR/hours/defects,35,USR010

@@ -1,0 +1,6 @@
+PolicyID,BeltLevel,AwardType,IssuanceMode,RequireMentorApproval,RequireAdminApproval,AutoIssueDelayHours,FraudCheckSampleRate,Notes
+POL_YB_COMP,Yellow,CourseCompletion,Hybrid,FALSE,FALSE,24,0.05,Random sample 5%
+POL_YB_CERT,Yellow,BeltCertification,Human,TRUE,TRUE,48,1.00,External verification required
+POL_GB_COMP,Green,CourseCompletion,Human,FALSE,TRUE,48,0.10,Admin specific check
+POL_GB_CERT,Green,BeltCertification,Human,TRUE,TRUE,72,1.00,Full project audit
+POL_BB_CERT,Black,BeltCertification,Human,TRUE,TRUE,168,1.00,Board review required
