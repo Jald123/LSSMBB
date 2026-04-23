@@ -31,7 +31,12 @@ import {
     Shield,
     ShieldAlert,
     Clock,
-    Zap
+    Zap,
+    Menu,
+    Trash2,
+    Bold as BoldIcon,
+    Italic as ItalicIcon,
+    Underline as UnderlineIcon
 } from 'lucide-react';
 
 import { toolRegistry } from '@/data/toolRegistry';
