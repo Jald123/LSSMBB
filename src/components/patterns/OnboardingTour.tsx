@@ -63,8 +63,11 @@ export function OnboardingTour() {
         if (currentStep < STEPS.length - 1) {
             setCurrentStep(prev => prev + 1);
         } else {
-            completeOnboarding();
             setIsVisible(false);
+            // Delay the completion slightly to allow exit animation to finish
+            setTimeout(() => {
+                completeOnboarding();
+            }, 600);
         }
     };
 
@@ -100,8 +103,11 @@ export function OnboardingTour() {
                     {/* Interaction Shield */}
                     <div className="absolute top-0 right-0 p-8">
                         <button 
-                            onClick={() => { completeOnboarding(); setIsVisible(false); }}
-                            className="text-white/20 hover:text-white/60 transition-colors"
+                            onClick={() => { 
+                                setIsVisible(false);
+                                setTimeout(() => completeOnboarding(), 600);
+                            }}
+                            className="text-white/20 hover:text-white/60 transition-all p-2 rounded-full hover:bg-white/5 border border-transparent hover:border-white/10"
                         >
                             <X className="w-6 h-6" />
                         </button>
@@ -115,7 +121,7 @@ export function OnboardingTour() {
                                 transition={{ repeat: Infinity, duration: 4 }}
                                 className={`absolute -inset-2 bg-gradient-to-tr ${step.color} rounded-[2rem] blur-xl opacity-40`} 
                             />
-                            <div className={`relative w-28 h-28 bg-gradient-to-tr ${step.color} rounded-[2rem] flex items-center justify-center shadow-2xl`}>
+                            <div className={`relative w-28 h-28 bg-gradient-to-tr ${step.color} rounded-[2rem] flex items-center justify-center shadow-2xl transition-transform duration-500 hover:scale-110`}>
                                 {step.icon}
                             </div>
                         </div>

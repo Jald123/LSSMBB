@@ -168,3 +168,103 @@ export const CASE_STUDIES: CaseStudy[] = [
         phases: DMAIC_PHASES
     }
 ];
+
+export const getCustomTemplate = (framework: Framework): CaseStudy => {
+    let phases = DMAIC_PHASES;
+    
+    if (framework === 'Kaizen') {
+        phases = [
+            {
+                name: "Identify",
+                tools: [
+                    { toolId: "charter", toolName: "Kaizen Charter", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" },
+                    { toolId: "gemba", toolName: "Gemba Walk Notes", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=sipoc" }
+                ]
+            },
+            {
+                name: "Analyze",
+                tools: [
+                    { toolId: "pareto", toolName: "Pareto Analysis", priority: "essential", htmlFile: "Tool_ParetoAnalysis.html" },
+                    { toolId: "fishbone", toolName: "Fishbone Diagram", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=fishbone" }
+                ]
+            },
+            {
+                name: "Improve",
+                tools: [
+                    { toolId: "kaizen-event", toolName: "Improvement Plan", priority: "essential", htmlFile: "Tool_KaizenPrioritization_Premium.html" }
+                ]
+            },
+            {
+                name: "Standardize",
+                tools: [
+                    { toolId: "control-plan", toolName: "Standard Work", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" }
+                ]
+            }
+        ];
+    } else if (framework === 'FOCUS-PDCA') {
+        phases = [
+            {
+                name: "FOCUS",
+                tools: [
+                    { toolId: "charter", toolName: "Project Focus", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" },
+                    { toolId: "organize", toolName: "Team Organization", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=sipoc" },
+                    { toolId: "clarify", toolName: "Process Clarification", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=5whys" }
+                ]
+            },
+            {
+                name: "Plan",
+                tools: [
+                    { toolId: "data-collection", toolName: "Data Collection", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=collect" },
+                    { toolId: "plan", toolName: "Action Plan", priority: "essential", htmlFile: "Tool_ParetoAnalysis.html" }
+                ]
+            },
+            {
+                name: "Do",
+                tools: [
+                    { toolId: "implementation", toolName: "Trial Implementation", priority: "essential", htmlFile: "Tool_DFMEA_Premium.html" }
+                ]
+            },
+            {
+                name: "Check/Act",
+                tools: [
+                    { toolId: "results", toolName: "Result Analysis", priority: "essential", htmlFile: "Calculator_ControlCharts.html" },
+                    { toolId: "standardize", toolName: "Standardization", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" }
+                ]
+            }
+        ];
+    } else if (framework === 'DMADV') {
+        phases = [
+            {
+                name: "Define",
+                tools: [{ toolId: "charter", toolName: "Design Charter", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" }]
+            },
+            {
+                name: "Measure",
+                tools: [{ toolId: "voc", toolName: "Customer Needs", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=ctq" }]
+            },
+            {
+                name: "Analyze",
+                tools: [{ toolId: "design-concepts", toolName: "Design Concepts", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=fishbone" }]
+            },
+            {
+                name: "Design",
+                tools: [{ toolId: "detailed-design", toolName: "Detailed Design", priority: "essential", htmlFile: "Tool_DFMEA_Premium.html" }]
+            },
+            {
+                name: "Verify",
+                tools: [{ toolId: "verification", toolName: "Verification Plan", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" }]
+            }
+        ];
+    }
+
+    return {
+        id: 'custom',
+        title: 'Custom Project',
+        category: 'medical',
+        description: 'User initiated custom deployment',
+        difficulty: 3,
+        estimatedHours: 10,
+        framework: framework,
+        phases: phases
+    };
+};

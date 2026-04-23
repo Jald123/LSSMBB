@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
-import { CASE_STUDIES } from "@/config/caseStudies";
+import { CASE_STUDIES, getCustomTemplate } from "@/config/caseStudies";
 
 // GET /api/projects - List all projects for authenticated student
 export async function GET(request: Request) {
@@ -51,8 +51,11 @@ export async function POST(request: Request) {
         const { caseId, framework, title } = await request.json();
         const userId = (session as any).id;
 
-        // Find case study details from config
-        const caseStudy = CASE_STUDIES.find(c => c.id === caseId);
+        // For API to support custom projects
+        const caseStudy = caseId === 'custom' 
+            ? getCustomTemplate(framework)
+            : CASE_STUDIES.find(c => c.id === caseId);
+
         if (!caseStudy) {
             return NextResponse.json({ error: "Case study not found" }, { status: 400 });
         }

@@ -143,6 +143,10 @@ export function Sidebar({
                         {!isCollapsed && <span>Settings</span>}
                     </Link>
                     <button
+                        onClick={async () => {
+                            await fetch('/api/auth/logout', { method: 'POST' });
+                            window.location.href = '/login';
+                        }}
                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                         title={isCollapsed ? "Sign Out" : undefined}
                     >

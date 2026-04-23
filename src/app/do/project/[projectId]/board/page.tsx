@@ -150,7 +150,7 @@ export default function SprintBoard() {
                             <span className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">MISSION: CRITICAL</span>
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         </div>
-                        <h1 className="text-xl font-bold font-display tracking-tight text-white leading-none">
+                        <h1 className="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-white leading-none">
                             {caseData.title}
                         </h1>
                     </div>
