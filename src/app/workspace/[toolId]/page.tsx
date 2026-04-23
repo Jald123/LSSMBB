@@ -346,10 +346,12 @@ const ToolWorkspace = () => {
 
                 <div className="flex-1 flex justify-center items-center gap-6">
                     <div className="flex items-center gap-1.5 bg-black/20 p-1 rounded-xl border border-white/5 mx-2">
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold shadow-[0_0_10px_rgba(236,72,153,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><FileText className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'library' ? null : 'library')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'library' ? 'bg-amber-500/20 text-amber-400 font-bold' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Library className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'links' ? null : 'links')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'links' ? 'bg-blue-500/20 text-blue-400 font-bold' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Link className="w-4 h-4" /></button>
-                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'sniper' ? null : 'sniper')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'sniper' ? 'bg-violet-500/20 text-violet-400 font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`}><Search className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold shadow-[0_0_10px_rgba(236,72,153,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`} title="Sticky Notes"><FileText className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'library' ? null : 'library')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'library' ? 'bg-amber-500/20 text-amber-400 font-bold shadow-[0_0_10px_rgba(245,158,11,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`} title="Knowledge Base"><Library className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'links' ? null : 'links')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'links' ? 'bg-blue-500/20 text-blue-400 font-bold shadow-[0_0_10px_rgba(59,130,246,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`} title="Quick Links"><Link className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'calculator' ? null : 'calculator')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'calculator' ? 'bg-orange-500/20 text-orange-400 font-bold shadow-[0_0_10px_rgba(249,115,22,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`} title="Calculator"><Terminal className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'draw' ? null : 'draw')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-emerald-500/20 text-emerald-400 font-bold shadow-[0_0_10px_rgba(16,185,129,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`} title="Draw & Markup"><Pen className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'sniper' ? null : 'sniper')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'sniper' ? 'bg-violet-500/20 text-violet-400 font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`} title="Zoom Sniper"><Search className="w-4 h-4" /></button>
                     </div>
                     <div className="w-px h-8 bg-nexus-border/50 mx-2" />
                     <div className="flex items-center gap-1">
@@ -413,6 +415,76 @@ const ToolWorkspace = () => {
                                 <div className="p-3 bg-[#0a0f1a] border-t border-white/5 flex items-center justify-between">
                                     <div className="flex items-center gap-1.5"><button onClick={() => execCommand('bold')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400"><BoldIcon className="w-3.5 h-3.5" /></button><button onClick={() => execCommand('italic')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400"><ItalicIcon className="w-3.5 h-3.5" /></button><button onClick={() => execCommand('underline')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400"><UnderlineIcon className="w-3.5 h-3.5" /></button><div className="w-px h-5 bg-white/10 mx-1" /><button className="w-10 h-8 rounded bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center text-slate-300"><span className="text-[10px] font-bold">A—</span><div className="w-3 h-[2px] bg-blue-500 rounded-sm" /></button><div className="w-px h-5 bg-white/10 mx-1" /><button onClick={() => execCommand('fontSize', '2')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 text-[10px] font-bold">A-</button><button onClick={() => execCommand('fontSize', '4')} className="w-8 h-8 rounded bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 text-[11px] font-bold">A+</button></div>
                                     <div className="flex items-center gap-4"><button onClick={addNote} className="text-blue-500 text-2xl font-light">+</button><div className="bg-white/5 px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-500 font-orbitron">{activeNoteIndex + 1}/{notes.length}</div></div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeAssistantTool === 'library' && (
+                        <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} className="fixed top-20 right-8 w-96 z-[1300] shadow-2xl shell-interactive">
+                            <div className="bg-[#0f172a] border border-white/10 rounded-2xl overflow-hidden flex flex-col h-[600px]">
+                                <div className="p-6 bg-amber-500/10 border-b border-amber-500/20 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <Library className="w-5 h-5 text-amber-400" />
+                                        <span className="font-orbitron font-black text-sm tracking-widest text-amber-400 uppercase">Aries Archive</span>
+                                    </div>
+                                    <button onClick={() => setActiveAssistantTool(null)} className="p-1 hover:bg-white/5 rounded text-white/40"><X className="w-4 h-4" /></button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                    <div className="relative">
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                        <input type="text" placeholder="Search Encyclopedia..." className="w-full bg-black/40 border border-white/5 rounded-xl py-3 pl-10 pr-4 text-xs text-white focus:outline-none focus:border-amber-500/50" />
+                                    </div>
+                                    {[
+                                        { title: "Define Phase Strategy", desc: "How to set project scope and VOC targets.", category: "DMAIC" },
+                                        { title: "Gage R&R (MSA)", desc: "Understanding part-to-part vs equipment variation.", category: "STATS" },
+                                        { title: "Hypothesis Testing", desc: "Deep dive into p-values and confidence intervals.", category: "STATS" },
+                                        { title: "Value Stream Mapping", desc: "Identifying waste and non-value-added time.", category: "LEAN" },
+                                        { title: "Control Charts (SPC)", desc: "Rules for stability and out-of-control conditions.", category: "CONTROL" }
+                                    ].map((doc, i) => (
+                                        <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-amber-500/30 transition-all cursor-pointer group">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-[10px] font-black text-amber-500/60 uppercase tracking-widest">{doc.category}</span>
+                                                <ChevronRight className="w-3 h-3 text-slate-600 group-hover:text-amber-500 transition-colors" />
+                                            </div>
+                                            <h4 className="text-sm font-bold text-slate-200 mb-1">{doc.title}</h4>
+                                            <p className="text-xs text-slate-400 leading-relaxed">{doc.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="p-4 bg-black/40 border-t border-white/5">
+                                    <button className="w-full py-2.5 rounded-lg bg-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-black transition-all">Launch Full Encyclopedia</button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeAssistantTool === 'links' && (
+                        <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} className="fixed top-20 right-8 w-80 z-[1300] shadow-2xl shell-interactive">
+                            <div className="bg-[#0f172a] border border-white/10 rounded-2xl overflow-hidden flex flex-col">
+                                <div className="p-5 bg-blue-500/10 border-b border-blue-500/20 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <Link className="w-5 h-5 text-blue-400" />
+                                        <span className="font-orbitron font-black text-sm tracking-widest text-blue-400 uppercase">Uplink Hub</span>
+                                    </div>
+                                    <button onClick={() => setActiveAssistantTool(null)} className="p-1 hover:bg-white/5 rounded text-white/40"><X className="w-4 h-4" /></button>
+                                </div>
+                                <div className="p-4 space-y-2">
+                                    {[
+                                        { label: "Mission Dashboard", color: "text-blue-400", bg: "bg-blue-400/5", path: "/" },
+                                        { label: "DMAIC Academy", color: "text-purple-400", bg: "bg-purple-400/5", path: "/academy" },
+                                        { label: "Portfolio (DO)", color: "text-emerald-400", bg: "bg-emerald-400/5", path: "/execute" },
+                                        { label: "My Transcript", color: "text-orange-400", bg: "bg-orange-400/5", path: "/profile" },
+                                        { label: "Reference Guide", color: "text-slate-400", bg: "bg-slate-400/5", path: "/references" }
+                                    ].map((link, i) => (
+                                        <button key={i} onClick={() => router.push(link.path)} className={`w-full flex items-center justify-between p-3.5 rounded-xl ${link.bg} border border-white/5 hover:border-white/20 transition-all group`}>
+                                            <span className={`text-xs font-bold ${link.color}`}>{link.label}</span>
+                                            <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-white transition-all transform group-hover:translate-x-1" />
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="p-4 bg-black/40 border-t border-white/5 text-center">
+                                    <p className="text-[10px] text-slate-500 font-medium">Nexus OS Connectivity: Stable</p>
                                 </div>
                             </div>
                         </motion.div>

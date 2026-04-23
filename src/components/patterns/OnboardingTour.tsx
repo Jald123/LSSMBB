@@ -4,59 +4,13 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
     Zap, 
-    Target, 
-    Shield, 
-    Cpu, 
-    Navigation, 
-    Terminal, 
-    Info, 
     ArrowRight, 
     X 
 } from "lucide-react";
-import { Button } from "@/components/primitives/Button";
 import { useNexus } from "@/context/NexusContext";
-
-interface TourStep {
-    title: string;
-    description: string;
-    icon: React.ReactNode;
-    anchor?: string; // CSS selector for highlighting
-}
-
-const TOUR_STEPS: TourStep[] = [
-    {
-        title: "Mission Calibration",
-        description: "Welcome, Operator. You have arrived at the Nexus Academy—the central uplink for Operational Excellence. Prepare for initialization.",
-        icon: <Cpu className="w-8 h-8 text-primary" />,
-    },
-    {
-        title: "Tactical Sidebar",
-        description: "Your primary navigation matrix. Switch between your Mission Hangar, the DMAIC Journey Engine, and the War Room portfolio.",
-        icon: <Navigation className="w-8 h-8 text-cyan-400" />,
-        anchor: "#sidebar-anchor"
-    },
-    {
-        title: "Command Injection",
-        description: "Initialize the global Command Palette with 'Cmd + K'. Search methodologies or inject direct 'Save' commands into any mission tool.",
-        icon: <Terminal className="w-8 h-8 text-nexus-gold" />,
-        anchor: "#header-search"
-    },
-    {
-        title: "Sensei Intelligence",
-        description: "Your slide-out companion provides real-time LSS analytics and access to the Aries Knowledge Base. Never engage a mission without it.",
-        icon: <Zap className="w-8 h-8 text-emerald-400" />,
-        anchor: "#intel-panel"
-    },
-    {
-        title: "Full Synchronization",
-        description: "System diagnostics complete. All sectors are nominal. You are cleared for project deployment. Good luck, Operator.",
-        icon: <Target className="w-8 h-8 text-primary" />,
-    }
-];
 
 export function OnboardingTour() {
     const { hasSeenOnboarding, completeOnboarding } = useNexus();
-    const [currentStep, setCurrentStep] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -68,86 +22,92 @@ export function OnboardingTour() {
 
     if (!isVisible) return null;
 
-    const current = TOUR_STEPS[currentStep];
-    const isLast = currentStep === TOUR_STEPS.length - 1;
-
-    const handleNext = () => {
-        if (isLast) {
-            completeOnboarding();
-            setIsVisible(false);
-        } else {
-            setCurrentStep(prev => prev + 1);
-        }
+    const handleBegin = () => {
+        completeOnboarding();
+        setIsVisible(false);
     };
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-12 pointer-events-none">
-                {/* Backdrop Blur */}
+            <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+                {/* 🌌 Cinematic Backdrop */}
                 <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
+                    onClick={handleBegin}
+                    className="absolute inset-0 bg-[#020617]/90 backdrop-blur-xl"
                 />
 
-                {/* Briefing Card */}
+                {/* ☄️ Center Glow Overlay */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+
+                {/* 🛡️ Nexus OS Modal */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    initial={{ opacity: 0, scale: 0.9, y: 40 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="relative w-full max-w-lg bg-surface border border-primary/20 rounded-[2.5rem] shadow-2xl shadow-primary/10 overflow-hidden pointer-events-auto"
+                    exit={{ opacity: 0, scale: 0.9, y: 40 }}
+                    className="relative w-full max-w-[580px] bg-[#0f172a] border border-white/5 rounded-[40px] shadow-[0_0_80px_rgba(34,211,238,0.1)] overflow-hidden p-12 text-center"
                 >
-                    {/* Top Glow bar */}
-                    <div className="h-1.5 w-full bg-gradient-to-r from-primary/50 via-primary to-primary/50 animate-pulse" />
+                    {/* Interaction Shield */}
+                    <div className="absolute top-0 right-0 p-8">
+                        <button 
+                            onClick={handleBegin}
+                            className="text-white/20 hover:text-white/60 transition-colors"
+                        >
+                            <X className="w-6 h-6" />
+                        </button>
+                    </div>
 
-                    <div className="p-10 space-y-8">
-                        {/* Header */}
-                        <div className="flex items-start justify-between">
-                            <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 shadow-inner">
-                                {current.icon}
+                    {/* ⚡ Iconic Thunder Box */}
+                    <div className="flex justify-center mb-10">
+                        <div className="relative group">
+                            <div className="absolute -inset-1 bg-gradient-to-tr from-orange-600 to-amber-400 rounded-3xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
+                            <div className="relative w-24 h-24 bg-gradient-to-tr from-orange-500 to-amber-300 rounded-3xl flex items-center justify-center shadow-2xl">
+                                <Zap className="w-10 h-10 text-white fill-white animate-pulse" />
                             </div>
-                            <div className="text-right">
-                                <p className="text-[10px] font-black tracking-[0.3em] text-primary uppercase">Step {currentStep + 1} of {TOUR_STEPS.length}</p>
-                                <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">Uplink: Nominal</p>
-                            </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className="space-y-4">
-                            <h2 className="text-3xl font-bold tracking-tighter italic text-white">
-                                {current.title}
-                            </h2>
-                            <p className="text-slate-400 leading-relaxed font-medium">
-                                {current.description}
-                            </p>
-                        </div>
-
-                        {/* Footer / Actions */}
-                        <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                            <button 
-                                onClick={() => { completeOnboarding(); setIsVisible(false); }}
-                                className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
-                            >
-                                Skip Briefing
-                            </button>
-                            
-                            <Button 
-                                variant="nexus" 
-                                className="rounded-2xl px-8 py-6 group"
-                                onClick={handleNext}
-                            >
-                                <span className="font-black uppercase tracking-widest mr-2">
-                                    {isLast ? "Begin Mission" : "Next Protocol"}
-                                </span>
-                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </Button>
                         </div>
                     </div>
 
-                    {/* Cybernetic Grid Overlay */}
-                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-                         style={{ backgroundImage: 'radial-gradient(var(--border) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+                    {/* Status Dots */}
+                    <div className="flex justify-center gap-1.5 mb-8">
+                        <div className="w-10 h-1 bg-orange-500 rounded-full" />
+                        <div className="w-2.5 h-1 bg-white/10 rounded-full" />
+                        <div className="w-2.5 h-1 bg-white/10 rounded-full" />
+                        <div className="w-2.5 h-1 bg-white/10 rounded-full" />
+                        <div className="w-2.5 h-1 bg-white/10 rounded-full" />
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="space-y-6 mb-12">
+                        <h1 className="text-4xl font-black font-orbitron tracking-tighter text-white leading-none uppercase italic">
+                            Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">Nexus OS</span>
+                        </h1>
+                        <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-md mx-auto">
+                            Your high-performance gateway to Operational Excellence. A cinematic command center engineered for <span className="text-white">Lean Six Sigma precision</span> — from 3.4 DPMO accuracy to F1-speed workflow.
+                        </p>
+                    </div>
+
+                    {/* Primary Action */}
+                    <div className="flex flex-col items-center gap-6">
+                        <button 
+                            onClick={handleBegin}
+                            className="group relative flex items-center justify-center gap-3 bg-white text-black font-black font-orbitron text-xs tracking-[0.2em] px-14 py-6 rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)]"
+                        >
+                            NEXT TACTICAL BRIEF
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            {/* Reflex Shine Effect */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                        </button>
+                        
+                        <span className="text-[10px] font-black font-orbitron tracking-[0.4em] text-white/20 uppercase">
+                            NEXUS OS PROTOCOL V2.4
+                        </span>
+                    </div>
+
+                    {/* Ambient Visuals */}
+                    <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-orange-500/10 rounded-full blur-[80px] pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-[60px] pointer-events-none" />
                 </motion.div>
             </div>
         </AnimatePresence>
