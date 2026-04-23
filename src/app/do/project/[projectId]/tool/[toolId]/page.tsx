@@ -82,6 +82,7 @@ export default function ToolExecutionView() {
     const [startTime] = useState(Date.now());
     const [elapsedTime, setElapsedTime] = useState('00:00');
 
+    const [isIntelligenceOpen, setIsIntelligenceOpen] = useState(false);
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const activeToolRef = useRef(activeAssistantTool);
 
