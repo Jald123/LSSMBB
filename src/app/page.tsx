@@ -35,29 +35,30 @@ export default function Dashboard() {
     const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
 
     useEffect(() => {
-        fetch("/api/auth/me")
-            .then(res => res.json())
-            .then(data => {
-                if (data.user) {
-                    setUser(data.user);
-                    fetchProjects();
-                } else {
-                    setIsLoading(false);
-                }
-            });
-    }, []);
+        const loadInitialData = async () => {
+            try {
+                // Fetch user and projects in parallel to reduce load time
+                const [userRes, projectsRes] = await Promise.all([
+                    fetch("/api/auth/me"),
+                    fetch("/api/projects?status=active")
+                ]);
 
-    const fetchProjects = async () => {
-        try {
-            const res = await fetch("/api/projects?status=active");
-            const data = await res.json();
-            setProjects(data.projects || []);
-        } catch (error) {
-            console.error("Failed to fetch projects");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+                const userData = await userRes.json();
+                const projectsData = await projectsRes.json();
+
+                if (userData.user) {
+                    setUser(userData.user);
+                    setProjects(projectsData.projects || []);
+                }
+            } catch (error) {
+                console.error("Initialization error:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadInitialData();
+    }, []);
 
     const handleCaseClick = (caseItem: any) => {
         const existingProject = projects.find(p => p.caseId === caseItem.id);
@@ -100,16 +101,16 @@ export default function Dashboard() {
 
     if (isLoading) {
         return (
-            <div className="flex-1 flex flex-col h-full bg-[#020617]">
+            <div className="flex-1 flex flex-col h-full bg-background">
                 <main className="flex-1 p-4 md:p-8">
                     <div className="max-w-7xl mx-auto space-y-8">
-                        <Skeleton className="h-10 w-64 bg-slate-800" />
+                        <Skeleton className="h-10 w-64 bg-slate-200 dark:bg-slate-800" />
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl bg-slate-800" />)}
+                            {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32 rounded-2xl bg-slate-200 dark:bg-slate-800" />)}
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <Skeleton className="h-[300px] lg:col-span-2 rounded-2xl bg-slate-800" />
-                            <Skeleton className="h-[300px] rounded-2xl bg-slate-800" />
+                            <Skeleton className="h-[300px] lg:col-span-2 rounded-2xl bg-slate-200 dark:bg-slate-800" />
+                            <Skeleton className="h-[300px] rounded-2xl bg-slate-200 dark:bg-slate-800" />
                         </div>
                     </div>
                 </main>
