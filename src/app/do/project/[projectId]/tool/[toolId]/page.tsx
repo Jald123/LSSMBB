@@ -3,19 +3,39 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
-    ArrowLeft,
-    CheckCircle2,
-    Save,
-    Loader2,
-    Check,
-    Cpu,
-    Database,
-    ShieldCheck,
-    AlertCircle,
+    ChevronLeft,
     ChevronRight,
+    Terminal,
+    FileText,
+    CheckCircle2,
+    Home,
+    ArrowUp,
+    ArrowRight,
+    Library,
+    Link,
+    Sun,
+    Moon,
+    Calculator,
+    Search,
+    Minus,
+    Plus,
+    X,
+    Eraser,
+    Crosshair,
+    Maximize2,
+    Minimize2,
+    Pen,
+    Highlighter as HighlighterIcon,
+    Pencil,
+    Shield,
+    ShieldAlert,
+    Clock,
     Zap,
-    Download,
-    Lightbulb
+    Menu,
+    Trash2,
+    Bold as BoldIcon,
+    Italic as ItalicIcon,
+    Underline as UnderlineIcon
 } from "lucide-react";
 import { CASE_STUDIES, CaseStudy, ToolMapping } from "@/config/caseStudies";
 import { useToast } from "@/components/ui/Toast";
@@ -25,6 +45,7 @@ import { Button } from "@/components/primitives/Button";
 import { Badge } from "@/components/primitives/Badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { IntelligencePanel } from "@/components/panels/IntelligencePanel";
+import { useNexus } from "@/context/NexusContext";
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -48,9 +69,42 @@ export default function ToolExecutionView() {
     const [lastServerSync, setLastServerSync] = useState<number>(0);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-    const [isIntelligenceOpen, setIsIntelligenceOpen] = useState(false);
+    // --- NEXUS OS UPGRADES ---
+    const { theme, toggleTheme } = useNexus();
+    const [isExecutionMode, setIsExecutionMode] = useState(false);
+    const [activeAssistantTool, setActiveAssistantTool] = useState<string | null>(null);
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const [isFullScreen, setIsFullScreen] = useState(false);
+    
+    // --- ATTEMPT MASTER SYSTEM ---
+    const [attempts, setAttempts] = useState(1);
+    const [maxAttempts] = useState(3);
+    const [startTime] = useState(Date.now());
+    const [elapsedTime, setElapsedTime] = useState('00:00');
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const activeToolRef = useRef(activeAssistantTool);
+
+    useEffect(() => {
+        activeToolRef.current = activeAssistantTool;
+    }, [activeAssistantTool]);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            const now = Date.now();
+            const diff = Math.floor((now - startTime) / 1000);
+            const mins = Math.floor(diff / 60).toString().padStart(2, '0');
+            const secs = (diff % 60).toString().padStart(2, '0');
+            setElapsedTime(`${mins}:${secs}`);
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [startTime]);
+
+    useEffect(() => {
+        if (iframeRef.current?.contentWindow) {
+            iframeRef.current.contentWindow.postMessage({ type: 'toggle-execution-mode', enabled: isExecutionMode }, '*');
+        }
+    }, [isExecutionMode]);
 
     useEffect(() => {
         // Fetch project and tool setup
@@ -83,6 +137,7 @@ export default function ToolExecutionView() {
                                 if (dData.deliverable.updatedAt) {
                                     setLastSaved(new Date(dData.deliverable.updatedAt).toLocaleTimeString());
                                 }
+                                if (dData.deliverable.attempts) setAttempts(dData.deliverable.attempts);
                             }
                         })
                         .catch(() => console.log("No existing data found"));
@@ -109,12 +164,6 @@ export default function ToolExecutionView() {
 
     const saveData = async (data: any, isComplete: boolean) => {
         try {
-            const checkRes = await fetch(`/api/projects/${projectId}/deliverables/${toolId}`);
-            const checkData = await checkRes.json();
-            if (checkData.deliverable && new Date(checkData.deliverable.updatedAt).getTime() > lastServerSync && lastServerSync !== 0) {
-                if (!confirm("Data Sync Conflict: Newer data exists on server. Overwrite?")) return;
-            }
-
             const endpoint = isComplete
                 ? `/api/projects/${projectId}/deliverables/${toolId}/complete`
                 : `/api/projects/${projectId}/deliverables/${toolId}`;
@@ -158,21 +207,34 @@ export default function ToolExecutionView() {
             });
     };
 
+    const handleNextStation = () => {
+        if (!caseData || !toolData) return;
+        const allTools = caseData.phases.flatMap(p => p.tools);
+        const idx = allTools.findIndex(t => t.toolId === toolId);
+        const next = allTools[idx + 1];
+        if (next) router.push(`/do/project/${projectId}/tool/${next.toolId}`);
+        else router.push(`/do/project/${projectId}/board`);
+    };
+
+    const toggleFullScreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    };
+
+    useEffect(() => {
+        const handleFS = () => setIsFullScreen(!!document.fullscreenElement);
+        document.addEventListener('fullscreenchange', handleFS);
+        return () => document.removeEventListener('fullscreenchange', handleFS);
+    }, []);
+
     if (loading || !toolData || !caseData) {
         return (
             <div className="h-screen flex flex-col items-center justify-center bg-background space-y-6">
-                <div className="relative">
-                    <div className="w-20 h-20 rounded-2xl border-2 border-primary/20 animate-spin transition-all duration-1000" />
-                    <Cpu className="absolute inset-0 m-auto w-8 h-8 text-primary animate-pulse" />
-                </div>
-                <div className="text-center space-y-1">
-                    <p className="text-[10px] font-black tracking-[0.4em] text-white uppercase opacity-70">Establishing Operation Stream</p>
-                    <div className="flex justify-center gap-1.5 pt-2">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: `${i * 0.1}s` }} />
-                        ))}
-                    </div>
-                </div>
+                <div className="w-20 h-20 rounded-2xl border-2 border-primary/20 animate-spin" />
+                <p className="text-[10px] font-black tracking-[0.4em] text-white uppercase opacity-70">Establishing Operation Stream</p>
             </div>
         );
     }
@@ -182,133 +244,135 @@ export default function ToolExecutionView() {
         : `/04-STATISTICS-TOOLS/${toolData.htmlFile}?mode=do&projectId=${projectId}&toolId=${toolId}`;
 
     return (
-        <div className="h-screen flex flex-col bg-background overflow-hidden selection:bg-primary/30">
-            {/* High-Fidelity Tactical Header */}
-            <header className="h-16 bg-card/60 backdrop-blur-xl border-b border-border px-6 flex items-center justify-between z-50 shadow-nexus-glow">
-                <div className="flex items-center gap-5">
-                    <button
-                        onClick={() => router.push(`/do/project/${projectId}/board`)}
-                        className="p-2 hover:bg-surface rounded-xl border border-white/5 text-slate-400 hover:text-white transition-all group"
-                    >
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+        <div className={cn(
+            "h-screen w-full flex flex-col overflow-hidden relative",
+            theme === 'light' ? 'bg-slate-50' : 'bg-black'
+        )}>
+            {/* 🔝 NEXUS OS HEADER */}
+            <div className={`h-16 flex items-center justify-between px-6 z-[900] absolute top-0 left-0 right-0 shell-interactive transition-all duration-300 header-3d`}>
+                <div className="flex items-center gap-6 w-1/4">
+                    <button onClick={() => router.push(`/do/project/${projectId}/board`)} className={`w-10 h-10 rounded-full border border-nexus-border flex items-center justify-center transition-all group ${theme === 'light' ? 'text-nexus-text-secondary hover:bg-slate-100 hover:text-nexus-text-primary' : 'text-nexus-text-secondary hover:bg-white/5 hover:text-nexus-text-primary'}`}>
+                        <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
                     </button>
-                    
-                    <div className="h-8 w-px bg-white/5" />
-                    
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
-                            <span>{phaseName} Sector</span>
-                            <ChevronRight className="w-3 h-3" />
-                            <span className="text-slate-300">{toolData.toolName}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <h1 className="text-sm font-bold text-white tracking-tight">{caseData.title}</h1>
-                            {hasUnsavedChanges && <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />}
-                        </div>
+                    <div className="w-px h-6 bg-nexus-border" />
+                    <div>
+                        <span className="text-[10px] font-black font-orbitron text-nexus-cyan tracking-widest uppercase block mb-0.5">{phaseName} Phase</span>
+                        <h1 className={`text-lg font-black font-orbitron tracking-tight truncate max-w-[200px] ${theme === 'light' ? 'text-nexus-text-primary' : 'text-white'}`}>{toolData.toolName}</h1>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    {/* Status Readout */}
-                    <div className="hidden lg:flex items-center gap-6 pr-6 border-r border-white/5">
-                        <div className="space-y-0.5 text-right">
-                            <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-none">Uplink Status</p>
-                            <p className={cn(
-                                "text-[10px] font-bold uppercase tracking-wider",
-                                status === 'complete' ? "text-emerald-500" : "text-primary"
-                            )}>
-                                {status === 'complete' ? "MISSION VERIFIED" : "ONLINE / SYNCED"}
-                            </p>
-                        </div>
-                        <div className="space-y-0.5 text-right">
-                            <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-none">Last Save</p>
-                            <p className="text-[10px] font-bold text-slate-400">{lastSaved || "Standby"}</p>
-                        </div>
+                <div className="flex-1 flex justify-center items-center gap-6">
+                    <div className="flex items-center gap-1.5 bg-black/20 p-1 rounded-xl border border-white/5 mx-2">
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'notes' ? null : 'notes')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${activeAssistantTool === 'notes' ? 'bg-pink-500/20 text-pink-400 font-bold' : 'text-nexus-text-secondary hover:text-white'}`}><FileText className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'library' ? null : 'library')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${activeAssistantTool === 'library' ? 'bg-amber-500/20 text-amber-400 font-bold' : 'text-nexus-text-secondary hover:text-white'}`}><Library className="w-4 h-4" /></button>
+                        <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'calculator' ? null : 'calculator')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${activeAssistantTool === 'calculator' ? 'bg-orange-500/20 text-orange-400 font-bold' : 'text-nexus-text-secondary hover:text-white'}`}><Terminal className="w-4 h-4" /></button>
+                        <button onClick={() => setIsIntelligenceOpen(!isIntelligenceOpen)} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${isIntelligenceOpen ? 'bg-nexus-cyan/20 text-nexus-cyan font-bold' : 'text-nexus-text-secondary hover:text-white'}`}><Zap className="w-4 h-4" /></button>
+                    </div>
+                    
+                    <div className="w-px h-8 bg-nexus-border/50 mx-2" />
+                    
+                    <div className="flex items-center gap-1">
+                        <button onClick={() => setZoomLevel(prev => Math.max(0.5, prev - 0.1))} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all"><Minus className="w-4 h-4" /></button>
+                        <button onClick={() => setZoomLevel(1)} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all"><Home className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => setZoomLevel(prev => Math.min(2, prev + 0.1))} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all"><Plus className="w-4 h-4" /></button>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <Button 
-                            id="intel-panel"
-                            variant="nexus" 
-                            size="sm" 
-                            className="flex sm:flex border-white/5 bg-primary/10 hover:bg-primary/20 text-primary border-primary/20"
-                            onClick={() => setIsIntelligenceOpen(!isIntelligenceOpen)}
-                        >
-                            <Zap className="w-3.5 h-3.5 sm:mr-2" />
-                            <span className="hidden sm:inline">Sensei</span>
-                        </Button>
-                        <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="hidden sm:flex border-white/5 hover:bg-surface"
-                            onClick={() => iframeRef.current?.contentWindow?.postMessage({ type: 'TRIGGER_SAVE' }, '*')}
-                        >
-                            <Save className={cn("w-3.5 h-3.5 mr-2", hasUnsavedChanges ? "text-primary animate-pulse" : "")} />
-                            Manual Sync
-                        </Button>
-                        <Button 
-                            variant="nexus" 
-                            size="sm" 
-                            onClick={() => {
-                                if (confirm("Mark this deliverable as complete? Final data will be synchronized.")) {
-                                    iframeRef.current?.contentWindow?.postMessage({ type: 'TRIGGER_COMPLETE' }, '*');
-                                }
-                            }}
-                            disabled={status === 'complete'}
-                        >
-                            Mark Complete
-                        </Button>
-                    </div>
+                    <div className="w-px h-8 bg-nexus-border/50 mx-2" />
+
+                    <button onClick={toggleTheme} className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                        {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
+                    <button onClick={toggleFullScreen} className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                        {isFullScreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                    </button>
                 </div>
-            </header>
 
-            {/* Operations Viewport */}
-            <div className="relative flex-1 bg-[#020617]">
-                <AnimatePresence>
-                    {iframeLoading && (
-                        <motion.div 
-                            initial={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute inset-0 flex flex-col items-center justify-center space-y-6 bg-background z-40"
-                        >
-                            <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                            <div className="space-y-2 text-center">
-                                <span className="text-[10px] font-black tracking-[0.4em] text-white uppercase animate-pulse">Initializing Neural Link</span>
-                                <div className="h-1 w-48 bg-surface rounded-full overflow-hidden border border-white/5">
-                                    <motion.div 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: "100%" }}
-                                        transition={{ duration: 2, ease: "easeInOut" }}
-                                        className="h-full bg-primary"
-                                    />
-                                </div>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-                
-                <iframe
-                    ref={iframeRef}
-                    src={toolUrl}
-                    className={cn(
-                        "w-full h-full border-none transition-all duration-700",
-                        iframeLoading ? "blur-md scale-95 opacity-0" : "blur-0 scale-100 opacity-100"
-                    )}
-                    onLoad={handleIframeLoad}
-                />
+                <div className={`p-1 rounded-full border flex shadow-inner overflow-hidden ${theme === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-black/60 border-white/5'}`}>
+                    <button 
+                        onClick={() => setIsExecutionMode(false)} 
+                        className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${!isExecutionMode ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        <Terminal className="w-3 h-3" /> TRAINING
+                    </button>
+                    <button 
+                        onClick={() => setIsExecutionMode(true)} 
+                        className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${isExecutionMode ? 'bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}
+                    >
+                        <ShieldAlert className="w-3 h-3" /> EXECUTION
+                    </button>
+                </div>
             </div>
 
-            {/* Tactical Footer / Metadata */}
-            <footer className="h-8 bg-black/40 border-t border-white/5 px-6 flex items-center justify-between text-[9px] font-bold text-slate-600 uppercase tracking-[0.2em] relative z-50">
-                <div className="flex items-center gap-4">
-                    <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3 text-primary" /> End-to-End Encrypted</span>
-                    <span className="flex items-center gap-1.5"><Database className="w-3 h-3 text-primary" /> SQL Local Cache Active</span>
+            {/* 🚀 MAIN CONTENT */}
+            <div className="flex-1 flex overflow-hidden relative pt-16 p-4 pb-20">
+                {/* Attempt Info Overlay */}
+                <div className="absolute top-20 left-10 z-[800] flex items-center gap-4">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-md rounded-xl border border-white/5">
+                        <Clock className="w-3.5 h-3.5 text-nexus-cyan" />
+                        <span className="text-xs font-black font-orbitron text-white">{elapsedTime}</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-md rounded-xl border border-white/10">
+                        <Zap className="w-3.5 h-3.5 text-nexus-gold" />
+                        <span className="text-xs font-black font-orbitron text-white tracking-widest uppercase">{attempts}/{maxAttempts} ATTEMPTS</span>
+                    </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    <span>Protocol v4.21 ALPHA</span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+
+                <div className={cn(
+                    "w-full h-full overflow-hidden rounded-2xl border shadow-2xl transition-all duration-300 p-1.5",
+                    theme === 'light' ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/5'
+                )}>
+                    <iframe
+                        ref={iframeRef}
+                        src={toolUrl}
+                        className={cn(
+                            "w-full h-full border-none origin-top rounded-xl transition-all duration-700",
+                            isExecutionMode ? "filtering-edu-content" : "",
+                            iframeLoading ? "blur-md opacity-0" : "blur-0 opacity-100"
+                        )}
+                        onLoad={handleIframeLoad}
+                        style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}
+                    />
                 </div>
-            </footer>
+            </div>
+
+            {/* 🎮 MISSION CONTROL FOOTER */}
+            <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-6 p-2 rounded-[2.5rem] bg-black/60 backdrop-blur-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shell-interactive transition-all duration-300`}>
+                <div className="flex items-center gap-2 px-4 border-r border-white/5">
+                    <button onClick={() => router.push('/')} className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all"><Home className="w-4 h-4" /></button>
+                </div>
+
+                <button 
+                    onClick={() => {
+                        if (confirm("Mark this deliverable as complete? Final data will be synchronized.")) {
+                            iframeRef.current?.contentWindow?.postMessage({ type: 'TRIGGER_COMPLETE' }, '*');
+                        }
+                    }}
+                    disabled={status === 'complete'}
+                    className={cn(
+                        "relative flex items-center justify-center gap-3 px-12 h-12 rounded-[2rem] font-black font-orbitron text-[11px] tracking-[0.2em] transition-all duration-500 active:scale-95 group overflow-hidden",
+                        status === 'complete' 
+                        ? 'bg-gradient-to-r from-emerald-600 to-emerald-400 text-white shadow-[0_0_40px_rgba(16,185,129,0.6)]' 
+                        : 'bg-primary text-black shadow-[0_0_30px_rgba(34,211,238,0.5)] hover:bg-nexus-cyan hover:shadow-[0_0_50px_rgba(34,211,238,0.7)] hover:scale-105'
+                    )}
+                >
+                    <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:animate-shimmer" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 animate-pulse" />
+                    {status === 'complete' ? <CheckCircle2 className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
+                    {status === 'complete' ? 'PROTOCOL SECURED' : 'MARK COMPLETE'}
+                </button>
+
+                <div className="flex items-center gap-2 px-4 border-l border-white/5">
+                    <button onClick={handleNextStation} className="w-16 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:text-nexus-cyan transition-all group/next"><ChevronRight className="w-5 h-5 group-hover/next:translate-x-1" /></button>
+                    <button onClick={() => { if (iframeRef.current?.contentWindow) iframeRef.current.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all"><ArrowUp className="w-4 h-4" /></button>
+                </div>
+            </div>
+
+            {/* Execution mode style override */}
+            {isExecutionMode && (
+                <style dangerouslySetInnerHTML={{ __html: `
+                    iframe.filtering-edu-content { filter: brightness(1.05) contrast(1.1); pointer-events: auto !important; }
+                `}} />
+            )}
 
             <IntelligencePanel 
                 isOpen={isIntelligenceOpen} 
