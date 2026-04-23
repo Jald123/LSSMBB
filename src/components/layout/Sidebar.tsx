@@ -36,7 +36,7 @@ const PRIMARY_NAV = [
 ];
 
 const QUICK_TOOLS = [
-    { name: 'Stats Engine', icon: Calculator, path: '/tools/stats-engine' },
+    { name: 'Stats Engine', icon: Calculator, path: '/workspace/desc-stats' },
     { name: 'Sigma Lab', icon: Zap, path: '/armory/sigma-lab' },
     { name: 'Scope Sniper', icon: Target, path: '/armory/scope-sniper' },
 ];

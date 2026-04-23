@@ -56,7 +56,15 @@ const ToolWorkspace = () => {
     }, [activeAssistantTool]);
 
     const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
-    const tool = toolRegistry[toolId];
+    
+    // SMART TOOL LOOKUP: If ID is a filename (e.g., Tool_ProjectCharter_Premium.html), find its key
+    let tool = toolRegistry[toolId];
+    if (!tool) {
+        const foundKey = Object.keys(toolRegistry).find(key => 
+            toolRegistry[key].src.toLocaleLowerCase().includes(toolId.toLocaleLowerCase().replace('/04-statistics-tools/', ''))
+        );
+        if (foundKey) tool = toolRegistry[foundKey];
+    }
 
     // --- FULLSCREEN LOGIC ---
     const [isFullScreen, setIsFullScreen] = useState(false);
