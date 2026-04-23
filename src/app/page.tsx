@@ -297,13 +297,13 @@ export default function Dashboard() {
                                     >
                                         <div>
                                             <div className="flex items-start justify-between mb-4">
-                                                <Badge variant="outline" className="bg-[#020617] uppercase tracking-widest text-[10px] py-1 border-white/10">{caseItem.category.replace('-', ' ')}</Badge>
-                                                <span className="text-muted-foreground font-mono text-[10px] opacity-30 select-none">ID-{String(index + 1).padStart(3, '0')}</span>
+                                                <Badge variant="outline" className="bg-slate-950 text-white uppercase tracking-widest text-[10px] py-1 border-white/10 px-2">{caseItem.category.replace('-', ' ')}</Badge>
+                                                <span className="text-slate-400 font-mono text-[10px] opacity-60 select-none">ID-{String(index + 1).padStart(3, '0')}</span>
                                             </div>
-                                            <h3 className="text-xl font-bold mb-1 text-white group-hover:text-primary transition-colors leading-tight">
+                                            <h3 className="text-xl font-black text-slate-900 group-hover:text-primary transition-colors leading-tight tracking-tight">
                                                 {caseItem.title}
                                             </h3>
-                                            <p className="text-[11px] text-slate-400 line-clamp-2 mt-1 group-hover:text-slate-300 transition-colors">
+                                            <p className="text-[11px] text-slate-500 font-medium line-clamp-2 mt-1 group-hover:text-slate-700 transition-colors">
                                                 {caseItem.description}
                                             </p>
                                         </div>
@@ -317,8 +317,8 @@ export default function Dashboard() {
                                                     />
                                                 ))}
                                             </div>
-                                            <div className="flex justify-between items-center pt-5 border-t border-white/5">
-                                                <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] group-hover:text-white transition-colors">
+                                            <div className="flex justify-between items-center pt-5 border-t border-slate-100">
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-primary transition-colors">
                                                     {hasProject ? "CONTINUE PROTOCOL" : caseItem.framework}
                                                 </span>
                                                 <div className={cn(
