@@ -5,13 +5,50 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
     Zap, 
     ArrowRight, 
-    X 
+    ArrowLeft,
+    X,
+    BookOpen,
+    Terminal,
+    Target
 } from "lucide-react";
 import { useNexus } from "@/context/NexusContext";
+
+interface Step {
+    title: string;
+    description: string;
+    icon: React.ReactNode;
+    color: string;
+    label: string;
+}
+
+const STEPS: Step[] = [
+    {
+        title: "Welcome to Nexus OS",
+        description: "Your high-performance gateway to Operational Excellence. A cinematic command center engineered for Lean Six Sigma precision — from 3.4 DPMO accuracy to F1-speed workflow.",
+        icon: <Zap className="w-10 h-10 text-white fill-white" />,
+        color: "from-orange-500 to-amber-300",
+        label: "INITIALIZATION"
+    },
+    {
+        title: "The Academy Terminal",
+        description: "Master the DMAIC, DMADV, and Kaizen frameworks through our high-fidelity curriculum. Every module is a direct uplink to industry-leading statistical mastery.",
+        icon: <BookOpen className="w-10 h-10 text-white" />,
+        color: "from-blue-600 to-cyan-400",
+        label: "MISSION HUB"
+    },
+    {
+        title: "Command Intelligence",
+        description: "Access the Aries Knowledge Base and floating assistant tools anywhere. Execute with 100% accuracy using real-time AI guidance and tactical markups.",
+        icon: <Terminal className="w-10 h-10 text-white" />,
+        color: "from-purple-600 to-pink-400",
+        label: "PROTOCOLS"
+    }
+];
 
 export function OnboardingTour() {
     const { hasSeenOnboarding, completeOnboarding } = useNexus();
     const [isVisible, setIsVisible] = useState(false);
+    const [currentStep, setCurrentStep] = useState(0);
 
     useEffect(() => {
         if (!hasSeenOnboarding) {
@@ -22,92 +59,144 @@ export function OnboardingTour() {
 
     if (!isVisible) return null;
 
-    const handleBegin = () => {
-        completeOnboarding();
-        setIsVisible(false);
+    const handleNext = () => {
+        if (currentStep < STEPS.length - 1) {
+            setCurrentStep(prev => prev + 1);
+        } else {
+            completeOnboarding();
+            setIsVisible(false);
+        }
     };
 
+    const handlePrev = () => {
+        if (currentStep > 0) {
+            setCurrentStep(prev => prev - 1);
+        }
+    };
+
+    const step = STEPS[currentStep];
+
     return (
-        <AnimatePresence>
-            <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+        <AnimatePresence mode="wait">
+            <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 overflow-hidden">
                 {/* 🌌 Cinematic Backdrop */}
                 <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    onClick={handleBegin}
                     className="absolute inset-0 bg-[#020617]/90 backdrop-blur-xl"
                 />
 
-                {/* ☄️ Center Glow Overlay */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-
                 {/* 🛡️ Nexus OS Modal */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: 40 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 40 }}
-                    className="relative w-full max-w-[580px] bg-[#0f172a] border border-white/5 rounded-[40px] shadow-[0_0_80px_rgba(34,211,238,0.1)] overflow-hidden p-12 text-center"
+                    key={currentStep}
+                    initial={{ opacity: 0, scale: 0.9, y: 40, rotateX: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -40, rotateX: -10 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                    className="relative w-full max-w-[620px] bg-[#0f172a] border border-white/5 rounded-[48px] shadow-[0_0_100px_rgba(34,211,238,0.15)] overflow-hidden p-12 text-center"
+                    style={{ perspective: '1000px' }}
                 >
                     {/* Interaction Shield */}
                     <div className="absolute top-0 right-0 p-8">
                         <button 
-                            onClick={handleBegin}
+                            onClick={() => { completeOnboarding(); setIsVisible(false); }}
                             className="text-white/20 hover:text-white/60 transition-colors"
                         >
                             <X className="w-6 h-6" />
                         </button>
                     </div>
 
-                    {/* ⚡ Iconic Thunder Box */}
+                    {/* ⚡ Iconic Icon Box */}
                     <div className="flex justify-center mb-10">
                         <div className="relative group">
-                            <div className="absolute -inset-1 bg-gradient-to-tr from-orange-600 to-amber-400 rounded-3xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-                            <div className="relative w-24 h-24 bg-gradient-to-tr from-orange-500 to-amber-300 rounded-3xl flex items-center justify-center shadow-2xl">
-                                <Zap className="w-10 h-10 text-white fill-white animate-pulse" />
+                            <motion.div 
+                                animate={{ rotate: [0, 5, -5, 0] }}
+                                transition={{ repeat: Infinity, duration: 4 }}
+                                className={`absolute -inset-2 bg-gradient-to-tr ${step.color} rounded-[2rem] blur-xl opacity-40`} 
+                            />
+                            <div className={`relative w-28 h-28 bg-gradient-to-tr ${step.color} rounded-[2rem] flex items-center justify-center shadow-2xl`}>
+                                {step.icon}
                             </div>
                         </div>
                     </div>
 
-                    {/* Status Dots */}
-                    <div className="flex justify-center gap-1.5 mb-8">
-                        <div className="w-10 h-1 bg-orange-500 rounded-full" />
-                        <div className="w-2.5 h-1 bg-white/10 rounded-full" />
-                        <div className="w-2.5 h-1 bg-white/10 rounded-full" />
-                        <div className="w-2.5 h-1 bg-white/10 rounded-full" />
-                        <div className="w-2.5 h-1 bg-white/10 rounded-full" />
+                    {/* Status Progress Dots */}
+                    <div className="flex justify-center gap-2 mb-10">
+                        {STEPS.map((_, i) => (
+                            <motion.div 
+                                key={i}
+                                initial={false}
+                                animate={{ 
+                                    width: i === currentStep ? 40 : 10,
+                                    backgroundColor: i === currentStep ? (currentStep === 0 ? '#f97316' : currentStep === 1 ? '#2563eb' : '#9333ea') : 'rgba(255,255,255,0.1)'
+                                }}
+                                className="h-1.5 rounded-full transition-colors duration-500"
+                            />
+                        ))}
                     </div>
 
                     {/* Main Content */}
-                    <div className="space-y-6 mb-12">
-                        <h1 className="text-4xl font-black font-orbitron tracking-tighter text-white leading-none uppercase italic">
-                            Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">Nexus OS</span>
-                        </h1>
-                        <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-md mx-auto">
-                            Your high-performance gateway to Operational Excellence. A cinematic command center engineered for <span className="text-white">Lean Six Sigma precision</span> — from 3.4 DPMO accuracy to F1-speed workflow.
-                        </p>
+                    <div className="space-y-6 mb-12 min-h-[180px]">
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                        >
+                            <span className="text-[10px] font-black font-orbitron tracking-[0.4em] text-white/40 uppercase mb-4 block">
+                                {step.label}
+                            </span>
+                            <h1 className="text-4xl font-black font-orbitron tracking-tighter text-white leading-none uppercase italic">
+                                {step.title.split(' ').map((word, i) => (
+                                    <span key={i} className={i === word.length ? 'text-white' : 'text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400'}>
+                                        {word}{' '}
+                                    </span>
+                                ))}
+                            </h1>
+                        </motion.div>
+                        <motion.p 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-slate-400 text-lg font-medium leading-relaxed max-w-lg mx-auto"
+                        >
+                            {step.description}
+                        </motion.p>
                     </div>
 
                     {/* Primary Action */}
-                    <div className="flex flex-col items-center gap-6">
-                        <button 
-                            onClick={handleBegin}
-                            className="group relative flex items-center justify-center gap-3 bg-white text-black font-black font-orbitron text-xs tracking-[0.2em] px-14 py-6 rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.1)]"
-                        >
-                            NEXT TACTICAL BRIEF
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            {/* Reflex Shine Effect */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
-                        </button>
+                    <div className="flex flex-col items-center gap-8">
+                        <div className="flex items-center gap-4 w-full justify-center">
+                            {currentStep > 0 && (
+                                <button 
+                                    onClick={handlePrev}
+                                    className="flex items-center justify-center w-20 py-6 rounded-full border border-white/10 text-white/40 hover:text-white hover:bg-white/5 transition-all"
+                                >
+                                    <ArrowLeft className="w-5 h-5" />
+                                </button>
+                            )}
+                            <button 
+                                onClick={handleNext}
+                                className="group relative flex items-center justify-center gap-4 bg-white text-black font-black font-orbitron text-xs tracking-[0.2em] px-14 py-6 rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_20px_50px_rgba(255,255,255,0.15)] flex-1 max-w-[340px]"
+                            >
+                                {currentStep === STEPS.length - 1 ? "BEGIN MISSION" : "NEXT TACTICAL BRIEF"}
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                            </button>
+                        </div>
                         
-                        <span className="text-[10px] font-black font-orbitron tracking-[0.4em] text-white/20 uppercase">
-                            NEXUS OS PROTOCOL V2.4
-                        </span>
+                        <div className="flex items-center gap-3 opacity-20">
+                            <div className="w-12 h-px bg-white" />
+                            <span className="text-[9px] font-black font-orbitron tracking-[0.5em] text-white uppercase whitespace-nowrap">
+                                NEXUS OS PROTOCOL V2.4
+                            </span>
+                            <div className="w-12 h-px bg-white" />
+                        </div>
                     </div>
 
-                    {/* Ambient Visuals */}
-                    <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-orange-500/10 rounded-full blur-[80px] pointer-events-none" />
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-[60px] pointer-events-none" />
+                    {/* Ambient Background Glows */}
+                    <div className={`absolute -bottom-24 -left-24 w-64 h-64 rounded-full blur-[100px] pointer-events-none opacity-20 bg-gradient-to-br ${step.color}`} />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/[0.02] rounded-full blur-[120px] pointer-events-none" />
                 </motion.div>
             </div>
         </AnimatePresence>

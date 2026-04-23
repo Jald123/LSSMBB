@@ -68,7 +68,7 @@ export function Sidebar({
             <aside 
                 id="sidebar-anchor"
                 className={cn(
-                "fixed lg:static inset-y-0 left-0 z-50 flex flex-col border-r border-border bg-card transition-all duration-300 ease-in-out",
+                "fixed lg:sticky top-0 lg:top-[64px] inset-y-0 left-0 z-50 flex flex-col border-r border-border bg-card transition-all duration-300 ease-in-out h-full lg:h-[calc(100vh-64px)]",
                 isCollapsed ? "w-20" : "w-64",
                 isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
             )}>
