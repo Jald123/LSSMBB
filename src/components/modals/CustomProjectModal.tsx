@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Layout, Lightbulb } from "lucide-react";
+import { X, Layout, Lightbulb, Zap, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface CustomProjectModalProps {
@@ -93,9 +93,9 @@ export const CustomProjectModal: React.FC<CustomProjectModalProps> = ({
                                                     : "border-[#e5e7eb] hover:border-[#ff1e00] bg-white"
                                                 }`}
                                         >
-                                            <Layout className={`w-8 h-8 ${framework === "DMAIC" ? "text-[#ff1e00]" : "text-[#6b7280]"}`} />
-                                            <div className="font-bold">DMAIC</div>
-                                            <div className="text-[10px] text-[#6b7280]">Improve an existing process</div>
+                                            <Layout className={`w-6 h-6 ${framework === "DMAIC" ? "text-[#ff1e00]" : "text-[#6b7280]"}`} />
+                                            <div className="font-bold text-sm">DMAIC</div>
+                                            <div className="text-[9px] text-[#6b7280] leading-tight">Improve an existing process</div>
                                         </button>
                                         <button
                                             onClick={() => setFramework("DMADV")}
@@ -104,9 +104,31 @@ export const CustomProjectModal: React.FC<CustomProjectModalProps> = ({
                                                     : "border-[#e5e7eb] hover:border-[#ff1e00] bg-white"
                                                 }`}
                                         >
-                                            <Lightbulb className={`w-8 h-8 ${framework === "DMADV" ? "text-[#ff1e00]" : "text-[#6b7280]"}`} />
-                                            <div className="font-bold">DMADV</div>
-                                            <div className="text-[10px] text-[#6b7280]">Design a new process</div>
+                                            <Lightbulb className={`w-6 h-6 ${framework === "DMADV" ? "text-[#ff1e00]" : "text-[#6b7280]"}`} />
+                                            <div className="font-bold text-sm">DMADV</div>
+                                            <div className="text-[9px] text-[#6b7280] leading-tight">Design a new process</div>
+                                        </button>
+                                        <button
+                                            onClick={() => setFramework("Kaizen")}
+                                            className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center text-center gap-2 ${framework === "Kaizen"
+                                                    ? "border-[#ff1e00] bg-[#fbe3e8]"
+                                                    : "border-[#e5e7eb] hover:border-[#ff1e00] bg-white"
+                                                }`}
+                                        >
+                                            <Zap className={`w-6 h-6 ${framework === "Kaizen" ? "text-[#ff1e00]" : "text-[#6b7280]"}`} />
+                                            <div className="font-bold text-sm">Kaizen</div>
+                                            <div className="text-[9px] text-[#6b7280] leading-tight">Rapid small-scale improvements</div>
+                                        </button>
+                                        <button
+                                            onClick={() => setFramework("FOCUS-PDCA")}
+                                            className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center text-center gap-2 ${framework === "FOCUS-PDCA"
+                                                    ? "border-[#ff1e00] bg-[#fbe3e8]"
+                                                    : "border-[#e5e7eb] hover:border-[#ff1e00] bg-white"
+                                                }`}
+                                        >
+                                            <RotateCcw className={`w-6 h-6 ${framework === "FOCUS-PDCA" ? "text-[#ff1e00]" : "text-[#6b7280]"}`} />
+                                            <div className="font-bold text-sm leading-none">FOCUS PDCA</div>
+                                            <div className="text-[9px] text-[#6b7280] leading-tight">Healthcare process optimization</div>
                                         </button>
                                     </div>
                                 </div>

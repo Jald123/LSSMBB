@@ -1,6 +1,6 @@
 export type Category = 'medical' | 'daily-life' | 'investment';
 export type Priority = 'essential' | 'recommended' | 'optional';
-export type Framework = 'DMAIC' | 'DMADV';
+export type Framework = 'DMAIC' | 'DMADV' | 'Kaizen' | 'FOCUS-PDCA';
 
 export interface ToolMapping {
     toolId: string;
