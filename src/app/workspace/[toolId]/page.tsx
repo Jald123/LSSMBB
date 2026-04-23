@@ -11,6 +11,7 @@ import {
     CheckCircle2,
     Home,
     ArrowUp,
+    ArrowRight,
     Library,
     Link,
     Sun,
