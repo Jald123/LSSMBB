@@ -256,8 +256,8 @@ export default function SprintBoard() {
                                                 <div className={cn(
                                                     "px-2 py-0.5 rounded text-[9px] font-black tracking-tighter border",
                                                     (d.attempts + 1) >= 3 ? "bg-red-500/20 border-red-500/50 text-red-500" :
-                                                    (d.attempts + 1) === 2 ? "bg-amber-500/20 border-amber-500/50 text-amber-500" :
-                                                    "bg-slate-800 border-white/10 text-slate-400"
+                                                    (d.attempts + 1) === 2 ? "bg-amber-500/10 border-amber-500/30 text-amber-600" :
+                                                    "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
                                                 )}>
                                                     ATTEMPT {d.attempts + 1} / 3
                                                 </div>
@@ -267,8 +267,8 @@ export default function SprintBoard() {
 
                                     {/* Tool Info */}
                                     <div className="flex-1 space-y-2 mb-8">
-                                        <h3 className="text-lg font-black text-white group-hover:text-primary transition-colors leading-tight">{tool.toolName}</h3>
-                                        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">System-assigned protocol for {activeTab} stage implementation.</p>
+                                        <h3 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-tight">{tool.toolName}</h3>
+                                        <p className="text-xs text-slate-500 dark:text-muted-foreground line-clamp-2 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">System-assigned protocol for {activeTab} stage implementation.</p>
                                     </div>
 
                                     {/* Footer Section */}
@@ -276,11 +276,11 @@ export default function SprintBoard() {
                                         <div className="flex items-center justify-between">
                                             {status === 'complete' ? (
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Protocol Verified</span>
-                                                    {score !== null && <span className={cn("text-xs font-black", score >= 70 ? "text-emerald-400" : "text-primary")}>{score}%</span>}
+                                                    <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">Protocol Verified</span>
+                                                    {score !== null && <span className={cn("text-xs font-black", score >= 70 ? "text-emerald-500" : "text-primary")}>{score}%</span>}
                                                 </div>
                                             ) : (
-                                                <div className="flex items-center gap-2 text-slate-500">
+                                                <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                                                     <Clock className="w-3.5 h-3.5" />
                                                     <span className="text-[10px] font-black uppercase tracking-widest">{status === 'in-progress' ? 'Establishing Link' : 'Standby Mode'}</span>
                                                 </div>
