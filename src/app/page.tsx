@@ -295,7 +295,7 @@ export default function Dashboard() {
                                     >
                                         <div>
                                             <div className="flex items-start justify-between mb-4">
-                                                <Badge variant="outline" className="bg-[#020617] uppercase tracking-widest text-[10px] py-1 border-white/10">{caseItem.category.replace('-', ' ')}</Badge>
+                                                <Badge variant="outline" className="bg-[#020617] uppercase tracking-widest text-[10px] py-1 border-white/10 !text-white">{caseItem.category.replace('-', ' ')}</Badge>
                                                 <span className="text-muted-foreground font-mono text-[10px] opacity-30 select-none">ID-{String(index + 1).padStart(3, '0')}</span>
                                             </div>
                                             <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors leading-tight">

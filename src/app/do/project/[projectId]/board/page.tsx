@@ -258,7 +258,7 @@ export default function SprintBoard() {
 
                                     {/* Tool Info */}
                                     <div className="flex-1 space-y-2 mb-8">
-                                        <h3 className="text-lg font-bold text-white group-hover:text-primary transition-colors leading-tight">{tool.toolName}</h3>
+                                        <h3 className="text-lg font-bold group-hover:text-primary transition-colors leading-tight text-foreground">{tool.toolName}</h3>
                                         <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">System-assigned protocol for {activeTab} stage implementation.</p>
                                     </div>
 
