@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { MetricCard } from "@/components/primitives/MetricCard";
 import { FRAMEWORKS, type Phase, type Lesson } from "@/config/curriculum";
+import { toolRegistry } from "@/data/toolRegistry";
 import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
@@ -44,7 +45,18 @@ export default function LearnHub() {
     const handleLessonClick = (lesson: Lesson) => {
         if (lesson.status === "locked") return;
         if (lesson.toolUrl) {
-            router.push(lesson.toolUrl);
+            // Convert raw HTML path to workspace route
+            // Look up the tool registry key by matching the src URL
+            const registryEntry = Object.entries(toolRegistry).find(([_, entry]) =>
+                lesson.toolUrl!.toLowerCase().includes(entry.src.toLowerCase().split('?')[0].split('/').pop()!.replace('.html', ''))
+            );
+            if (registryEntry) {
+                router.push(`/workspace/${registryEntry[0]}`);
+            } else {
+                // Fallback: extract filename and use as workspace ID
+                const filename = lesson.toolUrl.split('/').pop()?.replace('.html', '') || '';
+                router.push(`/workspace/${filename}`);
+            }
         }
     };
 
