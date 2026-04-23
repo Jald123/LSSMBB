@@ -91,12 +91,14 @@ const ToolWorkspace = () => {
         if (foundKey) tool = toolRegistry[foundKey];
     }
 
-    const allTools = Object.values(toolRegistry);
-    const currentIndex = allTools.findIndex(t => t.id === (tool?.id || toolId));
+    const activeMethodology = methodology?.split(' ')[0].toUpperCase() || 'DMAIC';
+    const activePhases = methodologyData[activeMethodology] || methodologyData['DMAIC'];
+    const allTools: any[] = Object.values(activePhases).flatMap((p: any) => p.tools);
+    const currentIndex = allTools.findIndex(t => t.toolId === toolId || t.id === toolId);
     
     const handleNextStation = () => {
         const next = allTools[currentIndex + 1];
-        if (next) router.push(`/workspace/${next.id}`);
+        if (next) router.push(`/workspace/${next.toolId || next.id}`);
         else router.push('/academy');
     };
 
@@ -300,16 +302,6 @@ const ToolWorkspace = () => {
             document.body.style.userSelect = 'auto';
         }
     }, [activeAssistantTool]);
-
-    // Identify Next Station Logic
-    const activeMethodology = methodology?.split(' ')[0].toUpperCase() || 'DMAIC';
-    const activePhases = methodologyData[activeMethodology] || methodologyData['DMAIC'];
-    const allTools: any[] = Object.values(activePhases).flatMap((p: any) => p.tools);
-    const currentIndex = allTools.findIndex(t => t.id === toolId);
-    const nextTool = allTools[currentIndex + 1];
-
-    const handleNextStation = () => { if (nextTool) router.push(`/workspace/${nextTool.id}`); else router.push('/journey'); };
-    const isCompleted = completedTools.includes(toolId);
 
     const handleZoom = (delta: number) => setZoomLevel(prev => Math.min(Math.max(0.5, prev + delta), 2));
     const resetZoom = () => setZoomLevel(1);
@@ -532,11 +524,11 @@ const ToolWorkspace = () => {
                                         { label: "Portfolio (DO)", color: "text-emerald-400", bg: "bg-emerald-400/5", path: "/execute" },
                                         { label: "My Transcript", color: "text-orange-400", bg: "bg-orange-400/5", path: "/profile" },
                                         { label: "Reference Guide", color: "text-slate-400", bg: "bg-slate-400/5", path: "/references" }
-                                    ].map((link, i) => (
+                                    ].map((link, i) => ( link.path ?
                                         <button key={i} onClick={() => router.push(link.path)} className={`w-full flex items-center justify-between p-3.5 rounded-xl ${link.bg} border border-white/5 hover:border-white/20 transition-all group`}>
                                             <span className={`text-xs font-bold ${link.color}`}>{link.label}</span>
                                             <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-white transition-all transform group-hover:translate-x-1" />
-                                        </button>
+                                        </button> : null
                                     ))}
                                 </div>
                                 <div className="p-4 bg-black/40 border-t border-white/5 text-center">
@@ -679,7 +671,7 @@ const ToolWorkspace = () => {
                 <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-6 p-2 rounded-[2.5rem] bg-black/60 backdrop-blur-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shell-interactive transition-all duration-300`}>
                     <div className="flex items-center gap-2 px-4 border-r border-white/5">
                         <button onClick={() => router.push('/hangar')} className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all"><Home className="w-4 h-4" /></button>
-                        <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) router.push(`/workspace/${prevTool.id}`); else router.push('/journey'); }} className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-all"><ChevronLeft className="w-5 h-5" /></button>
+                        <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) router.push(`/workspace/${prevTool.toolId || prevTool.id}`); else router.push('/academy'); }} className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-all"><ChevronLeft className="w-5 h-5" /></button>
                     </div>
 
                     <button 
