@@ -147,18 +147,18 @@ const HangarHome = () => {
                                     </div>
                                 </div>
 
-                                {/* Mission Prep -> POPUP -> ARMORY */}
-                                <div className="bg-gradient-to-r from-nexus-cyan/10 to-transparent border border-nexus-cyan/20 p-4 rounded-xl flex items-center gap-4 group hover:border-nexus-cyan/40 transition-colors cursor-pointer" onClick={() => setActiveModal('mission')}>
+                                {/* Project Triage & Scoping (Replaces Mission Prep) */}
+                                <div className="bg-gradient-to-r from-nexus-cyan/10 to-transparent border border-nexus-cyan/20 p-4 rounded-xl flex items-center gap-4 group hover:border-nexus-cyan/40 transition-colors cursor-pointer" onClick={() => setActiveModal('triage')}>
                                     <div className="w-12 h-12 bg-nexus-cyan/20 rounded-lg flex items-center justify-center text-nexus-cyan shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                                        <Zap className="w-6 h-6" />
+                                        <Target className="w-6 h-6" />
                                     </div>
                                     <div className="flex-1">
-                                        <h5 className="text-nexus-text-primary font-bold text-sm">MISSION PREP</h5>
-                                        <p className="text-xs text-nexus-text-secondary mb-2">The Essential 6 Pillars</p>
+                                        <h5 className="text-nexus-text-primary font-bold text-sm">PROJECT TRIAGE</h5>
+                                        <p className="text-xs text-nexus-text-secondary mb-2">Sizing & Strategic Scoping</p>
                                         <button
                                             className="px-4 py-1.5 bg-nexus-cyan text-nexus-navy rounded text-[9px] font-black font-orbitron hover:scale-105 transition-transform shadow-[0_0_10px_rgba(34,211,238,0.3)]"
                                         >
-                                            ENTER ARMORY
+                                            LAUNCH TRIAGE
                                         </button>
                                     </div>
                                 </div>
@@ -389,36 +389,46 @@ const HangarHome = () => {
                         </InfoModal>
                     )}
 
-                    {activeModal === 'mission' && (
+                    {activeModal === 'triage' && (
                         <InfoModal
-                            title="Mission Prep: 6 Pillars"
-                            subtitle="Essential Strategy for Project Success"
+                            title="Project Triage & Scoping"
+                            subtitle="Strategic Selection & Complexity Assessment"
                             onClose={() => setActiveModal(null)}
                             action={
                                 <button
-                                    onClick={() => router.push('/armory')}
-                                    className="flex items-center gap-2 px-6 py-3 bg-nexus-gold text-nexus-navy rounded-xl font-black font-orbitron hover:scale-105 transition-transform"
+                                    onClick={() => router.push('/workspace/triage')}
+                                    className="flex items-center gap-2 px-6 py-3 bg-nexus-cyan text-nexus-navy rounded-xl font-black font-orbitron hover:scale-105 transition-transform"
                                 >
-                                    <Shield className="w-4 h-4" />
-                                    ENTER ANALYST ARMORY
+                                    <Target className="w-4 h-4" />
+                                    INITIALIZE TRIAGE
                                 </button>
                             }
                         >
-                            <p>Before deploying to a project, every Nexus Analyst must master the 6 Strategic Pillars of high-performance execution.</p>
-                            <ul className="space-y-3 my-4">
+                            <p>Before committing resources to a high-impact mission, every project must undergo <strong>Strategic Triage</strong>. This protocol ensures that we select the right problems to solve and the right methodologies to solve them.</p>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+                                <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                                    <h4 className="text-nexus-cyan font-bold font-orbitron text-xs mb-2 uppercase">Selection Logic</h4>
+                                    <p className="text-[11px] text-nexus-text-secondary leading-relaxed">Assess the "Business Pain" vs "Ease of Implementation" to identify Quick Wins and Strategic Bets.</p>
+                                </div>
+                                <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                                    <h4 className="text-nexus-gold font-bold font-orbitron text-xs mb-2 uppercase">Methodology Fit</h4>
+                                    <p className="text-[11px] text-nexus-text-secondary leading-relaxed">Determine if the problem requires DMAIC (Standard), Kaizen (Rapid), or DMADV (Design).</p>
+                                </div>
+                            </div>
+
+                            <h5 className="font-black font-orbitron text-nexus-text-primary text-xs uppercase mb-4 tracking-widest">Triage Dimensions:</h5>
+                            <ul className="space-y-2">
                                 {[
-                                    { label: 'Customer First', desc: 'Always validate the Voice of the Customer (VOC).' },
-                                    { label: 'Data Driven', desc: 'Trust in God, all others bring data.' },
-                                    { label: 'Process Focus', desc: 'Bad processes beat good people.' },
-                                    { label: 'Root Cause', desc: 'Treat the disease, not just the symptom.' },
-                                    { label: 'Collaboration', desc: 'Silos destroy value; cross-functionality builds it.' },
-                                    { label: 'Continuous Imp.', desc: 'Better than yesterday, every day.' }
-                                ].map((pillar, i) => (
-                                    <li key={i} className="flex items-start gap-4 p-4 bg-nexus-surface rounded-2xl border border-nexus-border/50 shadow-sm">
-                                        <div className="w-6 h-6 rounded-full bg-nexus-cyan/10 flex items-center justify-center text-nexus-cyan font-black font-orbitron text-xs ring-1 ring-nexus-cyan/30 shrink-0">{i + 1}</div>
-                                        <div>
-                                            <span className="font-black font-orbitron text-nexus-text-primary text-sm block mb-0.5">{pillar.label}</span>
-                                            <span className="text-xs text-nexus-text-secondary font-medium leading-relaxed">{pillar.desc}</span>
+                                    { label: 'Strategic Alignment', desc: 'Does this project move our primary KPIs? (e.g. DPMO, Cycle Time)' },
+                                    { label: 'Resource Bandwidth', desc: 'Do we have the specialized belts and SME time available?' },
+                                    { label: 'Complexity Index', desc: 'Is the root cause known or does it require deep statistical discovery?' }
+                                ].map((dim, i) => (
+                                    <li key={i} className="flex items-center gap-3 p-3 bg-nexus-surface rounded-xl border border-nexus-border/30">
+                                        <div className="w-5 h-5 rounded bg-nexus-cyan/10 flex items-center justify-center text-nexus-cyan font-black text-[10px] ring-1 ring-nexus-cyan/20 shrink-0">{i + 1}</div>
+                                        <div className="text-[11px]">
+                                            <span className="font-bold text-nexus-text-primary mr-2">{dim.label}:</span>
+                                            <span className="text-nexus-text-secondary">{dim.desc}</span>
                                         </div>
                                     </li>
                                 ))}
