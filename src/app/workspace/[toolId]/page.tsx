@@ -17,26 +17,23 @@ import {
     Sun,
     Moon,
     Calculator,
+    PenTool,
     Search,
     Minus,
     Plus,
+    Trash2,
+    Menu,
     X,
+    Bold as BoldIcon,
+    Italic as ItalicIcon,
+    Underline as UnderlineIcon,
     Eraser,
     Crosshair,
     Maximize2,
     Minimize2,
     Pen,
     Highlighter as HighlighterIcon,
-    Pencil,
-    Shield,
-    ShieldAlert,
-    Clock,
-    Zap,
-    Menu,
-    Trash2,
-    Bold as BoldIcon,
-    Italic as ItalicIcon,
-    Underline as UnderlineIcon
+    Pencil
 } from 'lucide-react';
 
 import { toolRegistry } from '@/data/toolRegistry';
@@ -50,17 +47,9 @@ const ToolWorkspace = () => {
     const searchParams = useSearchParams();
     
     const [viewMode, setViewMode] = useState(searchParams.get('mode') || 'do');
-    const [isExecutionMode, setIsExecutionMode] = useState(false);
     const [activeIframe, setActiveIframe] = useState<HTMLIFrameElement | null>(null);
     const [zoomLevel, setZoomLevel] = useState(1);
     const [activeAssistantTool, setActiveAssistantTool] = useState<string | null>(null);
-    
-    // --- ATTEMPT MASTER SYSTEM ---
-    const [attempts, setAttempts] = useState(1);
-    const [maxAttempts] = useState(3);
-    const [startTime] = useState(Date.now());
-    const [elapsedTime, setElapsedTime] = useState('00:00');
-    
     const activeToolRef = useRef(activeAssistantTool);
 
     useEffect(() => {
@@ -68,24 +57,6 @@ const ToolWorkspace = () => {
     }, [activeAssistantTool]);
 
     const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
-    const isCompleted = completedTools.includes(toolId);
-    
-    useEffect(() => {
-        const timer = setInterval(() => {
-            const now = Date.now();
-            const diff = Math.floor((now - startTime) / 1000);
-            const mins = Math.floor(diff / 60).toString().padStart(2, '0');
-            const secs = (diff % 60).toString().padStart(2, '0');
-            setElapsedTime(`${mins}:${secs}`);
-        }, 1000);
-        return () => clearInterval(timer);
-    }, [startTime]);
-
-    useEffect(() => {
-        if (activeIframe?.contentWindow) {
-            activeIframe.contentWindow.postMessage({ type: 'toggle-execution-mode', enabled: isExecutionMode }, '*');
-        }
-    }, [isExecutionMode, activeIframe]);
     
     // SMART TOOL LOOKUP: If ID is a filename (e.g., Tool_ProjectCharter_Premium.html), find its key
     let tool = toolRegistry[toolId];
@@ -95,17 +66,6 @@ const ToolWorkspace = () => {
         );
         if (foundKey) tool = toolRegistry[foundKey];
     }
-
-    const activeMethodology = methodology?.split(' ')[0].toUpperCase() || 'DMAIC';
-    const activePhases = methodologyData[activeMethodology] || methodologyData['DMAIC'];
-    const allTools: any[] = Object.values(activePhases).flatMap((p: any) => p.tools);
-    const currentIndex = allTools.findIndex(t => t.toolId === toolId || t.id === toolId);
-    
-    const handleNextStation = () => {
-        const next = allTools[currentIndex + 1];
-        if (next) router.push(`/workspace/${next.toolId || next.id}`);
-        else router.push('/academy');
-    };
 
     // --- FULLSCREEN LOGIC ---
     const [isFullScreen, setIsFullScreen] = useState(false);
@@ -308,6 +268,16 @@ const ToolWorkspace = () => {
         }
     }, [activeAssistantTool]);
 
+    // Identify Next Station Logic
+    const activeMethodology = methodology?.split(' ')[0].toUpperCase() || 'DMAIC';
+    const activePhases = methodologyData[activeMethodology] || methodologyData['DMAIC'];
+    const allTools: any[] = Object.values(activePhases).flatMap((p: any) => p.tools);
+    const currentIndex = allTools.findIndex(t => t.id === toolId);
+    const nextTool = allTools[currentIndex + 1];
+
+    const handleNextStation = () => { if (nextTool) router.push(`/workspace/${nextTool.id}`); else router.push('/journey'); };
+    const isCompleted = completedTools.includes(toolId);
+
     const handleZoom = (delta: number) => setZoomLevel(prev => Math.min(Math.max(0.5, prev + delta), 2));
     const resetZoom = () => setZoomLevel(1);
 
@@ -401,42 +371,20 @@ const ToolWorkspace = () => {
                     <div className={`text-[10px] font-orbitron font-black ml-2 uppercase opacity-50 tracking-widest ${theme === 'light' ? 'text-nexus-text-secondary' : 'text-nexus-text-secondary/60'}`}>AST-V2</div>
                 </div>
 
-                <div className={`p-1 rounded-full border flex shadow-inner overflow-hidden ${theme === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-black/60 border-white/5'}`}>
-                    <button 
-                        onClick={() => setIsExecutionMode(false)} 
-                        className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${!isExecutionMode ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}
-                    >
-                        <Terminal className="w-3 h-3" /> TRAINING
-                    </button>
-                    <button 
-                        onClick={() => setIsExecutionMode(true)} 
-                        className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${isExecutionMode ? 'bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}
-                    >
-                        <ShieldAlert className="w-3 h-3" /> EXECUTION
-                    </button>
+                <div className={`p-1 rounded-full border flex shadow-inner w-1/4 justify-end ${theme === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-black/60 border-white/5'}`}>
+                    <button onClick={() => setViewMode('do')} className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'do' ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}><Terminal className="w-3 h-3" /> DO</button>
+                    <button onClick={() => setViewMode('learn')} className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'learn' ? 'bg-nexus-purple text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}><FileText className="w-3 h-3" /> LEARN</button>
                 </div>
             </div>
 
             {/* 🚀 MAIN CONTENT */}
             <div className="flex-1 flex overflow-hidden relative pt-16 p-4 pb-20">
-                {/* Attempt Info Overlay (Only if not execution mode, or show subtly in both) */}
-                <div className="absolute top-20 left-10 z-[800] flex items-center gap-4">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-md rounded-xl border border-white/5">
-                        <Clock className="w-3.5 h-3.5 text-nexus-cyan" />
-                        <span className="text-xs font-black font-orbitron text-white">{elapsedTime}</span>
-                    </div>
-                    <div className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-md rounded-xl border border-white/10">
-                        <Zap className="w-3.5 h-3.5 text-nexus-gold" />
-                        <span className="text-xs font-black font-orbitron text-white tracking-widest uppercase">{attempts}/{maxAttempts} ATTEMPTS</span>
-                    </div>
-                </div>
-
                 <div className={`w-full h-full overflow-hidden rounded-2xl border shadow-2xl transition-all duration-300 p-1.5 ${theme === 'light' ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/5'}`}>
                     <iframe
                         src={tool.src}
                         onLoad={handleIframeLoad}
                         title={tool.name}
-                        className={`w-full h-full border-none origin-top rounded-xl ring-1 ${theme === 'light' ? 'ring-slate-200' : 'ring-white/10'} ${isExecutionMode ? 'filtering-edu-content' : ''}`}
+                        className={`w-full h-full border-none origin-top rounded-xl ring-1 ${theme === 'light' ? 'ring-slate-200' : 'ring-white/10'}`}
                         loading="lazy"
                         sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals"
                     />
@@ -529,11 +477,11 @@ const ToolWorkspace = () => {
                                         { label: "Portfolio (DO)", color: "text-emerald-400", bg: "bg-emerald-400/5", path: "/execute" },
                                         { label: "My Transcript", color: "text-orange-400", bg: "bg-orange-400/5", path: "/profile" },
                                         { label: "Reference Guide", color: "text-slate-400", bg: "bg-slate-400/5", path: "/references" }
-                                    ].map((link, i) => ( link.path ?
+                                    ].map((link, i) => (
                                         <button key={i} onClick={() => router.push(link.path)} className={`w-full flex items-center justify-between p-3.5 rounded-xl ${link.bg} border border-white/5 hover:border-white/20 transition-all group`}>
                                             <span className={`text-xs font-bold ${link.color}`}>{link.label}</span>
                                             <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-white transition-all transform group-hover:translate-x-1" />
-                                        </button> : null
+                                        </button>
                                     ))}
                                 </div>
                                 <div className="p-4 bg-black/40 border-t border-white/5 text-center">
@@ -673,41 +621,14 @@ const ToolWorkspace = () => {
                 </AnimatePresence>
 
                 {/* 🎮 MISSION CONTROL FOOTER */}
-                <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-6 p-2 rounded-[2.5rem] bg-black/60 backdrop-blur-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] shell-interactive transition-all duration-300`}>
-                    <div className="flex items-center gap-2 px-4 border-r border-white/5">
-                        <button onClick={() => router.push('/hangar')} className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all"><Home className="w-4 h-4" /></button>
-                        <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) router.push(`/workspace/${prevTool.toolId || prevTool.id}`); else router.push('/academy'); }} className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-all"><ChevronLeft className="w-5 h-5" /></button>
-                    </div>
-
-                    <button 
-                        onClick={() => markToolComplete(toolId)} 
-                        className={`relative flex items-center justify-center gap-3 px-12 h-12 rounded-[2rem] font-black font-orbitron text-[11px] tracking-[0.2em] transition-all duration-500 active:scale-95 group overflow-hidden ${
-                            isCompleted 
-                            ? 'bg-gradient-to-r from-emerald-600 to-emerald-400 text-white shadow-[0_0_40px_rgba(16,185,129,0.6)]' 
-                            : 'bg-primary text-black shadow-[0_0_30px_rgba(34,211,238,0.5)] hover:bg-nexus-cyan hover:shadow-[0_0_50px_rgba(34,211,238,0.7)] hover:scale-105'
-                        }`}
-                    >
-                        <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:animate-shimmer" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 animate-pulse" />
-                        {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
-                        {isCompleted ? 'PROTOCOL SECURED' : 'MARK COMPLETE'}
-                    </button>
-
-                    <div className="flex items-center gap-2 px-4 border-l border-white/5">
-                        <button onClick={handleNextStation} className="w-16 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:text-nexus-cyan transition-all group/next"><ChevronRight className="w-5 h-5 group-hover/next:translate-x-1" /></button>
-                        <button onClick={() => { if (activeIframe?.contentWindow) activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all"><ArrowUp className="w-4 h-4" /></button>
-                    </div>
+                <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full shell-interactive transition-all duration-300 footer-3d`}>
+                    <button onClick={() => router.push('/hangar')} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><Home className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) router.push(`/workspace/${prevTool.id}`); else router.push('/journey'); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ChevronLeft className="w-4 h-4" /></button>
+                    <button onClick={() => markToolComplete(toolId)} className={`relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 active:scale-95 ${isCompleted ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-800 border-slate-600 text-slate-200'}`}>{isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}{isCompleted ? 'SECURED' : 'MARK DONE'}</button>
+                    <button onClick={handleNextStation} className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all"><span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span><ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" /></button>
+                    <button onClick={() => { if (activeIframe?.contentWindow) activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ArrowUp className="w-3.5 h-3.5" /></button>
                 </div>
             </div>
-            {/* Conditional CSS to hide educational resources in execution mode */}
-            {isExecutionMode && (
-                <style dangerouslySetInnerHTML={{
-                    __html: `
-                    iframe.filtering-edu-content { filter: brightness(1.05) contrast(1.1); }
-                    /* We inject hide rules into the Iframe if cross-origin allows, 
-                       otherwise we rely on the iframe itself reading a 'nexus-execution-mode' message */
-                `}} />
-            )}
             {/* Global Cursor Injects for Drawing Mode */}
             {activeAssistantTool === 'draw' && (
                 <style dangerouslySetInnerHTML={{

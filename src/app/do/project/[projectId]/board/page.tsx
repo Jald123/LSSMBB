@@ -251,15 +251,24 @@ export default function SprintBoard() {
                                             {status === 'complete' ? <CheckCircle2 className="w-5 h-5" /> : <Target className="w-5 h-5" />}
                                         </div>
                                         <div className="flex flex-col items-end gap-1.5">
-                                            {tool.priority === 'essential' && <Badge variant="destructive" className="text-[8px] uppercase tracking-tighter">Essential</Badge>}
-                                            {d && d.attempts > 0 && <span className="text-[9px] font-black text-slate-500">{d.attempts + 1} ATTEMPTS</span>}
+                                            {tool.priority === 'essential' && <Badge variant="destructive" className="text-[8px] uppercase tracking-tighter shadow-sm shadow-red-500/10">Essential</Badge>}
+                                            {d && (
+                                                <div className={cn(
+                                                    "px-2 py-0.5 rounded text-[9px] font-black tracking-tighter border",
+                                                    (d.attempts + 1) >= 3 ? "bg-red-500/20 border-red-500/50 text-red-500" :
+                                                    (d.attempts + 1) === 2 ? "bg-amber-500/20 border-amber-500/50 text-amber-500" :
+                                                    "bg-slate-800 border-white/10 text-slate-400"
+                                                )}>
+                                                    ATTEMPT {d.attempts + 1} / 3
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
                                     {/* Tool Info */}
                                     <div className="flex-1 space-y-2 mb-8">
-                                        <h3 className="text-lg font-bold group-hover:text-primary transition-colors leading-tight text-foreground">{tool.toolName}</h3>
-                                        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">System-assigned protocol for {activeTab} stage implementation.</p>
+                                        <h3 className="text-lg font-black text-white group-hover:text-primary transition-colors leading-tight">{tool.toolName}</h3>
+                                        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">System-assigned protocol for {activeTab} stage implementation.</p>
                                     </div>
 
                                     {/* Footer Section */}

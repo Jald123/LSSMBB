@@ -47,9 +47,9 @@ export const CaseDetailModal: React.FC<CaseDetailModalProps> = ({
                                 <div>
                                     <h2 className="text-2xl font-bold text-[#1a1a2e] mb-2">{caseStudy.title}</h2>
                                     <div className="flex gap-2">
-                                    <span className="px-2 py-0.5 bg-[#fbe3e8] text-white text-[10px] font-black uppercase rounded shadow-sm">
-                                        {caseStudy.category}
-                                    </span>
+                                        <span className="px-2 py-0.5 bg-[#fbe3e8] text-[#ff1e00] text-[10px] font-black uppercase rounded">
+                                            {caseStudy.category}
+                                        </span>
                                         <span className="px-2 py-0.5 bg-[#e8f9fd] text-[#1a1a2e] text-[10px] font-black uppercase rounded">
                                             {caseStudy.framework}
                                         </span>
@@ -73,7 +73,7 @@ export const CaseDetailModal: React.FC<CaseDetailModalProps> = ({
                             </h3>
                             <div className="grid grid-cols-2 gap-y-3">
                                 {caseStudy.phases?.flatMap((p: any) => p.tools).filter((t: any) => t.priority === 'essential').map((tool: any) => (
-                                    <div key={tool.toolId} className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                                    <div key={tool.toolId} className="flex items-center gap-2 text-sm text-[#4b5563] font-medium">
                                         <CheckCircle2 className="w-4 h-4 text-[#59ce8f]" />
                                         {tool.toolName}
                                     </div>

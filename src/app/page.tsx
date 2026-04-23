@@ -269,9 +269,11 @@ export default function Dashboard() {
 
                     {/* 3. Case Studies Database */}
                     <section id="cases-section" className="space-y-8 pt-6">
-                        <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                            <h2 className="text-2xl font-bold font-display tracking-tight text-white flex items-center gap-3">
-                                <BookOpen className="w-6 h-6 text-primary" />
+                        <div className="flex items-center justify-between border-b border-white/10 pb-6">
+                            <h2 className="text-3xl font-black font-orbitron tracking-tighter text-primary flex items-center gap-4 italic uppercase">
+                                <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                                    <BookOpen className="w-6 h-6 shadow-[0_0_15px_rgba(34,211,238,0.4)]" />
+                                </div>
                                 Mission Selection Library
                             </h2>
                             <div className="flex gap-2">
@@ -295,12 +297,15 @@ export default function Dashboard() {
                                     >
                                         <div>
                                             <div className="flex items-start justify-between mb-4">
-                                                <Badge variant="outline" className="bg-[#020617] uppercase tracking-widest text-[10px] py-1 border-white/10 !text-white">{caseItem.category.replace('-', ' ')}</Badge>
+                                                <Badge variant="outline" className="bg-[#020617] uppercase tracking-widest text-[10px] py-1 border-white/10">{caseItem.category.replace('-', ' ')}</Badge>
                                                 <span className="text-muted-foreground font-mono text-[10px] opacity-30 select-none">ID-{String(index + 1).padStart(3, '0')}</span>
                                             </div>
-                                            <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors leading-tight">
+                                            <h3 className="text-xl font-bold mb-1 text-white group-hover:text-primary transition-colors leading-tight">
                                                 {caseItem.title}
                                             </h3>
+                                            <p className="text-[11px] text-slate-400 line-clamp-2 mt-1 group-hover:text-slate-300 transition-colors">
+                                                {caseItem.description}
+                                            </p>
                                         </div>
 
                                         <div className="space-y-6">
@@ -313,7 +318,7 @@ export default function Dashboard() {
                                                 ))}
                                             </div>
                                             <div className="flex justify-between items-center pt-5 border-t border-white/5">
-                                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                                                <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] group-hover:text-white transition-colors">
                                                     {hasProject ? "CONTINUE PROTOCOL" : caseItem.framework}
                                                 </span>
                                                 <div className={cn(
