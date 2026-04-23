@@ -34,12 +34,12 @@ const PHASE_0: Phase = {
         },
         {
             id: "fnd-002",
-            title: "Mission Prep Armory",
-            description: "Access the essential tactical toolkit for rapid deployment.",
-            duration: "20 min",
+            title: "Project Triage & Scoping",
+            description: "Assess project viability and strategic complexity.",
+            duration: "25 min",
             status: "available",
             type: "tool",
-            toolUrl: "/04-STATISTICS-TOOLS/Tool_WorkflowHub.html"
+            toolUrl: "/04-STATISTICS-TOOLS/Tool_ProjectTriage.html"
         }
     ]
 };
