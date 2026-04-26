@@ -279,23 +279,3 @@ export default function Dashboard() {
         </div>
     );
 }
-                </div>
-            </main>
-
-            <CaseDetailModal
-                isOpen={!!selectedCase}
-                onClose={() => setSelectedCase(null)}
-                caseStudy={selectedCase}
-                onStartProject={startProject}
-                isCreating={isCreating}
-            />
-
-            <CustomProjectModal
-                isOpen={isCustomModalOpen}
-                onClose={() => setIsCustomModalOpen(false)}
-                onStartProject={(data) => startProject('custom', data.framework, data)}
-                isCreating={isCreating}
-            />
-        </div>
-    );
-}
