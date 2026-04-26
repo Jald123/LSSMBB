@@ -93,6 +93,51 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
                 "keywords": ["handoff", "missing", "delay"]
             }
         }
+    },
+    "surgical-optimization": {
+        "charter": {
+            "problemStatement": {
+                "target": "Operating room turnover time averages 55 minutes, causing a backlog of 4 elective surgeries per day.",
+                "vitals": ["55", "4"],
+                "keywords": ["turnover", "elective", "backlog"]
+            }
+        }
+    },
+    "lab-tat": {
+        "charter": {
+            "problemStatement": {
+                "target": "Urgent lab turnaround time (TAT) is currently 3.5 hours, missing the 1-hour critical threshold in 40% of cases.",
+                "vitals": ["3.5", "1-hour", "40%"],
+                "keywords": ["TAT", "urgent", "threshold"]
+            }
+        }
+    },
+    "hospital-wing-design": {
+        "charter": {
+            "problemStatement": {
+                "target": "Existing ward layout requires nurses to walk 4.2 miles per shift, with patient satisfaction scores at an all-time low (45%).",
+                "vitals": ["4.2", "45%"],
+                "keywords": ["layout", "ergonomics", "walking"]
+            }
+        }
+    },
+    "smart-grocery": {
+        "charter": {
+            "problemStatement": {
+                "target": "Weekly grocery spend is $350 with 15% food waste due to lack of optimized routing and meal planning.",
+                "vitals": ["$350", "15%"],
+                "keywords": ["routing", "waste", "budget"]
+            }
+        }
+    },
+    "commute-optimization": {
+        "charter": {
+            "problemStatement": {
+                "target": "Daily commute variation is +/- 25 minutes, causing 3 late arrivals per week at the office.",
+                "vitals": ["25", "3"],
+                "keywords": ["commute", "variation", "arrival"]
+            }
+        }
     }
 };
 
