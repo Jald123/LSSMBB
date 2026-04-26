@@ -25,10 +25,30 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
             }
         },
         "sipoc": {
+            "suppliers": {
+                "target": "EMS, Walk-in Patients, Referrals",
+                "vitals": ["EMS", "Walk-in", "Referrals"],
+                "keywords": ["Source", "Entry"]
+            },
+            "inputs": {
+                "target": "Patient Info, Symptoms, Vitals",
+                "vitals": ["Symptoms", "Vitals"],
+                "keywords": ["Data", "Condition"]
+            },
             "process": {
                 "target": "Arrive -> Triage -> Register -> Wait -> Treat -> Discharge/Admit",
-                "vitals": ["Triage", "Register", "Treat", "Discharge"],
+                "vitals": ["Triage", "Register", "Treat", "Discharge", "Wait"],
                 "keywords": ["Value Stream", "Flow", "Bottleneck"]
+            },
+            "outputs": {
+                "target": "Stabilized Patient, Medical Records, Treatment Plan",
+                "vitals": ["Stabilized", "Records", "Plan"],
+                "keywords": ["Result", "Exit"]
+            },
+            "customers": {
+                "target": "Patients, Families, Admitting Wards",
+                "vitals": ["Patients", "Families", "Wards"],
+                "keywords": ["Stakeholder", "End User"]
             }
         }
     },
@@ -36,8 +56,22 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
         "charter": {
             "problemStatement": {
                 "target": "High-alert medication dispensing errors have spiked by 25% over the last quarter, resulting in 3 'Near Miss' events per month in the ICU.",
-                "vitals": ["25%", "Near Miss", "ICU"],
-                "keywords": ["spike", "frequency", "safety"]
+                "vitals": ["25%", "3", "Near Miss", "ICU"],
+                "keywords": ["spike", "alert", "error"]
+            },
+            "goalStatement": {
+                "target": "Achieve 0 near-miss events and reduce dispensing errors to <0.01% through standardized verification protocols.",
+                "vitals": ["0", "<0.01%"],
+                "keywords": ["zero", "reduction", "verification"]
+            }
+        }
+    },
+    "patient-transfer": {
+        "charter": {
+            "problemStatement": {
+                "target": "Handoff delays between ICU and general wards average 140 minutes, with a 12% rate of missing clinical information during transfer.",
+                "vitals": ["140", "12%", "ICU"],
+                "keywords": ["handoff", "missing", "delay"]
             }
         }
     }
@@ -57,23 +91,33 @@ export function calculateMasteryScore(caseId: string, toolId: string, userData: 
 
     for (const key of Object.keys(gold)) {
         const standard = gold[key];
-        const userValue = String(userData[key] || " ").toLowerCase();
+        const rawUserValue = String(userData[key] || "");
+        const userValue = rawUserValue.toLowerCase();
         
+        if (!rawUserValue.trim()) {
+            fieldCount++;
+            continue; // 0 for this field
+        }
+
         let fieldScore = 0;
         fieldCount++;
 
-        // Tier 1: Vitals (50%) - Exact matches for critical metrics
+        // Tier 1: Vitals (60%) - MUST HAVE specific data or terms
         const vitalMatches = (standard.vitals || []).filter((v: string) => userValue.includes(v.toLowerCase())).length;
-        const vitalScore = standard.vitals?.length ? (vitalMatches / standard.vitals.length) * 50 : 50;
+        // CRITICAL: If vitals exist but ZERO are matched, score for this field is 0! (Anti-irrelevance)
+        if (standard.vitals?.length > 0 && vitalMatches === 0) {
+            continue; 
+        }
+        const vitalScoreValue = standard.vitals?.length ? (vitalMatches / standard.vitals.length) * 60 : 60;
 
-        // Tier 2: Keywords (30%) - Technical terminology
+        // Tier 2: Keywords (40%) - Technical terminology
         const keywordMatches = (standard.keywords || []).filter((k: string) => userValue.includes(k.toLowerCase())).length;
-        const keywordScore = standard.keywords?.length ? (keywordMatches / standard.keywords.length) * 30 : 30;
+        const keywordScoreValue = standard.keywords?.length ? (keywordMatches / standard.keywords.length) * 40 : 40;
 
-        // Tier 3: Length/Depth (20%) - Penalty for lazy answers
-        const depthScore = Math.min((userValue.length / 50) * 20, 20);
-
-        fieldScore = vitalScore + keywordScore + depthScore;
+        // Depth/Irrelevance filter: If it's just long text with no keywords, it shouldn't get points.
+        // We removed DepthScore to prevent "length hacking"
+        
+        fieldScore = vitalScoreValue + keywordScoreValue;
         totalScore += fieldScore;
     }
 
