@@ -322,9 +322,32 @@ export default function ToolExecutionView() {
                             <ChevronRight className="w-3 h-3" />
                             <span className="text-slate-300">{toolData.toolName}</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                             <h1 className="text-sm font-bold text-white tracking-tight">{caseData.title}</h1>
-                            {hasUnsavedChanges && <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />}
+                            <div className="h-4 w-px bg-white/10 mx-1" />
+                            {caseData.dataset?.briefingUrl && (
+                                <a 
+                                    href={caseData.dataset.briefingUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1.5 px-2 py-1 bg-white/5 border border-white/10 rounded-md text-[9px] font-bold text-slate-400 hover:text-primary hover:border-primary/50 transition-all uppercase tracking-widest"
+                                >
+                                    <Clock className="w-3 h-3" />
+                                    Briefing
+                                </a>
+                            )}
+                            {caseData.dataset?.rawDataUrl && (
+                                <a 
+                                    href={caseData.dataset.rawDataUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1.5 px-2 py-1 bg-white/5 border border-white/10 rounded-md text-[9px] font-bold text-slate-400 hover:text-emerald-500 hover:border-emerald-500/50 transition-all uppercase tracking-widest"
+                                >
+                                    <Database className="w-3 h-3" />
+                                    Dataset
+                                </a>
+                            )}
+                            {hasUnsavedChanges && <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse ml-1" />}
                         </div>
                     </div>
                 </div>

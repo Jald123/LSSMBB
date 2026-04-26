@@ -153,17 +153,30 @@ export default function SprintBoard() {
                         <h1 className="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-white leading-none">
                             {caseData.title}
                         </h1>
-                        {caseData.dataset?.briefingUrl && (
-                            <a 
-                                href={caseData.dataset.briefingUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="mt-2 inline-flex items-center gap-1.5 text-[10px] font-bold text-primary hover:underline group"
-                            >
-                                <Clock className="w-3 h-3" />
-                                DOWNLOAD MISSION BRIEFING
-                            </a>
-                        )}
+                        <div className="flex items-center gap-4 mt-3">
+                            {caseData.dataset?.briefingUrl && (
+                                <a 
+                                    href={caseData.dataset.briefingUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-lg text-[9px] font-black text-primary hover:bg-primary/20 transition-all uppercase tracking-widest"
+                                >
+                                    <Clock className="w-3 h-3" />
+                                    1. Mission Briefing (PDF)
+                                </a>
+                            )}
+                            {caseData.dataset?.rawDataUrl && (
+                                <a 
+                                    href={caseData.dataset.rawDataUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-[9px] font-black text-emerald-500 hover:bg-emerald-500/20 transition-all uppercase tracking-widest"
+                                >
+                                    <Activity className="w-3 h-3" />
+                                    2. Intelligence Dataset (CSV)
+                                </a>
+                            )}
+                        </div>
                     </div>
                 </div>
 

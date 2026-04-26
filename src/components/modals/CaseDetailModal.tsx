@@ -104,10 +104,21 @@ export const CaseDetailModal: React.FC<CaseDetailModalProps> = ({
                                     href={caseStudy.dataset.briefingUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-full h-11 mb-3 border-2 border-[#ff1e00]/20 text-[#ff1e00] font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-[#ff1e00]/5 transition-all outline-none flex items-center justify-center gap-2"
+                                    className="w-full h-11 mb-2 border-2 border-primary/20 text-primary font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-primary/5 transition-all outline-none flex items-center justify-center gap-2"
                                 >
                                     <Clock className="w-4 h-4" />
-                                    Download Mission Briefing
+                                    1. Mission Briefing (PDF)
+                                </a>
+                            )}
+                            {caseStudy.dataset?.rawDataUrl && (
+                                <a 
+                                    href={caseStudy.dataset.rawDataUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full h-11 mb-4 border-2 border-emerald-500/20 text-emerald-500 font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-emerald-500/5 transition-all outline-none flex items-center justify-center gap-2"
+                                >
+                                    <Database className="w-4 h-4" />
+                                    2. Intelligence Dataset (CSV)
                                 </a>
                             )}
                             <button
