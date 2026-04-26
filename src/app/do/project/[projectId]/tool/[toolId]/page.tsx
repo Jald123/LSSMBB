@@ -84,6 +84,7 @@ export default function ToolExecutionView() {
                         if (t) {
                             foundTool = t;
                             foundPhase = phase.name;
+                            if (!activePhaseTab) setActivePhaseTab(phase.name);
                             break;
                         }
                     }
@@ -110,6 +111,8 @@ export default function ToolExecutionView() {
             })
             .catch(() => setLoading(false));
     }, [projectId, toolId]);
+
+    const [activePhaseTab, setActivePhaseTab] = useState<string>("");
 
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
@@ -387,6 +390,50 @@ export default function ToolExecutionView() {
 
     return (
         <div className="h-screen flex flex-col bg-background overflow-hidden selection:bg-primary/30">
+            {/* 📍 TACTICAL PHASE NAV (High-Level) */}
+            <div className="bg-[#0f172a]/60 backdrop-blur-xl border-b border-white/5 px-6 h-12 flex items-center justify-between z-[1100] shadow-lg">
+                <div className="flex items-center gap-1.5 p-1 bg-surface/30 border border-white/5 rounded-xl">
+                    {caseData.phases.map((p) => {
+                        const isCurrent = phaseName === p.name;
+                        return (
+                            <button
+                                key={p.name}
+                                onClick={() => {
+                                    // Navigate to first tool of that phase
+                                    const firstTool = p.tools[0];
+                                    if (firstTool) {
+                                        router.push(`/do/project/${projectId}/tool/${firstTool.toolId}`);
+                                    }
+                                }}
+                                className={cn(
+                                    "px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                                    isCurrent ? "bg-primary text-black" : "text-slate-500 hover:text-white"
+                                )}
+                            >
+                                {p.name}
+                            </button>
+                        );
+                    })}
+                </div>
+                
+                <div className="hidden md:flex items-center gap-4">
+                    <div className="flex flex-col items-end">
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest leading-none">Global Trajectory</span>
+                        <div className="flex items-center gap-2">
+                             <div className="w-32 h-1 bg-surface rounded-full overflow-hidden">
+                                <div className="h-full bg-primary" style={{ width: `${project.progressPercentage}%` }} />
+                             </div>
+                             <span className="text-[10px] font-bold text-white">{project.progressPercentage}%</span>
+                        </div>
+                    </div>
+                    <div className="h-6 w-px bg-white/5" />
+                    <div className="flex flex-col">
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest leading-none">Operational Tool</span>
+                        <span className="text-[10px] font-bold text-primary">{toolData.toolName}</span>
+                    </div>
+                </div>
+            </div>
+
             {/* Operations Viewport */}
             <div className="relative flex-1 bg-[#020617]">
                 <AnimatePresence>
@@ -480,7 +527,14 @@ export default function ToolExecutionView() {
                 <div className="h-6 w-px bg-white/10 mx-1" />
 
                 <button onClick={handleNext} className="group flex items-center gap-3 pl-6 pr-5 h-10 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all shadow-lg hover:text-white" title="Next Tool">
-                    <span className="text-[10px] font-black font-orbitron tracking-widest leading-none">NEXT</span>
+                    <div className="flex flex-col items-start">
+                        <span className="text-[10px] font-black font-orbitron tracking-widest leading-none">NEXT</span>
+                        {currentIndex < allTools.length - 1 && (
+                            <span className="text-[7px] font-bold text-slate-500 uppercase tracking-tight group-hover:text-primary transition-colors">
+                                {allTools[currentIndex + 1].toolName}
+                            </span>
+                        )}
+                    </div>
                     <ChevronRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform" />
                 </button>
                 
