@@ -70,7 +70,7 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed top-0 right-0 h-full w-full max-w-[450px] bg-card/60 backdrop-blur-3xl border-l border-white/10 z-[200] flex flex-col shadow-2xl"
+                        className="fixed top-0 right-0 h-full w-[380px] bg-[#020617] border-l border-white/10 z-[200] flex flex-col shadow-2xl"
                     >
                         {/* Header */}
                         <div className="h-16 md:h-20 border-b border-white/10 px-4 md:px-8 flex items-center justify-between shrink-0">
@@ -79,15 +79,23 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                     <Cpu className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xs md:text-sm font-bold text-white tracking-tight">Sensei.AI</h3>
-                                    <div className="flex items-center gap-1 text-[8px] md:text-[9px] font-black text-emerald-500 uppercase tracking-widest">
+                                    <h3 className="text-xs md:text-sm font-bold text-white tracking-tight leading-none">Sensei.AI</h3>
+                                    <div className="flex items-center gap-1 text-[8px] md:text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-1">
                                         <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
                                         Operational Intelligence
                                     </div>
                                 </div>
                             </div>
-                            <button onClick={onClose} className="p-2 hover:bg-surface rounded-xl transition-all">
-                                <X className="w-4 h-4 md:w-5 md:h-5 text-slate-500" />
+                            <button 
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onClose();
+                                }} 
+                                className="p-2.5 bg-white/5 hover:bg-red-500/20 border border-white/10 hover:border-red-500/50 rounded-xl transition-all group"
+                                title="Close Intelligence Panel"
+                            >
+                                <X className="w-5 h-5 text-slate-400 group-hover:text-red-500 transition-colors" />
                             </button>
                         </div>
 
@@ -107,7 +115,7 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                         "flex-1 flex items-center justify-center gap-2 py-3 md:py-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all relative border-b-2",
                                         activeTab === tab.id 
                                             ? "text-primary border-primary bg-primary/5" 
-                                            : "text-slate-500 border-transparent hover:text-slate-300"
+                                            : "text-slate-400 border-white/5 hover:text-white"
                                     )}
                                 >
                                     <tab.icon className="w-3 md:w-3.5 h-3 md:h-3.5" />
@@ -158,9 +166,9 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                             <div className="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest">Definitions</div>
                                             <div className="space-y-3">
                                                 {selectedEntry.definitions.map((def, i) => (
-                                                    <div key={i} className="p-3 md:p-4 bg-white/[0.02] border border-white/5 rounded-xl">
+                                                    <div key={i} className="p-3 md:p-4 bg-slate-900 border border-white/5 rounded-xl">
                                                         <p className="text-[10px] md:text-xs font-bold text-white uppercase italic">{def.term}</p>
-                                                        <p className="text-[10px] md:text-xs text-slate-300 mt-1">{def.explanation}</p>
+                                                        <p className="text-[10px] md:text-xs text-slate-200 mt-1">{def.explanation}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -208,8 +216,8 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                     <p className="text-[9px] md:text-[10px] font-black text-primary uppercase tracking-widest">Target Objective</p>
                                                     <h4 className="text-base md:text-lg font-bold text-white">{toolName}</h4>
                                                 </div>
-                                                <p className="text-[10px] md:text-xs text-slate-200 leading-relaxed">
-                                                    Verified for <span className="text-white font-bold">{phase}</span> execution. Sensei.AI is monitoring data inputs for statistical patterns.
+                                                <p className="text-[10px] md:text-xs text-slate-100 leading-relaxed font-medium">
+                                                    Verified for <span className="text-primary font-bold">{phase}</span> execution. Sensei.AI is monitoring data inputs for statistical patterns.
                                                 </p>
                                             </div>
                                         </div>
@@ -250,8 +258,8 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                     "Synchronize local datasets with the central ledger before phase completion."
                                                 ].map((tip, i) => (
                                                     <div key={i} className="flex gap-4 items-start group">
-                                                        <div className="mt-1 w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0 group-hover:scale-150 transition-all" />
-                                                        <p className="text-xs text-slate-200 leading-relaxed group-hover:text-white transition-colors">{tip}</p>
+                                                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary/60 shrink-0 group-hover:scale-150 transition-all" />
+                                                        <p className="text-xs text-slate-100 font-medium leading-relaxed group-hover:text-primary transition-colors">{tip}</p>
                                                     </div>
                                                 ))}
                                             </div>
