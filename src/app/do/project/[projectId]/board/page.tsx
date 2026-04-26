@@ -24,6 +24,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { CASE_STUDIES, CaseStudy } from "@/config/caseStudies";
 import { CelebrationModal } from "@/components/modals/CelebrationModal";
+import { MasteryReportModal } from "@/components/modals/MasteryReportModal";
 import { useToast } from "@/components/ui/Toast";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -57,6 +58,10 @@ export default function SprintBoard() {
     // Filtering states
     const [toolSearchQuery, setToolSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<string>("All");
+
+    // Report modal state
+    const [reportModalOpen, setReportModalOpen] = useState(false);
+    const [selectedToolReport, setSelectedToolReport] = useState<any>(null);
 
     useEffect(() => {
         fetchProjectData();
@@ -139,6 +144,16 @@ export default function SprintBoard() {
                 phaseName={completedPhaseName}
                 nextPhaseName={nextPhaseName}
             />
+
+            {selectedToolReport && (
+                <MasteryReportModal
+                    isOpen={reportModalOpen}
+                    onClose={() => setReportModalOpen(false)}
+                    score={selectedToolReport.score}
+                    feedback={selectedToolReport.feedback}
+                    toolName={selectedToolReport.toolName}
+                />
+            )}
 
             {/* Header: Mission Control */}
             <header className="sticky top-0 z-50 h-20 bg-background/80 backdrop-blur-md border-b border-border px-8 flex items-center justify-between shadow-nexus-glow">
@@ -354,7 +369,20 @@ export default function SprintBoard() {
                                                 variant={status === 'complete' ? "outline" : "nexus"} 
                                                 size="sm" 
                                                 className="flex-1 py-5 uppercase font-bold tracking-widest text-[10px]"
-                                                onClick={() => router.push(`/do/project/${projectId}/tool/${tool.toolId}`)}
+                                                onClick={() => {
+                                                    if (status === 'complete') {
+                                                        const d = deliverables.find(del => del.toolId === tool.toolId);
+                                                        setSelectedToolReport({
+                                                            toolId: tool.toolId,
+                                                            toolName: tool.toolName,
+                                                            score: d?.score || 0,
+                                                            feedback: d?.feedback || ""
+                                                        });
+                                                        setReportModalOpen(true);
+                                                    } else {
+                                                        router.push(`/do/project/${projectId}/tool/${tool.toolId}`);
+                                                    }
+                                                }}
                                             >
                                                 {status === 'complete' ? "VIEW VERDICT" : status === 'in-progress' ? "RESUME" : "INITIALIZE"}
                                             </Button>
