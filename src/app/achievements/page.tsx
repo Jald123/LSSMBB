@@ -126,7 +126,7 @@ export default function AchievementsWall() {
                                         <div className="space-y-2 flex-1">
                                             <h4 className={cn(
                                                 "font-bold text-lg tracking-tight",
-                                                isUnlocked ? "text-white" : "text-slate-500"
+                                                isUnlocked ? "text-foreground" : "text-slate-500"
                                             )}>{achievement.title}</h4>
                                             <p className="text-xs text-muted-foreground leading-relaxed px-2">{achievement.description}</p>
                                         </div>
@@ -150,8 +150,8 @@ export default function AchievementsWall() {
                                             )}
                                             {isUnlocked && (
                                                 <div className="flex items-center justify-center gap-2 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-                                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                                                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Protocol Verified</span>
+                                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                                    <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Protocol Verified</span>
                                                 </div>
                                             )}
                                         </div>

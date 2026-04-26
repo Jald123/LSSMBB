@@ -27,7 +27,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const PRIMARY_NAV = [
-    { name: 'Mission Library', icon: Home, path: '/' },
+    { name: 'Dashboard', icon: Home, path: '/' },
     { name: 'Nexus Academy', icon: BookOpen, path: '/academy' },
     { name: 'Mission Selection Library', icon: Library, path: '/library' },
     { name: 'Armory', icon: Shield, path: '/armory' },
