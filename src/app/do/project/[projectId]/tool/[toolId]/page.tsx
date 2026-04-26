@@ -103,6 +103,9 @@ export default function ToolExecutionView() {
                                 if (dData.deliverable.updatedAt) {
                                     setLastSaved(new Date(dData.deliverable.updatedAt).toLocaleTimeString());
                                 }
+                                if (dData.deliverable.status === 'complete') {
+                                    setResults({ score: dData.deliverable.score, feedback: dData.deliverable.feedback });
+                                }
                             }
                         })
                         .catch(() => console.log("No existing data found"));

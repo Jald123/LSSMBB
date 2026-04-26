@@ -354,10 +354,9 @@ export default function SprintBoard() {
                                                 variant={status === 'complete' ? "outline" : "nexus"} 
                                                 size="sm" 
                                                 className="flex-1 py-5 uppercase font-bold tracking-widest text-[10px]"
-                                                onClick={() => status !== 'complete' && router.push(`/do/project/${projectId}/tool/${tool.toolId}`)}
-                                                disabled={status === 'complete'}
+                                                onClick={() => router.push(`/do/project/${projectId}/tool/${tool.toolId}`)}
                                             >
-                                                {status === 'complete' ? "LOCKED" : status === 'in-progress' ? "RESUME" : "INITIALIZE"}
+                                                {status === 'complete' ? "VIEW VERDICT" : status === 'in-progress' ? "RESUME" : "INITIALIZE"}
                                             </Button>
                                             
                                             {status === 'complete' && (
@@ -365,7 +364,8 @@ export default function SprintBoard() {
                                                     variant="outline" 
                                                     size="sm" 
                                                     className="px-3 border-emerald-500/20 hover:border-primary group/retry"
-                                                    onClick={async () => {
+                                                    onClick={async (e) => {
+                                                        e.stopPropagation();
                                                         if (confirm("Initiate retry protocol? 1 attempt will be consumed.")) {
                                                             const res = await fetch(`/api/projects/${projectId}/deliverables/${tool.toolId}/retry`, { method: 'POST' });
                                                             if (res.ok) router.push(`/do/project/${projectId}/tool/${tool.toolId}`);
