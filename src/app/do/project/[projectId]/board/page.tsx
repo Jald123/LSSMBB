@@ -153,6 +153,17 @@ export default function SprintBoard() {
                         <h1 className="text-xl font-bold font-display tracking-tight text-slate-900 dark:text-white leading-none">
                             {caseData.title}
                         </h1>
+                        {caseData.dataset?.briefingUrl && (
+                            <a 
+                                href={caseData.dataset.briefingUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="mt-2 inline-flex items-center gap-1.5 text-[10px] font-bold text-primary hover:underline group"
+                            >
+                                <Clock className="w-3 h-3" />
+                                DOWNLOAD MISSION BRIEFING
+                            </a>
+                        )}
                     </div>
                 </div>
 
@@ -259,7 +270,7 @@ export default function SprintBoard() {
                                                     (d.attempts + 1) === 2 ? "bg-amber-500/10 border-amber-500/30 text-amber-600" :
                                                     "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
                                                 )}>
-                                                    ATTEMPT {d.attempts + 1} / 3
+                                                    ATTEMPT {d.attempts + 1} / {d.maxAttempts || 4}
                                                 </div>
                                             )}
                                         </div>

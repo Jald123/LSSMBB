@@ -23,6 +23,11 @@ export interface CaseStudy {
     estimatedHours: number;
     framework: Framework;
     phases: Phase[];
+    dataset?: {
+        briefingUrl: string;
+        rawDataUrl: string;
+    };
+    idealSolutions?: Record<string, any>; // Keyed by toolId
 }
 
 const DMAIC_PHASES: Phase[] = [
@@ -66,16 +71,118 @@ const DMAIC_PHASES: Phase[] = [
     }
 ];
 
+const DMADV_PHASES: Phase[] = [
+    {
+        name: "Define",
+        tools: [
+            { toolId: "charter", toolName: "Design Charter", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" },
+            { toolId: "voc", toolName: "VOC Analysis", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=ctq" }
+        ]
+    },
+    {
+        name: "Measure",
+        tools: [
+            { toolId: "kano", toolName: "Kano Model", priority: "essential", htmlFile: "Tool_KanoModel.html" },
+            { toolId: "qfd", toolName: "QFD House of Quality", priority: "essential", htmlFile: "Tool_QFD_HouseOfQuality.html" }
+        ]
+    },
+    {
+        name: "Analyze",
+        tools: [
+            { toolId: "design-concepts", toolName: "Design Concepts", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=fishbone" },
+            { toolId: "pugh", toolName: "Pugh Matrix", priority: "essential", htmlFile: "Tool_PughMatrix_Premium.html" }
+        ]
+    },
+    {
+        name: "Design",
+        tools: [
+            { toolId: "fmea", toolName: "DFMEA Analysis", priority: "essential", htmlFile: "Tool_DFMEA_Premium.html" },
+            { toolId: "detailed-design", toolName: "Detailed Design", priority: "essential", htmlFile: "Tool_SOP_Premium.html" }
+        ]
+    },
+    {
+        name: "Verify",
+        tools: [
+            { toolId: "verification", toolName: "Verification Plan", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" },
+            { toolId: "results", toolName: "Validation Results", priority: "essential", htmlFile: "Calculator_ControlCharts.html" }
+        ]
+    }
+];
+
+const KAIZEN_PHASES: Phase[] = [
+    {
+        name: "Identify",
+        tools: [
+            { toolId: "charter", toolName: "Kaizen Charter", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" },
+            { toolId: "gemba", toolName: "Gemba Walk Notes", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=sipoc" }
+        ]
+    },
+    {
+        name: "Analyze",
+        tools: [
+            { toolId: "pareto", toolName: "Value Stream/Waste ID", priority: "essential", htmlFile: "Tool_ParetoAnalysis.html" },
+            { toolId: "fishbone", toolName: "Root Cause Scan", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=fishbone" }
+        ]
+    },
+    {
+        name: "Improve",
+        tools: [
+            { toolId: "kaizen-event", toolName: "Blitz Implementation", priority: "essential", htmlFile: "Tool_KaizenPrioritization_Premium.html" }
+        ]
+    },
+    {
+        name: "Standardize",
+        tools: [
+            { toolId: "control-plan", toolName: "Standard Work", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" }
+        ]
+    }
+];
+
+const FOCUS_PDCA_PHASES: Phase[] = [
+    {
+        name: "FOCUS",
+        tools: [
+            { toolId: "charter", toolName: "Find/Organize/Clarify", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" },
+            { toolId: "clarify", toolName: "Understand/Select", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=5whys" }
+        ]
+    },
+    {
+        name: "Plan",
+        tools: [
+            { toolId: "data-collection", toolName: "Data Collection", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=collect" },
+            { toolId: "plan", toolName: "Action Plan", priority: "essential", htmlFile: "Tool_ParetoAnalysis.html" }
+        ]
+    },
+    {
+        name: "Do",
+        tools: [
+            { toolId: "implementation", toolName: "Trial Implementation", priority: "essential", htmlFile: "Tool_DFMEA_Premium.html" }
+        ]
+    },
+    {
+        name: "Check/Act",
+        tools: [
+            { toolId: "results", toolName: "Result Analysis", priority: "essential", htmlFile: "Calculator_ControlCharts.html" },
+            { toolId: "standardize", toolName: "Standardize/Act", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" }
+        ]
+    }
+];
+
 export const CASE_STUDIES: CaseStudy[] = [
+    // --- HEALTHCARE DMAIC (5) ---
     {
         id: "er-wait-times",
         title: "ER Wait Times Optimization",
         category: "medical",
-        description: "Analyze patient flow in a busy urban emergency room to reduce door-to-provider time.",
+        description: "Analyze patient flow in a busy urban emergency room to reduce door-to-provider time using DMAIC.",
         difficulty: 4,
         estimatedHours: 12,
         framework: "DMAIC",
-        phases: DMAIC_PHASES
+        phases: DMAIC_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/ER_Wait_Time_Briefing.pdf",
+            rawDataUrl: "/datasets/ER_Wait_Time_Data.csv"
+        }
     },
     {
         id: "medication-errors",
@@ -85,7 +192,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 5,
         estimatedHours: 15,
         framework: "DMAIC",
-        phases: DMAIC_PHASES
+        phases: DMAIC_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Med_Error_Briefing.pdf",
+            rawDataUrl: "/datasets/Med_Error_Data.csv"
+        }
     },
     {
         id: "patient-transfer",
@@ -117,55 +228,163 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMAIC",
         phases: DMAIC_PHASES
     },
+
+    // --- HEALTHCARE DMADV (2) ---
+    {
+        id: "hospital-wing-design",
+        title: "Hospital Wing Design",
+        category: "medical",
+        description: "Design a new patient-centric wing optimized for flow and safety using the DMADV framework.",
+        difficulty: 5,
+        estimatedHours: 20,
+        framework: "DMADV",
+        phases: DMADV_PHASES
+    },
+    {
+        id: "telehealth-exp",
+        title: "Telehealth Experience Design",
+        category: "medical",
+        description: "Engineer a seamless virtual visit portal for senior patients using Design for Six Sigma.",
+        difficulty: 4,
+        estimatedHours: 14,
+        framework: "DMADV",
+        phases: DMADV_PHASES
+    },
+
+    // --- HEALTHCARE KAIZEN (3) ---
+    {
+        id: "discharge-blitz",
+        title: "Discharge Process Blitz",
+        category: "medical",
+        description: "3-day rapid improvement event to streamline the patient discharge administrative flow.",
+        difficulty: 2,
+        estimatedHours: 6,
+        framework: "Kaizen",
+        phases: KAIZEN_PHASES
+    },
+    {
+        id: "supply-room-5s",
+        title: "Supply Room 5S Blitz",
+        category: "medical",
+        description: "Organize the surgical supply room to eliminate search time waste and inventory bloat.",
+        difficulty: 1,
+        estimatedHours: 4,
+        framework: "Kaizen",
+        phases: KAIZEN_PHASES
+    },
+    {
+        id: "pharmacy-workflow",
+        title: "Pharmacy Workflow Blitz",
+        category: "medical",
+        description: "Rapidly reorganize the inpatient pharmacy layout to reduce travel distance for technicians.",
+        difficulty: 3,
+        estimatedHours: 9,
+        framework: "Kaizen",
+        phases: KAIZEN_PHASES
+    },
+
+    // --- HEALTHCARE FOCUS-PDCA (2) ---
+    {
+        id: "satisfaction-focus",
+        title: "Patient Satisfaction Cycle",
+        category: "medical",
+        description: "Systematically address declining HCAHPS scores in the outpatient clinic.",
+        difficulty: 2,
+        estimatedHours: 8,
+        framework: "FOCUS-PDCA",
+        phases: FOCUS_PDCA_PHASES
+    },
+    {
+        id: "infection-rate",
+        title: "Infection Rate Reduction",
+        category: "medical",
+        description: "Apply the FOCUS-PDCA cycle to reduce catheter-associated infections in the surgical ward.",
+        difficulty: 4,
+        estimatedHours: 12,
+        framework: "FOCUS-PDCA",
+        phases: FOCUS_PDCA_PHASES
+    },
+
+    // --- DAILY LIFE (2 per framework = 8 total) ---
     {
         id: "smart-grocery",
         title: "Smart Grocery Shopping",
         category: "daily-life",
-        description: "Optimize your weekly grocery routing and budgeting using Kaizen principles.",
+        description: "Optimize your weekly grocery routing and budgeting using DMAIC principles.",
         difficulty: 1,
         estimatedHours: 3,
         framework: "DMAIC",
         phases: DMAIC_PHASES
     },
     {
-        id: "morning-routine",
-        title: "Morning Routine Lean",
+        id: "commute-optimization",
+        title: "Commute Time Optimization",
         category: "daily-life",
-        description: "Shave 15 minutes off your morning prep time using 5S and movement mapping.",
+        description: "Analyze and reduce your daily commute variation using DMAIC and data collection.",
+        difficulty: 2,
+        estimatedHours: 5,
+        framework: "DMAIC",
+        phases: DMAIC_PHASES
+    },
+    {
+        id: "morning-routine-kaizen",
+        title: "Morning Routine Streamline",
+        category: "daily-life",
+        description: "A rapid personal kaizen event to shave 15 minutes off your morning prep time.",
         difficulty: 2,
         estimatedHours: 4,
-        framework: "DMAIC",
-        phases: DMAIC_PHASES
+        framework: "Kaizen",
+        phases: KAIZEN_PHASES
     },
     {
-        id: "portfolio-rebalance",
-        title: "Portfolio Rebalancing Engine",
-        category: "investment",
-        description: "Apply DMAIC to your personal investment strategy to minimize risk and maximize CAGR.",
-        difficulty: 4,
-        estimatedHours: 9,
-        framework: "DMAIC",
-        phases: DMAIC_PHASES
+        id: "closet-5s",
+        title: "Closet Organization (5S)",
+        category: "daily-life",
+        description: "Apply the 5S methodology to organize your wardrobe for maximum efficiency.",
+        difficulty: 1,
+        estimatedHours: 3,
+        framework: "Kaizen",
+        phases: KAIZEN_PHASES
     },
     {
-        id: "risk-mitigation",
-        title: "Risk Mitigation Strategy",
-        category: "investment",
-        description: "Develop a robust framework for assessing and mitigating volatility in volatile markets.",
-        difficulty: 5,
-        estimatedHours: 14,
+        id: "home-office-design",
+        title: "Home Office Design",
+        category: "daily-life",
+        description: "Design an ergonomic and high-productivity workspace using DMADV.",
+        difficulty: 3,
+        estimatedHours: 6,
         framework: "DMADV",
-        phases: DMAIC_PHASES // Placeholder: DMADV has different phases but for now we follow the pattern
+        phases: DMADV_PHASES
     },
     {
-        id: "property-yield",
-        title: "Property Yield Analysis",
-        category: "investment",
-        description: "Optimize rental property returns through strategic maintenance and tenant screening.",
+        id: "personal-wedding-planner",
+        title: "Event Planning Excellence",
+        category: "daily-life",
+        description: "Design a flawless family event or wedding protocol using DMADV principles.",
         difficulty: 4,
-        estimatedHours: 11,
-        framework: "DMAIC",
-        phases: DMAIC_PHASES
+        estimatedHours: 10,
+        framework: "DMADV",
+        phases: DMADV_PHASES
+    },
+    {
+        id: "personal-budget-pdca",
+        title: "Personal Budget Tracking",
+        category: "daily-life",
+        description: "Stabilize your personal savings rate using the FOCUS-PDCA cycle.",
+        difficulty: 2,
+        estimatedHours: 5,
+        framework: "FOCUS-PDCA",
+        phases: FOCUS_PDCA_PHASES
+    },
+    {
+        id: "health-habit-tracker",
+        title: "Habit Formation Cycle",
+        category: "daily-life",
+        description: "Apply FOCUS-PDCA to build and sustain a new health or fitness habit.",
+        difficulty: 1,
+        estimatedHours: 4,
+        framework: "FOCUS-PDCA",
+        phases: FOCUS_PDCA_PHASES
     }
 ];
 
@@ -173,88 +392,11 @@ export const getCustomTemplate = (framework: Framework): CaseStudy => {
     let phases = DMAIC_PHASES;
     
     if (framework === 'Kaizen') {
-        phases = [
-            {
-                name: "Identify",
-                tools: [
-                    { toolId: "charter", toolName: "Kaizen Charter", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" },
-                    { toolId: "gemba", toolName: "Gemba Walk Notes", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=sipoc" }
-                ]
-            },
-            {
-                name: "Analyze",
-                tools: [
-                    { toolId: "pareto", toolName: "Pareto Analysis", priority: "essential", htmlFile: "Tool_ParetoAnalysis.html" },
-                    { toolId: "fishbone", toolName: "Fishbone Diagram", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=fishbone" }
-                ]
-            },
-            {
-                name: "Improve",
-                tools: [
-                    { toolId: "kaizen-event", toolName: "Improvement Plan", priority: "essential", htmlFile: "Tool_KaizenPrioritization_Premium.html" }
-                ]
-            },
-            {
-                name: "Standardize",
-                tools: [
-                    { toolId: "control-plan", toolName: "Standard Work", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" }
-                ]
-            }
-        ];
+        phases = KAIZEN_PHASES;
     } else if (framework === 'FOCUS-PDCA') {
-        phases = [
-            {
-                name: "FOCUS",
-                tools: [
-                    { toolId: "charter", toolName: "Project Focus", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" },
-                    { toolId: "organize", toolName: "Team Organization", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=sipoc" },
-                    { toolId: "clarify", toolName: "Process Clarification", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=5whys" }
-                ]
-            },
-            {
-                name: "Plan",
-                tools: [
-                    { toolId: "data-collection", toolName: "Data Collection", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=collect" },
-                    { toolId: "plan", toolName: "Action Plan", priority: "essential", htmlFile: "Tool_ParetoAnalysis.html" }
-                ]
-            },
-            {
-                name: "Do",
-                tools: [
-                    { toolId: "implementation", toolName: "Trial Implementation", priority: "essential", htmlFile: "Tool_DFMEA_Premium.html" }
-                ]
-            },
-            {
-                name: "Check/Act",
-                tools: [
-                    { toolId: "results", toolName: "Result Analysis", priority: "essential", htmlFile: "Calculator_ControlCharts.html" },
-                    { toolId: "standardize", toolName: "Standardization", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" }
-                ]
-            }
-        ];
+        phases = FOCUS_PDCA_PHASES;
     } else if (framework === 'DMADV') {
-        phases = [
-            {
-                name: "Define",
-                tools: [{ toolId: "charter", toolName: "Design Charter", priority: "essential", htmlFile: "Tool_ProjectCharter_Premium.html" }]
-            },
-            {
-                name: "Measure",
-                tools: [{ toolId: "voc", toolName: "Customer Needs", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=ctq" }]
-            },
-            {
-                name: "Analyze",
-                tools: [{ toolId: "design-concepts", toolName: "Design Concepts", priority: "essential", htmlFile: "Tool_LeanWorkshop.html?tool=fishbone" }]
-            },
-            {
-                name: "Design",
-                tools: [{ toolId: "detailed-design", toolName: "Detailed Design", priority: "essential", htmlFile: "Tool_DFMEA_Premium.html" }]
-            },
-            {
-                name: "Verify",
-                tools: [{ toolId: "verification", toolName: "Verification Plan", priority: "essential", htmlFile: "Tool_RiskRegistrar_Premium.html" }]
-            }
-        ];
+        phases = DMADV_PHASES;
     }
 
     return {
@@ -268,3 +410,4 @@ export const getCustomTemplate = (framework: Framework): CaseStudy => {
         phases: phases
     };
 };
+

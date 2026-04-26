@@ -37,11 +37,18 @@ export async function PUT(
             return NextResponse.json({ error: "Deliverable not found" }, { status: 404 });
         }
 
-        await (prisma.doDeliverable as any).update({
+        // --- SCORING LOGIC ---
+        const { calculateMasteryScore, generateCritique } = await import("@/data/goldStandards");
+        const masteryScore = calculateMasteryScore(project.caseId, toolId, data);
+        const critique = generateCritique(project.caseId, toolId, data);
+
+        const updatedDeliverable = await (prisma.doDeliverable as any).update({
             where: { id: deliverable.id },
             data: {
                 formData: data,
                 status: 'complete',
+                score: masteryScore,
+                feedback: critique,
                 completedAt: new Date(),
                 updatedAt: new Date(),
                 attempts: {
@@ -106,7 +113,8 @@ export async function PUT(
         return NextResponse.json({
             success: true,
             phaseGateUnlocked,
-            nextPhase: nextPhaseName
+            nextPhase: nextPhaseName,
+            deliverable: updatedDeliverable
         });
 
     } catch (error) {

@@ -144,18 +144,89 @@ export default function ToolExecutionView() {
             });
 
             if (response.ok) {
+                const resData = await response.json();
                 setHasUnsavedChanges(false);
                 setLastSaved(new Date().toLocaleTimeString());
                 setLastServerSync(Date.now());
+                
                 if (status === 'not-started' && !isComplete) setStatus('in-progress');
-                if (isComplete) setStatus('complete');
-                showToast(isComplete ? 'SUCCESS' : 'INFO', isComplete ? "Mission deliverable verified." : "Data synchronized with terminal.");
-                if (isComplete) setTimeout(() => router.push(`/do/project/${projectId}/board`), 2000);
+                
+                if (isComplete) {
+                    setStatus('complete');
+                    const deliverable = resData.deliverable;
+                    showToast('SUCCESS', `Mission Verified. Mastery Score: ${deliverable.score}%`, 8000);
+                    // We'll show the critique in a more prominent way
+                    setResults({ score: deliverable.score, feedback: deliverable.feedback });
+                    setTimeout(() => router.push(`/do/project/${projectId}/board`), 12000); // Longer delay to read critique
+                } else {
+                    showToast('INFO', "Data synchronized with terminal.");
+                }
             }
         } catch (err) {
             showToast('ERROR', "Uplink failed. Check connection.");
         }
     };
+
+    const [results, setResults] = useState<{score: number, feedback: string} | null>(null);
+
+    const ResultsOverlay = () => (
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[2000] bg-nexus-navy/95 backdrop-blur-xl flex items-center justify-center p-6"
+        >
+            <motion.div 
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                className="max-w-2xl w-full bg-nexus-card border border-nexus-cyan/30 rounded-[3rem] p-12 text-center shadow-[0_0_100px_rgba(34,211,238,0.2)]"
+            >
+                <div className="w-24 h-24 rounded-full bg-nexus-cyan/10 border border-nexus-cyan/30 flex items-center justify-center mx-auto mb-8 shadow-nexus-glow">
+                    <Trophy className="w-12 h-12 text-nexus-cyan" />
+                </div>
+                
+                <h2 className="text-4xl font-black font-orbitron text-white mb-2 italic">MISSION VERDICT</h2>
+                <p className="text-nexus-cyan font-black tracking-[0.3em] text-xs mb-10 uppercase">Protocol Analysis Complete</p>
+                
+                <div className="flex flex-col items-center gap-6 mb-12">
+                    <div className="text-7xl font-black font-orbitron text-white tracking-tighter">
+                        {results?.score}<span className="text-nexus-cyan text-4xl">%</span>
+                    </div>
+                    <div className="w-64 h-2 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                        <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${results?.score}%` }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            className="h-full bg-gradient-to-r from-nexus-cyan to-white"
+                        />
+                    </div>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-8 mb-10 text-left relative overflow-hidden group">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-nexus-gold" />
+                    <h4 className="text-[10px] font-black font-orbitron text-nexus-gold tracking-widest uppercase mb-4 flex items-center gap-2">
+                        <Lightbulb className="w-3 h-3" /> Sensei Critique
+                    </h4>
+                    <p className="text-slate-300 text-sm leading-relaxed font-medium italic">
+                        "{results?.feedback}"
+                    </p>
+                </div>
+
+                <Button 
+                    variant="nexus" 
+                    size="lg" 
+                    className="w-full py-8 font-black font-orbitron tracking-widest text-lg"
+                    onClick={() => router.push(`/do/project/${projectId}/board`)}
+                >
+                    RETURN TO COMMAND
+                    <ChevronRight className="ml-3 w-6 h-6" />
+                </Button>
+                
+                <p className="mt-8 text-[10px] font-black text-slate-500 uppercase tracking-widest animate-pulse">
+                    Redirecting to terminal in 8 seconds...
+                </p>
+            </motion.div>
+        </motion.div>
+    );
 
     const toggleFocusMode = () => {
         const nextMode = !isFocusMode;
@@ -391,6 +462,10 @@ export default function ToolExecutionView() {
                 toolName={toolData?.toolName || "Unknown Tool"}
                 phase={phaseName}
             />
+
+            <AnimatePresence>
+                {results && <ResultsOverlay />}
+            </AnimatePresence>
         </div>
     );
 }

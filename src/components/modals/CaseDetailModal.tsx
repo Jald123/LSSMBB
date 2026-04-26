@@ -99,6 +99,17 @@ export const CaseDetailModal: React.FC<CaseDetailModalProps> = ({
                                 </div>
                             </div>
 
+                            {caseStudy.dataset?.briefingUrl && (
+                                <a 
+                                    href={caseStudy.dataset.briefingUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full h-11 mb-3 border-2 border-[#ff1e00]/20 text-[#ff1e00] font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-[#ff1e00]/5 transition-all outline-none flex items-center justify-center gap-2"
+                                >
+                                    <Clock className="w-4 h-4" />
+                                    Download Mission Briefing
+                                </a>
+                            )}
                             <button
                                 onClick={() => onStartProject(caseStudy.id, caseStudy.framework)}
                                 disabled={isCreating}

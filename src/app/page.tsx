@@ -344,7 +344,7 @@ export default function Dashboard() {
                                 </div>
                                 <div className="space-y-2">
                                     <h3 className="text-xl font-bold text-primary italic font-display uppercase tracking-wider">Deploy Custom</h3>
-                                    <p className="text-xs text-muted-foreground max-w-[220px] font-medium leading-relaxed">Initialize a new operations parameter with external dataset injection.</p>
+                                    <p className="text-xs text-muted-foreground max-w-[220px] font-medium leading-relaxed">Initialize a new operations parameter with external dataset injection & 4-attempt mastery protocol.</p>
                                 </div>
                             </div>
                         </div>
