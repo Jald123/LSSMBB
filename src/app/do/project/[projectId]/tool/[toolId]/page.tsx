@@ -22,7 +22,8 @@ import {
     Library,
     Link,
     Search as SniperIcon,
-    Pen
+    Pen,
+    Trophy
 } from "lucide-react";
 import { CASE_STUDIES, CaseStudy, ToolMapping } from "@/config/caseStudies";
 import { useToast } from "@/components/ui/Toast";
