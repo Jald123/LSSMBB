@@ -8,39 +8,37 @@
 export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
     "er-wait-times": {
         "charter": {
-            "problemStatement": "ER door-to-provider wait times have increased to 85 minutes (avg), exceeding the 30-minute benchmark and causing a 15% Left-Without-Being-Seen (LWBS) rate.",
-            "goalStatement": "Reduce average wait times from 85 to 25 minutes and decrease LWBS rate to <2% within 4 months.",
-            "metrics": ["Door-to-Provider Time", "LWBS %", "Patient Satisfaction Score"],
-            "scope": "In-scope: Triage process, provider scheduling, nurse-led protocols. Out-of-scope: Physical ER expansion."
+            "problemStatement": {
+                "target": "ER door-to-provider wait times have increased to 85 minutes (avg), exceeding the 30-minute benchmark and causing a 15% Left-Without-Being-Seen (LWBS) rate.",
+                "vitals": ["85 minutes", "15%", "30-minute", "LWBS"],
+                "keywords": ["benchmark", "congestion", "door-to-provider"]
+            },
+            "goalStatement": {
+                "target": "Reduce average wait times from 85 to 25 minutes and decrease LWBS rate to <2% within 4 months.",
+                "vitals": ["25 minutes", "<2%", "4 months"],
+                "keywords": ["reduction", "target", "timeline"]
+            },
+            "metrics": {
+                "target": "Door-to-Provider Time, LWBS %, Patient Satisfaction Score",
+                "vitals": ["Door-to-Provider", "LWBS", "Satisfaction"],
+                "keywords": ["KPI", "CTQ", "Metric"]
+            }
         },
         "sipoc": {
-            "suppliers": ["EMS", "Walk-in Patients", "Referrals"],
-            "inputs": ["Patient Info", "Symptoms", "Vitals"],
-            "process": ["Arrive", "Triage", "Register", "Wait", "Treat", "Discharge/Admit"],
-            "outputs": ["Stabilized Patient", "Medical Records", "Treatment Plan"],
-            "customers": ["Patients", "Families", "Admitting Wards"]
+            "process": {
+                "target": "Arrive -> Triage -> Register -> Wait -> Treat -> Discharge/Admit",
+                "vitals": ["Triage", "Register", "Treat", "Discharge"],
+                "keywords": ["Value Stream", "Flow", "Bottleneck"]
+            }
         }
     },
     "medication-errors": {
         "charter": {
-            "problemStatement": "High-alert medication dispensing errors have spiked by 25% over the last quarter, resulting in 3 'Near Miss' events per month in the ICU.",
-            "goalStatement": "Achieve 0 near-miss events and reduce dispensing errors to <0.01% through standardized verification protocols.",
-            "metrics": ["Error Rate per 1000 doses", "Near Miss Count", "Verification Audit Score"],
-            "scope": "In-scope: ICU dispensing, Pharmacy prep, Nurse administration. Out-of-scope: Outpatient prescriptions."
-        },
-        "sipoc": {
-            "suppliers": ["Pharmacy", "Physicians", "Medication Vendors"],
-            "inputs": ["Doctor Orders", "Patient Charts", "Unit Doses"],
-            "process": ["Order Entry", "Pharmacist Review", "Dispensing", "Transport", "Nurse Verification", "Administration"],
-            "outputs": ["Administered Medication", "Updated EMR", "Billing Record"],
-            "customers": ["Patients", "Medical Staff", "Registry Board"]
-        }
-    },
-    "patient-transfer": {
-        "charter": {
-            "problemStatement": "Handoff delays between ICU and general wards average 140 minutes, with a 12% rate of missing clinical information during transfer.",
-            "goalStatement": "Reduce transfer cycle time to <60 minutes and achieve 100% information accuracy by the end of Q3.",
-            "metrics": ["Transfer Cycle Time", "Handoff Accuracy %", "Patient Stability Post-Transfer"]
+            "problemStatement": {
+                "target": "High-alert medication dispensing errors have spiked by 25% over the last quarter, resulting in 3 'Near Miss' events per month in the ICU.",
+                "vitals": ["25%", "Near Miss", "ICU"],
+                "keywords": ["spike", "frequency", "safety"]
+            }
         }
     }
 };
@@ -52,66 +50,75 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
  */
 export function calculateMasteryScore(caseId: string, toolId: string, userData: any): number {
     const gold = GOLD_STANDARDS[caseId]?.[toolId];
-    if (!gold) return 100; // If no standard exists, give benefit of doubt or handle differently
+    if (!gold) return 100;
 
-    let matches = 0;
-    let totalFields = Object.keys(gold).length;
+    let totalScore = 0;
+    let fieldCount = 0;
 
     for (const key of Object.keys(gold)) {
-        const userValue = String(userData[key] || "").toLowerCase();
-        const goldValue = String(gold[key]).toLowerCase();
-
-        // Check if user value contains key technical terms from gold standard
-        const goldTerms = goldValue.split(/\s+/).filter(t => t.length > 3);
-        let fieldMatches = 0;
+        const standard = gold[key];
+        const userValue = String(userData[key] || " ").toLowerCase();
         
-        goldTerms.forEach(term => {
-            if (userValue.includes(term)) fieldMatches++;
-        });
+        let fieldScore = 0;
+        fieldCount++;
 
-        if (fieldMatches >= goldTerms.length * 0.4) { // 40% keyword match threshold per field
-            matches++;
-        }
+        // Tier 1: Vitals (50%) - Exact matches for critical metrics
+        const vitalMatches = (standard.vitals || []).filter((v: string) => userValue.includes(v.toLowerCase())).length;
+        const vitalScore = standard.vitals?.length ? (vitalMatches / standard.vitals.length) * 50 : 50;
+
+        // Tier 2: Keywords (30%) - Technical terminology
+        const keywordMatches = (standard.keywords || []).filter((k: string) => userValue.includes(k.toLowerCase())).length;
+        const keywordScore = standard.keywords?.length ? (keywordMatches / standard.keywords.length) * 30 : 30;
+
+        // Tier 3: Length/Depth (20%) - Penalty for lazy answers
+        const depthScore = Math.min((userValue.length / 50) * 20, 20);
+
+        fieldScore = vitalScore + keywordScore + depthScore;
+        totalScore += fieldScore;
     }
 
-    const score = Math.round((matches / totalFields) * 100);
-    return Math.min(score + 20, 100); // Add a 20% 'effort' buffer
+    return Math.round(totalScore / fieldCount);
 }
 
 export function generateCritique(caseId: string, toolId: string, userData: any): string {
     const gold = GOLD_STANDARDS[caseId]?.[toolId];
-    if (!gold) return "The tactical uplink matched standard parameters. No critical deviations detected in this sector.";
+    if (!gold) return "ELITE EXECUTION: System standards met in this sector.";
 
-    const missingPoints: string[] = [];
-    const weakPoints: string[] = [];
+    const gaps: string[] = [];
+    const recommendations: string[] = [];
     
     for (const key of Object.keys(gold)) {
+        const standard = gold[key];
         const userValue = String(userData[key] || "").toLowerCase();
-        const goldValue = String(gold[key]).toLowerCase();
-        const goldTerms = goldValue.split(/\s+/).filter(t => t.length > 5);
+        
+        const missingVitals = (standard.vitals || []).filter((v: string) => !userValue.includes(v.toLowerCase()));
+        const missingKeywords = (standard.keywords || []).filter((k: string) => !userValue.includes(k.toLowerCase()));
 
-        const matchCount = goldTerms.filter(t => userValue.includes(t)).length;
-        const matchRatio = matchCount / goldTerms.length;
-
-        if (matchRatio < 0.2) {
-            missingPoints.push(key.replace(/([A-Z])/g, ' $1').toLowerCase());
-        } else if (matchRatio < 0.5) {
-            weakPoints.push(key.replace(/([A-Z])/g, ' $1').toLowerCase());
+        if (missingVitals.length > 0) {
+            gaps.push(`${key}: Missing critical metrics [${missingVitals.join(', ')}]`);
+        }
+        if (missingKeywords.length > 0) {
+            recommendations.push(`Refine ${key} with technical terms like: ${missingKeywords.slice(0, 2).join(', ')}`);
         }
     }
 
-    let feedback = "";
-    if (missingPoints.length > 0) {
-        feedback += `CRITICAL MISSING ELEMENTS: Your analysis lacks technical depth in: ${missingPoints.join(', ')}. `;
-    }
-    if (weakPoints.length > 0) {
-        feedback += `WEAK AREAS: Consider refining the semantic density of: ${weakPoints.join(', ')}. `;
+    const score = calculateMasteryScore(caseId, toolId, userData);
+    const isPassed = score >= 70;
+
+    let report = "";
+    if (gaps.length > 0) {
+        report += `CAPABILITY GAPS DETECTED:\n${gaps.map(g => `• ${g}`).join('\n')}\n\n`;
     }
 
-    if (feedback === "") {
-        return "ELITE EXECUTION: Your submission aligns perfectly with LSSMBB tactical benchmarks. All critical parameters have been addressed.";
+    if (recommendations.length > 0) {
+        report += `TECHNICAL RECOMMENDATIONS:\n${recommendations.map(r => `• ${r}`).join('\n')}\n\n`;
     }
 
-    const thresholdNote = "TACTICAL ADVICE: To pass the 70% Mastery threshold, you must ensure your definitions include specific LSS terminology related to current-state variation and target metrics.";
-    return `${feedback}\n\n${thresholdNote}`;
+    if (!isPassed) {
+        report += `PATH TO MASTERY:\nTo bridge the ${70 - score}% gap, revisit the Mission Briefing. Ensure your ${Object.keys(gold)[0]} specifically quantifies the pain point using the exact baseline metrics provided in the intelligence dataset.`;
+    } else {
+        report += `SENSEI VERDICT: Professional standard achieved. Your quantification and terminology align with Black Belt requirements.`;
+    }
+
+    return report;
 }
