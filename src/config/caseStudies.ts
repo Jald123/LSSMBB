@@ -206,7 +206,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 3,
         estimatedHours: 8,
         framework: "DMAIC",
-        phases: DMAIC_PHASES
+        phases: DMAIC_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Patient_Transfer_Briefing.pdf",
+            rawDataUrl: "/datasets/Patient_Transfer_Data.csv"
+        }
     },
     {
         id: "surgical-optimization",
@@ -216,7 +220,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 4,
         estimatedHours: 10,
         framework: "DMAIC",
-        phases: DMAIC_PHASES
+        phases: DMAIC_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Surgical_Optimization_Briefing.pdf",
+            rawDataUrl: "/datasets/Surgical_Optimization_Data.csv"
+        }
     },
     {
         id: "lab-tat",
@@ -226,7 +234,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 3,
         estimatedHours: 7,
         framework: "DMAIC",
-        phases: DMAIC_PHASES
+        phases: DMAIC_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Lab_TAT_Briefing.pdf",
+            rawDataUrl: "/datasets/Lab_TAT_Data.csv"
+        }
     },
 
     // --- HEALTHCARE DMADV (2) ---
@@ -238,7 +250,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 5,
         estimatedHours: 20,
         framework: "DMADV",
-        phases: DMADV_PHASES
+        phases: DMADV_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Hospital_Wing_Briefing.pdf",
+            rawDataUrl: "/datasets/Hospital_Wing_Data.csv"
+        }
     },
     {
         id: "telehealth-exp",
@@ -248,7 +264,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 4,
         estimatedHours: 14,
         framework: "DMADV",
-        phases: DMADV_PHASES
+        phases: DMADV_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Telehealth_Briefing.pdf",
+            rawDataUrl: "/datasets/Telehealth_Data.csv"
+        }
     },
 
     // --- HEALTHCARE KAIZEN (3) ---
@@ -260,7 +280,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 2,
         estimatedHours: 6,
         framework: "Kaizen",
-        phases: KAIZEN_PHASES
+        phases: KAIZEN_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Discharge_Blitz_Briefing.pdf",
+            rawDataUrl: "/datasets/Discharge_Blitz_Data.csv"
+        }
     },
     {
         id: "supply-room-5s",
@@ -270,7 +294,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 1,
         estimatedHours: 4,
         framework: "Kaizen",
-        phases: KAIZEN_PHASES
+        phases: KAIZEN_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Supply_Room_5S_Briefing.pdf",
+            rawDataUrl: "/datasets/Supply_Room_5S_Data.csv"
+        }
     },
     {
         id: "pharmacy-workflow",
@@ -280,7 +308,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 3,
         estimatedHours: 9,
         framework: "Kaizen",
-        phases: KAIZEN_PHASES
+        phases: KAIZEN_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Pharmacy_Workflow_Briefing.pdf",
+            rawDataUrl: "/datasets/Pharmacy_Workflow_Data.csv"
+        }
     },
 
     // --- HEALTHCARE FOCUS-PDCA (2) ---
@@ -292,7 +324,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 2,
         estimatedHours: 8,
         framework: "FOCUS-PDCA",
-        phases: FOCUS_PDCA_PHASES
+        phases: FOCUS_PDCA_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Satisfaction_PDCA_Briefing.pdf",
+            rawDataUrl: "/datasets/Satisfaction_PDCA_Data.csv"
+        }
     },
     {
         id: "infection-rate",
@@ -302,7 +338,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 4,
         estimatedHours: 12,
         framework: "FOCUS-PDCA",
-        phases: FOCUS_PDCA_PHASES
+        phases: FOCUS_PDCA_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Infection_PDCA_Briefing.pdf",
+            rawDataUrl: "/datasets/Infection_PDCA_Data.csv"
+        }
     },
 
     // --- DAILY LIFE (2 per framework = 8 total) ---
@@ -314,7 +354,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 1,
         estimatedHours: 3,
         framework: "DMAIC",
-        phases: DMAIC_PHASES
+        phases: DMAIC_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Grocery_Briefing.pdf",
+            rawDataUrl: "/datasets/Grocery_Data.csv"
+        }
     },
     {
         id: "commute-optimization",
@@ -324,7 +368,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 2,
         estimatedHours: 5,
         framework: "DMAIC",
-        phases: DMAIC_PHASES
+        phases: DMAIC_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Commute_Briefing.pdf",
+            rawDataUrl: "/datasets/Commute_Data.csv"
+        }
     },
     {
         id: "morning-routine-kaizen",
@@ -334,7 +382,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 2,
         estimatedHours: 4,
         framework: "Kaizen",
-        phases: KAIZEN_PHASES
+        phases: KAIZEN_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Morning_Kaizen_Briefing.pdf",
+            rawDataUrl: "/datasets/Morning_Kaizen_Data.csv"
+        }
     },
     {
         id: "closet-5s",
@@ -344,7 +396,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 1,
         estimatedHours: 3,
         framework: "Kaizen",
-        phases: KAIZEN_PHASES
+        phases: KAIZEN_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Closet_5S_Briefing.pdf",
+            rawDataUrl: "/datasets/Closet_5S_Data.csv"
+        }
     },
     {
         id: "home-office-design",
@@ -354,7 +410,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 3,
         estimatedHours: 6,
         framework: "DMADV",
-        phases: DMADV_PHASES
+        phases: DMADV_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Office_DMADV_Briefing.pdf",
+            rawDataUrl: "/datasets/Office_DMADV_Data.csv"
+        }
     },
     {
         id: "personal-wedding-planner",
@@ -364,7 +424,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 4,
         estimatedHours: 10,
         framework: "DMADV",
-        phases: DMADV_PHASES
+        phases: DMADV_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Wedding_DMADV_Briefing.pdf",
+            rawDataUrl: "/datasets/Wedding_DMADV_Data.csv"
+        }
     },
     {
         id: "personal-budget-pdca",
@@ -374,7 +438,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 2,
         estimatedHours: 5,
         framework: "FOCUS-PDCA",
-        phases: FOCUS_PDCA_PHASES
+        phases: FOCUS_PDCA_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Budget_PDCA_Briefing.pdf",
+            rawDataUrl: "/datasets/Budget_PDCA_Data.csv"
+        }
     },
     {
         id: "health-habit-tracker",
@@ -384,7 +452,11 @@ export const CASE_STUDIES: CaseStudy[] = [
         difficulty: 1,
         estimatedHours: 4,
         framework: "FOCUS-PDCA",
-        phases: FOCUS_PDCA_PHASES
+        phases: FOCUS_PDCA_PHASES,
+        dataset: {
+            briefingUrl: "/datasets/Health_Habit_Briefing.pdf",
+            rawDataUrl: "/datasets/Health_Habit_Data.csv"
+        }
     }
 ];
 
