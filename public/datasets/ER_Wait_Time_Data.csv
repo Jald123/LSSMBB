@@ -1,0 +1,6 @@
+Patient_ID,Arrival_Time,Triage_Time,Provider_Time,Disposition
+P001,08:00,08:15,08:45,Discharged
+P002,08:05,08:20,09:10,Admitted
+P003,08:30,08:40,09:40,Discharged
+P004,09:00,09:05,09:15,Discharged
+P005,09:15,09:30,11:00,LWBS

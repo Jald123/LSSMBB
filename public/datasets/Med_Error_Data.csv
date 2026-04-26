@@ -1,0 +1,5 @@
+Error_ID,Medication_Name,Error_Category,Phase_of_Care,Detection_Method
+E-102,Heparin,Wrong Dose,Dispensing,Nurse Check
+E-103,Insulin,Wrong Patient,Administration,Bar-code Scan
+E-104,Warfarin,Omission,Prescribing,Pharmacy Review
+E-105,Morphine,Wrong Route,Administration,Near Miss Report
