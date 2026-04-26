@@ -16,7 +16,8 @@ import {
     ChevronRight,
     Calculator,
     Target,
-    FileText
+    FileText,
+    Library
 } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -26,7 +27,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const PRIMARY_NAV = [
-    { name: 'Dashboard', icon: Home, path: '/' },
+    { name: 'Mission Library', icon: Library, path: '/' },
     { name: 'Academy', icon: BookOpen, path: '/academy' },
     { name: 'Execute', icon: Zap, path: '/execute' },
     { name: 'Armory', icon: Shield, path: '/armory' },
