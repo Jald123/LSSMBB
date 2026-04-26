@@ -142,7 +142,7 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                 {selectedEntry.category}
                                             </Badge>
                                             <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">{selectedEntry.title}</h2>
-                                            <p className="text-xs md:text-sm text-slate-400 leading-relaxed">{selectedEntry.description}</p>
+                                            <p className="text-xs md:text-sm text-slate-200 leading-relaxed">{selectedEntry.description}</p>
                                         </div>
 
                                         {selectedEntry.formula && (
@@ -160,7 +160,7 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                 {selectedEntry.definitions.map((def, i) => (
                                                     <div key={i} className="p-3 md:p-4 bg-white/[0.02] border border-white/5 rounded-xl">
                                                         <p className="text-[10px] md:text-xs font-bold text-white uppercase italic">{def.term}</p>
-                                                        <p className="text-[10px] md:text-xs text-slate-400 mt-1">{def.explanation}</p>
+                                                        <p className="text-[10px] md:text-xs text-slate-300 mt-1">{def.explanation}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -171,7 +171,7 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                 <div className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Rules of Thumb</div>
                                                 <div className="space-y-2">
                                                     {selectedEntry.rules_of_thumb.map((rule, i) => (
-                                                        <div key={i} className="text-[10px] text-slate-400 leading-tight">
+                                                        <div key={i} className="text-[10px] text-slate-200 leading-tight">
                                                             • {rule}
                                                         </div>
                                                     ))}
@@ -181,7 +181,7 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                 <div className="text-[9px] font-black text-rose-500 uppercase tracking-widest">Pitfalls</div>
                                                 <div className="space-y-2">
                                                     {selectedEntry.common_pitfalls.map((pit, i) => (
-                                                        <div key={i} className="text-[10px] text-slate-500 leading-tight italic">
+                                                        <div key={i} className="text-[10px] text-slate-400 leading-tight italic">
                                                             ! {pit}
                                                         </div>
                                                     ))}
@@ -208,7 +208,7 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                     <p className="text-[9px] md:text-[10px] font-black text-primary uppercase tracking-widest">Target Objective</p>
                                                     <h4 className="text-base md:text-lg font-bold text-white">{toolName}</h4>
                                                 </div>
-                                                <p className="text-[10px] md:text-xs text-slate-400 leading-relaxed">
+                                                <p className="text-[10px] md:text-xs text-slate-200 leading-relaxed">
                                                     Verified for <span className="text-white font-bold">{phase}</span> execution. Sensei.AI is monitoring data inputs for statistical patterns.
                                                 </p>
                                             </div>
@@ -231,7 +231,7 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                             <p className="text-[10px] md:text-xs font-bold text-nexus-gold uppercase tracking-tight">{entry.title}</p>
                                                             <ChevronRight className="w-3.5 md:w-4 h-3.5 md:h-4 text-nexus-gold group-hover:translate-x-1 transition-transform" />
                                                         </div>
-                                                        <p className="text-[9px] md:text-[10px] text-slate-500 mt-1 line-clamp-2 italic">{entry.description}</p>
+                                                        <p className="text-[9px] md:text-[10px] text-slate-300 mt-1 line-clamp-2 italic">{entry.description}</p>
                                                     </button>
                                                 ))}
                                             </div>
@@ -251,7 +251,7 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                 ].map((tip, i) => (
                                                     <div key={i} className="flex gap-4 items-start group">
                                                         <div className="mt-1 w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0 group-hover:scale-150 transition-all" />
-                                                        <p className="text-xs text-slate-400 leading-relaxed group-hover:text-white transition-colors">{tip}</p>
+                                                        <p className="text-xs text-slate-200 leading-relaxed group-hover:text-white transition-colors">{tip}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -286,11 +286,11 @@ export const IntelligencePanel: React.FC<IntelligencePanelProps> = ({
                                                     <div className="space-y-0.5">
                                                         <div className="flex items-center gap-2">
                                                             <p className="text-[10px] md:text-[11px] font-bold text-white uppercase tracking-tight">{entry.title}</p>
-                                                            <Badge variant="outline" className="text-[7px] md:text-[8px] py-0 border-white/10 text-slate-500 h-3.5 md:h-4">
+                                                            <Badge variant="outline" className="text-[7px] md:text-[8px] py-0 border-white/10 text-slate-400 h-3.5 md:h-4">
                                                                 {entry.category}
                                                             </Badge>
                                                         </div>
-                                                        <p className="text-[9px] md:text-[10px] text-slate-500 line-clamp-1 italic">{entry.description}</p>
+                                                        <p className="text-[9px] md:text-[10px] text-slate-300 line-clamp-1 italic">{entry.description}</p>
                                                     </div>
                                                     <ChevronRight className="w-3.5 md:w-4 h-3.5 md:h-4 text-slate-600 group-hover:text-primary transition-all" />
                                                 </button>
