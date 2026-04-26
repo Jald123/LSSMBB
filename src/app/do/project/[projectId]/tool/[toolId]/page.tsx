@@ -61,6 +61,7 @@ export default function ToolExecutionView() {
 
     const [isIntelligenceOpen, setIsIntelligenceOpen] = useState(false);
     const [isFocusMode, setIsFocusMode] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [allTools, setAllTools] = useState<ToolMapping[]>([]);
     const [currentIndex, setCurrentIndex] = useState(-1);
 
@@ -137,6 +138,8 @@ export default function ToolExecutionView() {
                 ? `/api/projects/${projectId}/deliverables/${toolId}/complete`
                 : `/api/projects/${projectId}/deliverables/${toolId}`;
 
+            if (isComplete) setIsSubmitting(true);
+
             const response = await fetch(endpoint, {
                 method: isComplete ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -161,13 +164,14 @@ export default function ToolExecutionView() {
                     showToast('SUCCESS', `Mission Verified. Mastery Score: ${deliverable.score}%`, 8000);
                     // We'll show the critique in a more prominent way
                     setResults({ score: deliverable.score, feedback: deliverable.feedback });
-                    setTimeout(() => router.push(`/do/project/${projectId}/board`), 12000); // Longer delay to read critique
                 } else {
                     showToast('INFO', "Data synchronized with terminal.");
                 }
             }
         } catch (err) {
             showToast('ERROR', "Uplink failed. Check connection.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -259,9 +263,18 @@ export default function ToolExecutionView() {
                                 variant="outline" 
                                 size="lg" 
                                 className="flex-1 py-7 font-black font-orbitron tracking-widest text-[10px] border-white/10"
-                                onClick={() => setResults(null)}
+                                onClick={async () => {
+                                    if (confirm("Initiate retry protocol? 1 attempt will be consumed.")) {
+                                        const res = await fetch(`/api/projects/${projectId}/deliverables/${toolId}/retry`, { method: 'POST' });
+                                        if (res.ok) {
+                                            setResults(null);
+                                            router.refresh();
+                                        }
+                                    }
+                                }}
                             >
-                                STUDY CASE
+                                <Zap className="w-3 h-3 mr-2 text-primary" />
+                                RETRY ATTEMPT
                             </Button>
                         )}
                         <Button 
@@ -356,112 +369,24 @@ export default function ToolExecutionView() {
         ? `/${toolData.htmlFile}${toolData.htmlFile.includes('?') ? '&' : '?'}mode=do&projectId=${projectId}&toolId=${toolId}`
         : `/04-STATISTICS-TOOLS/${toolData.htmlFile}?mode=do&projectId=${projectId}&toolId=${toolId}`;
 
+    const SubmittingOverlay = () => (
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[2500] bg-black/60 backdrop-blur-sm flex items-center justify-center"
+        >
+            <div className="bg-slate-900 border border-white/10 p-6 rounded-3xl flex flex-col items-center gap-4 shadow-2xl">
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <div className="text-center">
+                    <p className="text-xs font-black text-white uppercase tracking-widest">Verifying Submission</p>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tight">Syncing with Command Terminal...</p>
+                </div>
+            </div>
+        </motion.div>
+    );
+
     return (
         <div className="h-screen flex flex-col bg-background overflow-hidden selection:bg-primary/30">
-            {/* High-Fidelity Tactical Header */}
-            <header className="h-16 bg-card/60 backdrop-blur-xl border-b border-border px-6 flex items-center justify-between z-50 shadow-nexus-glow">
-                <div className="flex items-center gap-5">
-                    <button
-                        onClick={() => router.push(`/do/project/${projectId}/board`)}
-                        className="p-2 hover:bg-surface rounded-xl border border-white/5 text-slate-400 hover:text-white transition-all group"
-                    >
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    </button>
-                    
-                    <div className="h-8 w-px bg-white/5" />
-                    
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
-                            <span>{phaseName} Sector</span>
-                            <ChevronRight className="w-3 h-3" />
-                            <span className="text-slate-300">{toolData.toolName}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-sm font-bold text-white tracking-tight">{caseData.title}</h1>
-                            <div className="h-4 w-px bg-white/10 mx-1" />
-                            {caseData.dataset?.briefingUrl && (
-                                <a 
-                                    href={caseData.dataset.briefingUrl} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-1.5 px-2 py-1 bg-white/5 border border-white/10 rounded-md text-[9px] font-bold text-slate-400 hover:text-primary hover:border-primary/50 transition-all uppercase tracking-widest"
-                                >
-                                    <Clock className="w-3 h-3" />
-                                    Briefing
-                                </a>
-                            )}
-                            {caseData.dataset?.rawDataUrl && (
-                                <a 
-                                    href={caseData.dataset.rawDataUrl} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-1.5 px-2 py-1 bg-white/5 border border-white/10 rounded-md text-[9px] font-bold text-slate-400 hover:text-emerald-500 hover:border-emerald-500/50 transition-all uppercase tracking-widest"
-                                >
-                                    <Database className="w-3 h-3" />
-                                    Dataset
-                                </a>
-                            )}
-                            {hasUnsavedChanges && <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse ml-1" />}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                    {/* Status Readout */}
-                    <div className="hidden lg:flex items-center gap-6 pr-6 border-r border-white/5">
-                        <div className="space-y-0.5 text-right">
-                            <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-none">Uplink Status</p>
-                            <p className={cn(
-                                "text-[10px] font-bold uppercase tracking-wider",
-                                status === 'complete' ? "text-emerald-500" : "text-primary"
-                            )}>
-                                {status === 'complete' ? "MISSION VERIFIED" : "ONLINE / SYNCED"}
-                            </p>
-                        </div>
-                        <div className="space-y-0.5 text-right">
-                            <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest leading-none">Last Save</p>
-                            <p className="text-[10px] font-bold text-slate-400">{lastSaved || "Standby"}</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <Button 
-                            variant="nexus" 
-                            size="sm" 
-                            className={cn(
-                                "flex sm:flex border-white/5 transition-all",
-                                isFocusMode ? "bg-amber-500 text-black shadow-lg" : "bg-primary/10 hover:bg-primary/20 text-primary border-primary/20"
-                            )}
-                            onClick={toggleFocusMode}
-                        >
-                            <Zap className={cn("w-3.5 h-3.5 sm:mr-2", isFocusMode ? "fill-black" : "")} />
-                            <span className="hidden sm:inline">{isFocusMode ? "Live Mode" : "Focus Mode"}</span>
-                        </Button>
-                        <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="hidden sm:flex border-white/5 hover:bg-surface"
-                            onClick={() => iframeRef.current?.contentWindow?.postMessage({ type: 'TRIGGER_SAVE' }, '*')}
-                        >
-                            <Save className={cn("w-3.5 h-3.5 mr-2", hasUnsavedChanges ? "text-primary animate-pulse" : "")} />
-                            Sync
-                        </Button>
-                        <Button 
-                            variant="nexus" 
-                            size="sm" 
-                            onClick={() => {
-                                if (confirm("Mark this deliverable as complete? Final data will be synchronized.")) {
-                                    iframeRef.current?.contentWindow?.postMessage({ type: 'TRIGGER_COMPLETE' }, '*');
-                                }
-                            }}
-                            disabled={status === 'complete'}
-                        >
-                            Mark Complete
-                        </Button>
-                    </div>
-                </div>
-            </header>
-
             {/* Operations Viewport */}
             <div className="relative flex-1 bg-[#020617]">
                 <AnimatePresence>
@@ -501,9 +426,41 @@ export default function ToolExecutionView() {
             {/* 🎮 MISSION CONTROL FOOTER */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full shell-interactive transition-all duration-300 footer-3d bg-slate-900/40 backdrop-blur-md border border-white/10 shadow-2xl">
                 <button onClick={() => router.push(`/do/project/${projectId}/board`)} className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-lg" title="Back to Board"><Home className="w-4 h-4" /></button>
+                <div className="h-6 w-px bg-white/10 mx-1" />
                 <button onClick={handlePrev} className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-lg" title="Previous Tool"><ChevronLeft className="w-5 h-5" /></button>
                 
+                <div className="h-6 w-px bg-white/10 mx-1" />
+                
+                {/* Expert Core Resources */}
+                <div className="flex items-center gap-1.5 px-2">
+                    {caseData.dataset?.briefingUrl && (
+                        <a 
+                            href={caseData.dataset.briefingUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center w-9 h-9 bg-primary/10 border border-primary/20 rounded-full text-primary hover:bg-primary/20 transition-all"
+                            title="Briefing (PDF)"
+                        >
+                            <Clock className="w-4 h-4" />
+                        </a>
+                    )}
+                    {caseData.dataset?.rawDataUrl && (
+                        <a 
+                            href={caseData.dataset.rawDataUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center w-9 h-9 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-500 hover:bg-emerald-500/20 transition-all"
+                            title="Dataset (CSV)"
+                        >
+                            <Database className="w-4 h-4" />
+                        </a>
+                    )}
+                </div>
+
+                <div className="h-6 w-px bg-white/10 mx-1" />
+                
                 <button 
+                    disabled={isSubmitting || status === 'complete'}
                     onClick={() => {
                         if (status !== 'complete' && confirm("Mark this deliverable as complete? Final data will be synchronized. This will consume 1 attempt.")) {
                             iframeRef.current?.contentWindow?.postMessage({ type: 'TRIGGER_COMPLETE' }, '*');
@@ -513,25 +470,23 @@ export default function ToolExecutionView() {
                         "relative flex items-center justify-center gap-3 px-8 h-10 rounded-full border font-black font-orbitron text-[10px] tracking-[0.2em] transition-all duration-500 active:scale-95 shadow-xl",
                         status === 'complete' 
                             ? "bg-gradient-to-r from-emerald-500 to-teal-600 border-emerald-400 text-white" 
-                            : "bg-slate-800 border-slate-600 text-slate-200 hover:border-primary/50 hover:text-white"
+                            : isSubmitting ? "bg-slate-700 cursor-not-allowed opacity-50" : "bg-slate-800 border-slate-600 text-slate-200 hover:border-primary/50 hover:text-white"
                     )}
                 >
-                    {status === 'complete' ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />}
-                    {status === 'complete' ? 'VERIFIED' : 'MARK DONE'}
+                    {status === 'complete' ? <CheckCircle2 className="w-4 h-4" /> : isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />}
+                    {status === 'complete' ? 'VERIFIED' : isSubmitting ? 'PROCESSING' : 'MARK DONE'}
                 </button>
+
+                <div className="h-6 w-px bg-white/10 mx-1" />
 
                 <button onClick={handleNext} className="group flex items-center gap-3 pl-6 pr-5 h-10 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all shadow-lg hover:text-white" title="Next Tool">
                     <span className="text-[10px] font-black font-orbitron tracking-widest leading-none">NEXT</span>
                     <ChevronRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform" />
                 </button>
                 
-                <button 
-                    onClick={() => { iframeRef.current?.contentWindow?.scrollTo({ top: 0, behavior: 'smooth' }); }} 
-                    className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-lg" 
-                    title="Scroll to Top"
-                >
-                    <ArrowUp className="w-4 h-4" />
-                </button>
+                <div className="h-6 w-px bg-white/10 mx-1" />
+
+                <button onClick={() => setIsIntelligenceOpen(true)} className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all shadow-lg" title="Analysis Hub"><Library className="w-4 h-4" /></button>
             </div>
 
             <IntelligencePanel 
@@ -543,6 +498,7 @@ export default function ToolExecutionView() {
 
             <AnimatePresence>
                 {results && <ResultsOverlay />}
+                {isSubmitting && <SubmittingOverlay />}
             </AnimatePresence>
         </div>
     );
