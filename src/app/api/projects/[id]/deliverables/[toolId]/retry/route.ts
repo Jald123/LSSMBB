@@ -37,10 +37,7 @@ export async function POST(
             return NextResponse.json({ error: "Deliverable not found" }, { status: 404 });
         }
 
-        // 3. Check attempts
-        if (deliverable.attempts >= deliverable.maxAttempts) {
-            return NextResponse.json({ error: "Maximum retry attempts reached" }, { status: 400 });
-        }
+        // 3. Increment attempts (No maximum enforced)
 
         // 4. Archive current attempt to history
         const retryHistory = Array.isArray(deliverable.retryHistory) 
@@ -73,7 +70,7 @@ export async function POST(
 
         return NextResponse.json({ 
             success: true, 
-            attemptsLeft: deliverable.maxAttempts - (deliverable.attempts + 1)
+            attemptsLeft: 999 // Unlimited
         });
 
     } catch (error) {

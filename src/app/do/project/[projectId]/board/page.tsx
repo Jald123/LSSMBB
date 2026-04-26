@@ -332,11 +332,11 @@ export default function SprintBoard() {
                                             {d && (
                                                 <div className={cn(
                                                     "px-2 py-0.5 rounded text-[9px] font-black tracking-tighter border",
-                                                    (d.attempts + 1) >= 3 ? "bg-red-500/20 border-red-500/50 text-red-500" :
-                                                    (d.attempts + 1) === 2 ? "bg-amber-500/10 border-amber-500/30 text-amber-600" :
+                                                    (d.attempts + 1) >= 5 ? "bg-red-500/20 border-red-500/50 text-red-500" :
+                                                    (d.attempts + 1) >= 3 ? "bg-amber-500/10 border-amber-500/30 text-amber-600" :
                                                     "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
                                                 )}>
-                                                    ATTEMPT {d.attempts + 1} / {d.maxAttempts || 4}
+                                                    ATTEMPT {d.attempts + 1}
                                                 </div>
                                             )}
                                         </div>
