@@ -25,7 +25,22 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
         "charter": {
             "problemStatement": "High-alert medication dispensing errors have spiked by 25% over the last quarter, resulting in 3 'Near Miss' events per month in the ICU.",
             "goalStatement": "Achieve 0 near-miss events and reduce dispensing errors to <0.01% through standardized verification protocols.",
-            "metrics": ["Error Rate per 1000 doses", "Near Miss Count", "Verification Audit Score"]
+            "metrics": ["Error Rate per 1000 doses", "Near Miss Count", "Verification Audit Score"],
+            "scope": "In-scope: ICU dispensing, Pharmacy prep, Nurse administration. Out-of-scope: Outpatient prescriptions."
+        },
+        "sipoc": {
+            "suppliers": ["Pharmacy", "Physicians", "Medication Vendors"],
+            "inputs": ["Doctor Orders", "Patient Charts", "Unit Doses"],
+            "process": ["Order Entry", "Pharmacist Review", "Dispensing", "Transport", "Nurse Verification", "Administration"],
+            "outputs": ["Administered Medication", "Updated EMR", "Billing Record"],
+            "customers": ["Patients", "Medical Staff", "Registry Board"]
+        }
+    },
+    "patient-transfer": {
+        "charter": {
+            "problemStatement": "Handoff delays between ICU and general wards average 140 minutes, with a 12% rate of missing clinical information during transfer.",
+            "goalStatement": "Reduce transfer cycle time to <60 minutes and achieve 100% information accuracy by the end of Q3.",
+            "metrics": ["Transfer Cycle Time", "Handoff Accuracy %", "Patient Stability Post-Transfer"]
         }
     }
 };

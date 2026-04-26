@@ -1,4 +1,4 @@
-export type Category = 'medical' | 'daily-life' | 'investment';
+﻿export type Category = 'medical' | 'daily-life' | 'investment';
 export type Priority = 'essential' | 'recommended' | 'optional';
 export type Framework = 'DMAIC' | 'DMADV' | 'Kaizen' | 'FOCUS-PDCA';
 
@@ -180,7 +180,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMAIC",
         phases: DMAIC_PHASES,
         dataset: {
-            briefingUrl: "/datasets/ER_Wait_Time_Briefing.pdf",
+            briefingUrl: "/datasets/ER_Wait_Time_Briefing.md",
             rawDataUrl: "/datasets/ER_Wait_Time_Data.csv"
         }
     },
@@ -194,7 +194,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMAIC",
         phases: DMAIC_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Med_Error_Briefing.pdf",
+            briefingUrl: "/datasets/Med_Error_Briefing.md",
             rawDataUrl: "/datasets/Med_Error_Data.csv"
         }
     },
@@ -208,7 +208,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMAIC",
         phases: DMAIC_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Patient_Transfer_Briefing.pdf",
+            briefingUrl: "/datasets/Patient_Transfer_Briefing.md",
             rawDataUrl: "/datasets/Patient_Transfer_Data.csv"
         }
     },
@@ -222,7 +222,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMAIC",
         phases: DMAIC_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Surgical_Optimization_Briefing.pdf",
+            briefingUrl: "/datasets/Surgical_Optimization_Briefing.md",
             rawDataUrl: "/datasets/Surgical_Optimization_Data.csv"
         }
     },
@@ -236,7 +236,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMAIC",
         phases: DMAIC_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Lab_TAT_Briefing.pdf",
+            briefingUrl: "/datasets/Lab_TAT_Briefing.md",
             rawDataUrl: "/datasets/Lab_TAT_Data.csv"
         }
     },
@@ -252,7 +252,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMADV",
         phases: DMADV_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Hospital_Wing_Briefing.pdf",
+            briefingUrl: "/datasets/Hospital_Wing_Briefing.md",
             rawDataUrl: "/datasets/Hospital_Wing_Data.csv"
         }
     },
@@ -266,7 +266,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMADV",
         phases: DMADV_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Telehealth_Briefing.pdf",
+            briefingUrl: "/datasets/Telehealth_Briefing.md",
             rawDataUrl: "/datasets/Telehealth_Data.csv"
         }
     },
@@ -282,7 +282,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "Kaizen",
         phases: KAIZEN_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Discharge_Blitz_Briefing.pdf",
+            briefingUrl: "/datasets/Discharge_Blitz_Briefing.md",
             rawDataUrl: "/datasets/Discharge_Blitz_Data.csv"
         }
     },
@@ -296,7 +296,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "Kaizen",
         phases: KAIZEN_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Supply_Room_5S_Briefing.pdf",
+            briefingUrl: "/datasets/Supply_Room_5S_Briefing.md",
             rawDataUrl: "/datasets/Supply_Room_5S_Data.csv"
         }
     },
@@ -310,7 +310,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "Kaizen",
         phases: KAIZEN_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Pharmacy_Workflow_Briefing.pdf",
+            briefingUrl: "/datasets/Pharmacy_Workflow_Briefing.md",
             rawDataUrl: "/datasets/Pharmacy_Workflow_Data.csv"
         }
     },
@@ -326,7 +326,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "FOCUS-PDCA",
         phases: FOCUS_PDCA_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Satisfaction_PDCA_Briefing.pdf",
+            briefingUrl: "/datasets/Satisfaction_PDCA_Briefing.md",
             rawDataUrl: "/datasets/Satisfaction_PDCA_Data.csv"
         }
     },
@@ -340,7 +340,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "FOCUS-PDCA",
         phases: FOCUS_PDCA_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Infection_PDCA_Briefing.pdf",
+            briefingUrl: "/datasets/Infection_PDCA_Briefing.md",
             rawDataUrl: "/datasets/Infection_PDCA_Data.csv"
         }
     },
@@ -356,7 +356,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMAIC",
         phases: DMAIC_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Grocery_Briefing.pdf",
+            briefingUrl: "/datasets/Grocery_Briefing.md",
             rawDataUrl: "/datasets/Grocery_Data.csv"
         }
     },
@@ -370,7 +370,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMAIC",
         phases: DMAIC_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Commute_Briefing.pdf",
+            briefingUrl: "/datasets/Commute_Briefing.md",
             rawDataUrl: "/datasets/Commute_Data.csv"
         }
     },
@@ -384,7 +384,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "Kaizen",
         phases: KAIZEN_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Morning_Kaizen_Briefing.pdf",
+            briefingUrl: "/datasets/Morning_Kaizen_Briefing.md",
             rawDataUrl: "/datasets/Morning_Kaizen_Data.csv"
         }
     },
@@ -398,7 +398,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "Kaizen",
         phases: KAIZEN_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Closet_5S_Briefing.pdf",
+            briefingUrl: "/datasets/Closet_5S_Briefing.md",
             rawDataUrl: "/datasets/Closet_5S_Data.csv"
         }
     },
@@ -412,7 +412,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMADV",
         phases: DMADV_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Office_DMADV_Briefing.pdf",
+            briefingUrl: "/datasets/Office_DMADV_Briefing.md",
             rawDataUrl: "/datasets/Office_DMADV_Data.csv"
         }
     },
@@ -426,7 +426,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "DMADV",
         phases: DMADV_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Wedding_DMADV_Briefing.pdf",
+            briefingUrl: "/datasets/Wedding_DMADV_Briefing.md",
             rawDataUrl: "/datasets/Wedding_DMADV_Data.csv"
         }
     },
@@ -440,7 +440,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "FOCUS-PDCA",
         phases: FOCUS_PDCA_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Budget_PDCA_Briefing.pdf",
+            briefingUrl: "/datasets/Budget_PDCA_Briefing.md",
             rawDataUrl: "/datasets/Budget_PDCA_Data.csv"
         }
     },
@@ -454,7 +454,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         framework: "FOCUS-PDCA",
         phases: FOCUS_PDCA_PHASES,
         dataset: {
-            briefingUrl: "/datasets/Health_Habit_Briefing.pdf",
+            briefingUrl: "/datasets/Health_Habit_Briefing.md",
             rawDataUrl: "/datasets/Health_Habit_Data.csv"
         }
     }
