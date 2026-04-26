@@ -27,9 +27,9 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const PRIMARY_NAV = [
-    { name: 'Mission Library', icon: Library, path: '/' },
+    { name: 'Mission Library', icon: Home, path: '/' },
+    { name: 'MISSION SELECTION LIBRARY', icon: Library, path: '/library' },
     { name: 'Academy', icon: BookOpen, path: '/academy' },
-    { name: 'Execute', icon: Zap, path: '/execute' },
     { name: 'Armory', icon: Shield, path: '/armory' },
     { name: 'Certificate', icon: FileText, path: '/certificate' },
     { name: 'Achievements', icon: Award, path: '/achievements' },
