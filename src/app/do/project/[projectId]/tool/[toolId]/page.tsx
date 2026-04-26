@@ -24,6 +24,7 @@ import {
     Search as SniperIcon,
     Pen,
     Trophy,
+    Target,
     Clock,
     Star,
     X

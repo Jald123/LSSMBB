@@ -63,13 +63,6 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
                 "keywords": ["precision", "accuracy"]
             }
         },
-        "sipoc": {
-            "process": {
-                "target": "Patient Prep -> Aresthesia -> Surgery -> Recovery -> Room Sterilization",
-                "vitals": ["Sterilization", "Surgery", "Recovery"],
-                "keywords": ["turnover", "flow", "cycle"]
-            }
-        },
         "fmea": {
             "risks": {
                 "target": "Wrong site surgery, anesthesia reaction, sterilization failure.",
