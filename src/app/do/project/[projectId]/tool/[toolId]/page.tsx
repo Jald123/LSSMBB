@@ -239,28 +239,39 @@ export default function ToolExecutionView() {
                         )}
                     </div>
 
-                    <div className="space-y-4 mb-10 text-left">
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden">
-                            <div className={cn("absolute top-0 left-0 w-1 h-full", isPassed ? "bg-emerald-500" : "bg-primary")} />
-                            <h4 className="text-[9px] font-black font-orbitron text-slate-400 tracking-widest uppercase mb-3 flex items-center gap-2">
-                                <Zap className="w-3 h-3 text-primary" /> Tactical Critique
-                            </h4>
-                            <p className="text-slate-300 text-sm leading-relaxed font-medium">
-                                {critiqueText}
-                            </p>
-                        </div>
+                    <div className="space-y-4 mb-10 text-left max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+                        {feedbackParts.map((part, idx) => {
+                            if (!part.trim()) return null;
+                            
+                            const isGaps = part.includes("CAPABILITY GAPS");
+                            const isReco = part.includes("TECHNICAL RECOMMENDATIONS");
+                            const isPath = part.includes("PATH TO MASTERY") || part.includes("SENSEI VERDICT");
 
-                        {!isPassed && adviceText && (
-                            <div className="bg-amber-500/5 border border-amber-500/10 rounded-2xl p-6 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
-                                <h4 className="text-[9px] font-black font-orbitron text-amber-500 tracking-widest uppercase mb-3 flex items-center gap-2">
-                                    <Lightbulb className="w-3 h-3" /> Path to Mastery
-                                </h4>
-                                <p className="text-amber-200/70 text-xs leading-relaxed font-medium italic">
-                                    {adviceText}
-                                </p>
-                            </div>
-                        )}
+                            return (
+                                <div key={idx} className={cn(
+                                    "p-6 rounded-2xl border relative overflow-hidden",
+                                    isGaps ? "bg-red-500/5 border-red-500/10" : 
+                                    isReco ? "bg-amber-500/5 border-amber-500/10" :
+                                    isPath ? (isPassed ? "bg-emerald-500/5 border-emerald-500/10" : "bg-primary/5 border-primary/10") :
+                                    "bg-white/5 border-white/10"
+                                )}>
+                                    <div className={cn(
+                                        "absolute top-0 left-0 w-1 h-full",
+                                        isGaps ? "bg-red-500" : isReco ? "bg-amber-500" : isPath ? (isPassed ? "bg-emerald-500" : "bg-primary") : "bg-slate-500"
+                                    )} />
+                                    <h4 className={cn(
+                                        "text-[9px] font-black font-orbitron tracking-widest uppercase mb-3 flex items-center gap-2",
+                                        isGaps ? "text-red-500" : isReco ? "text-amber-500" : "text-slate-400"
+                                    )}>
+                                        {isGaps ? <AlertCircle className="w-3 h-3" /> : isReco ? <Lightbulb className="w-3 h-3" /> : <Zap className="w-3 h-3" />}
+                                        {part.split('\n')[0]}
+                                    </h4>
+                                    <div className="text-slate-300 text-xs leading-relaxed font-medium whitespace-pre-wrap">
+                                        {part.split('\n').slice(1).join('\n')}
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
 
                     <div className="flex gap-4">
