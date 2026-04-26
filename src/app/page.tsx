@@ -6,7 +6,7 @@ import { CustomProjectModal } from "@/components/modals/CustomProjectModal";
 import { useToast } from "@/components/ui/Toast";
 import { CASE_STUDIES } from "@/config/caseStudies";
 import { Skeleton, CaseSkeleton, ProjectSkeleton } from "@/components/ui/Skeleton";
-import { Star, ChevronRight, Plus, CheckCircle2, Play, Trophy, Activity, Zap, Target, BookOpen } from "lucide-react";
+import { Star, ChevronRight, Plus, CheckCircle2, Play, Trophy, Activity, Zap, Target, BookOpen, Search as SniperIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -33,6 +33,11 @@ export default function Dashboard() {
     // Modal states
     const [selectedCase, setSelectedCase] = useState<any>(null);
     const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
+
+    // Filtering states
+    const [activeCategory, setActiveCategory] = useState<string>("All");
+    const [activeFramework, setActiveFramework] = useState<string>("All");
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const loadInitialData = async () => {
@@ -270,22 +275,69 @@ export default function Dashboard() {
 
                     {/* 3. Case Studies Database */}
                     <section id="cases-section" className="space-y-8 pt-6">
-                        <div className="flex items-center justify-between border-b border-white/10 pb-6">
-                            <h2 className="text-3xl font-black font-orbitron tracking-tighter text-primary flex items-center gap-4 italic uppercase">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/10 pb-6 gap-6">
+                            <h2 className="text-3xl font-black font-orbitron tracking-tighter text-primary flex items-center gap-4 italic uppercase whitespace-nowrap">
                                 <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                                     <BookOpen className="w-6 h-6 shadow-[0_0_15px_rgba(34,211,238,0.4)]" />
                                 </div>
                                 Mission Selection Library
                             </h2>
-                            <div className="flex gap-2">
-                                <Badge variant="outline" className="cursor-pointer hover:bg-surface">All</Badge>
-                                <Badge variant="outline" className="opacity-40">Medical</Badge>
-                                <Badge variant="outline" className="opacity-40">Finance</Badge>
+
+                            <div className="flex-1 flex flex-col sm:flex-row gap-4 items-center justify-end w-full">
+                                {/* Search Bar */}
+                                <div className="relative w-full max-w-xs group">
+                                    <SniperIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-primary transition-colors" />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search missions..." 
+                                        className="w-full bg-surface/50 border border-border rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-primary/50 transition-all"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                </div>
+
+                                {/* Category Filters */}
+                                <div className="flex gap-1.5 p-1 bg-surface/30 border border-border rounded-[14px] overflow-x-auto no-scrollbar max-w-full">
+                                    {["All", "medical", "daily-life"].map((cat) => (
+                                        <button
+                                            key={cat}
+                                            onClick={() => setActiveCategory(cat)}
+                                            className={cn(
+                                                "px-4 py-1.5 rounded-[10px] text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                                                activeCategory === cat ? "bg-primary text-black shadow-lg shadow-primary/20" : "text-slate-500 hover:text-white"
+                                            )}
+                                        >
+                                            {cat === "All" ? "ALL SECTORS" : cat.replace('-', ' ')}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Framework Filters */}
+                                <div className="flex gap-1.5 p-1 bg-surface/30 border border-border rounded-[14px] overflow-x-auto no-scrollbar max-w-full">
+                                    {["All", "DMAIC", "DMADV", "Kaizen", "FOCUS-PDCA"].map((fw) => (
+                                        <button
+                                            key={fw}
+                                            onClick={() => setActiveFramework(fw)}
+                                            className={cn(
+                                                "px-4 py-1.5 rounded-[10px] text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                                                activeFramework === fw ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20" : "text-slate-500 hover:text-white"
+                                            )}
+                                        >
+                                            {fw === "All" ? "ALL CORE" : fw}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {CASE_STUDIES.map((caseItem, index) => {
+                            {CASE_STUDIES.filter(c => {
+                                const matchesCat = activeCategory === "All" || c.category === activeCategory;
+                                const matchesFW = activeFramework === "All" || c.framework === activeFramework;
+                                const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                                       c.description.toLowerCase().includes(searchQuery.toLowerCase());
+                                return matchesCat && matchesFW && matchesSearch;
+                            }).map((caseItem, index) => {
                                 const hasProject = projects.some(p => p.caseId === caseItem.id);
                                 return (
                                     <div
