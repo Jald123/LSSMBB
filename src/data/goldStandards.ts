@@ -159,6 +159,42 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
                 "keywords": ["discharge", "approval", "administrative"]
             }
         }
+    },
+    "supply-room-5s": {
+        "charter": {
+            "problemStatement": {
+                "target": "Nurses spend 12 minutes per shift searching for PPE and high-use items due to unorganized supply room layout.",
+                "vitals": ["12 minutes", "PPE"],
+                "keywords": ["5S", "sorting", "searching"]
+            }
+        }
+    },
+    "pharmacy-workflow": {
+        "charter": {
+            "problemStatement": {
+                "target": "Pharmacy tech travel distance is 3.2 km per day, causing a 45-minute delay in stat medication delivery.",
+                "vitals": ["3.2", "45-minute"],
+                "keywords": ["spaghetti", "motion", "stat"]
+            }
+        }
+    },
+    "satisfaction-focus": {
+        "charter": {
+            "problemStatement": {
+                "target": "Outpatient clinic HCAHPS scores have dropped from 82% to 65% over the last 6 months.",
+                "vitals": ["82%", "65%", "6 months"],
+                "keywords": ["HCAHPS", "satisfaction", "outpatient"]
+            }
+        }
+    },
+    "infection-rate": {
+        "charter": {
+            "problemStatement": {
+                "target": "Catheter-associated urinary tract infections (CAUTI) have increased to 4.5 per 1000 device days in the surgical ward.",
+                "vitals": ["CAUTI", "4.5", "1000"],
+                "keywords": ["infection", "protocol", "surgical"]
+            }
+        }
     }
 };
 
