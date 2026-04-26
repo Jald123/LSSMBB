@@ -101,6 +101,13 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
                 "vitals": ["55", "4"],
                 "keywords": ["turnover", "elective", "backlog"]
             }
+        },
+        "sipoc": {
+            "process": {
+                "target": "Patient Prep -> Aresthesia -> Surgery -> Recovery -> Room Sterilization",
+                "vitals": ["Sterilization", "Surgery", "Recovery"],
+                "keywords": ["turnover", "flow", "cycle"]
+            }
         }
     },
     "lab-tat": {
@@ -109,6 +116,13 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
                 "target": "Urgent lab turnaround time (TAT) is currently 3.5 hours, missing the 1-hour critical threshold in 40% of cases.",
                 "vitals": ["3.5", "1-hour", "40%"],
                 "keywords": ["TAT", "urgent", "threshold"]
+            }
+        },
+        "sipoc": {
+            "process": {
+                "target": "Order -> Collection -> Transport -> Accession -> Prep -> Analysis -> Result",
+                "vitals": ["Accession", "Prep", "Analysis", "Result"],
+                "keywords": ["TAT", "Specimen", "Transport"]
             }
         }
     },
@@ -119,23 +133,30 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
                 "vitals": ["4.2", "45%"],
                 "keywords": ["layout", "ergonomics", "walking"]
             }
-        }
-    },
-    "smart-grocery": {
-        "charter": {
-            "problemStatement": {
-                "target": "Weekly grocery spend is $350 with 15% food waste due to lack of optimized routing and meal planning.",
-                "vitals": ["$350", "15%"],
-                "keywords": ["routing", "waste", "budget"]
+        },
+        "kano": {
+            "features": {
+                "target": "Must-haves: Bedside Oxygen, Call Button. Performance: TV size, Food variety. Delight: Smart Lighting, View.",
+                "vitals": ["Oxygen", "Call", "Lighting"],
+                "keywords": ["delighter", "dissatisfier", "must-have"]
             }
         }
     },
-    "commute-optimization": {
+    "telehealth-exp": {
         "charter": {
             "problemStatement": {
-                "target": "Daily commute variation is +/- 25 minutes, causing 3 late arrivals per week at the office.",
-                "vitals": ["25", "3"],
-                "keywords": ["commute", "variation", "arrival"]
+                "target": "Senior patients experience a 35% dropout rate during telemedicine check-ins due to UI complexity and connection failures.",
+                "vitals": ["35%", "Senior"],
+                "keywords": ["telehealth", "complexity", "dropout"]
+            }
+        }
+    },
+    "discharge-blitz": {
+        "charter": {
+            "problemStatement": {
+                "target": "Discharge administrative wait time is 4.5 hours post-physician approval, delaying 5 beds per day.",
+                "vitals": ["4.5", "5"],
+                "keywords": ["discharge", "approval", "administrative"]
             }
         }
     }
