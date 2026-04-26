@@ -80,24 +80,38 @@ export function calculateMasteryScore(caseId: string, toolId: string, userData: 
 
 export function generateCritique(caseId: string, toolId: string, userData: any): string {
     const gold = GOLD_STANDARDS[caseId]?.[toolId];
-    if (!gold) return "Analysis complete. Your submission has been captured in the mission log.";
+    if (!gold) return "The tactical uplink matched standard parameters. No critical deviations detected in this sector.";
 
     const missingPoints: string[] = [];
+    const weakPoints: string[] = [];
     
     for (const key of Object.keys(gold)) {
         const userValue = String(userData[key] || "").toLowerCase();
         const goldValue = String(gold[key]).toLowerCase();
-        const goldTerms = goldValue.split(/\s+/).filter(t => t.length > 5); // Focus on long technical terms
+        const goldTerms = goldValue.split(/\s+/).filter(t => t.length > 5);
 
         const matchCount = goldTerms.filter(t => userValue.includes(t)).length;
-        if (matchCount < goldTerms.length * 0.3) {
+        const matchRatio = matchCount / goldTerms.length;
+
+        if (matchRatio < 0.2) {
             missingPoints.push(key.replace(/([A-Z])/g, ' $1').toLowerCase());
+        } else if (matchRatio < 0.5) {
+            weakPoints.push(key.replace(/([A-Z])/g, ' $1').toLowerCase());
         }
     }
 
-    if (missingPoints.length === 0) {
-        return "Excellent alignment with LSSMBB best practices. Your logic shows strong mastery of the tactical baseline for this case.";
+    let feedback = "";
+    if (missingPoints.length > 0) {
+        feedback += `CRITICAL MISSING ELEMENTS: Your analysis lacks technical depth in: ${missingPoints.join(', ')}. `;
+    }
+    if (weakPoints.length > 0) {
+        feedback += `WEAK AREAS: Consider refining the semantic density of: ${weakPoints.join(', ')}. `;
     }
 
-    return `Submission verified. To reach Black Belt level mastery, consider refining your focus on: ${missingPoints.join(', ')}. Ensure your definitions align closer to tactical benchmarks.`;
+    if (feedback === "") {
+        return "ELITE EXECUTION: Your submission aligns perfectly with LSSMBB tactical benchmarks. All critical parameters have been addressed.";
+    }
+
+    const thresholdNote = "TACTICAL ADVICE: To pass the 70% Mastery threshold, you must ensure your definitions include specific LSS terminology related to current-state variation and target metrics.";
+    return `${feedback}\n\n${thresholdNote}`;
 }
