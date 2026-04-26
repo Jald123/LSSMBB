@@ -103,8 +103,8 @@ export default function AdminDashboard() {
                         <div className="p-8 md:p-12 space-y-8">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div className="space-y-1">
-                                    <h3 className="text-xl font-bold font-display tracking-tight text-white italic">Access Control Matrix</h3>
-                                    <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Managing 1,284 active protocol identifiers</p>
+                                    <h3 className="text-xl font-bold font-display tracking-tight text-foreground italic">Access Control Matrix</h3>
+                                    <p className="text-xs text-slate-700 uppercase font-black tracking-widest leading-relaxed">Managing 1,284 active protocol identifiers</p>
                                 </div>
                                 <div className="flex gap-2 w-full md:w-auto">
                                     <div className="relative flex-1 md:w-64">
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
                                                             {i}
                                                         </div>
                                                         <div className="space-y-0.5">
-                                                            <div className="text-sm font-bold text-white leading-none">citizen_idx_{i * 142}</div>
+                                                            <div className="text-sm font-bold text-foreground leading-none">citizen_idx_{i * 142}</div>
                                                             <div className="text-[10px] font-medium text-slate-500">Joined Cycle 42.1</div>
                                                         </div>
                                                     </div>

@@ -157,7 +157,7 @@ export default function ArmoryHub() {
                                         <div className="space-y-3 mb-8 flex-1">
                                             <div>
                                                 <Badge variant="outline" className="border-white/5 uppercase font-black text-[9px] tracking-widest text-slate-500 mb-1">Station 0{index + 1}</Badge>
-                                                <h3 className="text-xl font-bold font-display tracking-tight text-white group-hover:text-primary transition-colors uppercase">
+                                                <h3 className="text-xl font-bold font-display tracking-tight text-foreground group-hover:text-primary transition-colors uppercase">
                                                     {mission.name}
                                                 </h3>
                                             </div>

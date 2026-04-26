@@ -142,18 +142,7 @@ export default function Dashboard() {
                     <PageHeader 
                         title={`MISSION SELECTION LIBRARY`} 
                         description={`Authenticated as Operator: ${user?.name || 'Unknown'}. Select a tactical scenario to begin your professional mastery sequence.`}
-                        actions={
-                            <div className="flex gap-3">
-                                <Button variant="outline" size="sm" onClick={() => router.push('/academy')}>
-                                    <BookOpen className="w-4 h-4 mr-2" />
-                                    The Academy
-                                </Button>
-                                <Button variant="nexus" size="sm" onClick={() => router.push('/armory')}>
-                                    <Trophy className="w-4 h-4 mr-2" />
-                                    Armory
-                                </Button>
-                            </div>
-                        }
+                        actions={null}
                     />
 
                     {/* Mission Selection Library Only */}
