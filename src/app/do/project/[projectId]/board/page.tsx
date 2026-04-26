@@ -54,6 +54,10 @@ export default function SprintBoard() {
     const [completedPhaseName, setCompletedPhaseName] = useState("");
     const [nextPhaseName, setNextPhaseName] = useState<string | null>(null);
 
+    // Filtering states
+    const [toolSearchQuery, setToolSearchQuery] = useState("");
+    const [statusFilter, setStatusFilter] = useState<string>("All");
+
     useEffect(() => {
         fetchProjectData();
     }, [projectId]);
@@ -240,6 +244,35 @@ export default function SprintBoard() {
                 </div>
             </div>
 
+            {/* Tactical Control Bar: Search & Status */}
+            <div className="px-8 mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="relative w-full md:w-64 group">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-primary transition-colors" />
+                    <input 
+                        type="text" 
+                        placeholder="Search tools..." 
+                        className="w-full bg-surface/50 border border-border rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-primary/50 transition-all shadow-sm"
+                        value={toolSearchQuery}
+                        onChange={(e) => setToolSearchQuery(e.target.value)}
+                    />
+                </div>
+
+                <div className="flex gap-1.5 p-1 bg-surface/30 border border-border rounded-[14px] overflow-x-auto no-scrollbar">
+                    {["All", "not-started", "in-progress", "complete"].map((status) => (
+                        <button
+                            key={status}
+                            onClick={() => setStatusFilter(status)}
+                            className={cn(
+                                "px-4 py-1.5 rounded-[10px] text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                                statusFilter === status ? "bg-primary text-black shadow-lg shadow-primary/20" : "text-slate-500 hover:text-white"
+                            )}
+                        >
+                            {status === "not-started" ? "STANDBY" : status === "in-progress" ? "ACTIVE" : status === "complete" ? "VERIFIED" : "ALL STATUS"}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {/* Tool Grid */}
             <div className="flex-1 p-8 overflow-y-auto no-scrollbar">
                 <AnimatePresence mode="wait">
@@ -251,7 +284,12 @@ export default function SprintBoard() {
                         transition={{ duration: 0.3 }}
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                     >
-                        {activePhase.tools.map((tool: any, idx: number) => {
+                        {activePhase.tools.filter(tool => {
+                            const status = getDeliverableStatus(tool.toolId);
+                            const matchesStatus = statusFilter === "All" || status === statusFilter;
+                            const matchesSearch = tool.toolName.toLowerCase().includes(toolSearchQuery.toLowerCase());
+                            return matchesStatus && matchesSearch;
+                        }).map((tool: any, idx: number) => {
                             const status = getDeliverableStatus(tool.toolId);
                             const d = deliverables.find(del => del.toolId === tool.toolId);
                             const score = d?.score;
