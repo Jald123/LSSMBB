@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Sidebar } from "./Sidebar";
-import { TopBar } from "./TopBar";
+import { GlobalSidebar } from "../navigation/GlobalSidebar";
 import { useNexus } from "@/context/NexusContext";
 import { OnboardingTour } from "../patterns/OnboardingTour";
 
@@ -12,36 +11,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const { isSidebarCollapsed, toggleSidebar } = useNexus();
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-    // Routes that should NOT have the standard TopBar/Sidebar
+    // Routes that should NOT have the sidebar
     const isLogin = pathname === "/login";
-    const isWorkspace = pathname?.startsWith("/workspace") || 
-                       pathname?.includes("/tool/") || 
-                       pathname?.includes("/tools/") ||
-                       pathname?.includes("/04-STATISTICS-TOOLS/");
 
-    if (isLogin || isWorkspace) {
+    if (isLogin) {
         return <>{children}</>;
     }
 
     return (
-        <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-primary/30">
-            <TopBar onMenuClick={() => setIsMobileSidebarOpen(true)} />
+        <div className="flex min-h-screen bg-[#020617] text-foreground selection:bg-primary/30 overflow-hidden">
+            <GlobalSidebar />
             <OnboardingTour />
             
-            <div className="flex flex-1 pt-14 md:pt-16 h-screen">
-                <Sidebar 
-                    isCollapsed={isSidebarCollapsed} 
-                    onToggle={toggleSidebar}
-                    isOpen={isMobileSidebarOpen}
-                    setIsOpen={setIsMobileSidebarOpen}
-                />
-                
-                <main className="flex-1 relative w-full h-full overflow-y-auto overflow-x-hidden">
-                    <div className="container mx-auto p-4 md:p-6 lg:p-8 min-h-full">
-                        {children}
-                    </div>
-                </main>
-            </div>
+            <main className="flex-1 relative h-screen overflow-y-auto no-scrollbar">
+                <div className="w-full">
+                    {children}
+                </div>
+            </main>
         </div>
     );
 }
