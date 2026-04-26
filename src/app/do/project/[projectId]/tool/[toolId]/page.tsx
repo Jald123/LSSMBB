@@ -243,6 +243,7 @@ export default function ToolExecutionView() {
                         {feedbackParts.map((part, idx) => {
                             if (!part.trim()) return null;
                             
+                            const isScoring = part.includes("SCORING ANALYSIS");
                             const isGaps = part.includes("CAPABILITY GAPS");
                             const isReco = part.includes("TECHNICAL RECOMMENDATIONS");
                             const isPath = part.includes("PATH TO MASTERY") || part.includes("SENSEI VERDICT");
@@ -250,6 +251,7 @@ export default function ToolExecutionView() {
                             return (
                                 <div key={idx} className={cn(
                                     "p-6 rounded-2xl border relative overflow-hidden",
+                                    isScoring ? "bg-primary/5 border-primary/10" :
                                     isGaps ? "bg-red-500/5 border-red-500/10" : 
                                     isReco ? "bg-amber-500/5 border-amber-500/10" :
                                     isPath ? (isPassed ? "bg-emerald-500/5 border-emerald-500/10" : "bg-primary/5 border-primary/10") :
@@ -257,13 +259,15 @@ export default function ToolExecutionView() {
                                 )}>
                                     <div className={cn(
                                         "absolute top-0 left-0 w-1 h-full",
+                                        isScoring ? "bg-primary" :
                                         isGaps ? "bg-red-500" : isReco ? "bg-amber-500" : isPath ? (isPassed ? "bg-emerald-500" : "bg-primary") : "bg-slate-500"
                                     )} />
                                     <h4 className={cn(
                                         "text-[9px] font-black font-orbitron tracking-widest uppercase mb-3 flex items-center gap-2",
+                                        isScoring ? "text-primary" :
                                         isGaps ? "text-red-500" : isReco ? "text-amber-500" : "text-slate-400"
                                     )}>
-                                        {isGaps ? <AlertCircle className="w-3 h-3" /> : isReco ? <Lightbulb className="w-3 h-3" /> : <Zap className="w-3 h-3" />}
+                                        {isScoring ? <Target className="w-3 h-3" /> : isGaps ? <AlertCircle className="w-3 h-3" /> : isReco ? <Lightbulb className="w-3 h-3" /> : <Zap className="w-3 h-3" />}
                                         {part.split('\n')[0]}
                                     </h4>
                                     <div className="text-slate-300 text-xs leading-relaxed font-medium whitespace-pre-wrap">

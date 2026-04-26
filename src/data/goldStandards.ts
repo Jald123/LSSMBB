@@ -63,6 +63,20 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
                 "keywords": ["precision", "accuracy"]
             }
         },
+        "sipoc": {
+            "process": {
+                "target": "Patient Prep -> Aresthesia -> Surgery -> Recovery -> Room Sterilization",
+                "vitals": ["Sterilization", "Surgery", "Recovery"],
+                "keywords": ["turnover", "flow", "cycle"]
+            }
+        },
+        "fmea": {
+            "risks": {
+                "target": "Wrong site surgery, anesthesia reaction, sterilization failure.",
+                "vitals": ["Wrong site", "sterilization"],
+                "keywords": ["RPN", "Severity", "Occurrence", "Detection"]
+            }
+        },
         "capability": {
             "cpk": {
                 "target": "Current Cpk is 0.42, far below the LSS target of 1.33 for medical safety standards.",
@@ -82,6 +96,20 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
                 "target": "Achieve 0 near-miss events and reduce dispensing errors to <0.01% through standardized verification protocols.",
                 "vitals": ["0", "<0.01%"],
                 "keywords": ["zero", "reduction", "verification"]
+            }
+        },
+        "sipoc": {
+            "process": {
+                "target": "Order Entry -> Pharmacist Review -> Filling -> Delivery -> Nurse Verification -> Administration",
+                "vitals": ["Review", "Filling", "Verification", "Administration"],
+                "keywords": ["double-check", "dispensing", "delivery"]
+            }
+        },
+        "fishbone": {
+            "rootCauses": {
+                "target": "Fatigue, look-alike packaging, high volume, lack of barcoding.",
+                "vitals": ["Fatigue", "packaging", "barcoding"],
+                "keywords": ["Environment", "Methods", "Materials", "Manpower"]
             }
         }
     },
@@ -251,13 +279,24 @@ export function generateCritique(caseId: string, toolId: string, userData: any):
 
     const gaps: string[] = [];
     const recommendations: string[] = [];
+    const scoringReasons: string[] = [];
     
+    let totalVitalMatches = 0;
+    let totalVitalPossible = 0;
+    let totalKeywordMatches = 0;
+    let totalKeywordPossible = 0;
+
     for (const key of Object.keys(gold)) {
         const standard = gold[key];
         const userValue = String(userData[key] || "").toLowerCase();
         
         const missingVitals = (standard.vitals || []).filter((v: string) => !userValue.includes(v.toLowerCase()));
         const missingKeywords = (standard.keywords || []).filter((k: string) => !userValue.includes(k.toLowerCase()));
+
+        totalVitalMatches += (standard.vitals?.length || 0) - missingVitals.length;
+        totalVitalPossible += (standard.vitals?.length || 0);
+        totalKeywordMatches += (standard.keywords?.length || 0) - missingKeywords.length;
+        totalKeywordPossible += (standard.keywords?.length || 0);
 
         if (missingVitals.length > 0) {
             gaps.push(`${key}: Missing critical metrics [${missingVitals.join(', ')}]`);
@@ -270,7 +309,14 @@ export function generateCritique(caseId: string, toolId: string, userData: any):
     const score = calculateMasteryScore(caseId, toolId, userData);
     const isPassed = score >= 70;
 
+    // Build Scoring Reasons
+    scoringReasons.push(`Vitals Precision: ${Math.round((totalVitalMatches / (totalVitalPossible || 1)) * 100)}% (${totalVitalMatches} of ${totalVitalPossible} markers found)`);
+    scoringReasons.push(`Technical Depth: ${Math.round((totalKeywordMatches / (totalKeywordPossible || 1)) * 100)}% (${totalKeywordMatches} of ${totalKeywordPossible} keywords found)`);
+    scoringReasons.push(`Weighted Analysis: Vitals carry 60% weight, Technical Keywords carry 40%.`);
+
     let report = "";
+    report += `SCORING ANALYSIS:\n${scoringReasons.map(s => `• ${s}`).join('\n')}\n\n`;
+
     if (gaps.length > 0) {
         report += `CAPABILITY GAPS DETECTED:\n${gaps.map(g => `• ${g}`).join('\n')}\n\n`;
     }
