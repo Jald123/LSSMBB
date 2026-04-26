@@ -50,6 +50,25 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
                 "vitals": ["Patients", "Families", "Wards"],
                 "keywords": ["Stakeholder", "End User"]
             }
+        },
+        "msa": {
+            "gageRR": {
+                "target": "Total Gage R&R Variation < 10% (Ideally < 1%) with process variation in wait-time measurements.",
+                "vitals": ["Wait-time", "Door-to-Provider", "timestamp"],
+                "keywords": ["repeatability", "reproducibility", "variance"]
+            },
+            "interpretation": {
+                "target": "The measurement system is capable if R&R is less than 10%.",
+                "vitals": ["< 10%", "Capable"],
+                "keywords": ["precision", "accuracy"]
+            }
+        },
+        "capability": {
+            "cpk": {
+                "target": "Current Cpk is 0.42, far below the LSS target of 1.33 for medical safety standards.",
+                "vitals": ["0.42", "1.33"],
+                "keywords": ["Sigma", "Capability", "Standard Deviation"]
+            }
         }
     },
     "medication-errors": {
@@ -84,7 +103,7 @@ export const GOLD_STANDARDS: Record<string, Record<string, any>> = {
  */
 export function calculateMasteryScore(caseId: string, toolId: string, userData: any): number {
     const gold = GOLD_STANDARDS[caseId]?.[toolId];
-    if (!gold) return 100;
+    if (!gold) return 0; // STRICTURE: If no standard exists, score is 0.
 
     let totalScore = 0;
     let fieldCount = 0;
