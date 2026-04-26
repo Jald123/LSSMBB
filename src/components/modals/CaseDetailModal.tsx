@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Star, Clock, CheckCircle2, ShieldCheck, X } from "lucide-react";
+import { Star, Clock, CheckCircle2, ShieldCheck, X, Database } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface CaseDetailModalProps {

@@ -23,7 +23,10 @@ import {
     Link,
     Search as SniperIcon,
     Pen,
-    Trophy
+    Trophy,
+    Clock,
+    Star,
+    X
 } from "lucide-react";
 import { CASE_STUDIES, CaseStudy, ToolMapping } from "@/config/caseStudies";
 import { useToast } from "@/components/ui/Toast";
