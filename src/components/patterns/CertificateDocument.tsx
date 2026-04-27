@@ -76,6 +76,14 @@ const styles = StyleSheet.create({
         padding: 0,
         position: "relative",
     },
+    bgImage: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
+    },
     classicBorderHighlight: {
         position: "absolute",
         top: 15, left: 15, right: 15, bottom: 15,
@@ -96,7 +104,7 @@ const styles = StyleSheet.create({
     },
     // Main Container
     container: {
-        padding: 40,
+        padding: 60,
         height: "100%",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -122,6 +130,7 @@ const styles = StyleSheet.create({
         fontFamily: FONTS.bold,
         letterSpacing: 4,
         textTransform: "uppercase",
+        marginTop: 10,
     },
     // Body
     body: {
@@ -348,25 +357,25 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
             subject={`${data.credentialType} Certification`}
         >
             <Page size="A4" orientation="landscape" style={[styles.page, { 
-                backgroundColor: isClassic ? BASE_COLORS.charcoal : BASE_COLORS.obsidian,
+                backgroundColor: isClassic ? "#0B1015" : BASE_COLORS.obsidian,
                 fontFamily: isClassic ? FONTS.serif : FONTS.primary
             }]}>
-                {/* Background Graphics */}
-                {!isClassic ? (
-                    <GeometricPattern color={meta.primary} />
+                {/* Background Layer */}
+                {isClassic ? (
+                    <Image src="/images/classic-gold-bg.png" style={styles.bgImage} />
                 ) : (
+                    <GeometricPattern color={meta.primary} />
+                )}
+                
+                {!isClassic && (
                     <>
-                        <View style={[styles.classicBorderHighlight, { borderColor: meta.primary }]} />
-                        <View style={[styles.classicInnerBorder, { borderColor: meta.primary }]} />
+                        <Text style={styles.watermark}>NEXUS ACADEMY</Text>
+                        <Text style={styles.sigmaSymbol}>Σ</Text>
+                        <NormalDistribution color={meta.secondary} />
                     </>
                 )}
                 
-                <Text style={styles.watermark}>NEXUS ACADEMY</Text>
-                <Text style={styles.sigmaSymbol}>Σ</Text>
-                
-                {!isClassic && <NormalDistribution color={meta.secondary} />}
-                
-                {/* Corner Decoration (Glass) vs Foil Lines (Classic) */}
+                {/* Global Overlays */}
                 {!isClassic && (
                     <>
                         <View style={[styles.cornerElement, styles.topLeft, { borderColor: meta.secondary }]} />
@@ -381,16 +390,16 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                     {/* Header */}
                     <View style={styles.header}>
                         <Text style={[styles.divisionLabel, isClassic && { fontFamily: FONTS.serif }]}>Operational Excellence Division</Text>
-                        <Text style={[styles.academyName, isClassic && { fontFamily: FONTS.serifBold, color: meta.primary }]}>Nexus Academy</Text>
+                        <Text style={[styles.academyName, isClassic ? { color: BASE_COLORS.goldFoil, fontFamily: FONTS.serifBold } : { color: meta.primary }]}>Nexus Academy</Text>
                     </View>
 
                     {/* Main Content */}
                     <View style={styles.body}>
-                        <Text style={[styles.certOfAchievement, isClassic && { fontFamily: FONTS.serifBold }]}>Certificate of Achievement</Text>
+                        <Text style={[styles.certOfAchievement, isClassic ? { color: BASE_COLORS.goldFoil, fontFamily: FONTS.serifBold } : { color: BASE_COLORS.textPrimary }]}>Certificate of Achievement</Text>
                         <Text style={[styles.certSubline, isClassic && { fontFamily: FONTS.serif }]}>{meta.prefix} {data.credentialType}</Text>
                         
                         <Text style={styles.certifyThat}>This is to certify that</Text>
-                        <Text style={[styles.learnerName, isClassic && { fontFamily: FONTS.serifBold }]}>{data.recipientName}</Text>
+                        <Text style={[styles.learnerName, isClassic ? { color: BASE_COLORS.goldFoil, fontFamily: FONTS.serifBold } : { color: BASE_COLORS.textPrimary }]}>{data.recipientName}</Text>
                         <View style={[styles.nameUnderline, { backgroundColor: meta.primary }]} />
                         
                         <View style={[styles.beltPill, { backgroundColor: meta.primary }]}>
@@ -426,7 +435,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                         <View style={styles.gridColumnCenter}>
                             <Text style={[styles.columnLabel, isClassic && { fontFamily: FONTS.serifBold }]}>Overall Mastery Score</Text>
                             <View style={{ flexDirection: "row", alignItems: "baseline" }}>
-                                <Text style={[styles.scoreValue, isClassic && { fontFamily: FONTS.serifBold }]}>{data.overallScore || "0"}</Text>
+                                <Text style={[styles.scoreValue, isClassic ? { color: BASE_COLORS.goldFoil, fontFamily: FONTS.serifBold } : { color: BASE_COLORS.textPrimary }]}>{data.overallScore || "0"}</Text>
                                 <Text style={[styles.scoreUnit, isClassic && { fontFamily: FONTS.serif }]}>%</Text>
                             </View>
                         </View>
