@@ -310,18 +310,17 @@ const styles = StyleSheet.create({
         opacity: 0.15,
         zIndex: 1,
     },
-    networkPattern: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        opacity: 0.04,
-        zIndex: 1,
-    }
-});
-
 // ─── SUB-COMPONENTS ──────────────────────────────────────
+const SigmaGearLogo = ({ color }: { color: string }) => (
+    <Svg viewBox="0 0 100 100" style={{ width: 60, height: 60, marginBottom: 10 }}>
+        {/* Gear circles/teeth could be complex, simplifying to a professional gear icon with Sigma */}
+        <Circle cx="50" cy="50" r="40" stroke={color} strokeWidth="2" fill="none" />
+        <Circle cx="50" cy="50" r="32" stroke={color} strokeWidth="1" fill="none" strokeDasharray="2,2" />
+        <Text x="50" y="60" textAnchor="middle" style={{ fontSize: 35, fill: color, fontFamily: FONTS.bold }}>Σ</Text>
+        <Path d="M20,50 L5,50 M95,50 L80,50 M50,20 L50,5 M50,95 L50,80" stroke={color} strokeWidth="2" />
+    </Svg>
+);
+
 const NormalDistribution = ({ color }: { color: string }) => (
     <Svg viewBox="0 0 200 100" style={styles.curveGraphic}>
         <Path
@@ -387,64 +386,59 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                 )}
 
                 <View style={styles.container}>
-                    {/* Header */}
+                    {/* Header with Sigma-Gear Logo */}
                     <View style={styles.header}>
-                        <Text style={[styles.divisionLabel, isClassic && { fontFamily: FONTS.serif }]}>Operational Excellence Division</Text>
+                        <SigmaGearLogo color={isClassic ? BASE_COLORS.goldFoil : meta.primary} />
                         <Text style={[styles.academyName, isClassic ? { color: BASE_COLORS.goldFoil, fontFamily: FONTS.serifBold } : { color: meta.primary }]}>Nexus Academy</Text>
                     </View>
 
-                    {/* Main Content */}
+                    {/* Main Content - Centered & Engraved */}
                     <View style={styles.body}>
                         <Text style={[styles.certOfAchievement, isClassic ? { color: BASE_COLORS.goldFoil, fontFamily: FONTS.serifBold } : { color: BASE_COLORS.textPrimary }]}>Certificate of Achievement</Text>
-                        <Text style={[styles.certSubline, isClassic && { fontFamily: FONTS.serif }]}>{meta.prefix} {data.credentialType}</Text>
+                        
+                        <View style={{ marginVertical: 10 }}>
+                             <Text style={[styles.certSubline, isClassic && { fontFamily: FONTS.serif }]}>{meta.prefix} {data.credentialType}</Text>
+                        </View>
                         
                         <Text style={styles.certifyThat}>This is to certify that</Text>
                         <Text style={[styles.learnerName, isClassic ? { color: BASE_COLORS.goldFoil, fontFamily: FONTS.serifBold } : { color: BASE_COLORS.textPrimary }]}>{data.recipientName}</Text>
-                        <View style={[styles.nameUnderline, { backgroundColor: meta.primary }]} />
+                        <View style={[styles.nameUnderline, { backgroundColor: isClassic ? BASE_COLORS.goldFoil : meta.primary, opacity: 0.3 }]} />
                         
-                        <View style={[styles.beltPill, { backgroundColor: meta.primary }]}>
-                            <Text style={[styles.beltPillText, isClassic && { fontFamily: FONTS.serifBold }]}>{data.credentialType}</Text>
-                        </View>
-
-                        <View style={styles.narrativeBox}>
+                        <View style={{ marginTop: 10 }}>
                             <Text style={[styles.narrativeText, isClassic && { fontFamily: FONTS.serif }]}>
-                                In recognition of successful completion of the Nexus Academy {data.credentialType} Program and {meta.impact}
+                                HAS SUCCESSFULLY COMPLETED THE REQUIREMENTS FOR THE
+                            </Text>
+                            <Text style={{ fontSize: 13, color: meta.primary, fontFamily: FONTS.bold, marginTop: 5, textAlign: "center" }}>
+                                {data.credentialType.toUpperCase()} CERTIFICATION
                             </Text>
                         </View>
                     </View>
 
-                    {/* Signatures */}
-                    <View style={styles.signatureContainer}>
+                    {/* Signatures & Seal (Aligned like reference) */}
+                    <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", paddingHorizontal: 40 }}>
                         <View style={styles.sigBlock}>
                             <View style={styles.sigLine} />
-                            <Text style={[styles.sigRole, isClassic && { fontFamily: FONTS.serif }]}>Program Director</Text>
+                            <Text style={[styles.sigRole, { color: BASE_COLORS.textPrimary, fontSize: 10 }]}>Michael Thorne</Text>
+                            <Text style={styles.sigRole}>Director of Education</Text>
                         </View>
+
+                        {/* Symbolic Seal Placeholder */}
+                        <View style={{ width: 80, height: 80, borderRadius: 40, border: `2px solid ${isClassic ? BASE_COLORS.goldFoil : meta.primary}`, opacity: 0.5, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={{ fontSize: 10, color: isClassic ? BASE_COLORS.goldFoil : meta.primary }}>IOE</Text>
+                            <Text style={{ fontSize: 6, color: isClassic ? BASE_COLORS.goldFoil : meta.primary }}>EST 2006</Text>
+                        </View>
+
                         <View style={styles.sigBlock}>
                             <View style={styles.sigLine} />
-                            <Text style={[styles.sigRole, isClassic && { fontFamily: FONTS.serif }]}>Academy Dean</Text>
+                            <Text style={[styles.sigRole, { color: BASE_COLORS.textPrimary, fontSize: 10 }]}>Evelyn Reed</Text>
+                            <Text style={styles.sigRole}>Chief Quality Officer</Text>
                         </View>
                     </View>
 
-                    {/* Footer Grid */}
-                    <View style={styles.footerGrid}>
-                        <View style={styles.gridColumn}>
-                            <Text style={[styles.columnLabel, isClassic && { fontFamily: FONTS.serifBold }]}>Date of Completion</Text>
-                            <Text style={[styles.columnValue, isClassic && { fontFamily: FONTS.serifBold }]}>{data.completionDate}</Text>
-                        </View>
-                        
-                        <View style={styles.gridColumnCenter}>
-                            <Text style={[styles.columnLabel, isClassic && { fontFamily: FONTS.serifBold }]}>Overall Mastery Score</Text>
-                            <View style={{ flexDirection: "row", alignItems: "baseline" }}>
-                                <Text style={[styles.scoreValue, isClassic ? { color: BASE_COLORS.goldFoil, fontFamily: FONTS.serifBold } : { color: BASE_COLORS.textPrimary }]}>{data.overallScore || "0"}</Text>
-                                <Text style={[styles.scoreUnit, isClassic && { fontFamily: FONTS.serif }]}>%</Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.gridColumnRight}>
-                            <Text style={[styles.columnLabel, isClassic && { fontFamily: FONTS.serifBold }]}>Certificate ID</Text>
-                            <Text style={[styles.columnValue, isClassic && { fontFamily: FONTS.serifBold }]}>{certId}</Text>
-                            <Text style={[styles.verifySubtext, isClassic && { fontFamily: FONTS.serif }]}>Verify at nexus-academy.io/verify</Text>
-                        </View>
+                    {/* Footer Identifiers */}
+                    <View style={{ width: "100%", flexDirection: "row", justifyContent: "center", gap: 30, marginTop: 20 }}>
+                        <Text style={{ fontSize: 8, color: BASE_COLORS.textSecondary }}>Awarded Date: {data.completionDate}</Text>
+                        <Text style={{ fontSize: 8, color: BASE_COLORS.textSecondary }}>Certification Number: {certId}</Text>
                     </View>
                 </View>
             </Page>
