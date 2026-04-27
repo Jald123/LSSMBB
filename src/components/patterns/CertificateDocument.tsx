@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     },
     columnLabel: {
         fontSize: 8,
-        fontFamily: "DM Sans",
+        fontFamily: FONTS.bold,
         fontWeight: "bold",
         color: BASE_COLORS.textSecondary,
         textTransform: "uppercase",
@@ -227,14 +227,14 @@ const styles = StyleSheet.create({
     },
     scoreValue: {
         fontSize: 24,
-        fontFamily: "DM Sans",
+        fontFamily: FONTS.bold,
         fontWeight: "bold",
         color: BASE_COLORS.textPrimary,
     },
     scoreUnit: {
         fontSize: 10,
         color: BASE_COLORS.textSecondary,
-        fontFamily: "Inter",
+        fontFamily: FONTS.primary,
     },
     verifySubtext: {
         fontSize: 7,
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     },
     sigRole: {
         fontSize: 8,
-        fontFamily: "DM Sans",
+        fontFamily: FONTS.primary,
         color: BASE_COLORS.textSecondary,
         textTransform: "uppercase",
         letterSpacing: 1,
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
         top: "40%",
         left: "10%",
         fontSize: 120,
-        fontFamily: "DM Sans",
+        fontFamily: FONTS.bold,
         fontWeight: "bold",
         color: "#F8FAFC",
         opacity: 0.03,
