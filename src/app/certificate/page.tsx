@@ -18,7 +18,7 @@ import {
     Hash,
     Briefcase
 } from "lucide-react";
-import { CertificateDocument, type CertificateData, type CredentialType } from "@/components/patterns/CertificateDocument";
+import { CertificateDocument, type CertificateData } from "@/components/patterns/CertificateDocument";
 
 // @ts-ignore
 const PDFDownloadLink = dynamic<any>(
@@ -32,29 +32,20 @@ const PDFViewer = dynamic<any>(
     { ssr: false, loading: () => <div className="w-full h-[600px] bg-slate-950/50 rounded-3xl animate-pulse border border-white/5" /> }
 ) as any;
 
-const LSS_OPTIONS: CredentialType[] = [
-    "White Belt",
-    "Yellow Belt",
-    "Green Belt",
-    "Black Belt",
-    "Master Black Belt",
+const BELT_OPTIONS: CertificateData["beltLevel"][] = [
+    "White",
+    "Yellow",
+    "Green",
+    "Black",
+    "Master Black",
 ];
 
-const SPECIALTY_OPTIONS: CredentialType[] = [
-    "DMADV (DESIGN)",
-    "KAIZEN (EVENT)",
-    "FOCUS PDCA (QUALITY)"
-];
-
-const CREDENTIAL_STYLES: Record<string, string> = {
-    "White Belt": "from-slate-100 to-slate-200 text-slate-900 border-slate-300",
-    "Yellow Belt": "from-amber-300 to-amber-500 text-amber-950 border-amber-400",
-    "Green Belt": "from-emerald-400 to-emerald-600 text-emerald-950 border-emerald-500",
-    "Black Belt": "from-slate-700 to-slate-900 text-white border-slate-600",
-    "Master Black Belt": "from-yellow-400 to-yellow-600 text-yellow-950 border-yellow-500 ring-2 ring-yellow-400/30",
-    "DMADV (DESIGN)": "from-cyan-400 to-cyan-600 text-cyan-950 border-cyan-500",
-    "KAIZEN (EVENT)": "from-orange-400 to-orange-600 text-white border-orange-500",
-    "FOCUS PDCA (QUALITY)": "from-fuchsia-400 to-fuchsia-600 text-white border-fuchsia-500",
+const BELT_STYLES: Record<string, string> = {
+    White: "from-slate-100 to-slate-200 text-slate-900 border-slate-300",
+    Yellow: "from-amber-300 to-amber-500 text-amber-950 border-amber-400",
+    Green: "from-emerald-400 to-emerald-600 text-emerald-950 border-emerald-500",
+    Black: "from-slate-700 to-slate-900 text-white border-slate-600",
+    "Master Black": "from-yellow-400 to-yellow-600 text-yellow-950 border-yellow-500 ring-2 ring-yellow-400/30",
 };
 
 export default function CertificatePage() {
@@ -62,7 +53,7 @@ export default function CertificatePage() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [formData, setFormData] = useState<CertificateData>({
         recipientName: "Hussam Aldhaher",
-        credentialType: "Green Belt",
+        beltLevel: "Green",
         completionDate: new Date().toISOString().split("T")[0],
         projectTitle: "Operational Excellence Protocol",
         overallScore: 94,
@@ -80,7 +71,7 @@ export default function CertificatePage() {
                 month: "long",
                 day: "numeric",
             }),
-            certificateId: formData.certificateId || `NXS-${formData.credentialType.substring(0, 2).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
+            certificateId: formData.certificateId || `NXS-${formData.beltLevel.substring(0, 2).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
         }),
         [formData]
     );
@@ -126,7 +117,7 @@ export default function CertificatePage() {
                     {isGenerated && (
                         <PDFDownloadLink
                             document={<CertificateDocument data={certificateData} />}
-                            fileName={`Nexus_${formData.credentialType.replace(/\s+/g, "_")}_${formData.recipientName.replace(/\s+/g, "_")}.pdf`}
+                            fileName={`Nexus_${formData.beltLevel}_Belt_${formData.recipientName.replace(/\s+/g, "_")}.pdf`}
                         >
                             {({ loading }: { loading: boolean }) => (
                                 <button
@@ -176,42 +167,23 @@ export default function CertificatePage() {
                                 />
                             </div>
 
-                            {/* Path Selection */}
-                            <div className="space-y-4">
+                            {/* Belt Selection */}
+                            <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                    <Shield className="w-3.5 h-3.5" /> Core LSS Belts (Classic Gold Theme)
+                                    <Shield className="w-3.5 h-3.5" /> Belt Proficiency
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
-                                    {LSS_OPTIONS.map((b) => (
+                                    {BELT_OPTIONS.map((b) => (
                                         <button
                                             key={b}
-                                            onClick={() => updateField("credentialType", b)}
+                                            onClick={() => updateField("beltLevel", b)}
                                             className={`px-4 py-3 rounded-xl text-[10px] font-bold border transition-all ${
-                                                formData.credentialType === b
-                                                    ? `bg-gradient-to-br ${CREDENTIAL_STYLES[b]} shadow-lg`
+                                                formData.beltLevel === b
+                                                    ? `bg-gradient-to-br ${BELT_STYLES[b]} shadow-lg`
                                                     : "bg-black/20 border-white/5 text-slate-500 hover:border-white/20"
                                             }`}
                                         >
-                                            {b}
-                                        </button>
-                                    ))}
-                                </div>
-                                
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 mt-4 pt-4 border-t border-white/5">
-                                    <Sparkles className="w-3.5 h-3.5" /> Advanced Methodologies (Executive Glass Theme)
-                                </label>
-                                <div className="grid grid-cols-1 gap-2">
-                                    {SPECIALTY_OPTIONS.map((b) => (
-                                        <button
-                                            key={b}
-                                            onClick={() => updateField("credentialType", b)}
-                                            className={`px-4 py-3 rounded-xl text-[10px] font-bold border transition-all ${
-                                                formData.credentialType === b
-                                                    ? `bg-gradient-to-br ${CREDENTIAL_STYLES[b]} shadow-lg`
-                                                    : "bg-black/20 border-white/5 text-slate-500 hover:border-white/20"
-                                            }`}
-                                        >
-                                            {b}
+                                            {b} Belt
                                         </button>
                                     ))}
                                 </div>
