@@ -41,15 +41,16 @@ const BELT_OPTIONS: CertificateData["beltLevel"][] = [
 ];
 
 const BELT_STYLES: Record<string, string> = {
-    White: "from-slate-200 to-slate-400 text-slate-900 border-slate-300/50",
-    Yellow: "from-amber-300 to-amber-500 text-amber-950 border-amber-400/50",
-    Green: "from-emerald-400 to-emerald-600 text-emerald-950 border-emerald-500/50",
-    Black: "from-yellow-600 to-yellow-800 text-yellow-950 border-yellow-700/50", // Using gold accent for BB
-    "Master Black": "from-yellow-600 to-yellow-800 text-yellow-950 border-yellow-700/50",
+    White: "from-slate-100 to-slate-200 text-slate-900 border-slate-300",
+    Yellow: "from-amber-300 to-amber-500 text-amber-950 border-amber-400",
+    Green: "from-emerald-400 to-emerald-600 text-emerald-950 border-emerald-500",
+    Black: "from-slate-700 to-slate-900 text-white border-slate-600",
+    "Master Black": "from-yellow-400 to-yellow-600 text-yellow-950 border-yellow-500 ring-2 ring-yellow-400/30",
 };
 
 export default function CertificatePage() {
-    const [showPreview, setShowPreview] = useState(true);
+    const [isGenerated, setIsGenerated] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
     const [formData, setFormData] = useState<CertificateData>({
         recipientName: "Hussam Aldhaher",
         beltLevel: "Green",
@@ -60,7 +61,7 @@ export default function CertificatePage() {
         certificateId: "",
     });
 
-    const isValid = formData.recipientName.trim().length > 0;
+    const isValid = formData.recipientName.trim().length > 0 && formData.projectTitle.trim().length > 0;
 
     const certificateData = useMemo<CertificateData>(
         () => ({
@@ -75,7 +76,17 @@ export default function CertificatePage() {
         [formData]
     );
 
+    const handleGenerate = () => {
+        if (!isValid) return;
+        setIsGenerating(true);
+        setTimeout(() => {
+            setIsGenerated(true);
+            setIsGenerating(false);
+        }, 1500);
+    };
+
     const updateField = <K extends keyof CertificateData>(key: K, value: CertificateData[K]) => {
+        setIsGenerated(false);
         setFormData((prev) => ({ ...prev, [key]: value }));
     };
 
@@ -103,7 +114,7 @@ export default function CertificatePage() {
                 </div>
 
                 <div className="flex gap-3">
-                    {isValid && (
+                    {isGenerated && (
                         <PDFDownloadLink
                             document={<CertificateDocument data={certificateData} />}
                             fileName={`Nexus_${formData.beltLevel}_Belt_${formData.recipientName.replace(/\s+/g, "_")}.pdf`}
@@ -111,10 +122,10 @@ export default function CertificatePage() {
                             {({ loading }: { loading: boolean }) => (
                                 <button
                                     disabled={loading}
-                                    className="flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(34,211,238,0.2)] disabled:opacity-60"
+                                    className="flex items-center gap-2 px-8 py-4 bg-emerald-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-60"
                                 >
                                     <Download className="w-4 h-4" />
-                                    {loading ? "Syncing..." : "Download PDF"}
+                                    {loading ? "Finalizing..." : "Download Export"}
                                 </button>
                             )}
                         </PDFDownloadLink>
@@ -227,8 +238,28 @@ export default function CertificatePage() {
                                     type="text"
                                     value={formData.instructorName}
                                     onChange={(e) => updateField("instructorName", e.target.value)}
-                                    className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl text-sm text-white focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all font-medium"
+                                    className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl text-sm text-white"
                                 />
+                            </div>
+
+                            <div className="pt-4 border-t border-white/5">
+                                <button
+                                    onClick={handleGenerate}
+                                    disabled={!isValid || isGenerating}
+                                    className="w-full py-5 bg-white text-black rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white transition-all disabled:opacity-20 flex items-center justify-center gap-3 group"
+                                >
+                                    {isGenerating ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                            Encrypting Nodes...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
+                                            Commit & Generate
+                                        </>
+                                    )}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -258,12 +289,26 @@ export default function CertificatePage() {
                             </div>
                         </div>
 
-                        <div className="relative group flex-1 min-h-[600px] bg-slate-950 rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl p-1 bg-gradient-to-b from-white/5 to-transparent">
-                            <div className="w-full h-full rounded-[2.3rem] overflow-hidden">
-                                <PDFViewer width="100%" height="800px" showToolbar={false}>
-                                    <CertificateDocument data={certificateData} />
-                                </PDFViewer>
-                            </div>
+                        <div className="relative flex-1 bg-slate-950 rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl p-1 bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center">
+                            {!isGenerated ? (
+                                <div className="text-center space-y-6 p-10 max-w-sm">
+                                    <div className="w-20 h-20 bg-primary/10 border border-primary/20 rounded-3xl flex items-center justify-center mx-auto animate-bounce">
+                                        <Shield className="w-10 h-10 text-primary" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h3 className="text-white font-black text-[10px] uppercase tracking-widest">Awaiting Verification</h3>
+                                        <p className="text-slate-500 text-[10px] font-medium leading-relaxed">
+                                            Please finalize the credential metadata and click <b>Commit & Generate</b> to fire the high-fidelity PDF engine.
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="w-full h-full rounded-[2.3rem] overflow-hidden">
+                                    <PDFViewer width="100%" height="800px" showToolbar={false}>
+                                        <CertificateDocument data={certificateData} />
+                                    </PDFViewer>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </motion.div>
