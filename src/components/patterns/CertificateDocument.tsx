@@ -17,26 +17,25 @@ import {
 } from "@react-pdf/renderer";
 
 // ─── FONT REGISTRATION ─────────────────────────────────
-// Registering Google Fonts for world-class typography
 Font.register({
     family: "DM Sans",
-    src: "https://fonts.gstatic.com/s/dmsans/v11/rP2Fp2K8yuW8beBCeAI6TQ.ttf",
-    fontWeight: "bold",
+    src: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/dmsans/static/DMSans-Bold.ttf",
+    fontWeight: 700,
 });
 Font.register({
     family: "DM Sans Medium",
-    src: "https://fonts.gstatic.com/s/dmsans/v11/rP2Cp2K8yuW8beBCeApxV07GCXY.ttf",
-    fontWeight: "medium",
+    src: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/dmsans/static/DMSans-Medium.ttf",
+    fontWeight: 500,
 });
 Font.register({
     family: "Inter",
-    src: "https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.ttf",
-    fontWeight: "normal",
+    src: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/inter/static/Inter-Regular.ttf",
+    fontWeight: 400,
 });
 Font.register({
     family: "Inter Bold",
-    src: "https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFufAZ9hjp-Ek-_EeA.ttf",
-    fontWeight: "bold",
+    src: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/inter/static/Inter-Bold.ttf",
+    fontWeight: 700,
 });
 
 // ─── TYPES ──────────────────────────────────────────────
