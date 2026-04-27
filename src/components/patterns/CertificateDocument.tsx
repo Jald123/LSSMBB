@@ -60,25 +60,25 @@ const styles = StyleSheet.create({
         backgroundColor: BASE_COLORS.background,
         padding: 0,
         fontFamily: FONTS.primary,
+        position: "relative",
     },
-    // Background Graphics
-    bgGradient: {
+    // Background Image
+    bgImage: {
         position: "absolute",
         top: 0,
         left: 0,
         right: 0,
-        height: 300,
-        backgroundColor: BASE_COLORS.charcoal,
-        opacity: 0.8,
+        bottom: 0,
+        opacity: 0.15,
     },
     watermark: {
         position: "absolute",
         top: "40%",
-        left: "30%",
+        left: "35%",
         fontSize: 240,
         fontFamily: FONTS.bold,
         color: BASE_COLORS.gold,
-        opacity: 0.02,
+        opacity: 0.015,
         transform: "rotate(-25deg)",
     },
     // Frame
@@ -119,26 +119,27 @@ const styles = StyleSheet.create({
     // Header
     header: {
         alignItems: "center",
-        marginBottom: 20,
-    },
-    crestBox: {
-        width: 80,
-        height: 80,
         marginBottom: 10,
     },
+    logoBox: {
+        width: 100,
+        height: 80,
+        marginBottom: 5,
+        objectFit: "contain",
+    },
     academyName: {
-        fontSize: 24,
+        fontSize: 22,
         fontFamily: FONTS.serifBold,
-        letterSpacing: 4,
+        letterSpacing: 2,
         color: BASE_COLORS.gold,
         textTransform: "uppercase",
     },
     divisionLabel: {
-        fontSize: 8,
+        fontSize: 7,
         color: BASE_COLORS.textSecondary,
         letterSpacing: 2,
         textTransform: "uppercase",
-        marginTop: 4,
+        marginTop: 2,
     },
     // Body Text
     certTitle: {
@@ -148,14 +149,14 @@ const styles = StyleSheet.create({
         letterSpacing: 3,
         textTransform: "uppercase",
         textAlign: "center",
-        marginTop: 15,
+        marginTop: 10,
     },
     certSub: {
         fontSize: 10,
         fontFamily: FONTS.primary,
         color: BASE_COLORS.textSecondary,
         marginTop: 5,
-        marginBottom: 20,
+        marginBottom: 15,
     },
     presentedTo: {
         fontSize: 11,
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
         fontSize: 42,
         fontFamily: FONTS.serifBold,
         color: BASE_COLORS.textPrimary,
-        marginVertical: 10,
+        marginVertical: 5,
     },
     beltTitle: {
         fontSize: 20,
@@ -180,13 +181,14 @@ const styles = StyleSheet.create({
         borderTop: "1pt solid " + BASE_COLORS.gold,
         borderBottom: "1pt solid " + BASE_COLORS.gold,
         marginVertical: 10,
+        textTransform: "uppercase",
     },
     narrative: {
-        fontSize: 10,
+        fontSize: 9.5,
         width: 480,
         textAlign: "center",
         color: BASE_COLORS.textSecondary,
-        lineHeight: 1.6,
+        lineHeight: 1.5,
         fontFamily: FONTS.primary,
     },
     // Footer Section
@@ -196,12 +198,18 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "flex-end",
         borderTop: "0.5pt solid " + BASE_COLORS.borderSubtle,
-        paddingTop: 20,
-        marginTop: 20,
+        paddingTop: 15,
+        marginTop: 15,
     },
     signatureBlock: {
         alignItems: "center",
-        width: 150,
+        width: 160,
+    },
+    signatureImage: {
+        width: 140,
+        height: 60,
+        marginBottom: -15,
+        objectFit: "contain",
     },
     sigLine: {
         width: "100%",
@@ -216,10 +224,17 @@ const styles = StyleSheet.create({
     },
     // Seal & ID
     sealContainer: {
+        width: 80,
+        height: 80,
         alignItems: "center",
         justifyContent: "center",
         position: "relative",
-        marginTop: -30,
+        marginTop: -20,
+    },
+    officialSeal: {
+        width: 80,
+        height: 80,
+        objectFit: "contain",
     },
     certIdBox: {
         alignItems: "flex-end",
@@ -242,49 +257,6 @@ const styles = StyleSheet.create({
     }
 });
 
-// ─── SVG GRAPHICS ───────────────────────────────────────
-const LaurelCrest = ({ color }: { color: string }) => (
-    <Svg viewBox="0 0 100 100" style={styles.crestBox}>
-        {/* Wreath */}
-        <Path d="M30,70 Q10,70 10,30 Q10,10 30,10" fill="none" stroke={color} strokeWidth="2" />
-        <Path d="M70,70 Q90,70 90,30 Q90,10 70,10" fill="none" stroke={color} strokeWidth="2" />
-        {/* Leaves */}
-        <Circle cx="15" cy="40" r="3" fill={color} />
-        <Circle cx="85" cy="40" r="3" fill={color} />
-        <Circle cx="20" cy="25" r="3" fill={color} />
-        <Circle cx="80" cy="25" r="3" fill={color} />
-        {/* Core Symbol */}
-        <Text x="50" y="65" fontSize="40" fontFamily={FONTS.bold} textAnchor="middle" fill={color}>σ</Text>
-    </Svg>
-);
-
-const GoldSeal = ({ color }: { color: string }) => (
-    <View style={styles.sealContainer}>
-        {/* Ribbon */}
-        <Svg width="40" height="60" style={{ position: "absolute", bottom: -20, left: 10 }}>
-            <Path d="M0,0 L15,60 L30,0 Z" fill="#991B1B" opacity="0.8" />
-        </Svg>
-        <Svg width="40" height="60" style={{ position: "absolute", bottom: -20, right: 10 }}>
-            <Path d="M0,0 L15,60 L30,0 Z" fill="#991B1B" opacity="0.8" />
-        </Svg>
-        {/* Embossed Seal */}
-        <Svg width="80" height="80">
-            <Circle cx="40" cy="40" r="38" fill={color} />
-            <Circle cx="40" cy="40" r="34" fill="none" stroke="#FFFFFF" strokeWidth="0.5" strokeDasharray="2,2" />
-            <Text x="40" y="47" fontSize="20" fontFamily={FONTS.bold} textAnchor="middle" fill="#000000" opacity="0.7">NA</Text>
-            <Circle cx="40" cy="40" r="30" fill="none" stroke="#000000" strokeWidth="0.5" opacity="0.2" />
-        </Svg>
-    </View>
-);
-
-const HologramStamp = () => (
-    <Svg width="60" height="60" style={styles.hologram}>
-        <Circle cx="30" cy="30" r="28" fill="none" stroke="#F8FAFC" strokeWidth="0.5" />
-        <Text x="30" y="35" fontSize="8" fontFamily={FONTS.bold} textAnchor="middle" fill="#F8FAFC">VERIFIED</Text>
-        <Path d="M10,30 L50,30 M30,10 L30,50" stroke="#F8FAFC" strokeWidth="0.2" />
-    </Svg>
-);
-
 // ─── COMPONENT ──────────────────────────────────────────
 export function CertificateDocument({ data }: { data: CertificateData }) {
     const belt = BELT_ACCENTS[data.beltLevel] || BELT_ACCENTS.Green;
@@ -293,7 +265,8 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
     return (
         <Document title={`Nexus Academy Certification`}>
             <Page size="A4" orientation="landscape" style={styles.page}>
-                <View style={styles.bgGradient} />
+                {/* Official Background Pattern */}
+                <Image src="/images/hql/hql-bg.png" style={styles.bgImage} />
                 <Text style={styles.watermark}>σ</Text>
                 
                 {/* Prestige Frame */}
@@ -305,14 +278,19 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                         <View style={[styles.cornerArt, styles.cornerBR]} />
                         
                         <View style={styles.main}>
-                            {/* Header Group */}
+                            {/* Header Group with Official Logo */}
                             <View style={styles.header}>
-                                <LaurelCrest color={BASE_COLORS.gold} />
-                                <Text style={styles.academyName}>Nexus Academy</Text>
+                                <Image src="/images/hql/hql-logo.png" style={styles.logoBox} />
+                                <Text style={styles.academyName}>Health Quality Leaders</Text>
                                 <Text style={styles.divisionLabel}>Operational Excellence Division</Text>
                             </View>
 
-                            <HologramStamp />
+                            <View style={{ position: "absolute", top: 25, right: 25, opacity: 0.15 }}>
+                                <Svg width="60" height="60">
+                                    <Circle cx="30" cy="30" r="28" fill="none" stroke="#F8FAFC" strokeWidth="0.5" />
+                                    <Text x="30" y="32" fontSize="6" fontFamily={FONTS.bold} textAnchor="middle" fill="#F8FAFC">VERIFIED</Text>
+                                </Svg>
+                            </View>
 
                             {/* Body Group */}
                             <View style={{ alignItems: "center" }}>
@@ -329,12 +307,15 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 </Text>
                             </View>
 
-                            {/* Seal Centerpiece */}
-                            <GoldSeal color={BASE_COLORS.gold} />
+                            {/* Official Gold Seal Asset */}
+                            <View style={styles.sealContainer}>
+                                <Image src="/images/hql/hql-seal.png" style={styles.officialSeal} />
+                            </View>
 
                             {/* Footer & Details */}
                             <View style={styles.footer}>
                                 <View style={styles.signatureBlock}>
+                                    <Image src="/images/hql/hql-sign.png" style={styles.signatureImage} />
                                     <View style={styles.sigLine} />
                                     <Text style={styles.sigLabel}>Program Director</Text>
                                 </View>
@@ -346,6 +327,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 </View>
 
                                 <View style={styles.signatureBlock}>
+                                    <View style={{ height: 45 }} /> {/* Placeholder to match height */}
                                     <View style={styles.sigLine} />
                                     <Text style={styles.sigLabel}>Academy Dean</Text>
                                 </View>
