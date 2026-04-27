@@ -17,26 +17,14 @@ import {
 } from "@react-pdf/renderer";
 
 // ─── FONT REGISTRATION ─────────────────────────────────
-Font.register({
-    family: "DM Sans",
-    src: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/dmsans/static/DMSans-Bold.ttf",
-    fontWeight: 700,
-});
-Font.register({
-    family: "DM Sans Medium",
-    src: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/dmsans/static/DMSans-Medium.ttf",
-    fontWeight: 500,
-});
-Font.register({
-    family: "Inter",
-    src: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/inter/static/Inter-Regular.ttf",
-    fontWeight: 400,
-});
-Font.register({
-    family: "Inter Bold",
-    src: "https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/inter/static/Inter-Bold.ttf",
-    fontWeight: 700,
-});
+// Using Built-in PDF Standard Fonts for maximum reliability
+// (Helvetica, Times-Roman, Courier require no network requests)
+const FONTS = {
+    primary: "Helvetica",
+    bold: "Helvetica-Bold",
+    serif: "Times-Roman",
+    serifBold: "Times-Bold",
+};
 
 // ─── TYPES ──────────────────────────────────────────────
 export interface CertificateData {
@@ -90,7 +78,7 @@ const styles = StyleSheet.create({
     page: {
         backgroundColor: BASE_COLORS.background,
         padding: 0,
-        fontFamily: "Inter",
+        fontFamily: FONTS.primary,
         position: "relative",
     },
     // Top accent bar
@@ -117,7 +105,7 @@ const styles = StyleSheet.create({
     divisionLabel: {
         fontSize: 8,
         color: BASE_COLORS.textSecondary,
-        fontFamily: "DM Sans",
+        fontFamily: FONTS.primary,
         letterSpacing: 2,
         textTransform: "uppercase",
         marginBottom: 5,
@@ -125,8 +113,7 @@ const styles = StyleSheet.create({
     academyName: {
         fontSize: 28,
         color: BASE_COLORS.textPrimary,
-        fontFamily: "DM Sans",
-        fontWeight: "bold",
+        fontFamily: FONTS.bold,
         letterSpacing: 4,
         textTransform: "uppercase",
     },
@@ -139,8 +126,7 @@ const styles = StyleSheet.create({
     },
     certOfAchievement: {
         fontSize: 18,
-        fontFamily: "DM Sans",
-        fontWeight: "bold",
+        fontFamily: FONTS.bold,
         color: BASE_COLORS.textPrimary,
         letterSpacing: 3,
         textTransform: "uppercase",
@@ -161,7 +147,7 @@ const styles = StyleSheet.create({
     },
     learnerName: {
         fontSize: 38,
-        fontFamily: "Inter Bold",
+        fontFamily: FONTS.bold,
         color: BASE_COLORS.textPrimary,
         marginBottom: 5,
     },
@@ -178,8 +164,7 @@ const styles = StyleSheet.create({
     },
     beltPillText: {
         fontSize: 14,
-        fontFamily: "DM Sans",
-        fontWeight: "bold",
+        fontFamily: FONTS.bold,
         color: BASE_COLORS.background,
         letterSpacing: 2,
         textTransform: "uppercase",
@@ -238,7 +223,7 @@ const styles = StyleSheet.create({
     columnValue: {
         fontSize: 11,
         color: BASE_COLORS.textPrimary,
-        fontFamily: "Inter Bold",
+        fontFamily: FONTS.bold,
     },
     scoreValue: {
         fontSize: 24,
