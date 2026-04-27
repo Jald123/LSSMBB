@@ -27,9 +27,19 @@ const FONTS = {
 };
 
 // ─── TYPES ──────────────────────────────────────────────
+export type CredentialType = 
+    | "White Belt" 
+    | "Yellow Belt" 
+    | "Green Belt" 
+    | "Black Belt" 
+    | "Master Black Belt" 
+    | "DMADV (DESIGN)" 
+    | "KAIZEN (EVENT)" 
+    | "FOCUS PDCA (QUALITY)";
+
 export interface CertificateData {
     recipientName: string;
-    beltLevel: "White" | "Yellow" | "Green" | "Black" | "Master Black";
+    credentialType: CredentialType;
     completionDate: string;
     projectTitle?: string;
     overallScore?: number;
@@ -39,47 +49,43 @@ export interface CertificateData {
 
 // ─── DESIGN SYSTEM ─────────────────────────────────────
 const BASE_COLORS = {
-    background: "#050A10",
+    obsidian: "#050A10",
+    charcoal: "#1C1C1E",
     textPrimary: "#F5F7FA",
     textSecondary: "#8D99A7",
-    borderSubtle: "#1B2835",
+    borderSubtle: "#2C2C2E",
+    goldFoil: "#D4AF37",
 };
 
-const BELT_ACCENTS: Record<string, { primary: string; secondary: string; impact: string }> = {
-    White: { 
-        primary: "#D9E2EC", 
-        secondary: "#9FB3C8",
-        impact: "demonstrating foundational awareness of Lean Six Sigma principles, basic LSS vocabulary, and core concepts of operational excellence."
-    },
-    Yellow: { 
-        primary: "#FFC857", 
-        secondary: "#D89C1E",
-        impact: "demonstrating competency in team participation, fundamental improvement tools, and supporting DMAIC project execution."
-    },
-    Green: { 
-        primary: "#00C853", 
-        secondary: "#008C3A",
-        impact: "demonstrating competency in DMAIC, problem solving, statistical thinking, and leading data-driven improvement projects that deliver measurable gains in quality, cost, and throughput."
-    },
-    Black: { 
-        primary: "#C6A667", 
-        secondary: "#455A64", // Using gold for premium feel per suggestions
-        impact: "demonstrating mastery of advanced analytics, change leadership, and executing cross-functional improvement initiatives that deliver high-scale strategic impact."
-    },
-    "Master Black": { 
-        primary: "#C6A667", 
-        secondary: "#455A64",
-        impact: "demonstrating global mastery of operational excellence strategy, mentoring Black Belts, and guiding enterprise-wide cultural transformation through data science and strategic design."
-    },
+export const CREDENTIAL_DETAILS: Record<CredentialType, { theme: 'classic' | 'glass'; primary: string; secondary: string; impact: string; prefix: string }> = {
+    // Classic Premium Gold (LSS)
+    "White Belt": { theme: 'classic', primary: "#D9E2EC", secondary: "#9FB3C8", impact: "demonstrating foundational awareness of Lean Six Sigma principles and core concepts of operational excellence.", prefix: "Lean Six Sigma program:" },
+    "Yellow Belt": { theme: 'classic', primary: "#FFC857", secondary: "#D89C1E", impact: "demonstrating competency in team participation, fundamental improvement tools, and supporting DMAIC project execution.", prefix: "Lean Six Sigma program:" },
+    "Green Belt": { theme: 'classic', primary: "#00C853", secondary: "#008C3A", impact: "demonstrating competency in DMAIC, problem solving, and leading data-driven improvement projects.", prefix: "Lean Six Sigma program:" },
+    "Black Belt": { theme: 'classic', primary: "#2196F3", secondary: "#1565C0", impact: "demonstrating mastery of advanced analytics and executing cross-functional improvement initiatives.", prefix: "Lean Six Sigma program:" },
+    "Master Black Belt": { theme: 'classic', primary: "#D4AF37", secondary: "#B8860B", impact: "demonstrating global mastery of operational excellence strategy and guiding enterprise-wide cultural transformation.", prefix: "Lean Six Sigma program:" },
+    
+    // Executive Glass (Specialty)
+    "DMADV (DESIGN)": { theme: 'glass', primary: "#00E5FF", secondary: "#00838F", impact: "demonstrating robust competency in designing new processes and products at precise quality levels.", prefix: "Advanced Methodology:" },
+    "KAIZEN (EVENT)": { theme: 'glass', primary: "#FF6D00", secondary: "#E65100", impact: "demonstrating expertise in leading rapid improvement events and driving immediate operational changes.", prefix: "Advanced Methodology:" },
+    "FOCUS PDCA (QUALITY)": { theme: 'glass', primary: "#D500F9", secondary: "#7B1FA2", impact: "demonstrating a structured approach to continuous quality improvement and rigorous problem solving.", prefix: "Advanced Methodology:" }
 };
 
-// ─── STYLES ─────────────────────────────────────────────
 const styles = StyleSheet.create({
     page: {
-        backgroundColor: BASE_COLORS.background,
         padding: 0,
-        fontFamily: FONTS.primary,
         position: "relative",
+    },
+    classicBorderHighlight: {
+        position: "absolute",
+        top: 15, left: 15, right: 15, bottom: 15,
+        borderWidth: 2,
+    },
+    classicInnerBorder: {
+        position: "absolute",
+        top: 25, left: 25, right: 25, bottom: 25,
+        borderWidth: 1,
+        opacity: 0.5,
     },
     // Top accent bar
     topAccentBar: {
@@ -331,58 +337,69 @@ const GeometricPattern = ({ color }: { color: string }) => (
 
 // ─── COMPONENT ──────────────────────────────────────────
 export function CertificateDocument({ data }: { data: CertificateData }) {
-    const belt = BELT_ACCENTS[data.beltLevel] || BELT_ACCENTS.Green;
-    const certId = data.certificateId || `NXS-${data.beltLevel.substring(0, 2).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+    const meta = CREDENTIAL_DETAILS[data.credentialType] || CREDENTIAL_DETAILS["Green Belt"];
+    const isClassic = meta.theme === 'classic';
+    const certId = data.certificateId || `NXS-${data.credentialType.substring(0, 2).toUpperCase().replace(/\s/g, '')}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
 
     return (
         <Document
-        title={`Nexus Academy — ${data.beltLevel} Belt Certificate`}
+            title={`Nexus Academy — ${data.credentialType} Certificate`}
             author="Nexus Academy"
-            subject={`Lean Six Sigma ${data.beltLevel} Belt Certification`}
+            subject={`${data.credentialType} Certification`}
         >
-            <Page size="A4" orientation="landscape" style={styles.page}>
+            <Page size="A4" orientation="landscape" style={[styles.page, { 
+                backgroundColor: isClassic ? BASE_COLORS.charcoal : BASE_COLORS.obsidian,
+                fontFamily: isClassic ? FONTS.serif : FONTS.primary
+            }]}>
                 {/* Background Graphics */}
-                { (data.beltLevel === "Black" || data.beltLevel === "Master Black") && (
-                    <GeometricPattern color={belt.primary} />
+                {!isClassic ? (
+                    <GeometricPattern color={meta.primary} />
+                ) : (
+                    <>
+                        <View style={[styles.classicBorderHighlight, { borderColor: meta.primary }]} />
+                        <View style={[styles.classicInnerBorder, { borderColor: meta.primary }]} />
+                    </>
                 )}
                 
                 <Text style={styles.watermark}>NEXUS ACADEMY</Text>
                 <Text style={styles.sigmaSymbol}>Σ</Text>
                 
-                <NormalDistribution color={belt.secondary} />
+                {!isClassic && <NormalDistribution color={meta.secondary} />}
                 
-                {/* Corner Decoration */}
-                <View style={[styles.cornerElement, styles.topLeft, { borderColor: belt.secondary }]} />
-                <View style={[styles.cornerElement, styles.topRight, { borderColor: belt.secondary }]} />
-                <View style={[styles.cornerElement, styles.bottomLeft, { borderColor: belt.secondary }]} />
-                <View style={[styles.cornerElement, styles.bottomRight, { borderColor: belt.secondary }]} />
-                
-                {/* Top Accent Bar */}
-                <View style={[styles.topAccentBar, { backgroundColor: belt.primary }]} />
+                {/* Corner Decoration (Glass) vs Foil Lines (Classic) */}
+                {!isClassic && (
+                    <>
+                        <View style={[styles.cornerElement, styles.topLeft, { borderColor: meta.secondary }]} />
+                        <View style={[styles.cornerElement, styles.topRight, { borderColor: meta.secondary }]} />
+                        <View style={[styles.cornerElement, styles.bottomLeft, { borderColor: meta.secondary }]} />
+                        <View style={[styles.cornerElement, styles.bottomRight, { borderColor: meta.secondary }]} />
+                        <View style={[styles.topAccentBar, { backgroundColor: meta.primary }]} />
+                    </>
+                )}
 
                 <View style={styles.container}>
                     {/* Header */}
                     <View style={styles.header}>
-                        <Text style={styles.divisionLabel}>Operational Excellence Division</Text>
-                        <Text style={styles.academyName}>Nexus Academy</Text>
+                        <Text style={[styles.divisionLabel, isClassic && { fontFamily: FONTS.serif }]}>Operational Excellence Division</Text>
+                        <Text style={[styles.academyName, isClassic && { fontFamily: FONTS.serifBold, color: meta.primary }]}>Nexus Academy</Text>
                     </View>
 
                     {/* Main Content */}
                     <View style={styles.body}>
-                        <Text style={styles.certOfAchievement}>Certificate of Achievement</Text>
-                        <Text style={styles.certSubline}>Lean Six Sigma {data.beltLevel} Belt Certification Program</Text>
+                        <Text style={[styles.certOfAchievement, isClassic && { fontFamily: FONTS.serifBold }]}>Certificate of Achievement</Text>
+                        <Text style={[styles.certSubline, isClassic && { fontFamily: FONTS.serif }]}>{meta.prefix} {data.credentialType}</Text>
                         
                         <Text style={styles.certifyThat}>This is to certify that</Text>
-                        <Text style={styles.learnerName}>{data.recipientName}</Text>
-                        <View style={[styles.nameUnderline, { backgroundColor: belt.primary }]} />
+                        <Text style={[styles.learnerName, isClassic && { fontFamily: FONTS.serifBold }]}>{data.recipientName}</Text>
+                        <View style={[styles.nameUnderline, { backgroundColor: meta.primary }]} />
                         
-                        <View style={[styles.beltPill, { backgroundColor: belt.primary }]}>
-                            <Text style={styles.beltPillText}>{data.beltLevel} Belt</Text>
+                        <View style={[styles.beltPill, { backgroundColor: meta.primary }]}>
+                            <Text style={[styles.beltPillText, isClassic && { fontFamily: FONTS.serifBold }]}>{data.credentialType}</Text>
                         </View>
 
                         <View style={styles.narrativeBox}>
-                            <Text style={styles.narrativeText}>
-                                In recognition of successful completion of the Nexus Academy Lean Six Sigma {data.beltLevel} Belt Program and {belt.impact}
+                            <Text style={[styles.narrativeText, isClassic && { fontFamily: FONTS.serif }]}>
+                                In recognition of successful completion of the Nexus Academy {data.credentialType} Program and {meta.impact}
                             </Text>
                         </View>
                     </View>
@@ -391,33 +408,33 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                     <View style={styles.signatureContainer}>
                         <View style={styles.sigBlock}>
                             <View style={styles.sigLine} />
-                            <Text style={styles.sigRole}>Program Director</Text>
+                            <Text style={[styles.sigRole, isClassic && { fontFamily: FONTS.serif }]}>Program Director</Text>
                         </View>
                         <View style={styles.sigBlock}>
                             <View style={styles.sigLine} />
-                            <Text style={styles.sigRole}>Academy Dean</Text>
+                            <Text style={[styles.sigRole, isClassic && { fontFamily: FONTS.serif }]}>Academy Dean</Text>
                         </View>
                     </View>
 
                     {/* Footer Grid */}
                     <View style={styles.footerGrid}>
                         <View style={styles.gridColumn}>
-                            <Text style={styles.columnLabel}>Date of Completion</Text>
-                            <Text style={styles.columnValue}>{data.completionDate}</Text>
+                            <Text style={[styles.columnLabel, isClassic && { fontFamily: FONTS.serifBold }]}>Date of Completion</Text>
+                            <Text style={[styles.columnValue, isClassic && { fontFamily: FONTS.serifBold }]}>{data.completionDate}</Text>
                         </View>
                         
                         <View style={styles.gridColumnCenter}>
-                            <Text style={styles.columnLabel}>Overall Mastery Score</Text>
+                            <Text style={[styles.columnLabel, isClassic && { fontFamily: FONTS.serifBold }]}>Overall Mastery Score</Text>
                             <View style={{ flexDirection: "row", alignItems: "baseline" }}>
-                                <Text style={styles.scoreValue}>{data.overallScore || "0"}</Text>
-                                <Text style={styles.scoreUnit}>%</Text>
+                                <Text style={[styles.scoreValue, isClassic && { fontFamily: FONTS.serifBold }]}>{data.overallScore || "0"}</Text>
+                                <Text style={[styles.scoreUnit, isClassic && { fontFamily: FONTS.serif }]}>%</Text>
                             </View>
                         </View>
 
                         <View style={styles.gridColumnRight}>
-                            <Text style={styles.columnLabel}>Certificate ID</Text>
-                            <Text style={styles.columnValue}>{certId}</Text>
-                            <Text style={styles.verifySubtext}>Verify at nexus-academy.io/verify</Text>
+                            <Text style={[styles.columnLabel, isClassic && { fontFamily: FONTS.serifBold }]}>Certificate ID</Text>
+                            <Text style={[styles.columnValue, isClassic && { fontFamily: FONTS.serifBold }]}>{certId}</Text>
+                            <Text style={[styles.verifySubtext, isClassic && { fontFamily: FONTS.serif }]}>Verify at nexus-academy.io/verify</Text>
                         </View>
                     </View>
                 </View>
