@@ -309,7 +309,9 @@ const styles = StyleSheet.create({
         bottom: 120,
         opacity: 0.15,
         zIndex: 1,
-    },
+    }
+});
+
 // ─── SUB-COMPONENTS ──────────────────────────────────────
 const SigmaGearLogo = ({ color }: { color: string }) => (
     <Svg viewBox="0 0 100 100" style={{ width: 60, height: 60, marginBottom: 10 }}>
