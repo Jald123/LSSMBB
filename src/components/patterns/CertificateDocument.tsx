@@ -46,12 +46,12 @@ const BASE_COLORS = {
     borderSubtle: "#1E293B",
 };
 
-const BELT_ACCENTS: Record<string, { primary: string; secondary: string; impact: string }> = {
-    White: { primary: "#D1D5DB", secondary: "#9CA3AF", impact: "demonstrating foundational awareness of Lean Six Sigma principles and core concepts." },
-    Yellow: { primary: "#FBBF24", secondary: "#D97706", impact: "demonstrating competency in team participation and fundamental improvement tools." },
-    Green: { primary: "#10B981", secondary: "#059669", impact: "demonstrating mastery of DMAIC project execution and data-driven process optimization." },
-    Black: { primary: "#C6A667", secondary: "#846B32", impact: "demonstrating mastery of advanced analytics, change leadership, and strategic strategic impact." },
-    "Master Black": { primary: "#C6A667", secondary: "#846B32", impact: "demonstrating global mastery of operational excellence strategy and enterprise-wide transformation." },
+const BELT_ACCENTS: Record<string, { primary: string; secondary: string; impact: string; bgColor: string }> = {
+    White: { primary: "#D1D5DB", secondary: "#9CA3AF", bgColor: "#0A0A0A", impact: "demonstrating foundational awareness of Lean Six Sigma principles and core concepts." },
+    Yellow: { primary: "#FBBF24", secondary: "#D97706", bgColor: "#0D0B04", impact: "demonstrating competency in team participation and fundamental improvement tools." },
+    Green: { primary: "#10B981", secondary: "#059669", bgColor: "#040D09", impact: "demonstrating mastery of DMAIC project execution and data-driven process optimization." },
+    Black: { primary: "#FFFFFF", secondary: "#846B32", bgColor: "#000000", impact: "demonstrating mastery of advanced analytics, change leadership, and strategic strategic impact." },
+    "Master Black": { primary: "#C6A667", secondary: "#846B32", bgColor: "#080602", impact: "demonstrating global mastery of operational excellence strategy and enterprise-wide transformation." },
 };
 
 // ─── STYLES ─────────────────────────────────────────────
@@ -128,11 +128,12 @@ const styles = StyleSheet.create({
         objectFit: "contain",
     },
     academyName: {
-        fontSize: 22,
+        fontSize: 11,
         fontFamily: FONTS.serifBold,
         letterSpacing: 2,
         color: BASE_COLORS.gold,
         textTransform: "uppercase",
+        marginTop: -5,
     },
     divisionLabel: {
         fontSize: 7,
@@ -142,21 +143,22 @@ const styles = StyleSheet.create({
         marginTop: 2,
     },
     // Body Text
-    certTitle: {
-        fontSize: 18,
+    mainCertTitle: {
+        fontSize: 22,
         fontFamily: FONTS.serifBold,
         color: BASE_COLORS.gold,
-        letterSpacing: 3,
+        letterSpacing: 4,
         textTransform: "uppercase",
         textAlign: "center",
-        marginTop: 10,
+        marginBottom: 8,
     },
     certSub: {
-        fontSize: 10,
-        fontFamily: FONTS.primary,
+        fontSize: 9,
+        fontFamily: FONTS.bold,
         color: BASE_COLORS.textSecondary,
-        marginTop: 5,
+        marginTop: 0,
         marginBottom: 15,
+        letterSpacing: 1,
     },
     presentedTo: {
         fontSize: 11,
@@ -171,17 +173,20 @@ const styles = StyleSheet.create({
         color: BASE_COLORS.textPrimary,
         marginVertical: 5,
     },
+    beltHighlightContainer: {
+        paddingVertical: 4,
+        paddingHorizontal: 25,
+        borderTop: "1.5pt solid " + BASE_COLORS.gold,
+        borderBottom: "1.5pt solid " + BASE_COLORS.gold,
+        marginVertical: 12,
+        alignItems: "center",
+        justifyContent: "center",
+    },
     beltTitle: {
         fontSize: 20,
         fontFamily: FONTS.bold,
-        color: BASE_COLORS.textPrimary,
-        paddingVertical: 5,
-        paddingHorizontal: 20,
-        backgroundColor: "transparent",
-        borderTop: "1pt solid " + BASE_COLORS.gold,
-        borderBottom: "1pt solid " + BASE_COLORS.gold,
-        marginVertical: 10,
         textTransform: "uppercase",
+        letterSpacing: 2,
     },
     narrative: {
         fontSize: 9.5,
@@ -238,9 +243,10 @@ const styles = StyleSheet.create({
         marginTop: -20,
     },
     officialSeal: {
-        width: 80,
-        height: 80,
+        width: 65,
+        height: 65,
         objectFit: "contain",
+        marginBottom: 5,
     },
     certIdBox: {
         alignItems: "flex-end",
@@ -270,7 +276,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
 
     return (
         <Document title={`Nexus Academy Certification`}>
-            <Page size="A4" orientation="landscape" style={styles.page}>
+            <Page size="A4" orientation="landscape" style={[styles.page, { backgroundColor: belt.bgColor }]}>
                 {/* Official Background Pattern */}
                 <Image src="/images/hql/hql-bg.png" style={styles.bgImage} />
                 <Text style={styles.watermark}>σ</Text>
@@ -293,26 +299,29 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
 
                             {/* Body Group */}
                             <View style={{ alignItems: "center" }}>
-                                <Text style={styles.presentedTo}>Certificate of Achievement</Text>
+                                <Text style={styles.mainCertTitle}>Certificate of Achievement</Text>
                                 <Text style={styles.certSub}>LEAN SIX SIGMA {data.beltLevel.toUpperCase()} BELT CERTIFICATION</Text>
                                 
                                 <Text style={styles.presentedTo}>This is to certify that</Text>
                                 <Text style={styles.recipient}>{data.recipientName}</Text>
                                 
-                                <Text style={styles.beltTitle}>{data.beltLevel} Belt</Text>
+                                <View style={[
+                                    styles.beltHighlightContainer,
+                                    { backgroundColor: data.beltLevel === "White" ? "#4B5563" : (data.beltLevel === "Black" ? "#FFFFFF" : belt.primary) }
+                                ]}>
+                                    <Text style={[
+                                        styles.beltTitle,
+                                        { color: data.beltLevel === "Black" ? "#000000" : "#FFFFFF" }
+                                    ]}>
+                                        {data.beltLevel} Belt
+                                    </Text>
+                                </View>
 
                                 <Text style={styles.narrative}>
                                     Has successfully completed the comprehensive Nexus Academy Lean Six Sigma training and {belt.impact}
                                 </Text>
                             </View>
 
-                            {/* Official Gold Seal Asset */}
-                            <View style={styles.sealContainer}>
-                                <Image src="/images/hql/hql-seal.png" style={styles.officialSeal} />
-                            </View>
-
-                            {/* Footer & Details */}
-                            <View style={styles.footer}>
                                 <View style={styles.signatureBlock}>
                                     <Image src="/images/hql/hql-sign.png" style={styles.signatureImage} />
                                     <View style={styles.sigLine} />
@@ -320,6 +329,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 </View>
 
                                 <View style={styles.certIdBox}>
+                                    <Image src="/images/hql/hql-seal.png" style={styles.officialSeal} />
                                     <Text style={styles.idLabel}>Certificate Number</Text>
                                     <Text style={styles.idValue}>{certId}</Text>
                                     <Text style={styles.idLabel}>Completion Date: {data.completionDate}</Text>
