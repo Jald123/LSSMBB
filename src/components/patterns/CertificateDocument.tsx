@@ -358,7 +358,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 </View>
 
                                 <View style={styles.certIdBox}>
-                                    <Image src="/images/hql/hql-seal.jpg" style={styles.officialSeal} />
+                                    <Image src="/images/hql/hql-seal.png" style={styles.officialSeal} />
                                     <Text style={styles.idLabel}>Certificate Number</Text>
                                     <Text style={styles.idValue}>{certId}</Text>
                                     <Text style={styles.idLabel}>Completion Date: {data.completionDate}</Text>

@@ -32,12 +32,17 @@ const PDFViewer = dynamic<any>(
     { ssr: false, loading: () => <div className="w-full h-[600px] bg-slate-950/50 rounded-3xl animate-pulse border border-white/5" /> }
 ) as any;
 
-const BELT_OPTIONS: CertificateData["beltLevel"][] = [
+const BELT_OPTIONS: string[] = [
     "White",
     "Yellow",
     "Green",
     "Black",
     "Master Black",
+    "Healthcare Project Leadership & Transformation",
+    "Lean, Kaizen & Operational Excellence in Healthcare",
+    "Data‑Driven Six Sigma & Care Design",
+    "Clinical Excellence & ISO‑Based Quality Management",
+    "Value‑Based Finance, Innovation & Risk in Health Services"
 ];
 
 const BELT_STYLES: Record<string, string> = {
@@ -46,6 +51,11 @@ const BELT_STYLES: Record<string, string> = {
     Green: "from-emerald-400 to-emerald-600 text-emerald-950 border-emerald-500",
     Black: "from-slate-700 to-slate-900 text-white border-slate-600",
     "Master Black": "from-yellow-400 to-yellow-600 text-yellow-950 border-yellow-500 ring-2 ring-yellow-400/30",
+    "Healthcare Project Leadership & Transformation": "from-purple-400 to-purple-600 text-purple-950 border-purple-500",
+    "Lean, Kaizen & Operational Excellence in Healthcare": "from-teal-400 to-teal-600 text-teal-950 border-teal-500",
+    "Data‑Driven Six Sigma & Care Design": "from-blue-400 to-blue-600 text-blue-950 border-blue-500",
+    "Clinical Excellence & ISO‑Based Quality Management": "from-rose-400 to-rose-600 text-rose-950 border-rose-500",
+    "Value‑Based Finance, Innovation & Risk in Health Services": "from-orange-400 to-orange-600 text-orange-950 border-orange-500",
 };
 
 export default function CertificatePage() {
@@ -177,13 +187,13 @@ export default function CertificatePage() {
                                         <button
                                             key={b}
                                             onClick={() => updateField("beltLevel", b)}
-                                            className={`px-4 py-3 rounded-xl text-[10px] font-bold border transition-all ${
+                                            className={`px-4 py-3 rounded-xl text-[9px] font-bold border transition-all leading-tight ${
                                                 formData.beltLevel === b
                                                     ? `bg-gradient-to-br ${BELT_STYLES[b]} shadow-lg`
                                                     : "bg-black/20 border-white/5 text-slate-500 hover:border-white/20"
                                             }`}
                                         >
-                                            {b} Belt
+                                            {b}
                                         </button>
                                     ))}
                                 </div>
