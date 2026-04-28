@@ -28,7 +28,7 @@ const FONTS = {
 // ─── TYPES ──────────────────────────────────────────────
 export interface CertificateData {
     recipientName: string;
-    beltLevel: "White" | "Yellow" | "Green" | "Black" | "Master Black";
+    beltLevel: string;
     completionDate: string;
     projectTitle?: string;
     overallScore?: number;
@@ -38,7 +38,7 @@ export interface CertificateData {
 
 // ─── DESIGN SYSTEM ─────────────────────────────────────
 const BASE_COLORS = {
-    background: "#0F172A",
+    background: "#080D1A", // Darker blue, not pure black
     charcoal: "#111827",
     gold: "#C6A667",
     textPrimary: "#F8FAFC",
@@ -46,12 +46,39 @@ const BASE_COLORS = {
     borderSubtle: "#1E293B",
 };
 
-const BELT_ACCENTS: Record<string, { primary: string; secondary: string; impact: string; bgColor: string }> = {
-    White: { primary: "#D1D5DB", secondary: "#9CA3AF", bgColor: "#0A0A0A", impact: "demonstrating foundational awareness of Lean Six Sigma principles and core concepts." },
-    Yellow: { primary: "#FBBF24", secondary: "#D97706", bgColor: "#0D0B04", impact: "demonstrating competency in team participation and fundamental improvement tools." },
-    Green: { primary: "#10B981", secondary: "#059669", bgColor: "#040D09", impact: "demonstrating mastery of DMAIC project execution and data-driven process optimization." },
-    Black: { primary: "#FFFFFF", secondary: "#846B32", bgColor: "#000000", impact: "demonstrating mastery of advanced analytics, change leadership, and strategic strategic impact." },
-    "Master Black": { primary: "#C6A667", secondary: "#846B32", bgColor: "#080602", impact: "demonstrating global mastery of operational excellence strategy and enterprise-wide transformation." },
+const CERT_CONFIGS: Record<string, { primary: string; secondary: string; impact: string; bgColor: string; frameStyle?: any }> = {
+    White: { primary: "#D1D5DB", secondary: "#9CA3AF", bgColor: "#0D1117", impact: "demonstrating foundational awareness of Lean Six Sigma principles and core concepts." },
+    Yellow: { primary: "#FBBF24", secondary: "#D97706", bgColor: "#131008", impact: "demonstrating competency in team participation and fundamental improvement tools." },
+    Green: { primary: "#10B981", secondary: "#059669", bgColor: "#08130D", impact: "demonstrating mastery of DMAIC project execution and data-driven process optimization." },
+    Black: { primary: "#FFFFFF", secondary: "#846B32", bgColor: "#050505", impact: "demonstrating mastery of advanced analytics, change leadership, and strategic strategic impact." },
+    "Master Black": { primary: "#C6A667", secondary: "#846B32", bgColor: "#0D0C08", impact: "demonstrating global mastery of operational excellence strategy and enterprise-wide transformation." },
+    
+    // New Professional Tracks
+    "Healthcare Project Leadership & Transformation": { 
+        primary: "#A78BFA", secondary: "#7C3AED", bgColor: "#0F0B1A", 
+        impact: "for successfully leading high‑impact healthcare projects and change initiatives across clinical, operational, and digital domains.",
+        frameStyle: { borderStyle: "solid", borderRightWidth: 4, borderLeftWidth: 4 }
+    },
+    "Lean, Kaizen & Operational Excellence in Healthcare": { 
+        primary: "#34D399", secondary: "#059669", bgColor: "#0B1A14", 
+        impact: "for designing smoother patient journeys and high‑flow care pathways through Lean thinking, Kaizen events, and standard work.",
+        frameStyle: { borderRadius: 30 }
+    },
+    "Data‑Driven Six Sigma & Care Design": { 
+        primary: "#60A5FA", secondary: "#2563EB", bgColor: "#0B111A", 
+        impact: "for using analytics, Design for Six Sigma, and statistics to engineer safer, more reliable healthcare processes.",
+        frameStyle: { borderStyle: "dashed" }
+    },
+    "Clinical Excellence & ISO‑Based Quality Management": { 
+        primary: "#F87171", secondary: "#DC2626", bgColor: "#1A0B0B", 
+        impact: "for embedding PDCA, CQI, and robust investigations to meet and exceed modern healthcare quality and patient‑safety standards.",
+        frameStyle: { borderStyle: "solid", borderWidth: 3 }
+    },
+    "Value‑Based Finance, Innovation & Risk in Health Services": { 
+        primary: "#FBBF24", secondary: "#D97706", bgColor: "#1A150B", 
+        impact: "for aligning ROI, innovation, and enterprise risk so that health‑care projects create measurable value, protect financial performance, and support value‑based care strategies.",
+        frameStyle: { borderStyle: "solid", borderTopWidth: 5, borderBottomWidth: 5 }
+    }
 };
 
 // ─── STYLES ─────────────────────────────────────────────
@@ -257,9 +284,10 @@ const styles = StyleSheet.create({
         textTransform: "uppercase",
     },
     idValue: {
-        fontSize: 9,
+        fontSize: 10,
         color: BASE_COLORS.gold,
         fontFamily: FONTS.bold,
+        marginTop: 2,
     },
     hologram: {
         position: "absolute",
@@ -271,7 +299,7 @@ const styles = StyleSheet.create({
 
 // ─── COMPONENT ──────────────────────────────────────────
 export function CertificateDocument({ data }: { data: CertificateData }) {
-    const belt = BELT_ACCENTS[data.beltLevel] || BELT_ACCENTS.Green;
+    const belt = CERT_CONFIGS[data.beltLevel] || CERT_CONFIGS.Green;
     const certId = data.certificateId || `NXS-${data.beltLevel.substring(0, 2).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
 
     return (
@@ -283,7 +311,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                 
                 {/* Prestige Frame */}
                 <View style={styles.frameContainer}>
-                    <View style={styles.innerFrame}>
+                    <View style={[styles.innerFrame, belt.frameStyle]}>
                         <View style={[styles.cornerArt, styles.cornerTL]} />
                         <View style={[styles.cornerArt, styles.cornerTR]} />
                         <View style={[styles.cornerArt, styles.cornerBL]} />
@@ -311,9 +339,9 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 ]}>
                                     <Text style={[
                                         styles.beltTitle,
-                                        { color: data.beltLevel === "Black" ? "#000000" : "#FFFFFF" }
+                                        { color: (data.beltLevel === "Black" || data.beltLevel === "White") ? "#000000" : "#FFFFFF" }
                                     ]}>
-                                        {data.beltLevel} Belt
+                                        {data.beltLevel}
                                     </Text>
                                 </View>
 
@@ -330,7 +358,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 </View>
 
                                 <View style={styles.certIdBox}>
-                                    <Image src="/images/hql/hql-seal.png" style={styles.officialSeal} />
+                                    <Image src="/images/hql/hql-seal.jpg" style={styles.officialSeal} />
                                     <Text style={styles.idLabel}>Certificate Number</Text>
                                     <Text style={styles.idValue}>{certId}</Text>
                                     <Text style={styles.idLabel}>Completion Date: {data.completionDate}</Text>
