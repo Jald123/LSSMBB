@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     logoBox: {
-        width: 100,
-        height: 80,
+        width: 200,
+        height: 160,
         marginBottom: 5,
         objectFit: "contain",
     },
@@ -206,9 +206,15 @@ const styles = StyleSheet.create({
         width: 160,
     },
     signatureImage: {
+        width: 245,
+        height: 105,
+        marginBottom: -15,
+        objectFit: "contain",
+    },
+    deanSignatureImage: {
         width: 140,
         height: 60,
-        marginBottom: -15,
+        marginBottom: -5,
         objectFit: "contain",
     },
     sigLine: {
@@ -285,13 +291,6 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 <Text style={styles.divisionLabel}>Operational Excellence Division</Text>
                             </View>
 
-                            <View style={{ position: "absolute", top: 25, right: 25, opacity: 0.15 }}>
-                                <Svg width="60" height="60">
-                                    <Circle cx="30" cy="30" r="28" fill="none" stroke="#F8FAFC" strokeWidth="0.5" />
-                                    <Text x="30" y="32" fontSize="6" fontFamily={FONTS.bold} textAnchor="middle" fill="#F8FAFC">VERIFIED</Text>
-                                </Svg>
-                            </View>
-
                             {/* Body Group */}
                             <View style={{ alignItems: "center" }}>
                                 <Text style={styles.presentedTo}>Certificate of Achievement</Text>
@@ -327,9 +326,9 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 </View>
 
                                 <View style={styles.signatureBlock}>
-                                    <View style={{ height: 45 }} /> {/* Placeholder to match height */}
+                                    <Image src="/images/hql/hql-dean-sign.png" style={styles.deanSignatureImage} />
                                     <View style={styles.sigLine} />
-                                    <Text style={styles.sigLabel}>Academy Dean</Text>
+                                    <Text style={styles.sigLabel}>Nexus Academy</Text>
                                 </View>
                             </View>
                         </View>
