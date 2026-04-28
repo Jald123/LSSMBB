@@ -321,7 +321,8 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                     Has successfully completed the comprehensive Nexus Academy Lean Six Sigma training and {belt.impact}
                                 </Text>
                             </View>
-
+                            {/* Footer & Details */}
+                            <View style={styles.footer}>
                                 <View style={styles.signatureBlock}>
                                     <Image src="/images/hql/hql-sign.png" style={styles.signatureImage} />
                                     <View style={styles.sigLine} />
