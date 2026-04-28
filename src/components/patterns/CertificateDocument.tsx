@@ -308,7 +308,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
 
                             {/* Official Gold Seal Asset */}
                             <View style={styles.sealContainer}>
-                                <Image src="/images/hql/hql-seal.jpg" style={styles.officialSeal} />
+                                <Image src="/images/hql/hql-seal.png" style={styles.officialSeal} />
                             </View>
 
                             {/* Footer & Details */}
