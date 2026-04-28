@@ -270,10 +270,10 @@ const styles = StyleSheet.create({
         marginTop: -20,
     },
     officialSeal: {
-        width: 65,
-        height: 65,
+        width: 85,
+        height: 85,
         objectFit: "contain",
-        marginBottom: 5,
+        marginBottom: 10,
     },
     certIdBox: {
         alignItems: "flex-end",
@@ -300,14 +300,14 @@ const styles = StyleSheet.create({
 // ─── COMPONENT ──────────────────────────────────────────
 export function CertificateDocument({ data }: { data: CertificateData }) {
     const belt = CERT_CONFIGS[data.beltLevel] || CERT_CONFIGS.Green;
-    const certId = data.certificateId || `NXS-${data.beltLevel.substring(0, 2).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+    const certId = data.certificateId || `HQL-${data.beltLevel.substring(0, 3).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
 
     return (
-        <Document title={`Nexus Academy Certification`}>
+        <Document title={`HQL Certification`}>
             <Page size="A4" orientation="landscape" style={[styles.page, { backgroundColor: belt.bgColor }]}>
                 {/* Official Background Pattern */}
                 <Image src="/images/hql/hql-bg.png" style={styles.bgImage} />
-                <Text style={styles.watermark}>σ</Text>
+                <Text style={styles.watermark}>HQL</Text>
                 
                 {/* Prestige Frame */}
                 <View style={styles.frameContainer}>
