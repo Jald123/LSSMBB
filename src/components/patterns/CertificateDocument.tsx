@@ -256,8 +256,8 @@ const styles = StyleSheet.create({
     },
     deanSignatureImage: {
         width: 160,
-        height: 120, // Taller to fit the new logo/address block
-        marginBottom: 5,
+        height: 120, 
+        marginBottom: -20, // Negative to remove space from transparent image borders
         objectFit: "contain",
     },
     sigLine: {
@@ -272,12 +272,13 @@ const styles = StyleSheet.create({
         textTransform: "uppercase",
     },
     addressLabel: {
-        fontSize: 8,
+        fontSize: 7.5,
         color: "#94a3b8",
         textAlign: "center",
-        marginTop: 4,
+        marginTop: 0,
+        lineHeight: 1.2,
         fontFamily: FONTS.primary,
-        width: 140, // Narrower to force wrap to 2 lines
+        width: 150,
     },
     // Seal & ID
     sealContainer: {
@@ -413,7 +414,7 @@ export function CertificateDocument({ data }: { data: CertificateData | Certific
 
                                         <View style={styles.signatureBlock}>
                                             <Image src="/images/hql/nexus-academy-seal.png" style={styles.deanSignatureImage} />
-                                            <Text style={styles.addressLabel}>71-75, Shelton Street, Covent Garden, London, WC2H 9JQ, UNITED KINGDOM</Text>
+                                            <Text style={styles.addressLabel}>71-75, Shelton Street, Covent Garden,{"\n"}London, WC2H 9JQ, UNITED KINGDOM</Text>
                                         </View>
                                     </View>
                                 </View>
