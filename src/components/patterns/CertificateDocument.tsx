@@ -270,19 +270,20 @@ const styles = StyleSheet.create({
         marginTop: -20,
     },
     officialSeal: {
-        width: 145,
-        height: 145,
+        width: 150,
+        height: 150,
         position: "absolute",
-        top: -130, 
-        right: -38,
+        top: -140, // Centered above the certificate number text
+        left: "50%",
+        marginLeft: -75, // Half of width to perfectly center
         objectFit: "contain",
         zIndex: 10,
         opacity: 1,
     },
     certIdBox: {
-        alignItems: "flex-end",
+        alignItems: "center", // Center everything in the box
         position: "relative",
-        paddingRight: 20,
+        minWidth: 200,
     },
     idLabel: {
         fontSize: 7,
@@ -367,7 +368,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 </View>
 
                                 <View style={styles.certIdBox}>
-                                    <Image src="/images/hql/hql-seal-footer.png" style={styles.officialSeal} />
+                                    <Image src="/images/hql/hql-seal-v2.png" style={styles.officialSeal} />
                                     <Text style={styles.idLabel}>Certificate Number</Text>
                                     <Text style={styles.idValue}>{certId}</Text>
                                     <Text style={styles.idLabel}>Completion Date: {data.completionDate}</Text>
