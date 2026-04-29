@@ -271,6 +271,14 @@ const styles = StyleSheet.create({
         color: BASE_COLORS.textSecondary,
         textTransform: "uppercase",
     },
+    addressLabel: {
+        fontSize: 6,
+        color: "#94a3b8",
+        textAlign: "center",
+        marginTop: 2,
+        fontFamily: FONTS.primary,
+        width: 180,
+    },
     // Seal & ID
     sealContainer: {
         width: 80,
@@ -405,6 +413,7 @@ export function CertificateDocument({ data }: { data: CertificateData | Certific
 
                                         <View style={styles.signatureBlock}>
                                             <Image src="/images/hql/nexus-academy-seal.png" style={styles.deanSignatureImage} />
+                                            <Text style={styles.addressLabel}>71-75, Shelton Street, Covent Garden, London, WC2H 9JQ, UNITED KINGDOM</Text>
                                         </View>
                                     </View>
                                 </View>
