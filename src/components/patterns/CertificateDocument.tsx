@@ -269,6 +269,22 @@ const styles = StyleSheet.create({
         position: "relative",
         marginTop: -20,
     },
+    centralSealContainer: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: -1, // Keep it behind the text but above the background image
+    },
+    centralSeal: {
+        width: 320,
+        height: 320,
+        opacity: 1, // Not as a transparent seal
+        objectFit: "contain",
+    },
     officialSeal: {
         width: 85,
         height: 85,
@@ -294,16 +310,6 @@ const styles = StyleSheet.create({
         top: 25,
         right: 25,
         opacity: 0.15,
-    },
-    mainCenterSeal: {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        width: 380,
-        height: 380,
-        transform: "translate(-190, -190)",
-        opacity: 0.12,
-        zIndex: -1,
     }
 });
 
@@ -315,8 +321,11 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
     return (
         <Document title={`HQL Certification`}>
             <Page size="A4" orientation="landscape" style={[styles.page, { backgroundColor: belt.bgColor }]}>
+                {/* Official Background Pattern */}
                 <Image src="/images/hql/hql-bg.png" style={styles.bgImage} />
-                <Image src="/images/hql/hql-center-seal.png" style={styles.mainCenterSeal} />
+                <View style={styles.centralSealContainer}>
+                   <Image src="/images/hql/hql-seal.png" style={styles.centralSeal} />
+                </View>
                 <Text style={styles.watermark}>HQL</Text>
                 
                 {/* Prestige Frame */}
@@ -371,7 +380,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 </View>
 
                                 <View style={styles.certIdBox}>
-                                    <Image src="/images/hql/hql-seal.png" style={styles.officialSeal} />
+                                    <Image src="/images/hql/hql-seal-footer.png" style={styles.officialSeal} />
                                     <Text style={styles.idLabel}>Certificate Number</Text>
                                     <Text style={styles.idValue}>{certId}</Text>
                                     <Text style={styles.idLabel}>Completion Date: {data.completionDate}</Text>
