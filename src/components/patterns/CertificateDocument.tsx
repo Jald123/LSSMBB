@@ -269,28 +269,12 @@ const styles = StyleSheet.create({
         position: "relative",
         marginTop: -20,
     },
-    centralSealContainer: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: -1, // Keep it behind the text but above the background image
-    },
-    centralSeal: {
-        width: 320,
-        height: 320,
-        opacity: 1, // Not as a transparent seal
-        objectFit: "contain",
-    },
     officialSeal: {
-        width: 130,
-        height: 130,
+        width: 145,
+        height: 145,
         position: "absolute",
-        top: -110,
-        right: -35,
+        top: -130, // Positioned exactly over the watermark shown in screenshot
+        right: -38,
         objectFit: "contain",
         zIndex: 5,
     },
@@ -328,9 +312,6 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
             <Page size="A4" orientation="landscape" style={[styles.page, { backgroundColor: belt.bgColor }]}>
                 {/* Official Background Pattern */}
                 <Image src="/images/hql/hql-bg.png" style={styles.bgImage} />
-                <View style={styles.centralSealContainer}>
-                   <Image src="/images/hql/hql-seal.png" style={styles.centralSeal} />
-                </View>
                 <Text style={styles.watermark}>HQL</Text>
                 
                 {/* Prestige Frame */}
