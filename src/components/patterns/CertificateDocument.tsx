@@ -255,9 +255,9 @@ const styles = StyleSheet.create({
         objectFit: "contain",
     },
     deanSignatureImage: {
-        width: 140,
-        height: 60,
-        marginBottom: -5,
+        width: 160,
+        height: 120, // Taller to fit the new logo/address block
+        marginBottom: 5,
         objectFit: "contain",
     },
     sigLine: {
@@ -404,15 +404,14 @@ export function CertificateDocument({ data }: { data: CertificateData | Certific
                                         </View>
 
                                         <View style={styles.signatureBlock}>
-                                            <Image src="/images/hql/hql-dean-sign.png" style={styles.deanSignatureImage} />
-                                            <View style={styles.sigLine} />
-                                            <Text style={styles.sigLabel}>Nexus Academy</Text>
+                                            <Image src="/images/hql/nexus-academy-seal.png" style={styles.deanSignatureImage} />
                                         </View>
                                     </View>
                                 </View>
                             </View>
                         </View>
                     </Page>
+
                 );
             })}
         </Document>
