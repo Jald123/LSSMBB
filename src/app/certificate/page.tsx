@@ -190,7 +190,7 @@ export default function CertificatePage() {
                                             className={`px-4 py-3 rounded-xl text-[9px] font-bold border transition-all leading-tight ${
                                                 formData.beltLevel === b
                                                     ? `bg-gradient-to-br ${BELT_STYLES[b]} shadow-lg`
-                                                    : "bg-black/20 border-white/5 text-slate-500 hover:border-white/20"
+                                                    : "bg-black/20 border-white/5 text-white hover:border-white/20"
                                             }`}
                                         >
                                             {b}

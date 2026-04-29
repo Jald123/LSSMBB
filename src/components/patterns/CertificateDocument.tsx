@@ -338,10 +338,13 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                     { backgroundColor: data.beltLevel === "White" ? "#4B5563" : (data.beltLevel === "Black" ? "#FFFFFF" : belt.primary) }
                                 ]}>
                                     <Text style={[
-                                        styles.beltTitle,
-                                        { color: (data.beltLevel === "Black" || data.beltLevel === "White") ? "#000000" : "#FFFFFF" }
+                                        styles.beltTitle, 
+                                        { 
+                                            color: data.beltLevel === "Black" ? "#000000" : "#FFFFFF",
+                                            fontSize: data.beltLevel.includes("Value‑Based Finance") ? 15 : 20
+                                        }
                                     ]}>
-                                        {data.beltLevel}
+                                        {data.beltLevel.includes("Belt") || data.beltLevel.length > 20 ? data.beltLevel : `${data.beltLevel} Belt`}
                                     </Text>
                                 </View>
 
