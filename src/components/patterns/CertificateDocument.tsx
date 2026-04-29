@@ -277,14 +277,21 @@ const styles = StyleSheet.create({
         left: "50%",
         marginLeft: -37.5,
         zIndex: 20,
-        backgroundColor: "#FFFFFF", 
-        borderRadius: 37.5, 
-        overflow: "hidden", // Ensures the 'cover' effect stays circular
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    sealBacking: {
+        position: "absolute",
+        width: 70, // Slightly smaller than container to ensure seal covers it
+        height: 70,
+        backgroundColor: "#FFFFFF",
+        borderRadius: 35,
+        zIndex: -1,
     },
     officialSeal: {
         width: "100%",
         height: "100%",
-        objectFit: "cover", // Covers the white circle completely
+        objectFit: "contain", // Preserves the full stamp + coin image
         opacity: 1,
     },
     certIdBox: {
@@ -377,9 +384,10 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
 
                                 <View style={styles.certIdBox}>
                                     <View style={styles.officialSealContainer}>
+                                        <View style={styles.sealBacking} />
                                         <Image src="/images/hql/hql-seal-v2.png" style={styles.officialSeal} />
-                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute', top: 0, left: 0 }]} />
-                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute', top: 0, left: 0 }]} />
+                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
                                     </View>
                                     <Text style={styles.idLabel}>Certificate Number</Text>
                                     <Text style={styles.idValue}>{certId}</Text>
