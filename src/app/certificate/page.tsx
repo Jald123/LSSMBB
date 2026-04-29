@@ -61,9 +61,9 @@ const BELT_STYLES: Record<string, string> = {
 export default function CertificatePage() {
     const [isGenerated, setIsGenerated] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [formData, setFormData] = useState<CertificateData>({
+    const [selectedBelts, setSelectedBelts] = useState<string[]>(["Green"]);
+    const [formData, setFormData] = useState<Partial<CertificateData>>({
         recipientName: "Hussam Aldhaher",
-        beltLevel: "Green",
         completionDate: new Date().toISOString().split("T")[0],
         projectTitle: "Operational Excellence Protocol",
         overallScore: 94,
@@ -71,20 +71,43 @@ export default function CertificatePage() {
         certificateId: "",
     });
 
-    const isValid = formData.recipientName.trim().length > 0 && formData.projectTitle.trim().length > 0;
+    const isValid = formData.recipientName!.trim().length > 0 && formData.projectTitle!.trim().length > 0 && selectedBelts.length > 0;
 
-    const certificateData = useMemo<CertificateData>(
-        () => ({
-            ...formData,
-            completionDate: new Date(formData.completionDate).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-            }),
-            certificateId: formData.certificateId || `NXS-${formData.beltLevel.substring(0, 2).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
-        }),
-        [formData]
+    const certificateDataArray = useMemo<CertificateData[]>(
+        () => {
+            return selectedBelts.map(bLevel => ({
+                ...formData as CertificateData,
+                beltLevel: bLevel,
+                completionDate: new Date(formData.completionDate!).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                }),
+                certificateId: formData.certificateId || `NXS-${bLevel.substring(0, 2).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
+            }));
+        },
+        [formData, selectedBelts]
     );
+
+    const toggleBelt = (belt: string) => {
+        setIsGenerated(false);
+        if (selectedBelts.includes(belt)) {
+            // Cannot deselect last one
+            if (selectedBelts.length === 1) return;
+            setSelectedBelts(selectedBelts.filter(b => b !== belt));
+        } else {
+            setSelectedBelts([...selectedBelts, belt]);
+        }
+    };
+
+    const toggleAllBelts = () => {
+        setIsGenerated(false);
+        if (selectedBelts.length === BELT_OPTIONS.length) {
+            setSelectedBelts(["Green"]); // Reset to just one
+        } else {
+            setSelectedBelts([...BELT_OPTIONS]); // Select all
+        }
+    };
 
     const handleGenerate = () => {
         if (!isValid) return;
@@ -126,8 +149,8 @@ export default function CertificatePage() {
                 <div className="flex gap-3">
                     {isGenerated && (
                         <PDFDownloadLink
-                            document={<CertificateDocument data={certificateData} />}
-                            fileName={`Nexus_${formData.beltLevel}_Belt_${formData.recipientName.replace(/\s+/g, "_")}.pdf`}
+                            document={<CertificateDocument data={certificateDataArray} />}
+                            fileName={`Nexus_Certificates_${formData.recipientName?.replace(/\s+/g, "_")}.pdf`}
                         >
                             {({ loading }: { loading: boolean }) => (
                                 <button
@@ -183,12 +206,22 @@ export default function CertificatePage() {
                                     <Shield className="w-3.5 h-3.5" /> Belt Proficiency
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={toggleAllBelts}
+                                        className={`col-span-2 px-4 py-3 rounded-xl text-[10px] font-black border transition-all leading-tight ${
+                                            selectedBelts.length === BELT_OPTIONS.length
+                                                ? "bg-slate-100 text-slate-900 border-slate-300 shadow-lg"
+                                                : "bg-primary/20 border-primary text-primary hover:bg-primary/30"
+                                        }`}
+                                    >
+                                        {selectedBelts.length === BELT_OPTIONS.length ? "DESELECT ALL" : "SELECT ALL BELTS"}
+                                    </button>
                                     {BELT_OPTIONS.map((b) => (
                                         <button
                                             key={b}
-                                            onClick={() => updateField("beltLevel", b)}
+                                            onClick={() => toggleBelt(b)}
                                             className={`px-4 py-3 rounded-xl text-[9px] font-bold border transition-all leading-tight ${
-                                                formData.beltLevel === b
+                                                selectedBelts.includes(b)
                                                     ? `bg-gradient-to-br ${BELT_STYLES[b]} shadow-lg`
                                                     : "bg-black/20 border-white/5 text-white hover:border-white/20"
                                             }`}
@@ -315,7 +348,7 @@ export default function CertificatePage() {
                             ) : (
                                 <div className="w-full h-full rounded-[2.3rem] overflow-hidden">
                                     <PDFViewer width="100%" height="800px" showToolbar={false}>
-                                        <CertificateDocument data={certificateData} />
+                                        <CertificateDocument data={certificateDataArray} />
                                     </PDFViewer>
                                 </div>
                             )}

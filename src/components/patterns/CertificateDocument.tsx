@@ -313,91 +313,97 @@ const styles = StyleSheet.create({
 });
 
 // ─── COMPONENT ──────────────────────────────────────────
-export function CertificateDocument({ data }: { data: CertificateData }) {
-    const belt = CERT_CONFIGS[data.beltLevel] || CERT_CONFIGS.Green;
-    const certId = data.certificateId || `HQL-${data.beltLevel.substring(0, 3).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+export function CertificateDocument({ data }: { data: CertificateData | CertificateData[] }) {
+    const dataArray = Array.isArray(data) ? data : [data];
 
     return (
         <Document title={`HQL Certification`}>
-            <Page size="A4" orientation="landscape" style={[styles.page, { backgroundColor: belt.bgColor }]}>
-                {/* Official Background Pattern */}
-                <Image src="/images/hql/hql-bg.png" style={styles.bgImage} />
-                <Text style={styles.watermark}>HQL</Text>
-                
-                {/* Prestige Frame */}
-                <View style={styles.frameContainer}>
-                    <View style={[styles.innerFrame, belt.frameStyle]}>
-                        <View style={[styles.cornerArt, styles.cornerTL]} />
-                        <View style={[styles.cornerArt, styles.cornerTR]} />
-                        <View style={[styles.cornerArt, styles.cornerBL]} />
-                        <View style={[styles.cornerArt, styles.cornerBR]} />
+            {dataArray.map((certData, index) => {
+                const belt = CERT_CONFIGS[certData.beltLevel] || CERT_CONFIGS.Green;
+                const certId = certData.certificateId || `HQL-${certData.beltLevel.substring(0, 3).toUpperCase()}-2026-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+
+                return (
+                    <Page key={index} size="A4" orientation="landscape" style={[styles.page, { backgroundColor: belt.bgColor }]}>
+                        {/* Official Background Pattern */}
+                        <Image src="/images/hql/hql-bg.png" style={styles.bgImage} />
+                        <Text style={styles.watermark}>HQL</Text>
                         
-                        <View style={styles.main}>
-                            {/* Header Group with Official Logo */}
-                            <View style={styles.header}>
-                                <Image src="/images/hql/hql-logo.png" style={styles.logoBox} />
-                                <Text style={styles.academyName}>Health Quality Leaders</Text>
-                                <Text style={styles.divisionLabel}>Operational Excellence Division</Text>
-                            </View>
-
-                            {/* Body Group */}
-                            <View style={{ alignItems: "center" }}>
-                                <Text style={styles.mainCertTitle}>Certificate of Achievement</Text>
-                                <Text style={styles.certSub}>LEAN SIX SIGMA {data.beltLevel.toUpperCase().replace(' BELT', '')} BELT HEALTHCARE PRACTITIONER CERTIFICATION</Text>
+                        {/* Prestige Frame */}
+                        <View style={styles.frameContainer}>
+                            <View style={[styles.innerFrame, belt.frameStyle]}>
+                                <View style={[styles.cornerArt, styles.cornerTL]} />
+                                <View style={[styles.cornerArt, styles.cornerTR]} />
+                                <View style={[styles.cornerArt, styles.cornerBL]} />
+                                <View style={[styles.cornerArt, styles.cornerBR]} />
                                 
-                                <Text style={styles.presentedTo}>This is to certify that</Text>
-                                <Text style={styles.recipient}>{data.recipientName}</Text>
-                                
-                                <View style={[
-                                    styles.beltHighlightContainer,
-                                    { backgroundColor: data.beltLevel === "White" ? "#4B5563" : (data.beltLevel === "Black" ? "#FFFFFF" : belt.primary) }
-                                ]}>
-                                    <Text style={[
-                                        styles.beltTitle, 
-                                        { 
-                                            color: data.beltLevel === "Black" ? "#000000" : "#FFFFFF",
-                                            fontSize: data.beltLevel.includes("Value‑Based Finance") ? 15 : 20
-                                        }
-                                    ]}>
-                                        {data.beltLevel.includes("Belt") || data.beltLevel.length > 20 ? data.beltLevel : `${data.beltLevel} Belt`}
-                                    </Text>
-                                </View>
-
-                                <Text style={styles.narrative}>
-                                    Has successfully completed the comprehensive Nexus Academy Lean Six Sigma training and {belt.impact}
-                                </Text>
-                            </View>
-                            {/* Footer & Details */}
-                            <View style={styles.footer}>
-                                <View style={styles.signatureBlock}>
-                                    <Image src="/images/hql/hql-sign.png" style={styles.signatureImage} />
-                                    <View style={styles.sigLine} />
-                                    <Text style={styles.sigLabel}>Program Director</Text>
-                                </View>
-
-                                <View style={styles.certIdBox}>
-                                    <View style={styles.officialSealContainer}>
-                                        <Image src="/images/hql/hologram-seal.png" style={styles.officialSeal} />
-                                        <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
-                                        <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
-                                        <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
-                                        <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                <View style={styles.main}>
+                                    {/* Header Group with Official Logo */}
+                                    <View style={styles.header}>
+                                        <Image src="/images/hql/hql-logo.png" style={styles.logoBox} />
+                                        <Text style={styles.academyName}>Health Quality Leaders</Text>
+                                        <Text style={styles.divisionLabel}>Operational Excellence Division</Text>
                                     </View>
-                                    <Text style={styles.idLabel}>Certificate Number</Text>
-                                    <Text style={styles.idValue}>{certId}</Text>
-                                    <Text style={styles.idLabel}>Completion Date: {data.completionDate}</Text>
-                                </View>
 
-                                <View style={styles.signatureBlock}>
-                                    <Image src="/images/hql/hql-dean-sign.png" style={styles.deanSignatureImage} />
-                                    <View style={styles.sigLine} />
-                                    <Text style={styles.sigLabel}>Nexus Academy</Text>
+                                    {/* Body Group */}
+                                    <View style={{ alignItems: "center" }}>
+                                        <Text style={styles.mainCertTitle}>Certificate of Achievement</Text>
+                                        <Text style={styles.certSub}>LEAN SIX SIGMA {certData.beltLevel.toUpperCase().replace(' BELT', '')} BELT HEALTHCARE PRACTITIONER CERTIFICATION</Text>
+                                        
+                                        <Text style={styles.presentedTo}>This is to certify that</Text>
+                                        <Text style={styles.recipient}>{certData.recipientName}</Text>
+                                        
+                                        <View style={[
+                                            styles.beltHighlightContainer,
+                                            { backgroundColor: certData.beltLevel === "White" ? "#4B5563" : (certData.beltLevel === "Black" ? "#FFFFFF" : belt.primary) }
+                                        ]}>
+                                            <Text style={[
+                                                styles.beltTitle, 
+                                                { 
+                                                    color: certData.beltLevel === "Black" ? "#000000" : "#FFFFFF",
+                                                    fontSize: certData.beltLevel.includes("Value‑Based Finance") ? 15 : 20
+                                                }
+                                            ]}>
+                                                {certData.beltLevel.includes("Belt") || certData.beltLevel.length > 20 ? certData.beltLevel : `${certData.beltLevel} Belt`}
+                                            </Text>
+                                        </View>
+
+                                        <Text style={styles.narrative}>
+                                            Has successfully completed the comprehensive Nexus Academy Lean Six Sigma training and {belt.impact}
+                                        </Text>
+                                    </View>
+                                    {/* Footer & Details */}
+                                    <View style={styles.footer}>
+                                        <View style={styles.signatureBlock}>
+                                            <Image src="/images/hql/hql-sign.png" style={styles.signatureImage} />
+                                            <View style={styles.sigLine} />
+                                            <Text style={styles.sigLabel}>Program Director</Text>
+                                        </View>
+
+                                        <View style={styles.certIdBox}>
+                                            <View style={styles.officialSealContainer}>
+                                                <Image src="/images/hql/hologram-seal.png" style={styles.officialSeal} />
+                                                <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                                <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                                <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                                <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                            </View>
+                                            <Text style={styles.idLabel}>Certificate Number</Text>
+                                            <Text style={styles.idValue}>{certId}</Text>
+                                            <Text style={styles.idLabel}>Completion Date: {certData.completionDate}</Text>
+                                        </View>
+
+                                        <View style={styles.signatureBlock}>
+                                            <Image src="/images/hql/hql-dean-sign.png" style={styles.deanSignatureImage} />
+                                            <View style={styles.sigLine} />
+                                            <Text style={styles.sigLabel}>Nexus Academy</Text>
+                                        </View>
+                                    </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
-                </View>
-            </Page>
+                    </Page>
+                );
+            })}
         </Document>
     );
 }
