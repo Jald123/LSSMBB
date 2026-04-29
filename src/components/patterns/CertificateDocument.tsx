@@ -270,16 +270,16 @@ const styles = StyleSheet.create({
         marginTop: -20,
     },
     officialSealContainer: {
-        width: 150,
-        height: 150,
+        width: 100,
+        height: 100,
         position: "absolute",
-        top: -150, // Moved up slightly for more space
+        top: -105, 
         left: "50%",
-        marginLeft: -75,
+        marginLeft: -50,
         zIndex: 20,
-        backgroundColor: "#FFFFFF", // Solid white background to prevent transparency
-        borderRadius: 75, // Matches the seal shape
-        padding: 5, // Small buffer
+        backgroundColor: "#FFFFFF", 
+        borderRadius: 50, 
+        padding: 4, 
     },
     officialSeal: {
         width: "100%",
@@ -288,10 +288,10 @@ const styles = StyleSheet.create({
         opacity: 1,
     },
     certIdBox: {
-        alignItems: "center", // Center everything in the box
+        alignItems: "center", 
         position: "relative",
-        minWidth: 200,
-        marginTop: 10,
+        minWidth: 150,
+        marginTop: 20,
     },
     idLabel: {
         fontSize: 7,
