@@ -273,10 +273,13 @@ const styles = StyleSheet.create({
         width: 150,
         height: 150,
         position: "absolute",
-        top: -140, // Centered above the certificate number text
+        top: -150, // Moved up slightly for more space
         left: "50%",
         marginLeft: -75,
-        zIndex: 10,
+        zIndex: 20,
+        backgroundColor: "#FFFFFF", // Solid white background to prevent transparency
+        borderRadius: 75, // Matches the seal shape
+        padding: 5, // Small buffer
     },
     officialSeal: {
         width: "100%",
