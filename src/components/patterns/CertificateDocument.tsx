@@ -149,9 +149,10 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     logoBox: {
-        width: 200,
-        height: 160,
+        width: 240, // Increased by 20%
+        height: 192,
         marginBottom: 5,
+        marginTop: -15, // Pushed higher towards the frame
         objectFit: "contain",
     },
     academyName: {
@@ -342,7 +343,7 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                             {/* Body Group */}
                             <View style={{ alignItems: "center" }}>
                                 <Text style={styles.mainCertTitle}>Certificate of Achievement</Text>
-                                <Text style={styles.certSub}>LEAN SIX SIGMA {data.beltLevel.toUpperCase()} BELT CERTIFICATION</Text>
+                                <Text style={styles.certSub}>LEAN SIX SIGMA {data.beltLevel.toUpperCase().replace(' BELT', '')} BELT HEALTHCARE PRACTITIONER CERTIFICATION</Text>
                                 
                                 <Text style={styles.presentedTo}>This is to certify that</Text>
                                 <Text style={styles.recipient}>{data.recipientName}</Text>
