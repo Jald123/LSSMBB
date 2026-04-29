@@ -294,6 +294,16 @@ const styles = StyleSheet.create({
         top: 25,
         right: 25,
         opacity: 0.15,
+    },
+    mainCenterSeal: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        width: 380,
+        height: 380,
+        transform: "translate(-190, -190)",
+        opacity: 0.12,
+        zIndex: -1,
     }
 });
 
@@ -305,8 +315,8 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
     return (
         <Document title={`HQL Certification`}>
             <Page size="A4" orientation="landscape" style={[styles.page, { backgroundColor: belt.bgColor }]}>
-                {/* Official Background Pattern */}
                 <Image src="/images/hql/hql-bg.png" style={styles.bgImage} />
+                <Image src="/images/hql/hql-center-seal.png" style={styles.mainCenterSeal} />
                 <Text style={styles.watermark}>HQL</Text>
                 
                 {/* Prestige Frame */}
