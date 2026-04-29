@@ -272,12 +272,12 @@ const styles = StyleSheet.create({
         textTransform: "uppercase",
     },
     addressLabel: {
-        fontSize: 6,
+        fontSize: 8,
         color: "#94a3b8",
         textAlign: "center",
-        marginTop: 2,
+        marginTop: 4,
         fontFamily: FONTS.primary,
-        width: 180,
+        width: 140, // Narrower to force wrap to 2 lines
     },
     // Seal & ID
     sealContainer: {
