@@ -269,21 +269,26 @@ const styles = StyleSheet.create({
         position: "relative",
         marginTop: -20,
     },
-    officialSeal: {
+    officialSealContainer: {
         width: 150,
         height: 150,
         position: "absolute",
         top: -140, // Centered above the certificate number text
         left: "50%",
-        marginLeft: -75, // Half of width to perfectly center
-        objectFit: "contain",
+        marginLeft: -75,
         zIndex: 10,
+    },
+    officialSeal: {
+        width: "100%",
+        height: "100%",
+        objectFit: "contain",
         opacity: 1,
     },
     certIdBox: {
         alignItems: "center", // Center everything in the box
         position: "relative",
         minWidth: 200,
+        marginTop: 10,
     },
     idLabel: {
         fontSize: 7,
@@ -368,7 +373,11 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
                                 </View>
 
                                 <View style={styles.certIdBox}>
-                                    <Image src="/images/hql/hql-seal-v2.png" style={styles.officialSeal} />
+                                    <View style={styles.officialSealContainer}>
+                                        <Image src="/images/hql/hql-seal-v2.png" style={styles.officialSeal} />
+                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute', top: 0, left: 0 }]} />
+                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute', top: 0, left: 0 }]} />
+                                    </View>
                                     <Text style={styles.idLabel}>Certificate Number</Text>
                                     <Text style={styles.idValue}>{certId}</Text>
                                     <Text style={styles.idLabel}>Completion Date: {data.completionDate}</Text>
