@@ -108,6 +108,15 @@ const styles = StyleSheet.create({
         opacity: 0.015,
         transform: "rotate(-25deg)",
     },
+    centerSealBg: {
+        position: "absolute",
+        top: "35%",
+        left: "30%",
+        width: "40%",
+        opacity: 0.12,
+        objectFit: "contain",
+        zIndex: -1,
+    },
     // Frame
     frameContainer: {
         position: "absolute",
@@ -331,6 +340,7 @@ export function CertificateDocument({ data }: { data: CertificateData | Certific
                         {/* Prestige Frame */}
                         <View style={styles.frameContainer}>
                             <View style={[styles.innerFrame, belt.frameStyle]}>
+                                <Image src="/images/hql/hql-center-seal.png" style={styles.centerSealBg} />
                                 <View style={[styles.cornerArt, styles.cornerTL]} />
                                 <View style={[styles.cornerArt, styles.cornerTR]} />
                                 <View style={[styles.cornerArt, styles.cornerBL]} />
