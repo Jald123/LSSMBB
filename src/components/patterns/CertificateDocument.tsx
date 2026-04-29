@@ -270,28 +270,28 @@ const styles = StyleSheet.create({
         marginTop: -20,
     },
     officialSealContainer: {
-        width: 100,
-        height: 100,
+        width: 75,
+        height: 75,
         position: "absolute",
-        top: -105, 
+        top: -85, 
         left: "50%",
-        marginLeft: -50,
+        marginLeft: -37.5,
         zIndex: 20,
         backgroundColor: "#FFFFFF", 
-        borderRadius: 50, 
-        padding: 4, 
+        borderRadius: 37.5, 
+        overflow: "hidden", // Ensures the 'cover' effect stays circular
     },
     officialSeal: {
         width: "100%",
         height: "100%",
-        objectFit: "contain",
+        objectFit: "cover", // Covers the white circle completely
         opacity: 1,
     },
     certIdBox: {
         alignItems: "center", 
         position: "relative",
         minWidth: 150,
-        marginTop: 20,
+        marginTop: 25,
     },
     idLabel: {
         fontSize: 7,
