@@ -340,7 +340,7 @@ const ToolWorkspace = () => {
                     </button>
                     <div className="w-px h-6 bg-nexus-border" />
                     <div>
-                        <span className="text-[10px] font-black font-orbitron text-nexus-cyan tracking-widest uppercase block mb-0.5">{tool.phase} Phase</span>
+                        <span className="text-[10px] font-black font-orbitron text-white tracking-widest uppercase block mb-0.5">{tool.phase} Phase</span>
                         <h1 className={`text-lg font-black font-orbitron tracking-tight truncate max-w-[200px] ${theme === 'light' ? 'text-nexus-text-primary' : 'text-white'}`}>{tool.name}</h1>
                     </div>
                 </div>
