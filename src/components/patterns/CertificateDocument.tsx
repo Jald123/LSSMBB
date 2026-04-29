@@ -376,11 +376,11 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
 
                                 <View style={styles.certIdBox}>
                                     <View style={styles.officialSealContainer}>
-                                        <Image src="/images/hql/hql-seal-v2.png" style={styles.officialSeal} />
-                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
-                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
-                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
-                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                        <Image src="/images/hql/hologram-seal.png" style={styles.officialSeal} />
+                                        <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                        <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                        <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                        <Image src="/images/hql/hologram-seal.png" style={[styles.officialSeal, { position: 'absolute' }]} />
                                     </View>
                                     <Text style={styles.idLabel}>Certificate Number</Text>
                                     <Text style={styles.idValue}>{certId}</Text>
