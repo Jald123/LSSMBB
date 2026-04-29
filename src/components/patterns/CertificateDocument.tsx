@@ -286,13 +286,18 @@ const styles = StyleSheet.create({
         objectFit: "contain",
     },
     officialSeal: {
-        width: 85,
-        height: 85,
+        width: 130,
+        height: 130,
+        position: "absolute",
+        top: -110,
+        right: -35,
         objectFit: "contain",
-        marginBottom: 10,
+        zIndex: 5,
     },
     certIdBox: {
         alignItems: "flex-end",
+        position: "relative",
+        paddingRight: 20,
     },
     idLabel: {
         fontSize: 7,
