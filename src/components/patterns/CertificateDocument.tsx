@@ -270,28 +270,20 @@ const styles = StyleSheet.create({
         marginTop: -20,
     },
     officialSealContainer: {
-        width: 75,
-        height: 75,
+        width: 90,
+        height: 90,
         position: "absolute",
-        top: -85, 
+        top: -100, 
         left: "50%",
-        marginLeft: -37.5,
+        marginLeft: -45,
         zIndex: 20,
         alignItems: "center",
         justifyContent: "center",
     },
-    sealBacking: {
-        position: "absolute",
-        width: 70, // Slightly smaller than container to ensure seal covers it
-        height: 70,
-        backgroundColor: "#FFFFFF",
-        borderRadius: 35,
-        zIndex: -1,
-    },
     officialSeal: {
         width: "100%",
         height: "100%",
-        objectFit: "contain", // Preserves the full stamp + coin image
+        objectFit: "contain",
         opacity: 1,
     },
     certIdBox: {
@@ -384,8 +376,9 @@ export function CertificateDocument({ data }: { data: CertificateData }) {
 
                                 <View style={styles.certIdBox}>
                                     <View style={styles.officialSealContainer}>
-                                        <View style={styles.sealBacking} />
                                         <Image src="/images/hql/hql-seal-v2.png" style={styles.officialSeal} />
+                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
+                                        <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
                                         <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
                                         <Image src="/images/hql/hql-seal-v2.png" style={[styles.officialSeal, { position: 'absolute' }]} />
                                     </View>
