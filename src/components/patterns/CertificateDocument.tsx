@@ -273,10 +273,11 @@ const styles = StyleSheet.create({
         width: 145,
         height: 145,
         position: "absolute",
-        top: -130, // Positioned exactly over the watermark shown in screenshot
+        top: -130, 
         right: -38,
         objectFit: "contain",
-        zIndex: 5,
+        zIndex: 10,
+        opacity: 1,
     },
     certIdBox: {
         alignItems: "flex-end",
