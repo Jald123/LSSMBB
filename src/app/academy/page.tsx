@@ -8,6 +8,7 @@ import { toolRegistry } from "@/data/toolRegistry";
 import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
+import RoadmapViewer, { METHODOLOGY_INFO } from "@/components/patterns/RoadmapViewer";
 import { 
     BookOpen, 
     Lock, 
@@ -20,7 +21,9 @@ import {
     ChevronRight,
     Search,
     Zap,
-    ShieldCheck
+    ShieldCheck,
+    Map,
+    Sparkles
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { clsx, type ClassValue } from "clsx";
@@ -30,10 +33,20 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+const glowKeyframes = `
+@keyframes glow-pulse {
+    0% { filter: drop-shadow(0 0 5px var(--glow-color)); opacity: 0.8; }
+    50% { filter: drop-shadow(0 0 20px var(--glow-color)); opacity: 1; }
+    100% { filter: drop-shadow(0 0 5px var(--glow-color)); opacity: 0.8; }
+}
+`;
+
 export default function LearnHub() {
     const [activeFramework, setActiveFramework] = useState('dmaic');
     const [selectedPhase, setSelectedPhase] = useState<Phase>(FRAMEWORKS.dmaic[1]); // Default to Phase 1 to avoid Phase 0 banner duplication
+    const [roadmapOpen, setRoadmapOpen] = useState(false);
     const router = useRouter();
+    const currentMethodologyInfo = METHODOLOGY_INFO[activeFramework];
 
     const frameworks = [
         { id: 'dmaic', label: 'DMAIC (Improve)' },
@@ -72,6 +85,7 @@ export default function LearnHub() {
         <div className="flex-1 flex flex-col h-full bg-background text-foreground pb-20">
             <main className="flex-1 h-full p-4 md:p-8 lg:p-10">
                 <div className="max-w-7xl mx-auto space-y-10">
+                    <style>{glowKeyframes}</style>
                     
                     <PageHeader 
                         title="The Academy" 
@@ -168,21 +182,38 @@ export default function LearnHub() {
 
                     {/* Premium Segmented Control Tabs */}
                     <div className="flex bg-surface/50 p-2 rounded-2xl border border-border w-[fit-content] mx-auto shadow-inner ring-1 ring-inset ring-black/5 overflow-x-auto gap-2 mt-12">
-                        {frameworks.map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => handleFrameworkChange(tab.id)}
-                                className={cn(
-                                    "px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] whitespace-nowrap rounded-xl transition-all duration-300 ease-in-out",
-                                    tab.id === activeFramework 
-                                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 scale-100" 
-                                        : "bg-transparent text-muted-foreground hover:bg-white/5 hover:text-foreground scale-[0.98] opacity-80 hover:opacity-100"
-                                )}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
+                        {frameworks.map((tab) => {
+                            const tabInfo = METHODOLOGY_INFO[tab.id];
+                            const isActive = tab.id === activeFramework;
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => handleFrameworkChange(tab.id)}
+                                    className={cn(
+                                        "px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] whitespace-nowrap rounded-xl transition-all duration-300 ease-in-out",
+                                        isActive 
+                                            ? "text-black shadow-lg scale-100" 
+                                            : "bg-transparent text-muted-foreground hover:bg-white/5 hover:text-foreground scale-[0.98] opacity-80 hover:opacity-100"
+                                    )}
+                                    style={isActive ? {
+                                        background: `linear-gradient(135deg, ${tabInfo.accentColor}, ${tabInfo.accentColor}dd)`,
+                                        boxShadow: `0 0 25px ${tabInfo.accentColor}40`,
+                                    } : {}}
+                                >
+                                    {tab.label}
+                                </button>
+                            );
+                        })}
                     </div>
+
+
+
+                    {/* Roadmap Modal */}
+                    <RoadmapViewer
+                        methodologyId={activeFramework}
+                        isOpen={roadmapOpen}
+                        onClose={() => setRoadmapOpen(false)}
+                    />
 
                     {/* Curriculum Interface */}
                     <div className="relative min-h-[400px]">
@@ -192,10 +223,51 @@ export default function LearnHub() {
                         )}>
                             
                             {/* Phase Navigation List */}
-                            <div className="lg:col-span-3 space-y-2 bg-card/30 p-2 rounded-2xl border border-border">
-                                <p className="px-4 py-3 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border mb-2">
-                                    {activeFramework.toUpperCase()} Pathway
-                                </p>
+                            <div className="lg:col-span-3 space-y-4">
+                                {/* ── Roadmap Explore Button ── */}
+                                {currentMethodologyInfo && (
+                                    <button
+                                        onClick={() => setRoadmapOpen(true)}
+                                        className="w-full group relative flex flex-col gap-3 p-5 rounded-2xl border transition-all duration-500 hover:scale-[1.02] active:scale-95 overflow-hidden shadow-2xl"
+                                        style={{
+                                            borderColor: `${currentMethodologyInfo.accentColor}40`,
+                                            background: `linear-gradient(135deg, ${currentMethodologyInfo.accentColor}, ${currentMethodologyInfo.accentColor}dd)`,
+                                            boxShadow: `0 0 20px ${currentMethodologyInfo.accentColor}40, inset 0 0 10px rgba(255,255,255,0.3)`,
+                                        }}
+                                    >
+                                        {/* Pulsing Glow Animation */}
+                                        <div className="absolute inset-0 animate-pulse opacity-50" style={{ boxShadow: `0 0 35px ${currentMethodologyInfo.accentColor}` }} />
+                                        
+                                        <div className="flex items-center justify-between w-full relative z-10">
+                                            <div className="w-10 h-10 rounded-xl bg-black/10 flex items-center justify-center text-black">
+                                                <Map className="w-5 h-5" />
+                                            </div>
+                                            <ChevronRight className="w-5 h-5 text-black/40 group-hover:translate-x-1 transition-transform" />
+                                        </div>
+
+                                        <div className="text-left relative z-10">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-black uppercase tracking-widest text-black">
+                                                    Explore {currentMethodologyInfo.label} Roadmap
+                                                </span>
+                                                <Sparkles className="w-3.5 h-3.5 text-black/60" />
+                                            </div>
+                                            <span className="text-[10px] text-black/50 font-bold block mt-1 leading-tight">
+                                                Interactive Panorama & History
+                                            </span>
+                                        </div>
+                                    </button>
+                                )}
+
+                                <div className="space-y-2 bg-card/30 p-2 rounded-2xl border-2 transition-all duration-500"
+                                    style={{ 
+                                        borderColor: `${currentMethodologyInfo.accentColor}80`,
+                                        boxShadow: `0 0 8px ${currentMethodologyInfo.accentColor}15`,
+                                        ['--glow-color' as any]: currentMethodologyInfo.accentColor
+                                    }}>
+                                    <p className="px-4 py-3 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border mb-2">
+                                        {activeFramework.toUpperCase()} Pathway
+                                    </p>
                                 {currentCurriculum.slice(1).map((phase) => (
                                     <button
                                         key={phase.id}
@@ -203,15 +275,19 @@ export default function LearnHub() {
                                         className={cn(
                                             "w-full flex items-center justify-between px-4 py-4 rounded-xl transition-all group",
                                             selectedPhase.id === phase.id
-                                                ? "bg-primary text-black font-bold shadow-lg shadow-primary/10"
+                                                ? "text-black font-bold shadow-lg"
                                                 : "hover:bg-surface text-slate-400"
                                         )}
+                                        style={selectedPhase.id === phase.id ? {
+                                            background: `linear-gradient(135deg, ${currentMethodologyInfo.accentColor}, ${currentMethodologyInfo.accentColor}ee)`,
+                                            boxShadow: `0 0 12px ${currentMethodologyInfo.accentColor}20`,
+                                        } : {}}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className={cn(
                                                 "w-2 h-2 rounded-full",
                                                 phase.progress === 100 ? "bg-emerald-500" :
-                                                phase.progress > 0 ? "bg-primary animate-pulse" :
+                                                phase.progress > 0 ? "bg-white animate-pulse" :
                                                 "bg-slate-700"
                                             )} />
                                             <span className="text-sm tracking-wide">{phase.title}</span>
@@ -220,10 +296,16 @@ export default function LearnHub() {
                                     </button>
                                 ))}
                             </div>
+                            </div>
 
-                            {/* Lessons / Content Grid */}
                             <div className="lg:col-span-9 space-y-6">
-                                <div className="bg-card p-8 rounded-2xl border border-border relative overflow-hidden">
+                                <div className="bg-card p-8 rounded-2xl border-2 transition-all duration-500 relative overflow-hidden"
+                                    style={{ 
+                                        borderColor: `${currentMethodologyInfo.accentColor}60`,
+                                        boxShadow: `0 0 40px ${currentMethodologyInfo.accentColor}20`,
+                                        animation: 'glow-pulse 4s infinite ease-in-out',
+                                        ['--glow-color' as any]: currentMethodologyInfo.accentColor
+                                    }}>
                                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2" />
                                     
                                     <div className="space-y-2 mb-8">
@@ -247,9 +329,11 @@ export default function LearnHub() {
                                                     <div className={cn(
                                                         "w-12 h-12 rounded-lg flex items-center justify-center transition-colors",
                                                         lesson.status === "completed" ? "bg-emerald-500 text-white" :
-                                                        lesson.status === "in-progress" ? "bg-primary text-black animate-pulse" :
-                                                        lesson.status === "locked" ? "bg-slate-800 text-slate-600" : "bg-white/5 text-primary"
-                                                    )}>
+                                                        lesson.status === "in-progress" ? "text-black animate-pulse" :
+                                                        lesson.status === "locked" ? "bg-slate-800 text-slate-600" : "bg-white/5"
+                                                    )}
+                                                    style={lesson.status === "in-progress" ? { background: currentMethodologyInfo.accentColor } : (lesson.status === "available" ? { color: currentMethodologyInfo.accentColor } : {})}
+                                                    >
                                                         {lesson.type === "video" && <Video className="w-6 h-6" />}
                                                         {lesson.type === "tool" && <Wrench className="w-6 h-6" />}
                                                         {lesson.type === "reading" && <FileText className="w-6 h-6" />}
@@ -257,7 +341,8 @@ export default function LearnHub() {
                                                     
                                                     <div className="space-y-1">
                                                         <div className="flex items-center gap-2">
-                                                            <h4 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{lesson.title}</h4>
+                                                            <h4 className="font-bold text-lg text-foreground transition-colors group-hover:text-primary"
+                                                                style={{ color: lesson.status === "in-progress" ? currentMethodologyInfo.accentColor : "inherit" }}>{lesson.title}</h4>
                                                             {lesson.status === "completed" && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
                                                             {lesson.status === "locked" && <Lock className="w-4 h-4 text-slate-600" />}
                                                         </div>
@@ -283,13 +368,16 @@ export default function LearnHub() {
                                 </div>
                                 
                                 {/* Pro Tip Card */}
-                                <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 p-6 rounded-2xl flex items-center gap-6">
-                                    <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-primary shrink-0">
+                                <div className="bg-white/[0.02] border border-white/10 p-6 rounded-2xl flex items-center gap-6 relative overflow-hidden group/tip">
+                                    <div className="absolute inset-0 opacity-0 group-hover/tip:opacity-100 transition-opacity duration-700"
+                                        style={{ background: `radial-gradient(circle at 0% 50%, ${currentMethodologyInfo.accentColor}10, transparent 70%)` }} />
+                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 relative z-10"
+                                        style={{ background: `${currentMethodologyInfo.accentColor}20`, color: currentMethodologyInfo.accentColor }}>
                                         <Zap className="w-6 h-6" />
                                     </div>
-                                    <div>
-                                        <h5 className="font-bold tracking-tight">Pro-Protocol Recommendation</h5>
-                                        <p className="text-sm text-muted-foreground">Complete the <b>Measure Phase Tool Set</b> to unlock the Advanced Analytics badge and 500 bonus XP.</p>
+                                    <div className="relative z-10">
+                                        <h5 className="font-bold tracking-tight text-white">Pro-Protocol Recommendation</h5>
+                                        <p className="text-sm text-slate-400">Complete the <b>Measure Phase Tool Set</b> to unlock the Advanced Analytics badge and 500 bonus XP.</p>
                                     </div>
                                 </div>
                             </div>
