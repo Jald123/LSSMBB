@@ -189,8 +189,8 @@ export default function CertificatePage() {
                         <div className="space-y-6">
                             {/* Recipient */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                    <User className="w-3.5 h-3.5" /> Learner Identity
+                                <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                                    <User className="w-3 h-3" /> LEARNER IDENTITY
                                 </label>
                                 <input
                                     type="text"
@@ -202,8 +202,8 @@ export default function CertificatePage() {
 
                             {/* Belt Selection */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                    <Shield className="w-3.5 h-3.5" /> Belt Proficiency
+                                <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                                    <Shield className="w-3 h-3" /> BELT PROFICIENCY
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
                                     <button
@@ -235,8 +235,8 @@ export default function CertificatePage() {
                             <div className="grid grid-cols-2 gap-6">
                                 {/* Date */}
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                        <Calendar className="w-3.5 h-3.5" /> Completion
+                                    <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                                        <Calendar className="w-3 h-3" /> COMPLETION
                                     </label>
                                     <input
                                         type="date"
@@ -247,8 +247,8 @@ export default function CertificatePage() {
                                 </div>
                                 {/* Score */}
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                        <Sparkles className="w-3.5 h-3.5" /> Mastery (%)
+                                    <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                                        <Sparkles className="w-3 h-3" /> MASTERY (%)
                                     </label>
                                     <input
                                         type="number"
@@ -261,8 +261,8 @@ export default function CertificatePage() {
 
                             {/* Project */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                    <Target className="w-3.5 h-3.5" /> Capstone Focus
+                                <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                                    <Target className="w-3 h-3" /> CAPSTONE FOCUS
                                 </label>
                                 <input
                                     type="text"
@@ -274,8 +274,8 @@ export default function CertificatePage() {
 
                             {/* Program Lead */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                    <Briefcase className="w-3.5 h-3.5" /> Program Director
+                                <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                                    <Briefcase className="w-3 h-3" /> PROGRAM DIRECTOR
                                 </label>
                                 <input
                                     type="text"

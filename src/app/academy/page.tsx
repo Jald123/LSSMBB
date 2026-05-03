@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { MetricCard } from "@/components/primitives/MetricCard";
 import { FRAMEWORKS, type Phase, type Lesson } from "@/config/curriculum";
@@ -9,6 +10,7 @@ import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
 import RoadmapViewer, { METHODOLOGY_INFO } from "@/components/patterns/RoadmapViewer";
+import { FieldGuideModal } from "@/components/modals/FieldGuideModal";
 import { 
     BookOpen, 
     Lock, 
@@ -23,7 +25,28 @@ import {
     Zap,
     ShieldCheck,
     Map,
-    Sparkles
+    Sparkles,
+    BarChart3,
+    Settings2,
+    Layout,
+    ShieldAlert,
+    Target,
+    Users,
+    MessageSquare,
+    Cpu,
+    Hammer,
+    ClipboardList,
+    Network,
+    Scale,
+    Microscope,
+    History,
+    LineChart,
+    PieChart,
+    Binary,
+    Calendar,
+    Users2,
+    TrendingUp,
+    Info
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { clsx, type ClassValue } from "clsx";
@@ -35,9 +58,14 @@ function cn(...inputs: ClassValue[]) {
 
 const glowKeyframes = `
 @keyframes glow-pulse {
-    0% { filter: drop-shadow(0 0 5px var(--glow-color)); opacity: 0.8; }
-    50% { filter: drop-shadow(0 0 20px var(--glow-color)); opacity: 1; }
-    100% { filter: drop-shadow(0 0 5px var(--glow-color)); opacity: 0.8; }
+    0% { filter: drop-shadow(0 0 1px var(--glow-color)); opacity: 0.6; }
+    50% { filter: drop-shadow(0 0 3px var(--glow-color)); opacity: 1; }
+    100% { filter: drop-shadow(0 0 1px var(--glow-color)); opacity: 0.6; }
+}
+
+@keyframes laser-sweep {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 `;
 
@@ -45,6 +73,7 @@ export default function LearnHub() {
     const [activeFramework, setActiveFramework] = useState('dmaic');
     const [selectedPhase, setSelectedPhase] = useState<Phase>(FRAMEWORKS.dmaic[1]); // Default to Phase 1 to avoid Phase 0 banner duplication
     const [roadmapOpen, setRoadmapOpen] = useState(false);
+    const [isGuideOpen, setIsGuideOpen] = useState(false);
     const router = useRouter();
     const currentMethodologyInfo = METHODOLOGY_INFO[activeFramework];
 
@@ -81,6 +110,30 @@ export default function LearnHub() {
         setSelectedPhase(nextCurriculum[1]); // Default to Phase 1
     };
 
+    const renderLessonIcon = (lesson: Lesson) => {
+        const title = lesson.title.toLowerCase();
+        
+        if (lesson.type === "video") return <Video className="w-6 h-6" />;
+        if (lesson.type === "reading") return <FileText className="w-6 h-6" />;
+        
+        // Mapping tool titles to specific icons
+        if (title.includes("charter") || title.includes("scoping") || title.includes("raci")) return <ClipboardList className="w-6 h-6" />;
+        if (title.includes("matrix") || title.includes("diagram") || title.includes("map") || title.includes("sipoc") || title.includes("vsm") || title.includes("swimlane") || title.includes("blueprint")) return <Layout className="w-6 h-6" />;
+        if (title.includes("stat") || title.includes("calculator") || title.includes("analysis") || title.includes("regression") || title.includes("anova") || title.includes("t-test") || title.includes("pareto") || title.includes("benchmarking")) return <BarChart3 className="w-6 h-6" />;
+        if (title.includes("risk") || title.includes("fmea") || title.includes("threat") || title.includes("fail")) return <ShieldAlert className="w-6 h-6" />;
+        if (title.includes("strategy") || title.includes("hoshin") || title.includes("target")) return <Target className="w-6 h-6" />;
+        if (title.includes("customer") || title.includes("voc") || title.includes("kano") || title.includes("stakeholder") || title.includes("leadership") || title.includes("management")) return <Users className="w-6 h-6" />;
+        if (title.includes("poka-yoke") || title.includes("architect") || title.includes("prototype") || title.includes("doe") || title.includes("optimizer")) return <Cpu className="w-6 h-6" />;
+        if (title.includes("lab") || title.includes("wizard") || title.includes("analytics") || title.includes("engine") || title.includes("triage")) return <Microscope className="w-6 h-6" />;
+        if (title.includes("fundamentals") || title.includes("history")) return <History className="w-6 h-6" />;
+        if (title.includes("control") || title.includes("chart") || title.includes("spc") || title.includes("trend") || title.includes("forecast")) return <TrendingUp className="w-6 h-6" />;
+        if (title.includes("checklist") || title.includes("sop") || title.includes("standards") || title.includes("rules")) return <ShieldCheck className="w-6 h-6" />;
+        if (title.includes("timeline") || title.includes("gantt") || title.includes("schedule")) return <Calendar className="w-6 h-6" />;
+        if (title.includes("leadership") || title.includes("management") || title.includes("team") || title.includes("stakeholder")) return <Users2 className="w-6 h-6" />;
+        
+        return <Wrench className="w-6 h-6" />;
+    };
+
     return (
         <div className="flex-1 flex flex-col h-full bg-background text-foreground pb-20">
             <main className="flex-1 h-full p-4 md:p-8 lg:p-10">
@@ -91,7 +144,31 @@ export default function LearnHub() {
                         title="The Academy" 
                         description={`Master the science of Operational Excellence through our structured ${activeFramework.toUpperCase()} curriculum.`}
                         actions={
-                            <div className="flex gap-3">
+                            <div className="flex gap-4 items-center">
+                                {/* Field Guide Alert Button */}
+                                <motion.button 
+                                    onClick={() => setIsGuideOpen(true)}
+                                    animate={{ 
+                                        y: [0, -4, 0],
+                                        boxShadow: ["0 0 0px rgba(34,211,238,0)", "0 0 20px rgba(34,211,238,0.3)", "0 0 0px rgba(34,211,238,0)"]
+                                    }}
+                                    transition={{ 
+                                        duration: 2, 
+                                        repeat: Infinity, 
+                                        ease: "easeInOut" 
+                                    }}
+                                    className="group flex items-center gap-3 px-5 py-2.5 rounded-xl bg-[#7dd3fc] border border-sky-400/30 hover:bg-white transition-all shadow-lg"
+                                >
+                                    <div className="w-8 h-8 rounded-lg bg-black/10 flex items-center justify-center border border-black/10 group-hover:scale-110 transition-transform text-lg">
+                                        ⚡
+                                    </div>
+                                    <div className="text-left">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 block leading-none">Nexus Protocol</span>
+                                        <span className="text-[11px] font-black uppercase tracking-[0.1em] text-black transition-colors">Operational Intel</span>
+                                    </div>
+                                </motion.button>
+
+                                <div className="h-10 w-[1px] bg-white/10 mx-1" />
                                 <div className="relative group">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                     <input 
@@ -104,12 +181,15 @@ export default function LearnHub() {
                         }
                     />
 
+                    <FieldGuideModal isOpen={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
+
                     {/* Stats Summary */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <MetricCard 
                             title="Overall Progress" 
                             value="32%" 
                             description="5/24 Modules Completed"
+                            hasLaser={true}
                             icon={<ProgressRing value={32} size={40} strokeWidth={4} showValue={false} />}
                         />
                         <MetricCard 
@@ -118,20 +198,30 @@ export default function LearnHub() {
                             trend="up"
                             trendValue="+2.1h"
                             description="Total seat time this week"
+                            hasLaser={true}
                             icon={<Clock className="w-5 h-5" />}
                         />
                         <MetricCard 
                             title="Certificates" 
                             value="0" 
                             description="Next: White Belt (Pending)"
+                            hasLaser={true}
                             icon={<BookOpen className="w-5 h-5 text-nexus-gold" />}
                         />
                     </div>
 
                     {/* Specialized Foundation Banner (Phase 0) */}
-                    <div className="relative group">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-[#c2983d]/20 to-transparent rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                        <div className="relative bg-[#0a0a0a] border border-white/5 rounded-[2rem] p-10 overflow-hidden shadow-2xl">
+                    <div className="relative group p-[3px] rounded-[2rem] overflow-hidden">
+                        {/* Animated Laser Border */}
+                        <div 
+                            className="absolute inset-0 z-0 animate-[laser-sweep_8s_linear_infinite]"
+                            style={{
+                                background: 'conic-gradient(from 0deg, transparent 60%, #c2983d 80%, #ffd700 90%, #c2983d 100%)',
+                                margin: '-100%'
+                            }}
+                        />
+                        
+                        <div className="relative z-10 bg-[#0a0a0a] rounded-[2rem] p-10 overflow-hidden shadow-2xl">
                             {/* Decorative Elements */}
                             <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#c2983d]/5 to-transparent pointer-events-none"></div>
                             <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#c2983d]/10 rounded-full blur-[100px] pointer-events-none"></div>
@@ -151,26 +241,41 @@ export default function LearnHub() {
                                 </div>
                                 
                                 <div className="flex flex-col sm:flex-row gap-6 lg:min-w-[500px]">
-                                    {currentCurriculum[0].lessons.map((lesson) => (
+                                    {currentCurriculum[0].lessons.map((lesson, idx) => (
                                         <div 
                                             key={lesson.id}
-                                            onClick={() => handleLessonClick(lesson)}
-                                            className="flex-1 bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 p-6 rounded-[1.5rem] flex flex-col justify-between group/lesson transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:border-[#c2983d]/30"
+                                            className="relative group/laser p-[2px] rounded-[1.5rem] overflow-hidden flex-1"
                                         >
-                                            <div className="space-y-4">
-                                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c2983d]/20 to-transparent flex items-center justify-center text-[#c2983d] group-hover/lesson:scale-110 transition-transform">
-                                                    {lesson.id === 'fnd-001' ? <BookOpen className="w-6 h-6" /> : <ShieldCheck className="w-6 h-6" />}
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <h4 className="font-black text-white group-hover/lesson:text-[#c2983d] transition-colors uppercase text-sm tracking-widest">{lesson.title}</h4>
-                                                    <p className="text-[11px] text-slate-500 font-medium leading-tight">{lesson.description}</p>
-                                                </div>
-                                            </div>
+                                            {/* Individual Card Laser */}
+                                            <div 
+                                                className="absolute inset-0 z-0 animate-[laser-sweep_12s_linear_infinite]"
+                                                style={{
+                                                    background: idx === 0 
+                                                        ? 'conic-gradient(from 0deg, transparent 60%, #22d3ee 80%, #ffffff 90%, #22d3ee 100%)'
+                                                        : 'conic-gradient(from 0deg, transparent 60%, #10b981 80%, #ffffff 90%, #10b981 100%)',
+                                                    margin: '-100%'
+                                                }}
+                                            />
                                             
-                                            <div className="mt-8 flex items-center justify-between">
-                                                <span className="text-[9px] font-black text-[#c2983d]/40 uppercase tracking-widest">Protocol Enabled</span>
-                                                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover/lesson:bg-[#c2983d] group-hover/lesson:text-black transition-all">
-                                                    <ChevronRight className="w-4 h-4" />
+                                            <div 
+                                                onClick={() => handleLessonClick(lesson)}
+                                                className="relative z-10 h-full bg-[#0a0a0a] border border-white/5 p-6 rounded-[1.5rem] flex flex-col justify-between group/lesson transition-all duration-300 cursor-pointer hover:bg-white/[0.05]"
+                                            >
+                                                <div className="space-y-4">
+                                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/5 to-transparent flex items-center justify-center text-white group-hover/lesson:scale-110 transition-transform">
+                                                        {lesson.id === 'fnd-001' ? <BookOpen className="w-6 h-6" /> : <ShieldCheck className="w-6 h-6" />}
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <h4 className="font-black text-white group-hover/lesson:text-primary transition-colors uppercase text-sm tracking-widest">{lesson.title}</h4>
+                                                        <p className="text-[11px] text-slate-500 font-medium leading-tight">{lesson.description}</p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="mt-8 flex items-center justify-between">
+                                                    <span className="text-[9px] font-black text-white/20 uppercase tracking-widest">Protocol Enabled</span>
+                                                    <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover/lesson:bg-primary group-hover:text-black transition-all">
+                                                        <ChevronRight className="w-4 h-4" />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -180,31 +285,7 @@ export default function LearnHub() {
                         </div>
                     </div>
 
-                    {/* Premium Segmented Control Tabs */}
-                    <div className="flex bg-surface/50 p-2 rounded-2xl border border-border w-[fit-content] mx-auto shadow-inner ring-1 ring-inset ring-black/5 overflow-x-auto gap-2 mt-12">
-                        {frameworks.map((tab) => {
-                            const tabInfo = METHODOLOGY_INFO[tab.id];
-                            const isActive = tab.id === activeFramework;
-                            return (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => handleFrameworkChange(tab.id)}
-                                    className={cn(
-                                        "px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] whitespace-nowrap rounded-xl transition-all duration-300 ease-in-out",
-                                        isActive 
-                                            ? "text-black shadow-lg scale-100" 
-                                            : "bg-transparent text-muted-foreground hover:bg-white/5 hover:text-foreground scale-[0.98] opacity-80 hover:opacity-100"
-                                    )}
-                                    style={isActive ? {
-                                        background: `linear-gradient(135deg, ${tabInfo.accentColor}, ${tabInfo.accentColor}dd)`,
-                                        boxShadow: `0 0 25px ${tabInfo.accentColor}40`,
-                                    } : {}}
-                                >
-                                    {tab.label}
-                                </button>
-                            );
-                        })}
-                    </div>
+
 
 
 
@@ -298,12 +379,38 @@ export default function LearnHub() {
                             </div>
                             </div>
 
-                            <div className="lg:col-span-9 space-y-6">
-                                <div className="bg-card p-8 rounded-2xl border-2 transition-all duration-500 relative overflow-hidden"
+                             <div className="lg:col-span-9 space-y-8">
+                                {/* Premium Segmented Control Tabs */}
+                                <div className="flex bg-white/[0.02] backdrop-blur-3xl p-1.5 rounded-2xl border border-white/[0.08] w-full shadow-2xl overflow-x-auto gap-2">
+                                    {frameworks.map((tab) => {
+                                        const tabInfo = METHODOLOGY_INFO[tab.id];
+                                        const isActive = tab.id === activeFramework;
+                                        return (
+                                            <button
+                                                key={tab.id}
+                                                onClick={() => handleFrameworkChange(tab.id)}
+                                                className={cn(
+                                                    "flex-1 px-6 py-4 text-[12px] font-black uppercase tracking-[0.2em] whitespace-nowrap rounded-xl transition-all duration-500 ease-out",
+                                                    isActive 
+                                                        ? "text-black shadow-[0_0_40px_rgba(255,255,255,0.2)]" 
+                                                        : "bg-transparent text-slate-400 hover:text-white hover:bg-white/[0.05]"
+                                                )}
+                                                style={isActive ? {
+                                                    background: `linear-gradient(135deg, ${tabInfo.accentColor}, #ffffff)`,
+                                                    boxShadow: `inset 0 2px 4px rgba(255,255,255,0.4), 0 10px 30px ${tabInfo.accentColor}40`,
+                                                } : {}}
+                                            >
+                                                {tab.label}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="bg-card p-8 rounded-2xl border-[1px] transition-all duration-500 relative overflow-hidden"
                                     style={{ 
-                                        borderColor: `${currentMethodologyInfo.accentColor}60`,
-                                        boxShadow: `0 0 40px ${currentMethodologyInfo.accentColor}20`,
-                                        animation: 'glow-pulse 4s infinite ease-in-out',
+                                        borderColor: `${currentMethodologyInfo.accentColor}40`,
+                                        boxShadow: `0 0 2px ${currentMethodologyInfo.accentColor}20`,
+                                        animation: 'glow-pulse 2s infinite ease-in-out',
                                         ['--glow-color' as any]: currentMethodologyInfo.accentColor
                                     }}>
                                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2" />
@@ -334,9 +441,7 @@ export default function LearnHub() {
                                                     )}
                                                     style={lesson.status === "in-progress" ? { background: currentMethodologyInfo.accentColor } : (lesson.status === "available" ? { color: currentMethodologyInfo.accentColor } : {})}
                                                     >
-                                                        {lesson.type === "video" && <Video className="w-6 h-6" />}
-                                                        {lesson.type === "tool" && <Wrench className="w-6 h-6" />}
-                                                        {lesson.type === "reading" && <FileText className="w-6 h-6" />}
+                                                        {renderLessonIcon(lesson)}
                                                     </div>
                                                     
                                                     <div className="space-y-1">
@@ -351,9 +456,13 @@ export default function LearnHub() {
                                                 </div>
 
                                                 <div className="flex items-center gap-4">
-                                                    <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-black/20 rounded-full border border-white/5">
-                                                        <Clock className="w-3 h-3 text-slate-500" />
-                                                        <span className="text-[10px] font-black text-slate-400">{lesson.duration}</span>
+                                                    <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full border shadow-sm"
+                                                        style={{ 
+                                                            background: currentMethodologyInfo.accentColor, 
+                                                            borderColor: `${currentMethodologyInfo.accentColor}dd` 
+                                                        }}>
+                                                        <Clock className="w-3 h-3 text-white" />
+                                                        <span className="text-[10px] font-black text-white">{lesson.duration}</span>
                                                     </div>
                                                     <div className={cn(
                                                         "w-8 h-8 rounded-full flex items-center justify-center transition-all",

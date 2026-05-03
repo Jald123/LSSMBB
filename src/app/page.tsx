@@ -124,6 +124,7 @@ export default function Dashboard() {
     }
 
     const latestProject = projects.length > 0 ? projects[0] : null;
+    const currentFrameworkInfo = latestProject ? (latestProject.framework === 'DMAIC' ? { color: '#3b82f6' } : { color: '#c2983d' }) : { color: '#c2983d' };
 
     // Hardcoded DMAIC steps for the visualization
     const dmaicSteps = [
@@ -134,24 +135,36 @@ export default function Dashboard() {
         { id: "control", label: "Control", status: latestProject?.progressPercentage >= 100 ? "complete" : (latestProject?.progressPercentage >= 80 ? "current" : "upcoming") as any },
     ];
 
-    return (
-        <div className="flex-1 flex flex-col h-full bg-background text-foreground pb-20">
-            <main className="flex-1 h-full p-4 md:p-8 lg:p-10">
-                <div className="max-w-7xl mx-auto space-y-10">
-                    
-                    <PageHeader 
-                        title={`Mission Library`} 
-                        description={`Authenticated as Operator: ${user?.name || 'Unknown'}. Welcome to the Nexus Academy Command Terminal.`}
-                        actions={null}
-                    />
+    const laserKeyframes = `
+    @keyframes laser-sweep {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    `;
 
-                    {/* Quick Stats Row */}
+    return (
+        <div className="flex-1 flex flex-col h-screen bg-[#050505] text-foreground overflow-hidden">
+            <style>{laserKeyframes}</style>
+            <main className="flex-1 h-full p-4 lg:p-6 pt-2 lg:pt-3 pb-0 lg:pb-0 overflow-hidden">
+                <div className="max-w-[1600px] mx-auto h-fit flex flex-col space-y-3 lg:space-y-5 mb-0">
+                    
+                    <div className="pt-1 space-y-0.5">
+                        <p className="text-white text-base lg:text-xl font-black uppercase tracking-tight">
+                            Welcome to the Nexus Academy Command Terminal.
+                        </p>
+                        <p className="text-slate-400 text-[10px] lg:text-xs font-medium tracking-widest uppercase">
+                            Authenticated as Operator: <span className="text-primary font-black">{user?.name || 'Unknown'}</span>
+                        </p>
+                    </div>
+
+                    {/* Quick Stats Row - Compact */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <MetricCard 
                             title="Active Projects" 
                             value={projects.length} 
                             description="Live DMAIC Missions"
-                            icon={<Activity className="w-4 h-4" />}
+                            hasLaser={true}
+                            icon={<Activity className="w-5 h-5 text-sky-400" />}
                         />
                         <MetricCard 
                             title="LSS Level" 
@@ -159,13 +172,15 @@ export default function Dashboard() {
                             trend="up" 
                             trendValue="+12%"
                             description="Rank: Specialist"
-                            icon={<Zap className="w-4 h-4 text-nexus-gold" />}
+                            hasLaser={true}
+                            icon={<Zap className="w-5 h-5 text-nexus-gold" />}
                         />
                         <MetricCard 
                             title="Total XP" 
                             value="4,820" 
                             description="Next: 5,000"
-                            icon={<Trophy className="w-4 h-4" />}
+                            hasLaser={true}
+                            icon={<Trophy className="w-5 h-5 text-primary" />}
                         />
                         <MetricCard 
                             title="Mastery Index" 
@@ -173,38 +188,68 @@ export default function Dashboard() {
                             trend="up"
                             trendValue="3.2%"
                             description="Cumulative Accuracy"
-                            icon={<Target className="w-4 h-4" />}
+                            hasLaser={true}
+                            icon={<Target className="w-5 h-5 text-emerald-400" />}
                         />
                     </div>
 
-                    {/* Dashboard Primary Grid */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Dashboard Primary Grid - Viewport Locked */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
                         
                         {/* 1. Unified Hero Mission Card */}
-                        <div className="lg:col-span-2 flex flex-col space-y-6">
+                        <div className="lg:col-span-2 flex flex-col space-y-4 lg:space-y-6 min-h-0">
                             {latestProject ? (
-                                <div className="rounded-2xl border border-border bg-card p-1 shadow-nexus-glow overflow-hidden">
-                                    <div className="p-8 space-y-8">
-                                        <div className="flex justify-between items-start">
-                                            <div className="space-y-1">
-                                                <Badge variant="nexus" className="mb-2">ACTIVE PROTOCOL</Badge>
-                                                <h2 className="text-3xl font-bold font-display tracking-tight text-white">{latestProject.title}</h2>
-                                                <p className="text-muted-foreground">{latestProject.framework} • Phase: <span className="text-primary font-bold uppercase">{latestProject.currentPhase}</span></p>
+                                <div className="relative group p-[2px] rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 h-fit flex flex-col">
+                                    {/* Animated Laser Border */}
+                                    <div 
+                                        className="absolute inset-0 z-0 animate-[laser-sweep_10s_linear_infinite]"
+                                        style={{
+                                            background: `conic-gradient(from 0deg, transparent 60%, ${currentFrameworkInfo.color} 80%, #ffffff 90%, ${currentFrameworkInfo.color} 100%)`,
+                                            margin: '-100%'
+                                        }}
+                                    />
+
+                                    <div className="relative z-10 bg-[#0a0a0a] p-4 lg:p-5 space-y-3 lg:space-y-4 rounded-[calc(1.5rem-2px)] overflow-hidden flex flex-col justify-start">
+                                        {/* Decorative Background */}
+                                        <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-white/[0.02] to-transparent pointer-events-none" />
+                                        
+                                        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 relative z-10">
+                                            <div className="space-y-2">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="bg-primary/20 text-primary text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em] border border-primary/20">Active Protocol</span>
+                                                    <span className="text-white/40 text-[9px] font-black uppercase tracking-[0.2em]">System Node: Alpha-7</span>
+                                                </div>
+                                                <h2 className="text-3xl lg:text-4xl font-black uppercase tracking-tighter text-white leading-none">
+                                                    {latestProject.title.split(' ').map((word: string, i: number) => (
+                                                        <span key={i} className={i === 0 ? "text-white" : "text-primary/90"}>{word} </span>
+                                                    ))}
+                                                </h2>
+                                                <p className="text-slate-300 text-xs font-medium max-w-md">
+                                                    {latestProject.framework} Framework Deployment <span className="mx-2 opacity-20">|</span> 
+                                                    Status: <span className="text-primary font-bold uppercase tracking-widest">{latestProject.currentPhase}</span>
+                                                </p>
                                             </div>
-                                            <div className="hidden sm:block">
-                                                <ProgressRing value={latestProject.progressPercentage} size={90} strokeWidth={8} />
+                                            <div className="relative shrink-0">
+                                                <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
+                                                <div className="relative flex items-center justify-center">
+                                                    <ProgressRing value={latestProject.progressPercentage} size={70} strokeWidth={7} showValue={false} />
+                                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                                        <span className="text-xl font-black text-white leading-none">{latestProject.progressPercentage}%</span>
+                                                        <span className="text-[7px] font-black uppercase tracking-widest text-primary/80">Mastery</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div className="py-4">
+                                        <div className="py-1 relative z-10 bg-white/[0.02] p-3 lg:p-4 rounded-xl border border-white/5 backdrop-blur-sm [&_.step-label]:text-white/60 [&_.step-label-active]:text-white [&_.step-label-complete]:text-primary/90">
                                             <StepIndicator steps={dmaicSteps} />
                                         </div>
 
-                                        <div className="pt-6 flex flex-col sm:flex-row gap-4">
-                                            <Button variant="nexus" size="lg" className="flex-1 font-bold tracking-widest uppercase" onClick={() => router.push(`/do/project/${latestProject.id}/board`)}>
-                                                Resume Mission <Play className="ml-2 w-4 h-4" />
+                                        <div className="pt-1 flex flex-col sm:flex-row gap-2 relative z-10">
+                                            <Button variant="nexus" size="lg" className="flex-1 font-black tracking-widest uppercase py-4 text-[10px] shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all" onClick={() => router.push(`/do/project/${latestProject.id}/board`)}>
+                                                Resume Mission <Play className="ml-2 w-3 h-3 fill-current" />
                                             </Button>
-                                            <Button variant="outline" size="lg" className="flex-1 font-bold tracking-widest uppercase" onClick={() => router.push('/library')}>
+                                            <Button variant="outline" size="lg" className="flex-1 font-black tracking-widest uppercase py-4 text-[10px] border-white/10 hover:bg-white hover:text-black transition-all" onClick={() => router.push('/library')}>
                                                 Launch New Mission
                                             </Button>
                                         </div>
@@ -216,47 +261,55 @@ export default function Dashboard() {
                                     description="The command terminal is currently idle. Select a protocol from the MISSION SELECTION LIBRARY to begin your journey."
                                     actionLabel="Browse Missions"
                                     onAction={() => router.push('/library')}
-                                    className="h-full border-white/5"
+                                    className="h-full border-white/5 bg-[#0a0a0a]"
                                 />
                             )}
+
                         </div>
 
                         {/* 2. Side Panel: News & Progress */}
-                        <div className="space-y-6">
-                            <div className="rounded-2xl border border-border bg-card p-6 space-y-6 flex flex-col justify-between">
-                                <h3 className="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-4">Daily Objectives</h3>
-                                <div className="space-y-4">
+                        <div className="flex flex-col min-h-0 h-fit space-y-4 lg:space-y-6">
+                            <div className="rounded-3xl border border-white/5 bg-[#0a0a0a] p-4 lg:p-5 space-y-3 flex flex-col justify-start shadow-2xl relative overflow-hidden group min-h-0">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2" />
+                                
+                                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                                    <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-300">Daily Objectives</h3>
+                                    <Zap className="w-4 h-4 text-nexus-gold animate-pulse" />
+                                </div>
+
+                                <div className="space-y-2 overflow-y-auto pr-2 custom-scrollbar flex-1 py-2">
                                     {[
                                         { t: "Complete MSA Module", xp: 150, done: true },
                                         { t: "Submit Process Map", xp: 200, done: false },
                                         { t: "Review Sigma Level", xp: 100, done: false },
                                     ].map((obj, i) => (
-                                        <div key={i} className="flex items-center justify-between group">
+                                        <div key={i} className="flex items-center justify-between group/obj">
                                             <div className="flex items-center gap-3">
                                                 <div className={cn(
-                                                    "w-5 h-5 rounded-md border flex items-center justify-center transition-colors",
-                                                    obj.done ? "bg-emerald-500 border-emerald-500 text-white" : "border-border group-hover:border-primary"
+                                                    "w-5 h-5 rounded-lg border flex items-center justify-center transition-all duration-300 shrink-0",
+                                                    obj.done ? "bg-emerald-500 border-emerald-500 text-black" : "border-white/20 group-hover/obj:border-primary/50 group-hover/obj:bg-white/10"
                                                 )}>
-                                                    {obj.done && <CheckCircle2 className="w-3.5 h-3.5" />}
+                                                    {obj.done && <CheckCircle2 className="w-3 h-3 stroke-[3]" />}
                                                 </div>
-                                                <span className={cn("text-sm", obj.done ? "text-muted-foreground line-through" : "text-foreground font-medium")}>{obj.t}</span>
+                                                <span className={cn("text-xs transition-colors", obj.done ? "text-white/30 line-through" : "text-white/80 font-bold group-hover/obj:text-white")}>{obj.t}</span>
                                             </div>
-                                            <span className="text-[10px] font-black text-primary">+{obj.xp} XP</span>
+                                            <span className="text-[9px] font-black text-primary group-hover/obj:text-sky-300 transition-colors shrink-0">+{obj.xp} XP</span>
                                         </div>
                                     ))}
                                 </div>
-                                <Button variant="ghost" className="w-full text-xs font-black uppercase tracking-widest">View All Quests</Button>
+                                <Button variant="ghost" className="w-full text-[9px] font-black uppercase tracking-[0.2em] py-3 border border-white/10 hover:bg-white hover:text-black transition-all text-white/60">View All Quests</Button>
                             </div>
 
-                            <div className="rounded-2xl border border-border bg-card p-6 text-center space-y-4 relative overflow-hidden group">
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <div className="space-y-1">
-                                    <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">Global Rank</p>
-                                    <p className="text-4xl font-black font-display text-white italic tracking-tighter">#242</p>
+                            {/* Global Rank Card - Moved to Sidebar */}
+                            <div className="rounded-3xl border border-white/5 bg-[#0a0a0a] p-4 lg:p-6 text-center space-y-3 relative overflow-hidden group shadow-2xl shrink-0 w-full">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                                <div className="space-y-1 relative z-10">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Global Rank</p>
+                                    <p className="text-4xl font-black font-display text-white tracking-tighter leading-none">#242</p>
                                 </div>
-                                <p className="text-xs text-muted-foreground">Top 4% of Operators Worldwide</p>
-                                <div className="pt-2">
-                                    <Button variant="outline" size="sm" className="w-full">Leaderboard</Button>
+                                <p className="text-[10px] text-slate-400 font-medium relative z-10">Top 4% of Operators Worldwide</p>
+                                <div className="pt-1 relative z-10">
+                                    <Button variant="outline" size="sm" className="w-full font-black uppercase tracking-widest text-[9px] border-white/10 hover:border-primary/50 transition-all py-4" onClick={() => router.push('/leaderboard')}>Leaderboard</Button>
                                 </div>
                             </div>
                         </div>
@@ -266,4 +319,5 @@ export default function Dashboard() {
         </div>
     );
 }
+
 

@@ -22,30 +22,32 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ steps, className }: StepIndicatorProps) {
     return (
-        <div className={cn("w-full py-4", className)}>
+        <div className={cn("w-full py-1", className)}>
             <div className="flex items-center justify-between w-full relative">
                 {/* Connecting Line */}
-                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-surface -translate-y-1/2 z-0" />
+                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/10 -translate-y-1/2 z-0" />
                 
                 {steps.map((step, idx) => (
                     <div key={step.id} className="relative z-10 flex flex-col items-center group">
                         <div className={cn(
                             "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300",
-                            step.status === "complete" ? "bg-primary border-primary text-primary-foreground shadow-[0_0_15px_rgba(34,211,238,0.3)]" :
-                            step.status === "current" ? "bg-background border-primary text-primary shadow-[0_0_10px_rgba(34,211,238,0.2)]" :
-                            "bg-surface border-border text-muted-foreground"
+                            step.status === "complete" ? "bg-primary border-primary text-white shadow-[0_0_15px_rgba(34,211,238,0.4)]" :
+                            step.status === "current" ? "bg-black border-primary text-primary shadow-[0_0_15px_rgba(34,211,238,0.3)]" :
+                            "bg-[#0f0f0f] border-white/10 text-white/20"
                         )}>
                             {step.status === "complete" ? (
-                                <Check className="w-5 h-5" />
+                                <Check className="w-5 h-5 stroke-[3]" />
                             ) : (
-                                <span className="text-sm font-bold font-display">{idx + 1}</span>
+                                <span className="text-sm font-black font-display">{idx + 1}</span>
                             )}
                         </div>
                         
-                        <div className="absolute top-12 whitespace-nowrap text-center">
+                        <div className="absolute top-11 whitespace-nowrap text-center">
                             <p className={cn(
-                                "text-[10px] font-black uppercase tracking-widest transition-colors",
-                                step.status === "upcoming" ? "text-muted-foreground" : "text-foreground"
+                                "text-[10px] font-black uppercase tracking-[0.2em] transition-colors",
+                                step.status === "complete" ? "text-primary" :
+                                step.status === "current" ? "text-white" :
+                                "text-white/30"
                             )}>
                                 {step.label}
                             </p>
