@@ -18,6 +18,7 @@ interface MetricCardProps {
     icon?: React.ReactNode;
     className?: string;
     hasLaser?: boolean;
+    isStandard?: boolean;
 }
 
 export function MetricCard({ 
@@ -28,46 +29,34 @@ export function MetricCard({
     trendValue, 
     icon,
     className,
-    hasLaser
+    hasLaser,
+    isStandard
 }: MetricCardProps) {
     return (
         <div className={cn(
-            "p-[1.5px] rounded-2xl overflow-hidden relative group",
-            hasLaser ? "bg-transparent" : "bg-card border border-border shadow-sm",
+            "p-[1.5px] rounded-2xl overflow-hidden relative group transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]",
+            !isStandard && "nexus-card",
             className
         )}>
-            {/* Animated Laser Border */}
-            {hasLaser && (
-                <div 
-                    className="absolute inset-0 z-0 animate-[laser-sweep_8s_linear_infinite]"
-                    style={{
-                        background: 'conic-gradient(from 0deg, transparent 60%, #c2983d 80%, #ffd700 90%, #c2983d 100%)',
-                        margin: '-100%'
-                    }}
-                />
-            )}
-
             <div className={cn(
-                "p-6 rounded-2xl bg-card flex flex-col justify-between relative z-10 h-full",
-                hasLaser ? "bg-[#0a0a0a]" : ""
+                "p-6 rounded-2xl flex flex-col justify-between relative z-10 h-full transition-colors duration-500 group-hover:bg-white/[0.02]",
+                isStandard ? "bg-card border border-border" : "bg-[var(--nexus-card)]"
             )}>
                 {/* Background Accent */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl -z-10 translate-x-1/2 -translate-y-1/2 group-hover:bg-primary/10 transition-colors" />
+                {!isStandard && <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl -z-10 translate-x-1/2 -translate-y-1/2 group-hover:bg-primary/10 transition-colors" />}
                 
                 <div className="flex justify-between items-start mb-4">
                     <p className={cn(
                         "text-xs font-bold uppercase tracking-widest",
-                        hasLaser ? "text-white/50" : "text-muted-foreground"
+                        isStandard ? "text-sky-500" : "text-[var(--nexus-text-muted)]"
                     )}>{title}</p>
-                    {icon && <div className={cn(
-                        hasLaser ? "text-white/30" : "text-muted-foreground opacity-50"
-                    )}>{icon}</div>}
+                    {icon && <div className={cn(isStandard ? "text-sky-400" : "text-[var(--nexus-text-muted)] opacity-50")}>{icon}</div>}
                 </div>
                 
                 <div className="space-y-1">
                     <h3 className={cn(
-                        "text-3xl font-bold font-display tracking-tight",
-                        hasLaser ? "text-white" : "text-foreground"
+                        "text-3xl font-bold tracking-tight",
+                        !isStandard ? "font-display text-[var(--nexus-text)]" : "text-blue-900"
                     )}>{value}</h3>
                     
                     {(trend || description) && (
@@ -86,8 +75,8 @@ export function MetricCard({
                             )}
                             {description && (
                                 <p className={cn(
-                                    "text-xs truncate",
-                                    hasLaser ? "text-white/40 font-medium" : "text-muted-foreground"
+                                    "text-xs truncate font-medium",
+                                    isStandard ? "text-sky-500/80" : "text-[var(--nexus-text-muted)]"
                                 )}>{description}</p>
                             )}
                         </div>

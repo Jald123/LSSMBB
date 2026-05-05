@@ -37,6 +37,7 @@ import { Button } from "@/components/primitives/Button";
 import { Badge } from "@/components/primitives/Badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { IntelligencePanel } from "@/components/panels/IntelligencePanel";
+import { VoiceOverPlayer } from "@/components/patterns/VoiceOverPlayer";
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -573,6 +574,13 @@ export default function ToolExecutionView() {
                 {results && <ResultsOverlay />}
                 {isSubmitting && <SubmittingOverlay />}
             </AnimatePresence>
+
+            {/* Voice-Over Intelligence Widget */}
+            <VoiceOverPlayer 
+                toolId={toolId} 
+                toolName={toolData.toolName} 
+                methodology={caseData?.framework?.split('-')[0].toUpperCase() || 'DMAIC'} 
+            />
         </div>
     );
 }

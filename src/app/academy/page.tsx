@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { MetricCard } from "@/components/primitives/MetricCard";
@@ -10,7 +11,10 @@ import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
 import RoadmapViewer, { METHODOLOGY_INFO } from "@/components/patterns/RoadmapViewer";
+import { AcademyWalkthroughModal } from "@/components/patterns/AcademyWalkthroughModal";
 import { FieldGuideModal } from "@/components/modals/FieldGuideModal";
+import { methodologyData } from "@/data/journeyData";
+import { useNexus } from "@/context/NexusContext";
 import { 
     BookOpen, 
     Lock, 
@@ -46,9 +50,10 @@ import {
     Calendar,
     Users2,
     TrendingUp,
-    Info
+    Info,
+    RefreshCcw
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -69,35 +74,66 @@ const glowKeyframes = `
 }
 `;
 
+const FRAMEWORKS_TAXONOMY = [
+    { id: 'dmaic', label: 'DMAIC (Improve)' },
+    { id: 'dmadv', label: 'DMADV (Design)' },
+    { id: 'kaizen', label: 'Kaizen (Event)' },
+    { id: 'focus', label: 'FOCUS PDCA (Quality)' },
+];
+
 export default function LearnHub() {
+    const { methodology, resetMethodologyTools } = useNexus();
+    const searchParams = useSearchParams();
+    const frameworkParam = searchParams.get('framework')?.toLowerCase();
+    
     const [activeFramework, setActiveFramework] = useState('dmaic');
-    const [selectedPhase, setSelectedPhase] = useState<Phase>(FRAMEWORKS.dmaic[1]); // Default to Phase 1 to avoid Phase 0 banner duplication
+
+    const [selectedPhase, setSelectedPhase] = useState<Phase>(FRAMEWORKS.dmaic[1]);
+
     const [roadmapOpen, setRoadmapOpen] = useState(false);
     const [isGuideOpen, setIsGuideOpen] = useState(false);
+    const [isWalkthroughOpen, setIsWalkthroughOpen] = useState(false);
     const router = useRouter();
-    const currentMethodologyInfo = METHODOLOGY_INFO[activeFramework];
 
-    const frameworks = [
-        { id: 'dmaic', label: 'DMAIC (Improve)' },
-        { id: 'dmadv', label: 'DMADV (Design)' },
-        { id: 'kaizen', label: 'Kaizen (Event)' },
-        { id: 'focus', label: 'FOCUS PDCA (Quality)' },
-    ];
+    // Secondary sync for dynamic updates
+    useEffect(() => {
+        const m = (frameworkParam || methodology || 'dmaic').toLowerCase();
+        const targetFw = m.includes('dmadv') ? 'dmadv' : 
+                         m.includes('kaizen') ? 'kaizen' : 
+                         m.includes('focus') ? 'focus' : 'dmaic';
+
+        if (FRAMEWORKS_TAXONOMY.some(f => f.id === targetFw)) {
+            setActiveFramework(targetFw);
+            const nextCurriculum = FRAMEWORKS[targetFw as keyof typeof FRAMEWORKS] || FRAMEWORKS.dmaic;
+            setSelectedPhase(nextCurriculum[1]);
+        }
+    }, [frameworkParam, methodology]);
+
+    const currentMethodologyInfo = METHODOLOGY_INFO[activeFramework];
 
     const handleLessonClick = (lesson: Lesson) => {
         if (lesson.status === "locked") return;
         if (lesson.toolUrl) {
             // Convert raw HTML path to workspace route
-            // Look up the tool registry key by matching the src URL
-            const registryEntry = Object.entries(toolRegistry).find(([_, entry]) =>
-                lesson.toolUrl!.toLowerCase().includes(entry.src.toLowerCase().split('?')[0].split('/').pop()!.replace('.html', ''))
+            const targetFilename = lesson.toolUrl.toLowerCase().split('?')[0].split('/').pop()!.replace('.html', '');
+            
+            // 1. Get all tools in the CURRENT methodology to prioritize matching them
+            const frameworkKey = activeFramework.toUpperCase();
+            const currentMethodologyTools = methodologyData[frameworkKey] || {};
+            const activeToolIds = Object.values(currentMethodologyTools).flatMap((p: any) => p.tools.map((t: any) => t.id));
+
+            // 2. Find all registry entries that match the URL
+            const matchingEntries = Object.entries(toolRegistry).filter(([_, entry]) =>
+                entry.src.toLowerCase().includes(targetFilename)
             );
-            if (registryEntry) {
-                router.push(`/workspace/${registryEntry[0]}`);
+
+            // 3. Pick the one that exists in the active methodology, fallback to the first match
+            const bestMatch = matchingEntries.find(([id]) => activeToolIds.includes(id)) || matchingEntries[0];
+
+            if (bestMatch) {
+                router.push(`/workspace/${bestMatch[0]}?from=${activeFramework}`);
             } else {
-                // Fallback: extract filename and use as workspace ID
-                const filename = lesson.toolUrl.split('/').pop()?.replace('.html', '') || '';
-                router.push(`/workspace/${filename}`);
+                router.push(`/workspace/${targetFilename}?from=${activeFramework}`);
             }
         }
     };
@@ -135,7 +171,7 @@ export default function LearnHub() {
     };
 
     return (
-        <div className="flex-1 flex flex-col h-full bg-background text-foreground pb-20">
+        <div className="flex-1 flex flex-col h-full text-foreground pb-20">
             <main className="flex-1 h-full p-4 md:p-8 lg:p-10">
                 <div className="max-w-7xl mx-auto space-y-10">
                     <style>{glowKeyframes}</style>
@@ -169,19 +205,36 @@ export default function LearnHub() {
                                 </motion.button>
 
                                 <div className="h-10 w-[1px] bg-white/10 mx-1" />
-                                <div className="relative group">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                                    <input 
-                                        type="text" 
-                                        placeholder="Search Encyclopedia..." 
-                                        className="bg-surface border border-border pl-9 pr-4 py-2 rounded-lg text-xs focus:ring-1 focus:ring-primary/30 outline-none w-64 transition-all"
-                                    />
-                                </div>
+                                
+                                {/* Academy Walkthrough Button */}
+                                <motion.button
+                                    onClick={() => setIsWalkthroughOpen(true)}
+                                    animate={{ 
+                                        y: [0, -4, 0],
+                                        boxShadow: ["0 0 0px rgba(196,181,253,0)", "0 0 20px rgba(196,181,253,0.3)", "0 0 0px rgba(196,181,253,0)"]
+                                    }}
+                                    transition={{ 
+                                        duration: 2.2,
+                                        repeat: Infinity, 
+                                        ease: "easeInOut",
+                                        delay: 0.5
+                                    }}
+                                    className="group flex items-center gap-3 px-5 py-2.5 rounded-xl bg-[#c4b5fd] border border-violet-400/30 hover:bg-white transition-all shadow-lg"
+                                >
+                                    <div className="w-8 h-8 rounded-lg bg-black/10 flex items-center justify-center border border-black/10 group-hover:scale-110 transition-transform text-black">
+                                        <Map className="w-4 h-4" />
+                                    </div>
+                                    <div className="text-left">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 block leading-none">Academy Guide</span>
+                                        <span className="text-[11px] font-black uppercase tracking-[0.1em] text-black transition-colors">Walkthrough</span>
+                                    </div>
+                                </motion.button>
                             </div>
                         }
                     />
 
                     <FieldGuideModal isOpen={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
+                    <AcademyWalkthroughModal isOpen={isWalkthroughOpen} onClose={() => setIsWalkthroughOpen(false)} />
 
                     {/* Stats Summary */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -221,7 +274,7 @@ export default function LearnHub() {
                             }}
                         />
                         
-                        <div className="relative z-10 bg-[#0a0a0a] rounded-[2rem] p-10 overflow-hidden shadow-2xl">
+                        <div className="relative z-10 nexus-card rounded-[2rem] p-10 overflow-hidden shadow-2xl">
                             {/* Decorative Elements */}
                             <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#c2983d]/5 to-transparent pointer-events-none"></div>
                             <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#c2983d]/10 rounded-full blur-[100px] pointer-events-none"></div>
@@ -229,13 +282,13 @@ export default function LearnHub() {
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10">
                                 <div className="max-w-xl space-y-4">
                                     <div className="flex items-center gap-3">
-                                        <span className="bg-[#c2983d] text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.2em] shadow-lg shadow-[#c2983d]/20">Required</span>
-                                        <span className="text-[#c2983d] text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Phase 0 Foundation</span>
+                                        <span className="bg-[#c2983d] text-black text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.2em] shadow-lg shadow-[#c2983d]/20 no-aesthetic-force">Required</span>
+                                        <span className="text-[#c2983d] text-[10px] font-black uppercase tracking-[0.2em] opacity-100">Phase 0 Foundation</span>
                                     </div>
-                                    <h2 className="text-4xl font-black uppercase tracking-tighter text-white leading-none">
-                                        Tactical <span className="text-[#c2983d]">Baseline</span> & Strategy
+                                    <h2 className="text-4xl font-black uppercase tracking-tighter text-[var(--nexus-text)] leading-none">
+                                        Tactical <span className="text-[#c2983d] no-aesthetic-force">Baseline</span> & Strategy
                                     </h2>
-                                    <p className="text-slate-400 text-base leading-relaxed max-w-md">
+                                    <p className="text-[var(--nexus-text-muted)] text-base leading-relaxed max-w-md">
                                         Establish your core operational lineage. Master the essential Lean Six Sigma principles before advancing to heavy statistical deployment.
                                     </p>
                                 </div>
@@ -259,21 +312,21 @@ export default function LearnHub() {
                                             
                                             <div 
                                                 onClick={() => handleLessonClick(lesson)}
-                                                className="relative z-10 h-full bg-[#0a0a0a] border border-white/5 p-6 rounded-[1.5rem] flex flex-col justify-between group/lesson transition-all duration-300 cursor-pointer hover:bg-white/[0.05]"
+                                                className="relative z-10 h-full nexus-card p-6 rounded-[1.5rem] flex flex-col justify-between group/lesson transition-all duration-300 cursor-pointer hover:bg-white/[0.05]"
                                             >
                                                 <div className="space-y-4">
-                                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/5 to-transparent flex items-center justify-center text-white group-hover/lesson:scale-110 transition-transform">
+                                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/5 to-transparent flex items-center justify-center text-[var(--nexus-text)] group-hover/lesson:scale-110 transition-transform">
                                                         {lesson.id === 'fnd-001' ? <BookOpen className="w-6 h-6" /> : <ShieldCheck className="w-6 h-6" />}
                                                     </div>
                                                     <div className="space-y-1">
-                                                        <h4 className="font-black text-white group-hover/lesson:text-primary transition-colors uppercase text-sm tracking-widest">{lesson.title}</h4>
-                                                        <p className="text-[11px] text-slate-500 font-medium leading-tight">{lesson.description}</p>
+                                                        <h4 className="font-black text-[var(--nexus-text)] group-hover/lesson:text-primary transition-colors uppercase text-sm tracking-widest">{lesson.title}</h4>
+                                                        <p className="text-[11px] text-[var(--nexus-text-muted)] font-medium leading-tight">{lesson.description}</p>
                                                     </div>
                                                 </div>
                                                 
                                                 <div className="mt-8 flex items-center justify-between">
-                                                    <span className="text-[9px] font-black text-white/20 uppercase tracking-widest">Protocol Enabled</span>
-                                                    <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover/lesson:bg-primary group-hover:text-black transition-all">
+                                                    <span className="text-[9px] font-black text-[var(--nexus-text)] uppercase tracking-widest">Protocol Enabled</span>
+                                                    <div className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center text-[var(--nexus-text)] group-hover/lesson:bg-primary group-hover/lesson:text-black transition-all">
                                                         <ChevronRight className="w-4 h-4" />
                                                     </div>
                                                 </div>
@@ -340,15 +393,37 @@ export default function LearnHub() {
                                     </button>
                                 )}
 
-                                <div className="space-y-2 bg-card/30 p-2 rounded-2xl border-2 transition-all duration-500"
+                                <div className="space-y-2 nexus-card p-2 rounded-2xl border-2 transition-all duration-500"
                                     style={{ 
                                         borderColor: `${currentMethodologyInfo.accentColor}80`,
                                         boxShadow: `0 0 8px ${currentMethodologyInfo.accentColor}15`,
                                         ['--glow-color' as any]: currentMethodologyInfo.accentColor
                                     }}>
-                                    <p className="px-4 py-3 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border mb-2">
-                                        {activeFramework.toUpperCase()} Pathway
-                                    </p>
+                                    <div className="px-4 py-3 border-b border-border mb-2 flex items-center justify-between">
+                                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                                            {activeFramework.toUpperCase()} Pathway
+                                        </p>
+                                        <button 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                const frameworkKey = activeFramework.toUpperCase();
+                                                const methodologyPhases = methodologyData[frameworkKey] || {};
+                                                
+                                                // Gather all tool IDs from this methodology + the global foundation
+                                                const frameworkIds = Object.values(methodologyPhases).flatMap((p: any) => p.tools.map((t: any) => t.id));
+                                                const foundationIds = ['fnd-001', 'fnd-002', 'triage', 'charter', 'event-charter']; 
+                                                const allIds = Array.from(new Set([...frameworkIds, ...foundationIds]));
+                                                
+                                                if (allIds.length > 0 && confirm(`Reset all ${activeFramework.toUpperCase()} progress (including Foundation)? This will revert SECURED status to MARK DONE and adjust your XP.`)) {
+                                                    resetMethodologyTools(allIds);
+                                                }
+                                            }}
+                                            className="p-1.5 rounded-md hover:bg-red-500/10 text-muted-foreground hover:text-red-500 transition-all group/reset"
+                                            title="Reset Methodology Progress"
+                                        >
+                                            <RefreshCcw className="w-3 h-3 group-hover/reset:rotate-[-180deg] transition-transform duration-500" />
+                                        </button>
+                                    </div>
                                 {currentCurriculum.slice(1).map((phase) => (
                                     <button
                                         key={phase.id}
@@ -381,8 +456,8 @@ export default function LearnHub() {
 
                              <div className="lg:col-span-9 space-y-8">
                                 {/* Premium Segmented Control Tabs */}
-                                <div className="flex bg-white/[0.02] backdrop-blur-3xl p-1.5 rounded-2xl border border-white/[0.08] w-full shadow-2xl overflow-x-auto gap-2">
-                                    {frameworks.map((tab) => {
+                                <div className="flex nexus-card p-1.5 rounded-2xl w-full shadow-2xl overflow-x-auto gap-2">
+                                    {FRAMEWORKS_TAXONOMY.map((tab) => {
                                         const tabInfo = METHODOLOGY_INFO[tab.id];
                                         const isActive = tab.id === activeFramework;
                                         return (
@@ -393,12 +468,14 @@ export default function LearnHub() {
                                                     "flex-1 px-6 py-4 text-[12px] font-black uppercase tracking-[0.2em] whitespace-nowrap rounded-xl transition-all duration-500 ease-out",
                                                     isActive 
                                                         ? "text-black shadow-[0_0_40px_rgba(255,255,255,0.2)]" 
-                                                        : "bg-transparent text-slate-400 hover:text-white hover:bg-white/[0.05]"
+                                                        : "bg-transparent text-slate-400 hover:text-[color:var(--hover-color)] hover:bg-white/[0.05]"
                                                 )}
                                                 style={isActive ? {
                                                     background: `linear-gradient(135deg, ${tabInfo.accentColor}, #ffffff)`,
                                                     boxShadow: `inset 0 2px 4px rgba(255,255,255,0.4), 0 10px 30px ${tabInfo.accentColor}40`,
-                                                } : {}}
+                                                } : {
+                                                    '--hover-color': tabInfo.accentColor
+                                                } as any}
                                             >
                                                 {tab.label}
                                             </button>
@@ -485,8 +562,8 @@ export default function LearnHub() {
                                         <Zap className="w-6 h-6" />
                                     </div>
                                     <div className="relative z-10">
-                                        <h5 className="font-bold tracking-tight text-white">Pro-Protocol Recommendation</h5>
-                                        <p className="text-sm text-slate-400">Complete the <b>Measure Phase Tool Set</b> to unlock the Advanced Analytics badge and 500 bonus XP.</p>
+                                        <h5 className="font-bold tracking-tight text-[var(--nexus-text)]">Pro-Protocol Recommendation</h5>
+                                        <p className="text-sm text-[var(--nexus-text-muted)]">Complete the <b>Measure Phase Tool Set</b> to unlock the Advanced Analytics badge and 500 bonus XP.</p>
                                     </div>
                                 </div>
                             </div>

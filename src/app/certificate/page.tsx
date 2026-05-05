@@ -131,17 +131,13 @@ export default function CertificatePage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-white/5"
             >
-                <div className="space-y-4">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-black uppercase tracking-widest text-primary">
-                        <Award className="w-3 h-3" />
-                        Credentials Engine
-                    </div>
+        <div className="space-y-4">
                     <div>
-                        <h1 className="text-4xl font-black tracking-tight font-orbitron">
-                            GENERATE <span className="text-primary italic">CERTIFICATE</span>
+                        <h1 className="text-4xl font-bold tracking-tight text-slate-900">
+                            <span className="text-blue-600">Generate</span> <span className="text-blue-600 italic">Certificate</span>
                         </h1>
-                        <p className="text-slate-500 max-w-xl text-sm font-medium mt-2">
-                            Produce world-class, high-fidelity Lean Six Sigma credentials with precision-engineered typography and LSS visual benchmarks.
+                        <p className="text-slate-400 max-w-xl text-sm font-medium mt-2">
+                            Produce world-class Lean Six Sigma credentials with precision-engineered typography and LSS visual benchmarks.
                         </p>
                     </div>
                 </div>
@@ -155,7 +151,7 @@ export default function CertificatePage() {
                             {({ loading }: { loading: boolean }) => (
                                 <button
                                     disabled={loading}
-                                    className="flex items-center gap-2 px-8 py-4 bg-emerald-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] disabled:opacity-60"
+                                    className="flex items-center gap-2 px-8 py-4 bg-emerald-600 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg disabled:opacity-60"
                                 >
                                     <Download className="w-4 h-4" />
                                     {loading ? "Finalizing..." : "Download Export"}
@@ -174,14 +170,10 @@ export default function CertificatePage() {
                     transition={{ delay: 0.1 }}
                     className="xl:col-span-4 space-y-8"
                 >
-                    <div className="p-8 bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-3xl space-y-8 shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-8 opacity-[0.02] transition-opacity group-hover:opacity-[0.05]">
-                            <Award className="w-32 h-32" />
-                        </div>
-
+                    <div className="p-8 bg-card border border-border rounded-2xl space-y-8 shadow-2xl relative">
                         <div className="flex items-center gap-3">
                             <div className="w-1.5 h-6 bg-primary rounded-full" />
-                            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-white">
+                            <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-blue-600">
                                 Credential Metadata
                             </h2>
                         </div>
@@ -189,29 +181,29 @@ export default function CertificatePage() {
                         <div className="space-y-6">
                             {/* Recipient */}
                             <div className="space-y-2">
-                                <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
-                                    <User className="w-3 h-3" /> LEARNER IDENTITY
+                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">
+                                    Learner Identity
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.recipientName}
                                     onChange={(e) => updateField("recipientName", e.target.value)}
-                                    className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl text-sm text-white placeholder:text-slate-700 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all font-medium"
+                                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-blue-900 placeholder:text-slate-400 focus:border-blue-500/50 outline-none transition-all font-medium"
                                 />
                             </div>
 
                             {/* Belt Selection */}
                             <div className="space-y-2">
-                                <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
-                                    <Shield className="w-3 h-3" /> BELT PROFICIENCY
+                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">
+                                    Belt Proficiency
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
                                     <button
                                         onClick={toggleAllBelts}
-                                        className={`col-span-2 px-4 py-3 rounded-xl text-[10px] font-black border transition-all leading-tight ${
+                                        className={`col-span-2 px-4 py-3 rounded-xl text-[10px] font-bold border transition-all leading-tight ${
                                             selectedBelts.length === BELT_OPTIONS.length
                                                 ? "bg-slate-100 text-slate-900 border-slate-300 shadow-lg"
-                                                : "bg-primary/20 border-primary text-primary hover:bg-primary/30"
+                                                : "bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700"
                                         }`}
                                     >
                                         {selectedBelts.length === BELT_OPTIONS.length ? "DESELECT ALL" : "SELECT ALL BELTS"}
@@ -223,7 +215,7 @@ export default function CertificatePage() {
                                             className={`px-4 py-3 rounded-xl text-[9px] font-bold border transition-all leading-tight ${
                                                 selectedBelts.includes(b)
                                                     ? `bg-gradient-to-br ${BELT_STYLES[b]} shadow-lg`
-                                                    : "bg-black/20 border-white/5 text-white hover:border-white/20"
+                                                    : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-600"
                                             }`}
                                         >
                                             {b}
@@ -235,70 +227,70 @@ export default function CertificatePage() {
                             <div className="grid grid-cols-2 gap-6">
                                 {/* Date */}
                                 <div className="space-y-2">
-                                    <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
-                                        <Calendar className="w-3 h-3" /> COMPLETION
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">
+                                        Completion
                                     </label>
                                     <input
                                         type="date"
                                         value={formData.completionDate}
                                         onChange={(e) => updateField("completionDate", e.target.value)}
-                                        className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl text-sm text-white focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all"
+                                        className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-blue-900 focus:border-blue-500/50 outline-none transition-all"
                                     />
                                 </div>
                                 {/* Score */}
                                 <div className="space-y-2">
-                                    <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
-                                        <Sparkles className="w-3 h-3" /> MASTERY (%)
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">
+                                        Mastery (%)
                                     </label>
                                     <input
                                         type="number"
                                         value={formData.overallScore}
                                         onChange={(e) => updateField("overallScore", parseInt(e.target.value) || 0)}
-                                        className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl text-sm text-white focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all font-bold"
+                                        className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-blue-900 focus:border-blue-500/50 outline-none transition-all font-bold"
                                     />
                                 </div>
                             </div>
 
                             {/* Project */}
                             <div className="space-y-2">
-                                <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
-                                    <Target className="w-3 h-3" /> CAPSTONE FOCUS
+                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">
+                                    Capstone Focus
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.projectTitle}
                                     onChange={(e) => updateField("projectTitle", e.target.value)}
-                                    className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl text-sm text-white focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none transition-all font-medium"
+                                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-blue-900 focus:border-blue-500/50 outline-none transition-all font-medium"
                                 />
                             </div>
 
                             {/* Program Lead */}
                             <div className="space-y-2">
-                                <label className="inline-flex items-center gap-2 px-2 py-0.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded shadow-[0_0_10px_rgba(255,255,255,0.1)]">
-                                    <Briefcase className="w-3 h-3" /> PROGRAM DIRECTOR
+                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">
+                                    Program Director
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.instructorName}
                                     onChange={(e) => updateField("instructorName", e.target.value)}
-                                    className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl text-sm text-white"
+                                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-blue-900 focus:border-blue-500/50 outline-none transition-all"
                                 />
                             </div>
 
-                            <div className="pt-4 border-t border-white/5">
+                            <div className="pt-4 border-t border-slate-800">
                                 <button
                                     onClick={handleGenerate}
                                     disabled={!isValid || isGenerating}
-                                    className="w-full py-5 bg-white text-black rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-primary hover:text-white transition-all disabled:opacity-20 flex items-center justify-center gap-3 group"
+                                    className="w-full py-5 bg-primary text-white rounded-xl text-xs font-bold uppercase tracking-[0.2em] hover:brightness-110 transition-all disabled:opacity-20 flex items-center justify-center gap-3 shadow-lg"
                                 >
                                     {isGenerating ? (
                                         <>
                                             <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                                            Encrypting Nodes...
+                                            Generating...
                                         </>
                                     ) : (
                                         <>
-                                            <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
+                                            <Sparkles className="w-4 h-4" />
                                             Commit & Generate
                                         </>
                                     )}
@@ -321,7 +313,7 @@ export default function CertificatePage() {
                                 <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                                     <Eye className="w-4 h-4 text-emerald-500" />
                                 </div>
-                                <h2 className="text-xs font-black uppercase tracking-[0.3em] text-white">
+                                <h2 className="text-xs font-black uppercase tracking-[0.3em] text-blue-600">
                                     High-Fidelity Preview
                                 </h2>
                             </div>

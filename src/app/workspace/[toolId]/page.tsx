@@ -33,12 +33,19 @@ import {
     Minimize2,
     Pen,
     Highlighter as HighlighterIcon,
-    Pencil
+    Pencil,
+    Sparkles,
+    Zap,
+    Target,
+    Trophy,
+    ShieldCheck,
+    RotateCcw
 } from 'lucide-react';
 
 import { toolRegistry } from '@/data/toolRegistry';
 import { methodologyData } from '@/data/journeyData';
 import { useNexus } from '@/context/NexusContext';
+import { VoiceOverPlayer } from '@/components/patterns/VoiceOverPlayer';
 
 const ToolWorkspace = () => {
     const params = useParams();
@@ -56,15 +63,47 @@ const ToolWorkspace = () => {
         activeToolRef.current = activeAssistantTool;
     }, [activeAssistantTool]);
 
-    const { markToolComplete, completedTools, updateProgress, methodology, theme, toggleTheme } = useNexus();
+    const { 
+        completedTools, 
+        markToolComplete, 
+        resetMethodologyTools,
+        updateProgress, 
+        methodology,
+        theme, 
+        toggleTheme, 
+        setMethodology 
+    } = useNexus();
+
+    const fromParam = searchParams.get('from');
+    useEffect(() => {
+        if (fromParam && fromParam.toUpperCase() !== methodology?.toUpperCase()) {
+            setMethodology(fromParam.toUpperCase());
+        }
+    }, [fromParam, methodology, setMethodology]);
+    
+    // --- CELEBRATION STATE ---
+    const [showPhaseCelebration, setShowPhaseCelebration] = useState(false);
+    const [showPhaseTransition, setShowPhaseTransition] = useState(false);
+    const [showMethodologyCelebration, setShowMethodologyCelebration] = useState(false);
+    const [showStepCelebration, setShowStepCelebration] = useState(false);
+    const [stepProgress, setStepProgress] = useState(0);
+    const [methodologyProgress, setMethodologyProgress] = useState(0);
+    const [celebrationData, setCelebrationData] = useState<any>(null);
+
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
     
     // SMART TOOL LOOKUP: If ID is a filename (e.g., Tool_ProjectCharter_Premium.html), find its key
+    let resolvedToolId = toolId;
     let tool = toolRegistry[toolId];
     if (!tool) {
         const foundKey = Object.keys(toolRegistry).find(key => 
             toolRegistry[key].src.toLocaleLowerCase().includes(toolId.toLocaleLowerCase().replace('/04-statistics-tools/', ''))
         );
-        if (foundKey) tool = toolRegistry[foundKey];
+        if (foundKey) {
+            tool = toolRegistry[foundKey];
+            resolvedToolId = foundKey;
+        }
     }
 
     // --- FULLSCREEN LOGIC ---
@@ -268,15 +307,99 @@ const ToolWorkspace = () => {
         }
     }, [activeAssistantTool]);
 
-    // Identify Next Station Logic
-    const activeMethodology = methodology?.split(' ')[0].toUpperCase() || 'DMAIC';
+    const activeMethodology = (fromParam || methodology?.split(' ')[0] || 'DMAIC').toUpperCase();
     const activePhases = methodologyData[activeMethodology] || methodologyData['DMAIC'];
+    const phaseKeys = Object.keys(activePhases);
+    
+    // Find the current phase
+    const currentPhaseEntry = Object.entries(activePhases).find(([key, phaseObj]) => 
+        (phaseObj as any).tools.some((t: any) => t.id === resolvedToolId)
+    );
+    
+    // --- NAVIGATION ENGINE ---
     const allTools: any[] = Object.values(activePhases).flatMap((p: any) => p.tools);
-    const currentIndex = allTools.findIndex(t => t.id === toolId);
+    // Use case-insensitive search and fallback to name matching if ID fails
+    const currentIndex = allTools.findIndex(t => 
+        t.id.toLowerCase() === resolvedToolId.toLowerCase() || 
+        t.name.toLowerCase() === resolvedToolId.toLowerCase()
+    );
     const nextTool = allTools[currentIndex + 1];
+    const prevTool = allTools[currentIndex - 1];
 
-    const handleNextStation = () => { if (nextTool) router.push(`/workspace/${nextTool.id}`); else router.push('/journey'); };
-    const isCompleted = completedTools.includes(toolId);
+    const handleNextStation = () => { 
+        if (nextTool) {
+            router.push(`/workspace/${nextTool.id}?from=${activeMethodology}`); 
+        } else {
+            // End of methodology fallback
+            router.push(`/academy?framework=${activeMethodology.toLowerCase()}`); 
+        }
+    };
+    const isCompleted = completedTools.includes(resolvedToolId);
+
+    const handleMarkDone = () => {
+        const wasCompleted = completedTools.includes(resolvedToolId);
+        markToolComplete(resolvedToolId);
+
+        if (!wasCompleted) {
+            // Calculate Phase Progress
+            if (currentPhaseEntry) {
+                const phaseTools = (currentPhaseEntry[1] as any).tools;
+                const completedInPhase = phaseTools.filter((t: any) => completedTools.includes(t.id)).length;
+                const newProgress = Math.round(((completedInPhase + 1) / phaseTools.length) * 100);
+                setStepProgress(newProgress);
+
+                // Calculate Methodology Progress (Overall)
+                const totalTools = allTools.length;
+                const totalCompleted = allTools.filter(t => completedTools.includes(t.id)).length;
+                const newTotalProgress = Math.round(((totalCompleted + 1) / totalTools) * 100);
+                setMethodologyProgress(newTotalProgress);
+            } else {
+                setStepProgress(100);
+                setMethodologyProgress(100);
+            }
+
+            // Trigger Step Celebration first
+            setShowStepCelebration(true);
+            
+            // Auto-hide step celebration after 2 seconds
+            setTimeout(() => setShowStepCelebration(false), 2200);
+
+            if (currentPhaseEntry) {
+                const phaseTools = (currentPhaseEntry[1] as any).tools;
+                const simulatedCompleted = [...completedTools, resolvedToolId];
+                const phaseJustCompleted = phaseTools.every((t: any) => simulatedCompleted.includes(t.id));
+                
+                if (phaseJustCompleted) {
+                    const currentPhaseIndex = phaseKeys.indexOf(currentPhaseEntry[0]);
+                    const isFinalPhase = currentPhaseIndex === phaseKeys.length - 1;
+                    const nextPhaseKey = phaseKeys[currentPhaseIndex + 1];
+                    const nextPhaseObj = nextPhaseKey ? activePhases[nextPhaseKey] : null;
+                    
+                    // 1. Hide step celebration slightly earlier to start transition
+                    setTimeout(() => {
+                        setShowStepCelebration(false);
+                        setShowPhaseTransition(true);
+                    }, 2000);
+
+                    // 2. Show the final modal after the white transition bar finishes
+                    setTimeout(() => {
+                        setShowPhaseTransition(false);
+                        if (isFinalPhase) {
+                            setShowMethodologyCelebration(true);
+                        } else {
+                            setCelebrationData({
+                                phaseName: (currentPhaseEntry[1] as any).title,
+                                skills: (currentPhaseEntry[1] as any).skills || [],
+                                nextPhase: nextPhaseObj ? (nextPhaseObj as any).title : 'Certification',
+                                nextObjectives: nextPhaseObj ? (nextPhaseObj as any).description : 'Finalize project & claim belt.'
+                            });
+                            setShowPhaseCelebration(true);
+                        }
+                    }, 4500); // 2000 (step) + 2500 (transition)
+                }
+            }
+        }
+    };
 
     const handleZoom = (delta: number) => setZoomLevel(prev => Math.min(Math.max(0.5, prev + delta), 2));
     const resetZoom = () => setZoomLevel(1);
@@ -328,6 +451,8 @@ const ToolWorkspace = () => {
     };
 
     if (!tool) return <div className="p-20 text-white font-orbitron">SYSTEM ERROR: TOOL NOT FOUND</div>;
+
+    if (!mounted) return null;
 
     return (
         <div className={`h-screen w-full flex flex-col overflow-hidden relative ${theme === 'light' ? 'bg-slate-50' : 'bg-black'}`}>
@@ -622,13 +747,312 @@ const ToolWorkspace = () => {
 
                 {/* 🎮 MISSION CONTROL FOOTER */}
                 <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] flex items-center gap-2 p-1.5 rounded-full shell-interactive transition-all duration-300 footer-3d`}>
-                    <button onClick={() => router.push('/hangar')} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><Home className="w-3.5 h-3.5" /></button>
-                    <button onClick={() => { const prevTool = allTools[currentIndex - 1]; if (prevTool) router.push(`/workspace/${prevTool.id}`); else router.push('/journey'); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ChevronLeft className="w-4 h-4" /></button>
-                    <button onClick={() => markToolComplete(toolId)} className={`relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 active:scale-95 ${isCompleted ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-800 border-slate-600 text-slate-200'}`}>{isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}{isCompleted ? 'SECURED' : 'MARK DONE'}</button>
+                    <button onClick={() => router.push(`/academy?framework=${activeMethodology.toLowerCase()}`)} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><Home className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => { if (prevTool) router.push(`/workspace/${prevTool.id}?from=${activeMethodology}`); else router.push(`/academy?framework=${activeMethodology.toLowerCase()}`); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ChevronLeft className="w-4 h-4" /></button>
+                    <button onClick={handleMarkDone} className={`relative flex items-center justify-center gap-2 px-5 h-9 rounded-full border font-black font-orbitron text-[10px] tracking-widest transition-all duration-500 active:scale-95 ${isCompleted ? 'bg-gradient-to-r from-nexus-success to-emerald-600 border-nexus-success text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-800 border-slate-600 text-slate-200'}`}>{isCompleted ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border-2 border-slate-400" />}{isCompleted ? 'SECURED' : 'MARK DONE'}</button>
+                    <button 
+                        onClick={() => {
+                            if (confirm('Reset this station? This will revert SECURED to MARK DONE.')) {
+                                resetMethodologyTools([resolvedToolId]);
+                            }
+                        }} 
+                        className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-red-400 transition-all"
+                        title="Reset Station"
+                    >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                    </button>
                     <button onClick={handleNextStation} className="group flex items-center gap-2 pl-4 pr-3 h-9 rounded-full bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-all"><span className="text-[10px] font-black font-orbitron tracking-widest">NEXT</span><ChevronRight className="w-3.5 h-3.5 text-nexus-cyan group-hover:translate-x-1 transition-transform" /></button>
                     <button onClick={() => { if (activeIframe?.contentWindow) activeIframe.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); }} className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition-all"><ArrowUp className="w-3.5 h-3.5" /></button>
                 </div>
             </div>
+
+            {/* STEP COMPLETED CELEBRATION (Quick Pop) */}
+            <AnimatePresence>
+                {showStepCelebration && (
+                    <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }} 
+                        className="fixed inset-0 z-[6000] flex items-center justify-center pointer-events-none"
+                    >
+                        <div className="relative flex flex-col items-center">
+                            {/* Confetti Particles Simulation */}
+                            {[...Array(12)].map((_, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ x: 0, y: 0, opacity: 1, scale: 0 }}
+                                    animate={{ 
+                                        x: (Math.random() - 0.5) * 400, 
+                                        y: (Math.random() - 0.5) * 400, 
+                                        opacity: 0,
+                                        scale: Math.random() * 2,
+                                        rotate: Math.random() * 360
+                                    }}
+                                    transition={{ duration: 1.5, ease: "easeOut" }}
+                                    className="absolute w-4 h-4 rounded-sm"
+                                    style={{ 
+                                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][i % 5],
+                                        boxShadow: '0 0 10px currentColor'
+                                    }}
+                                />
+                            ))}
+
+                            <motion.div
+                                initial={{ scale: 0, rotate: -20 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                exit={{ scale: 0, opacity: 0 }}
+                                transition={{ duration: 0.5, ease: "backOut" }}
+                                className="relative bg-white text-black p-8 rounded-full shadow-[0_0_100px_rgba(255,255,255,0.4)] flex flex-col items-center gap-4 border-[8px] border-nexus-cyan"
+                            >
+                                <div className="absolute inset-0 rounded-full border-[20px] border-nexus-cyan/20 animate-ping" />
+                                
+                                {activeMethodology === 'DMAIC' && <div className="w-24 h-24 flex items-center justify-center"><CheckCircle2 className="w-20 h-20 text-blue-600" /></div>}
+                                {activeMethodology === 'DMADV' && <div className="w-24 h-24 flex items-center justify-center"><Sparkles className="w-20 h-20 text-purple-600" /></div>}
+                                {activeMethodology === 'KAIZEN' && <div className="w-24 h-24 flex items-center justify-center"><Zap className="w-20 h-20 text-emerald-600" /></div>}
+                                {activeMethodology === 'FOCUS' && <div className="w-24 h-24 flex items-center justify-center"><Target className="w-20 h-20 text-orange-600" /></div>}
+
+                                <div className="text-center">
+                                    <div className="flex justify-center gap-10 mb-6">
+                                        <div>
+                                            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Phase</div>
+                                            <div className="text-2xl font-black font-orbitron text-black">{stepProgress}%</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Overall</div>
+                                            <div className="text-2xl font-black font-orbitron text-nexus-cyan">{methodologyProgress}%</div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Dual Progress Bar */}
+                                    <div className="space-y-3">
+                                        <div className="w-64 h-3 bg-slate-100 rounded-full overflow-hidden border border-black/10 p-0.5">
+                                            <motion.div 
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${stepProgress}%` }}
+                                                transition={{ duration: 1, ease: "easeOut" }}
+                                                className="h-full bg-black rounded-full"
+                                            />
+                                        </div>
+                                        <div className="w-64 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-black/5">
+                                            <motion.div 
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${methodologyProgress}%` }}
+                                                transition={{ duration: 1.2, ease: "easeOut" }}
+                                                className="h-full bg-nexus-cyan rounded-full shadow-[0_0_10px_rgba(34,211,238,0.5)]"
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="text-[8px] font-black uppercase tracking-[0.3em] mt-4 text-slate-500">
+                                        {methodologyProgress === 100 ? 'METHODOLOGY MASTERY' : 'SYNCHRONIZING SUCCESS...'}
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="mt-8 bg-black/80 backdrop-blur-md px-6 py-2 rounded-full border border-white/20 text-white text-[10px] font-bold uppercase tracking-[0.2em]"
+                            >
+                                +50 XP AWARDED • BASENAME: {tool.name}
+                            </motion.div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* PHASE TRANSITION SCREEN (White Page with Modern Bar) */}
+            <AnimatePresence>
+                {showPhaseTransition && (
+                    <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }} 
+                        className="fixed inset-0 z-[6500] bg-white flex flex-col items-center justify-center p-10"
+                    >
+                        <motion.div 
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            className="w-full max-w-md text-center"
+                        >
+                            <div className="text-[12px] font-black uppercase tracking-[0.5em] text-slate-400 mb-8">Synchronizing Phase Data</div>
+                            
+                            {/* Modern Minimalist Progress Bar */}
+                            <div className="relative w-full h-[2px] bg-slate-100 mb-6">
+                                <motion.div 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: '100%' }}
+                                    transition={{ duration: 2, ease: "easeInOut" }}
+                                    className="absolute inset-0 bg-black shadow-[0_0_15px_rgba(0,0,0,0.1)]"
+                                />
+                            </div>
+
+                            <div className="flex justify-between items-center text-[10px] font-black font-orbitron uppercase tracking-widest text-black">
+                                <span>Status: Initializing</span>
+                                <motion.span
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: [0, 1, 0] }}
+                                    transition={{ duration: 1, repeat: Infinity }}
+                                >
+                                    100% COMPLETE
+                                </motion.span>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* PHASE UNLOCKED CELEBRATION OVERLAY */}
+            <AnimatePresence>
+                {showPhaseCelebration && celebrationData && (
+                    <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }} 
+                        className="fixed inset-0 z-[5000] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 shell-interactive"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.8, y: 50 }} 
+                            animate={{ scale: 1, y: 0 }} 
+                            transition={{ type: 'spring', damping: 20 }}
+                            className="bg-slate-900 border border-white/10 p-12 rounded-[3rem] max-w-2xl w-full text-center relative overflow-hidden shadow-[0_0_100px_rgba(16,185,129,0.2)]"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-transparent pointer-events-none" />
+                            <div className="absolute -top-32 -left-32 w-64 h-64 bg-emerald-500/20 blur-[100px] rounded-full pointer-events-none" />
+                            <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-blue-500/20 blur-[100px] rounded-full pointer-events-none" />
+                            
+                            <motion.div 
+                                initial={{ scale: 0, rotate: -180 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                transition={{ type: 'spring', delay: 0.2 }}
+                                className="w-28 h-28 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_50px_rgba(251,191,36,0.4)] border-4 border-white/20"
+                            >
+                                <motion.div
+                                    animate={{ y: [0, -5, 0] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                >
+                                    <Trophy className="w-14 h-14 text-white" />
+                                </motion.div>
+                            </motion.div>
+
+                            <h2 className="text-4xl font-black font-orbitron tracking-tight text-white mb-2 uppercase">
+                                {celebrationData.phaseName} PHASE SECURED
+                            </h2>
+                            <p className="text-emerald-400 font-bold tracking-[0.2em] uppercase text-xs mb-10">
+                                Global Mastery Checkpoint Reached
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-6 mb-10 text-left">
+                                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                                    <h3 className="text-[10px] font-black text-slate-400 tracking-widest uppercase mb-4">Skills Acquired</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {celebrationData.skills.map((skill: string) => (
+                                            <span key={skill} className="px-3 py-1 bg-blue-500/20 border border-blue-500/30 text-blue-300 rounded-full text-[10px] font-bold">
+                                                {skill}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col justify-center">
+                                    <h3 className="text-[10px] font-black text-slate-400 tracking-widest uppercase mb-2">Next Objective</h3>
+                                    <div className="text-lg font-black text-white mb-1">{celebrationData.nextPhase}</div>
+                                    <p className="text-xs text-slate-500 font-medium">{celebrationData.nextObjectives}</p>
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={() => {
+                                    setShowPhaseCelebration(false);
+                                    handleNextStation();
+                                }}
+                                className="bg-emerald-500 hover:bg-emerald-400 text-black px-12 py-4 rounded-full font-black tracking-widest text-sm transition-all shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_50px_rgba(16,185,129,0.5)] uppercase inline-flex items-center gap-3"
+                            >
+                                ACKNOWLEDGE & ADVANCE <ArrowRight className="w-5 h-5" />
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* METHODOLOGY MASTERY CELEBRATION OVERLAY */}
+            <AnimatePresence>
+                {showMethodologyCelebration && (
+                    <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }} 
+                        className="fixed inset-0 z-[7000] bg-slate-950 flex items-center justify-center p-6 shell-interactive"
+                    >
+                        {/* High-Impact Visuals */}
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none" />
+                        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
+                        
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="max-w-4xl w-full bg-slate-900/50 backdrop-blur-3xl border border-white/10 rounded-[4rem] p-16 text-center relative overflow-hidden shadow-[0_0_150px_rgba(59,130,246,0.3)]"
+                        >
+                            <div className="absolute -top-40 -left-40 w-80 h-80 bg-blue-500/20 blur-[120px] rounded-full" />
+                            <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-purple-500/20 blur-[120px] rounded-full" />
+                            
+                            <motion.div 
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                                className="absolute top-10 left-1/2 -translate-x-1/2 w-[500px] h-[500px] border border-white/5 rounded-full pointer-events-none"
+                            />
+
+                            <div className="relative z-10">
+                                <motion.div 
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    className="w-32 h-32 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-3xl flex items-center justify-center mx-auto mb-10 shadow-[0_20px_50px_rgba(34,211,238,0.4)] rotate-12"
+                                >
+                                    <Trophy className="w-16 h-16 text-white" />
+                                </motion.div>
+
+                                <h1 className="text-6xl font-black font-orbitron text-white mb-4 tracking-tighter uppercase">
+                                    {activeMethodology} MASTERY ACHIEVED
+                                </h1>
+                                <p className="text-xl text-blue-400 font-bold mb-12 tracking-widest uppercase">
+                                    Operational Excellence Protocol Fully Validated
+                                </p>
+
+                                <div className="bg-white/5 border border-white/10 p-10 rounded-[2.5rem] mb-12 text-left">
+                                    <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-3">
+                                        <ShieldCheck className="w-5 h-5 text-emerald-400" /> Certification Pathway
+                                    </h3>
+                                    <p className="text-slate-200 text-lg leading-relaxed mb-6">
+                                        You have successfully completed all technical phases of the <strong>{activeMethodology}</strong> curriculum. To claim your official <strong>LSS Global Certifications</strong>, you must now complete your capstone task in the Mission Library.
+                                    </p>
+                                    <div className="flex items-center gap-6 p-6 bg-black/40 rounded-3xl border border-white/5">
+                                        <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-3xl">🏛️</div>
+                                        <div>
+                                            <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Next Destination</div>
+                                            <div className="text-white font-bold text-xl">Mission Selection Library</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-6 justify-center">
+                                    <button 
+                                        onClick={() => router.push('/library')}
+                                        className="bg-white text-black px-12 py-5 rounded-full font-black tracking-widest text-sm hover:scale-105 transition-all shadow-2xl uppercase flex items-center gap-3"
+                                    >
+                                        ENTER LIBRARY <Library className="w-5 h-5" />
+                                    </button>
+                                    <button 
+                                        onClick={() => setShowMethodologyCelebration(false)}
+                                        className="bg-slate-800 text-white px-12 py-5 rounded-full font-black tracking-widest text-sm hover:bg-slate-700 transition-all uppercase"
+                                    >
+                                        ACKNOWLEDGE
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             {/* Global Cursor Injects for Drawing Mode */}
             {activeAssistantTool === 'draw' && (
                 <style dangerouslySetInnerHTML={{
@@ -637,6 +1061,9 @@ const ToolWorkspace = () => {
                     .shell-interactive, .shell-interactive * { cursor: auto !important; }
                 `}} />
             )}
+
+            {/* Voice-Over Intelligence Widget */}
+            <VoiceOverPlayer toolId={toolId} toolName={tool.name} methodology={activeMethodology} />
         </div >
     );
 };

@@ -22,7 +22,9 @@ import {
     Cog,
     Shield,
     Sparkles,
+    ChevronDown,
 } from "lucide-react";
+import { methodologyData } from "@/data/journeyData";
 
 /* ─────────────────────── types ─────────────────────── */
 interface MethodologyInfo {
@@ -318,6 +320,91 @@ function WhenToUseList({ items, accent }: { items: string[]; accent: string }) {
     );
 }
 
+/* ─────────── Phase Hover Dropdown Breakdown ─────────── */
+function PhaseHoverBreakdown({ methodologyId, accent }: { methodologyId: string; accent: string }) {
+    // Account for FOCUS PDCA and standard methodologies
+    const fwKey = methodologyId === 'focus' ? 'FOCUS' : methodologyId.toUpperCase();
+    const phasesObj = methodologyData[fwKey];
+    
+    // If no phases exist for this framework, don't render the section
+    if (!phasesObj) return null;
+    
+    const phases = Object.values(phasesObj);
+
+    return (
+        <div className="w-full">
+            <h3 className="text-sm font-black text-white uppercase tracking-widest mb-6 flex items-center gap-4">
+                <span className="w-12 h-[1px] bg-white/20" />
+                Operational Phase Intel
+                <span className="flex-1 h-[1px] bg-white/20" />
+            </h3>
+            
+            <div className={`grid grid-cols-1 gap-3 ${
+                phases.length >= 5 ? "md:grid-cols-5" : 
+                phases.length === 4 ? "md:grid-cols-4" : 
+                phases.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"
+            }`}>
+                {phases.map((phase, i) => (
+                    <motion.div 
+                        key={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
+                        className="group relative bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-white/30 cursor-default"
+                        style={{ '--hover-accent': accent } as any}
+                    >
+                        {/* Hover Gradient Background */}
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+                            style={{ background: `linear-gradient(180deg, transparent, ${accent})` }} />
+                        
+                        {/* Top Accent Line */}
+                        <div className="h-1 w-full opacity-20 group-hover:opacity-100 transition-opacity duration-300" 
+                            style={{ background: accent }} />
+
+                        <div className="p-5 h-full flex flex-col justify-start">
+                            {/* Number & Indicator */}
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-[10px] font-black text-slate-500 group-hover:text-white transition-colors">STEP 0{i+1}</span>
+                                <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[var(--hover-accent)] group-hover:text-black transition-all duration-300">
+                                    <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-black transition-transform duration-500 group-hover:rotate-180" />
+                                </div>
+                            </div>
+                            
+                            <h4 className="text-xl font-black text-white uppercase tracking-tight mb-1 group-hover:text-[var(--hover-accent)] transition-colors">
+                                {phase.title}
+                            </h4>
+                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                                {phase.subtitle}
+                            </p>
+
+                            {/* Hidden Drop-Down Content revealed on hover */}
+                            <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out">
+                                <div className="overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                    <div className="pt-4 mt-2 border-t border-white/10 space-y-4">
+                                        <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                                            {phase.description}
+                                        </p>
+                                        <div>
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 block mb-2">Key Intelligence</span>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {phase.skills.slice(0,3).map((s, idx) => (
+                                                    <span key={idx} className="text-[9px] px-2 py-1 rounded bg-black/50 border border-white/5 text-slate-400 font-bold">
+                                                        {s}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 /* ═══════════════ MAIN EXPORTED COMPONENT ═══════════════ */
 export default function RoadmapViewer({
     methodologyId,
@@ -378,6 +465,16 @@ export default function RoadmapViewer({
                             </span>
                         </div>
                         <p className="text-slate-500 text-sm mt-2 italic">{info.tagline}</p>
+                    </motion.div>
+
+                    {/* Interactive Phase Breakdown Dropdowns (MOVED TO TOP) */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="mx-auto max-w-[70vw] px-4 pb-8 z-50 relative"
+                    >
+                        <PhaseHoverBreakdown methodologyId={methodologyId} accent={info.accentColor} />
                     </motion.div>
 
                     {/* ── Panorama Section ── */}

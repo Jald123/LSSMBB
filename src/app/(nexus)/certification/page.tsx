@@ -50,6 +50,7 @@ export default function CertificationCeremony() {
                     
                     <PageHeader 
                         title="Certification Ledger" 
+                        titleClassName="font-sans"
                         description="Verification of global operational mastery and structural intelligence."
                     />
 
@@ -60,9 +61,9 @@ export default function CertificationCeremony() {
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="aspect-[1.414/1] bg-card border border-primary/20 rounded-[3rem] relative overflow-hidden group shadow-[0_0_80px_rgba(34,211,238,0.1)] p-12 flex flex-col items-center justify-between text-center"
+                                className="aspect-[1.414/1] bg-card border border-border rounded-[3rem] relative overflow-hidden group shadow-2xl p-12 flex flex-col items-center justify-between text-center"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+                                <div className="absolute inset-0 bg-slate-950/50" />
                                 
                                 {/* Certificate Content */}
                                 <div className="z-10 w-full space-y-10">
@@ -82,7 +83,7 @@ export default function CertificationCeremony() {
                                         </div>
                                         
                                         <div className="space-y-2">
-                                            <h2 className="text-4xl font-black font-display tracking-tight text-white italic">{certData.recipient}</h2>
+                                            <h2 className="text-4xl font-bold tracking-tight text-white italic">{certData.recipient}</h2>
                                             <p className="text-sm font-medium text-slate-400 capitalize">HAS ACHIEVED THE STATUS OF</p>
                                             <h3 className="text-2xl font-black text-primary uppercase tracking-wider">{certData.title}</h3>
                                         </div>
@@ -111,9 +112,9 @@ export default function CertificationCeremony() {
 
                         {/* Metadata & Social Operations */}
                         <div className="lg:col-span-5 space-y-8">
-                            <div className="bg-card border border-border p-10 rounded-[2.5rem] space-y-8 shadow-2xl">
+                            <div className="bg-slate-900 border border-slate-800 p-10 rounded-[2.5rem] space-y-8 shadow-2xl">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-16 h-16 rounded-2xl bg-nexus-gold/10 flex items-center justify-center text-nexus-gold border border-nexus-gold/20 shadow-lg shadow-nexus-gold/5">
+                                    <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 border border-amber-500/20 shadow-lg">
                                         <Trophy className="w-8 h-8" />
                                     </div>
                                     <div>
@@ -128,7 +129,7 @@ export default function CertificationCeremony() {
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-center py-4 border-b border-white/5">
                                         <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Competency Multiplier</span>
-                                        <Badge variant="nexus" className="font-bold">x1.5 XP</Badge>
+                                        <Badge variant="outline" className="font-bold border-amber-500/50 text-amber-500">x1.5 XP</Badge>
                                     </div>
                                     <div className="flex justify-between items-center py-4 border-b border-white/5">
                                         <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Protocol Tier</span>
@@ -154,14 +155,14 @@ export default function CertificationCeremony() {
                                     </Button>
                                 </div>
 
-                                <Button variant="nexus" size="lg" className="w-full py-8 font-bold uppercase tracking-[0.3em] shadow-lg shadow-primary/10">
+                                <Button variant="outline" size="lg" className="w-full py-8 font-bold uppercase tracking-[0.3em] bg-primary text-white border-transparent hover:brightness-110">
                                     <Download className="w-5 h-5 mr-3" />
                                     Download High-Res PDF
                                 </Button>
                             </div>
 
                             {/* Recognition Banner */}
-                            <div className="p-6 bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-[2rem] flex items-center gap-4">
+                            <div className="p-6 bg-slate-950 border border-slate-800 rounded-[2rem] flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary">
                                     <Zap className="w-5 h-5" />
                                 </div>

@@ -143,29 +143,304 @@
     @apply bg-border rounded-full hover:bg-muted/50 transition-colors;
 }
 
-/* DO Mode Utilities */
-.do-transition {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* --- GLOBAL AESTHETIC DESIGN SYSTEM --- */
+
+/* 1. Classic Slate (Standard Professional) */
+.aesthetic-slate {
+    --nexus-bg: #111318;
+    --nexus-card: rgba(255, 255, 255, 0.02);
+    --nexus-border: rgba(255, 255, 255, 0.05);
+    --nexus-accent: #22d3ee;
+    --nexus-text: #ffffff;
+    --nexus-text-muted: #cbd5e1;
+    --foreground: #ffffff;
+    --muted-foreground: #cbd5e1;
 }
 
-.do-focus-ring:focus-visible {
-    outline: none;
-    box-shadow: var(--do-focus-ring);
-    border-color: var(--do-primary);
+/* 2. Glasscope (Obsidian) */
+.aesthetic-obsidian {
+    --nexus-bg: #050505;
+    --nexus-card: rgba(255, 255, 255, 0.03);
+    --nexus-border: rgba(255, 255, 255, 0.1);
+    --nexus-accent: #22d3ee;
+    --nexus-blur: 24px;
+    --nexus-text: #ffffff;
+    --nexus-text-muted: #cbd5e1;
+    --foreground: #ffffff;
+    --muted-foreground: #cbd5e1;
+}
+.aesthetic-obsidian .card-glass {
+    backdrop-filter: blur(var(--nexus-blur));
+    background: var(--nexus-card);
+    border: 1px solid var(--nexus-border);
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
 }
 
-.skeleton {
-    background: linear-gradient(90deg, #f0f4f8 25%, #e2e8f0 50%, #f0f4f8 75%);
-    background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite;
+/* 3. Titanium (Professional/Brushed) */
+.aesthetic-ocean {
+    --nexus-bg: #0a0d12;
+    --nexus-card: #151921;
+    --nexus-border: #334155;
+    --nexus-accent: #f59e0b;
+    --nexus-text: #ffffff;
+    --nexus-text-muted: #94a3b8;
+    --foreground: #ffffff;
+    --muted-foreground: #94a3b8;
+}
+.aesthetic-ocean .card-glass {
+    background: var(--nexus-card);
+    border: 1px solid var(--nexus-border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    border-radius: 4px; /* Professional sharp corners */
 }
 
-@keyframes skeleton-loading {
-    0% {
-        background-position: 200% 0;
-    }
-
-    100% {
-        background-position: -200% 0;
-    }
+/* 4. Ether (Modern/Laser) */
+.aesthetic-ether {
+    --nexus-bg: #020617;
+    --nexus-card: rgba(15, 23, 42, 0.8);
+    --nexus-border: rgba(34, 211, 238, 0.1);
+    --nexus-accent: #22d3ee;
+    --nexus-text: #ffffff;
+    --nexus-text-muted: #94a3b8;
+    --foreground: #ffffff;
+    --muted-foreground: #94a3b8;
 }
+.aesthetic-ether .card-glass {
+    background: var(--nexus-card);
+    border: 1px solid var(--nexus-border);
+    position: relative;
+    overflow: hidden;
+}
+.aesthetic-ether .card-glass::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--nexus-accent), transparent);
+    animation: laser-scan 4s linear infinite;
+}
+
+/* 5. Aurora (Vibrant/Dynamic) */
+.aesthetic-aurora {
+    --nexus-bg: #0f172a;
+    --nexus-card: rgba(255, 255, 255, 0.05);
+    --nexus-border: rgba(139, 92, 246, 0.2);
+    --nexus-accent: #a855f7;
+    --nexus-text: #ffffff;
+    --nexus-text-muted: #cbd5e1;
+    --foreground: #ffffff;
+    --muted-foreground: #cbd5e1;
+}
+.aesthetic-aurora .card-glass {
+    background: var(--nexus-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--nexus-border);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
+}
+
+/* Aurora Contrast Enforcement */
+.aesthetic-aurora [class*="bg-primary"],
+.aesthetic-aurora [class*="bg-sky-"],
+.aesthetic-aurora [class*="bg-emerald-"],
+.aesthetic-aurora [class*="bg-amber-"] {
+    color: #0f172a !important; /* Force deep dark text on light/vibrant backgrounds */
+}
+
+.aesthetic-aurora [class*="bg-primary"] svg,
+.aesthetic-aurora [class*="bg-primary"] .lucide {
+    color: #0f172a !important;
+    stroke: #0f172a !important;
+}
+
+
+/* 6. Zenith (Simplified/Light) */
+.aesthetic-zenith {
+    --nexus-bg: #f8fafc;
+    --nexus-card: #ffffff;
+    --nexus-border: #e2e8f0;
+    --nexus-accent: #3b82f6;
+    --nexus-text: #020617; /* High contrast black */
+    --nexus-text-muted: #475569;
+}
+.aesthetic-zenith .card-glass {
+    background: var(--nexus-card);
+    border: 1px solid var(--nexus-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* 6. Zenith (Simplified/Light) */
+.aesthetic-zenith {
+    --nexus-bg: #f1f5f9; /* Slightly off-white for depth */
+    --nexus-card: #ffffff;
+    --nexus-border: #e2e8f0;
+    --nexus-accent: #2563eb;
+    --nexus-text: #020617 !important; /* Force black */
+    --nexus-text-muted: #475569 !important; /* Force dark grey */
+}
+
+/* EXTREME SPECIFICITY RESET FOR ZENITH (LIGHT MODE) */
+/* This block forces visibility on EVERYTHING when Zenith is active */
+[class*="aesthetic-zenith"] {
+    color: #020617 !important;
+}
+
+[class*="aesthetic-zenith"] .nexus-card,
+[class*="aesthetic-zenith"] .bg-card,
+[class*="aesthetic-zenith"] .bg-surface,
+[class*="aesthetic-zenith"] .bg-background,
+[class*="aesthetic-zenith"] div[class*="bg-[#"],
+[class*="aesthetic-zenith"] section[class*="bg-[#"] {
+    background-color: #ffffff !important;
+    color: #020617 !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Force Text Visibility for all elements, excluding dark backgrounds */
+[class*="aesthetic-zenith"] h1, 
+[class*="aesthetic-zenith"] h2, 
+[class*="aesthetic-zenith"] h3, 
+[class*="aesthetic-zenith"] h4, 
+[class*="aesthetic-zenith"] h5, 
+[class*="aesthetic-zenith"] h6,
+[class*="aesthetic-zenith"] p,
+[class*="aesthetic-zenith"] span:not(.text-white),
+[class*="aesthetic-zenith"] div:not([class*="bg-primary"]):not([class*="bg-[#"]):not([class*="bg-black"]):not([class*="bg-slate-900"]),
+[class*="aesthetic-zenith"] label:not([class*="bg-black"]):not([class*="bg-slate-900"]),
+[class*="aesthetic-zenith"] input,
+[class*="aesthetic-zenith"] textarea {
+    color: #020617 !important;
+}
+
+/* Allow White Text on dark backgrounds in Zenith */
+[class*="aesthetic-zenith"] .text-white,
+[class*="aesthetic-zenith"] .text-slate-50,
+[class*="aesthetic-zenith"] .bg-black span,
+[class*="aesthetic-zenith"] .bg-black p,
+[class*="aesthetic-zenith"] .bg-slate-900 span,
+[class*="aesthetic-zenith"] .bg-primary span {
+    color: #ffffff !important;
+}
+
+
+/* Force Muted Text Visibility */
+[class*="aesthetic-zenith"] .text-muted-foreground,
+[class*="aesthetic-zenith"] .text-slate-400,
+[class*="aesthetic-zenith"] .text-slate-500,
+[class*="aesthetic-zenith"] [class*="text-white/"] {
+    color: #475569 !important;
+}
+
+/* Fix White-on-White button issues */
+[class*="aesthetic-zenith"] button[class*="bg-white/"] {
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+    color: #020617 !important;
+}
+
+/* Fix Input Field Contrast in Zenith */
+[class*="aesthetic-zenith"] input,
+[class*="aesthetic-zenith"] textarea,
+[class*="aesthetic-zenith"] select {
+    background-color: #ffffff !important;
+    color: #020617 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* Ensure Icons are visible */
+[class*="aesthetic-zenith"] .lucide,
+[class*="aesthetic-zenith"] svg {
+    stroke: currentColor !important;
+    color: inherit;
+}
+
+/* Keep primary buttons and badges as intended */
+[class*="aesthetic-zenith"] .bg-primary *,
+[class*="aesthetic-zenith"] .bg-\[\#c2983d\] *,
+[class*="aesthetic-zenith"] .no-aesthetic-force {
+    color: inherit !important;
+}
+/* Animations */
+@keyframes laser-scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes mesh-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+/* Base Utility for Cards */
+.nexus-card {
+    @apply transition-all duration-300;
+}
+
+/* 1. Classic Slate */
+.aesthetic-slate .nexus-card {
+    background: var(--nexus-card);
+    border: 1px solid var(--nexus-border);
+}
+
+/* 2. Glasscope (Obsidian) */
+.aesthetic-obsidian .nexus-card {
+    backdrop-filter: blur(var(--nexus-blur));
+    background: var(--nexus-card);
+    border: 1px solid var(--nexus-border);
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
+}
+
+/* 3. Titanium */
+.aesthetic-ocean .nexus-card {
+    background: var(--nexus-card);
+    border: 1px solid var(--nexus-border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+/* 4. Ether (Modern) */
+.aesthetic-ether .nexus-card {
+    background: var(--nexus-card);
+    border: 1px solid var(--nexus-border);
+    position: relative;
+    overflow: hidden;
+}
+.aesthetic-ether .nexus-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--nexus-accent), transparent);
+    animation: laser-scan 4s linear infinite;
+}
+
+/* 5. Aurora */
+.aesthetic-aurora .nexus-card {
+    background: var(--nexus-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--nexus-border);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
+}
+
+/* 6. Zenith */
+.aesthetic-zenith .nexus-card {
+    background: var(--nexus-card);
+    border: 1px solid var(--nexus-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* --- ANTI-COLOR-TRAP LOGIC (CONTRAST SAFETY) --- */
+/* Only invert nexus variables if they are inside an explicitly LIGHT container */
+html:not(.dark) [class*="aesthetic-"]:not(.aesthetic-zenith) main :is(.bg-white, .bg-card, .bg-surface, .bg-slate-50, .bg-background) {
+    --nexus-text: #020617;
+    --nexus-text-muted: #475569;
+}
+
+/* Ensure Zenith always maintains its high-contrast dark text */
+.aesthetic-zenith {
+    --nexus-text: #0f172a !important;
+    --nexus-text-muted: #475569 !important;
+}
+
+/* Fallback: If text is dark on a dark tailwind background, force it white */
+[class*="aesthetic-"] main :is(.bg-slate-900, .bg-slate-950, .bg-black, .bg-nexus-navy, .bg-nexus-surface) :is(.text-black, .text-slate-900, .text-blue-900, .text-slate-800) {
+    color: #ffffff !important;
+}

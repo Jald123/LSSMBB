@@ -5,6 +5,7 @@ export interface ToolEntry {
     category: string;
     priority: number | string;
     belt: string;
+    description?: string;
 }
 
 export const toolRegistry: Record<string, ToolEntry> = {
@@ -15,7 +16,8 @@ export const toolRegistry: Record<string, ToolEntry> = {
         phase: 'Define',
         category: 'PROJ. MGMT',
         priority: 1,
-        belt: 'YB'
+        belt: 'YB',
+        description: 'Define project scope, objectives, and team roles.'
     },
     'event-charter': {
         name: 'Event Charter',
@@ -23,7 +25,8 @@ export const toolRegistry: Record<string, ToolEntry> = {
         phase: 'Kickoff',
         category: 'LEAN',
         priority: 1,
-        belt: 'YB'
+        belt: 'YB',
+        description: 'Establish goals for rapid improvement events.'
     },
     'stakeholders': {
         name: 'Stakeholder Matrix',
@@ -31,7 +34,8 @@ export const toolRegistry: Record<string, ToolEntry> = {
         phase: 'Define',
         category: 'PROJ. MGMT',
         priority: 2,
-        belt: 'GB'
+        belt: 'GB',
+        description: 'Analyze influence and interest of project partners.'
     },
     'triage': {
         name: 'Project Triage & Scoping',

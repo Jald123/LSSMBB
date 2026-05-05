@@ -143,16 +143,16 @@ export default function Dashboard() {
     `;
 
     return (
-        <div className="flex-1 flex flex-col h-screen bg-[#050505] text-foreground overflow-hidden">
+        <div className="flex-1 flex flex-col h-screen overflow-hidden">
             <style>{laserKeyframes}</style>
             <main className="flex-1 h-full p-4 lg:p-6 pt-2 lg:pt-3 pb-0 lg:pb-0 overflow-hidden">
                 <div className="max-w-[1600px] mx-auto h-fit flex flex-col space-y-3 lg:space-y-5 mb-0">
                     
                     <div className="pt-1 space-y-0.5">
-                        <p className="text-white text-base lg:text-xl font-black uppercase tracking-tight">
+                        <p className="text-[var(--nexus-text)] text-base lg:text-xl font-black uppercase tracking-tight">
                             Welcome to the Nexus Academy Command Terminal.
                         </p>
-                        <p className="text-slate-400 text-[10px] lg:text-xs font-medium tracking-widest uppercase">
+                        <p className="text-[var(--nexus-text-muted)] text-[10px] lg:text-xs font-medium tracking-widest uppercase">
                             Authenticated as Operator: <span className="text-primary font-black">{user?.name || 'Unknown'}</span>
                         </p>
                     </div>
@@ -199,7 +199,7 @@ export default function Dashboard() {
                         {/* 1. Unified Hero Mission Card */}
                         <div className="lg:col-span-2 flex flex-col space-y-4 lg:space-y-6 min-h-0">
                             {latestProject ? (
-                                <div className="relative group p-[2px] rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 h-fit flex flex-col">
+                                <div className="relative group p-[2px] rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] h-fit flex flex-col">
                                     {/* Animated Laser Border */}
                                     <div 
                                         className="absolute inset-0 z-0 animate-[laser-sweep_10s_linear_infinite]"
@@ -209,7 +209,7 @@ export default function Dashboard() {
                                         }}
                                     />
 
-                                    <div className="relative z-10 bg-[#0a0a0a] p-4 lg:p-5 space-y-3 lg:space-y-4 rounded-[calc(1.5rem-2px)] overflow-hidden flex flex-col justify-start">
+                                    <div className="relative z-10 nexus-card p-4 lg:p-5 space-y-3 lg:space-y-4 rounded-[calc(1.5rem-2px)] overflow-hidden flex flex-col justify-start">
                                         {/* Decorative Background */}
                                         <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-white/[0.02] to-transparent pointer-events-none" />
                                         
@@ -217,14 +217,14 @@ export default function Dashboard() {
                                             <div className="space-y-2">
                                                 <div className="flex items-center gap-3">
                                                     <span className="bg-primary/20 text-primary text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em] border border-primary/20">Active Protocol</span>
-                                                    <span className="text-white/40 text-[9px] font-black uppercase tracking-[0.2em]">System Node: Alpha-7</span>
+                                                    <span className="text-[var(--nexus-text-muted)] text-[9px] font-black uppercase tracking-[0.2em] opacity-60">System Node: Alpha-7</span>
                                                 </div>
-                                                <h2 className="text-3xl lg:text-4xl font-black uppercase tracking-tighter text-white leading-none">
+                                                <h2 className="text-3xl lg:text-4xl font-black uppercase tracking-tighter text-[var(--nexus-text)] leading-none">
                                                     {latestProject.title.split(' ').map((word: string, i: number) => (
-                                                        <span key={i} className={i === 0 ? "text-white" : "text-primary/90"}>{word} </span>
+                                                        <span key={i} className={i === 0 ? "text-[var(--nexus-text)]" : "text-primary/90"}>{word} </span>
                                                     ))}
                                                 </h2>
-                                                <p className="text-slate-300 text-xs font-medium max-w-md">
+                                                <p className="text-[var(--nexus-text-muted)] text-xs font-medium max-w-md">
                                                     {latestProject.framework} Framework Deployment <span className="mx-2 opacity-20">|</span> 
                                                     Status: <span className="text-primary font-bold uppercase tracking-widest">{latestProject.currentPhase}</span>
                                                 </p>
@@ -261,7 +261,7 @@ export default function Dashboard() {
                                     description="The command terminal is currently idle. Select a protocol from the MISSION SELECTION LIBRARY to begin your journey."
                                     actionLabel="Browse Missions"
                                     onAction={() => router.push('/library')}
-                                    className="h-full border-white/5 bg-[#0a0a0a]"
+                                    className="h-full nexus-card"
                                 />
                             )}
 
@@ -269,11 +269,11 @@ export default function Dashboard() {
 
                         {/* 2. Side Panel: News & Progress */}
                         <div className="flex flex-col min-h-0 h-fit space-y-4 lg:space-y-6">
-                            <div className="rounded-3xl border border-white/5 bg-[#0a0a0a] p-4 lg:p-5 space-y-3 flex flex-col justify-start shadow-2xl relative overflow-hidden group min-h-0">
+                            <div className="nexus-card p-4 lg:p-5 space-y-3 flex-1 flex flex-col justify-start shadow-2xl relative overflow-hidden group min-h-0 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2" />
                                 
                                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                                    <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-300">Daily Objectives</h3>
+                                    <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-[var(--nexus-text-muted)]">Daily Objectives</h3>
                                     <Zap className="w-4 h-4 text-nexus-gold animate-pulse" />
                                 </div>
 
@@ -297,17 +297,17 @@ export default function Dashboard() {
                                         </div>
                                     ))}
                                 </div>
-                                <Button variant="ghost" className="w-full text-[9px] font-black uppercase tracking-[0.2em] py-3 border border-white/10 hover:bg-white hover:text-black transition-all text-white/60">View All Quests</Button>
+                                <Button variant="ghost" className="w-full text-[9px] font-black uppercase tracking-[0.2em] py-3 border border-white/10 hover:bg-white hover:text-black transition-all text-[var(--nexus-text-muted)]">View All Quests</Button>
                             </div>
 
                             {/* Global Rank Card - Moved to Sidebar */}
-                            <div className="rounded-3xl border border-white/5 bg-[#0a0a0a] p-4 lg:p-6 text-center space-y-3 relative overflow-hidden group shadow-2xl shrink-0 w-full">
+                            <div className="nexus-card p-4 lg:p-6 text-center space-y-3 relative overflow-hidden group shadow-2xl shrink-0 w-full transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                 <div className="space-y-1 relative z-10">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Global Rank</p>
-                                    <p className="text-4xl font-black font-display text-white tracking-tighter leading-none">#242</p>
+                                    <p className="text-[10px] font-black text-[var(--nexus-text-muted)] uppercase tracking-[0.25em]">Global Rank</p>
+                                    <p className="text-4xl font-black font-display text-[var(--nexus-text)] tracking-tighter leading-none">#242</p>
                                 </div>
-                                <p className="text-[10px] text-slate-400 font-medium relative z-10">Top 4% of Operators Worldwide</p>
+                                <p className="text-[10px] text-[var(--nexus-text-muted)] font-medium relative z-10">Top 4% of Operators Worldwide</p>
                                 <div className="pt-1 relative z-10">
                                     <Button variant="outline" size="sm" className="w-full font-black uppercase tracking-widest text-[9px] border-white/10 hover:border-primary/50 transition-all py-4" onClick={() => router.push('/leaderboard')}>Leaderboard</Button>
                                 </div>

@@ -1,8 +1,8 @@
 $root = "c:\Users\haldhaher\Desktop\LEAN SIX SIGMA INTERACTIVE PLATFORM"
 $listener = [System.Net.HttpListener]::new()
-$listener.Prefixes.Add("http://localhost:3000/")
+$listener.Prefixes.Add("http://localhost:7889/")
 $listener.Start()
-Write-Host "Server running at http://localhost:3000/" -ForegroundColor Green
+Write-Host "Server running at http://localhost:7889/" -ForegroundColor Green
 
 while ($listener.IsListening) {
     $ctx = $listener.GetContext()

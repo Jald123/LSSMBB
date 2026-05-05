@@ -110,6 +110,7 @@ export default function AchievementsWall() {
                     
                     <PageHeader 
                         title="Hall of Mastery" 
+                        titleClassName="font-sans"
                         description="Your permanent record of operational excellence and system breakthroughs."
                         actions={
                             <div className="flex gap-3">
@@ -117,7 +118,7 @@ export default function AchievementsWall() {
                                     <History className="w-4 h-4 mr-2" />
                                     Timeline
                                 </Button>
-                                <Button variant="nexus" size="sm">
+                                <Button variant="outline" size="sm">
                                     <Trophy className="w-4 h-4 mr-2" />
                                     Leaderboard
                                 </Button>
@@ -138,7 +139,7 @@ export default function AchievementsWall() {
                                     {stat.icon}
                                     {stat.label}
                                 </div>
-                                <div className="text-2xl font-bold font-display">{stat.value}</div>
+                                <div className="text-2xl font-bold">{stat.value}</div>
                             </div>
                         ))}
                     </div>
@@ -252,17 +253,17 @@ function AchievementCard({ achievement }: { achievement: Achievement }) {
     const progress = (achievement.currentValue / achievement.reqValue) * 100;
 
     const rarityStyles = {
-        LEGENDARY: "border-nexus-gold/40 text-nexus-gold bg-nexus-gold/10 shadow-[0_0_20px_rgba(245,158,11,0.05)]",
-        EPIC: "border-primary/40 text-primary bg-primary/10 shadow-[0_0_20px_rgba(34,211,238,0.05)]",
-        RARE: "border-purple-500/40 text-purple-400 bg-purple-500/10 shadow-[0_0_20px_rgba(168,85,247,0.05)]",
+        LEGENDARY: "border-amber-500/40 text-amber-500 bg-amber-500/10",
+        EPIC: "border-blue-500/40 text-blue-500 bg-blue-500/10",
+        RARE: "border-purple-500/40 text-purple-400 bg-purple-500/10",
         COMMON: "border-white/10 text-slate-500 bg-white/5 shadow-none"
     };
 
     const unlockedShadows = {
-        LEGENDARY: "shadow-[0_0_30px_rgba(245,158,11,0.2)] border-nexus-gold/20",
-        EPIC: "shadow-[0_0_30px_rgba(34,211,238,0.2)] border-primary/20",
-        RARE: "shadow-[0_0_30_rgba(168,85,247,0.2)] border-purple-500/20",
-        COMMON: "shadow-[0_0_20_rgba(255,255,255,0.1)] border-white/10"
+        LEGENDARY: "shadow-lg border-amber-500/20",
+        EPIC: "shadow-lg border-blue-500/20",
+        RARE: "shadow-lg border-purple-500/20",
+        COMMON: "shadow-md border-white/10"
     };
 
     return (
@@ -307,7 +308,7 @@ function AchievementCard({ achievement }: { achievement: Achievement }) {
                     <div className={cn(
                         "w-full h-full rounded-[2rem] flex items-center justify-center relative z-10 transition-all duration-500",
                         isUnlocked 
-                            ? "bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/20" 
+                            ? "bg-slate-800 border border-slate-700 shadow-xl" 
                             : "bg-surface border-2 border-dashed border-white/5 text-slate-700",
                         isCertificate && "rotate-[45deg]"
                     )}>
@@ -333,8 +334,8 @@ function AchievementCard({ achievement }: { achievement: Achievement }) {
                     
                     {achievement.prerequisiteId && !isUnlocked && (
                         <div className="flex items-center justify-center gap-1.5 mt-2">
-                            <ShieldAlert className="w-3 h-3 text-nexus-gold" />
-                            <span className="text-[9px] font-black text-nexus-gold uppercase tracking-widest">Requires {achievement.prerequisiteId.split('-').pop()?.toUpperCase()}</span>
+                            <ShieldAlert className="w-3 h-3 text-amber-500" />
+                            <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">Requires {achievement.prerequisiteId.split('-').pop()?.toUpperCase()}</span>
                         </div>
                     )}
                 </div>

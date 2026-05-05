@@ -11,6 +11,7 @@ import {
     Info
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { VoiceOverPlayer } from "@/components/patterns/VoiceOverPlayer";
 
 export function ToolRunner({ toolId, toolName, projectTitle, onBack }: { toolId: string, toolName: string, projectTitle: string, onBack: () => void }) {
     const [data, setData] = useState("");
@@ -154,6 +155,9 @@ export function ToolRunner({ toolId, toolName, projectTitle, onBack }: { toolId:
                     </div>
                 </section>
             </main>
+
+            {/* Voice-Over Intelligence Player */}
+            <VoiceOverPlayer toolId={toolId} toolName={toolName} />
         </div>
     );
 }

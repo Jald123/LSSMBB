@@ -180,7 +180,7 @@ export const methodologyData: Record<string, Methodology> = {
             ]
         },
         'analyze': {
-            title: 'Analyze & Brainstorm',
+            title: 'ANALYZE & BRAINSTORM',
             subtitle: 'Root Cause & Solutions',
             description: 'Drill down to root causes and generate impactful fixes.',
             skills: ['Speed-to-Solution', 'Impact Prioritization'],
@@ -191,7 +191,7 @@ export const methodologyData: Record<string, Methodology> = {
             ]
         },
         'implement': {
-            title: 'Implement (Act)',
+            title: 'IMPLEMENT (Act)',
             subtitle: 'Execute & Standardize',
             description: 'Execute the changes and ensure workspace organization.',
             skills: ['Workplace Discipline', 'Standardization'],
@@ -201,7 +201,7 @@ export const methodologyData: Record<string, Methodology> = {
             ]
         },
         'verify': {
-            title: 'Verify & Close',
+            title: 'VERIFY & CLOSE',
             subtitle: 'Results & Celebration',
             description: 'Close the loop and hand over the optimized process.',
             skills: ['Metric Verification', 'Closing PDCA'],

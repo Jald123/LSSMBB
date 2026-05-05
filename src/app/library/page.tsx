@@ -135,7 +135,7 @@ export default function Dashboard() {
     ];
 
     return (
-        <div className="flex-1 flex flex-col h-full bg-background text-foreground pb-20">
+        <div className="flex-1 flex flex-col h-full text-foreground pb-20">
             <main className="flex-1 h-full p-4 md:p-8 lg:p-10">
                 <div className="max-w-7xl mx-auto space-y-10">
                     
@@ -158,11 +158,11 @@ export default function Dashboard() {
                             <div className="flex-1 flex flex-col sm:flex-row gap-4 items-center justify-end w-full">
                                 {/* Search Bar */}
                                 <div className="relative w-full max-w-xs group">
-                                    <SniperIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-primary transition-colors" />
+                                    <SniperIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--nexus-text-muted)] group-focus-within:text-primary transition-colors" />
                                     <input 
                                         type="text" 
                                         placeholder="Search missions..." 
-                                        className="w-full bg-surface/50 border border-border rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-primary/50 transition-all"
+                                        className="w-full bg-[var(--nexus-card)] border border-[var(--nexus-border)] rounded-xl pl-10 pr-4 py-2 text-sm text-[var(--nexus-text)] focus:outline-none focus:border-primary/50 transition-all"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                     />
@@ -222,13 +222,15 @@ export default function Dashboard() {
                                     >
                                         <div>
                                             <div className="flex items-start justify-between mb-4">
-                                                <Badge variant="outline" className="bg-slate-950 text-white uppercase tracking-widest text-[10px] py-1 border-white/10 px-2">{caseItem.category.replace('-', ' ')}</Badge>
-                                                <span className="text-slate-400 font-mono text-[10px] opacity-60 select-none">ID-{String(index + 1).padStart(3, '0')}</span>
+                                                <Badge variant="outline" className="bg-slate-950 text-white uppercase tracking-widest text-[10px] py-1 border-white/10 px-2 no-aesthetic-force">
+                                                    {caseItem.category.replace('-', ' ')}
+                                                </Badge>
+                                                <span className="text-[var(--nexus-text-muted)] font-mono text-[10px] opacity-60 select-none">ID-{String(index + 1).padStart(3, '0')}</span>
                                             </div>
-                                            <h3 className="text-xl font-black text-slate-900 group-hover:text-primary transition-colors leading-tight tracking-tight">
+                                            <h3 className="text-xl font-black text-[var(--nexus-text)] group-hover:text-primary transition-colors leading-tight tracking-tight">
                                                 {caseItem.title}
                                             </h3>
-                                            <p className="text-[11px] text-slate-500 font-medium line-clamp-2 mt-1 group-hover:text-slate-700 transition-colors">
+                                            <p className="text-[11px] text-[var(--nexus-text-muted)] font-medium line-clamp-2 mt-1 group-hover:text-[var(--nexus-text)] transition-colors">
                                                 {caseItem.description}
                                             </p>
                                         </div>

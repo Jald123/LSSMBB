@@ -56,8 +56,8 @@ export function ProgressRing({
             </svg>
             {showValue && (
                 <div className="absolute flex flex-col items-center">
-                    <span className="text-2xl font-bold font-display tracking-tight">{value}%</span>
-                    <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Mastery</span>
+                    <span className="text-2xl font-bold font-display tracking-tight text-[var(--nexus-text)]">{value}%</span>
+                    <span className="text-[10px] text-[var(--nexus-text-muted)] font-black uppercase tracking-widest">Mastery</span>
                 </div>
             )}
         </div>
