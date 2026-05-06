@@ -25,15 +25,15 @@ export function StepIndicator({ steps, className }: StepIndicatorProps) {
         <div className={cn("w-full py-1", className)}>
             <div className="flex items-center justify-between w-full relative">
                 {/* Connecting Line */}
-                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/10 -translate-y-1/2 z-0" />
+                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-[var(--nexus-border)] -translate-y-1/2 z-0" />
                 
                 {steps.map((step, idx) => (
                     <div key={step.id} className="relative z-10 flex flex-col items-center group">
                         <div className={cn(
                             "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300",
-                            step.status === "complete" ? "bg-primary border-primary text-white shadow-[0_0_15px_rgba(34,211,238,0.4)]" :
-                            step.status === "current" ? "bg-black border-primary text-primary shadow-[0_0_15px_rgba(34,211,238,0.3)]" :
-                            "bg-[#0f0f0f] border-white/10 text-white/20"
+                            step.status === "complete" ? "bg-primary border-primary text-[var(--nexus-bg)] shadow-[0_0_15px_rgba(34,211,238,0.4)]" :
+                            step.status === "current" ? "bg-[var(--nexus-bg)] border-primary text-primary shadow-[0_0_15px_rgba(34,211,238,0.3)]" :
+                            "bg-[var(--nexus-bg)] border-[var(--nexus-border)] text-[var(--nexus-text-muted)] opacity-50"
                         )}>
                             {step.status === "complete" ? (
                                 <Check className="w-5 h-5 stroke-[3]" />
@@ -46,8 +46,8 @@ export function StepIndicator({ steps, className }: StepIndicatorProps) {
                             <p className={cn(
                                 "text-[10px] font-black uppercase tracking-[0.2em] transition-colors",
                                 step.status === "complete" ? "text-primary" :
-                                step.status === "current" ? "text-white" :
-                                "text-white/30"
+                                step.status === "current" ? "text-[var(--nexus-text)]" :
+                                "text-[var(--nexus-text-muted)] opacity-50"
                             )}>
                                 {step.label}
                             </p>

@@ -234,14 +234,14 @@ export default function Dashboard() {
                                                 <div className="relative flex items-center justify-center">
                                                     <ProgressRing value={latestProject.progressPercentage} size={70} strokeWidth={7} showValue={false} />
                                                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                                        <span className="text-xl font-black text-white leading-none">{latestProject.progressPercentage}%</span>
+                                                        <span className="text-xl font-black text-[var(--nexus-text)] leading-none">{latestProject.progressPercentage}%</span>
                                                         <span className="text-[7px] font-black uppercase tracking-widest text-primary/80">Mastery</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="py-1 relative z-10 bg-white/[0.02] p-3 lg:p-4 rounded-xl border border-white/5 backdrop-blur-sm [&_.step-label]:text-white/60 [&_.step-label-active]:text-white [&_.step-label-complete]:text-primary/90">
+                                        <div className="py-1 relative z-10 bg-[var(--nexus-card)] p-3 lg:p-4 rounded-xl border border-[var(--nexus-border)] backdrop-blur-sm [&_.step-label]:text-[var(--nexus-text-muted)] [&_.step-label-active]:text-[var(--nexus-text)] [&_.step-label-complete]:text-primary/90">
                                             <StepIndicator steps={dmaicSteps} />
                                         </div>
 
@@ -249,7 +249,7 @@ export default function Dashboard() {
                                             <Button variant="nexus" size="lg" className="flex-1 font-black tracking-widest uppercase py-4 text-[10px] shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all" onClick={() => router.push(`/do/project/${latestProject.id}/board`)}>
                                                 Resume Mission <Play className="ml-2 w-3 h-3 fill-current" />
                                             </Button>
-                                            <Button variant="outline" size="lg" className="flex-1 font-black tracking-widest uppercase py-4 text-[10px] border-white/10 hover:bg-white hover:text-black transition-all" onClick={() => router.push('/library')}>
+                                            <Button variant="outline" size="lg" className="flex-1 font-black tracking-widest uppercase py-4 text-[10px] border-[var(--nexus-border)] hover:bg-[var(--nexus-text)] hover:text-[var(--nexus-bg)] transition-all" onClick={() => router.push('/library')}>
                                                 Launch New Mission
                                             </Button>
                                         </div>
@@ -272,7 +272,7 @@ export default function Dashboard() {
                             <div className="nexus-card p-4 lg:p-5 space-y-3 flex-1 flex flex-col justify-start shadow-2xl relative overflow-hidden group min-h-0 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2" />
                                 
-                                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                                <div className="flex items-center justify-between border-b border-[var(--nexus-border)] pb-4">
                                     <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-[var(--nexus-text-muted)]">Daily Objectives</h3>
                                     <Zap className="w-4 h-4 text-nexus-gold animate-pulse" />
                                 </div>
@@ -287,17 +287,17 @@ export default function Dashboard() {
                                             <div className="flex items-center gap-3">
                                                 <div className={cn(
                                                     "w-5 h-5 rounded-lg border flex items-center justify-center transition-all duration-300 shrink-0",
-                                                    obj.done ? "bg-emerald-500 border-emerald-500 text-black" : "border-white/20 group-hover/obj:border-primary/50 group-hover/obj:bg-white/10"
+                                                    obj.done ? "bg-emerald-500 border-emerald-500 text-[var(--nexus-bg)]" : "border-[var(--nexus-border)] group-hover/obj:border-primary/50 group-hover/obj:bg-[var(--nexus-text)]/5"
                                                 )}>
                                                     {obj.done && <CheckCircle2 className="w-3 h-3 stroke-[3]" />}
                                                 </div>
-                                                <span className={cn("text-xs transition-colors", obj.done ? "text-white/30 line-through" : "text-white/80 font-bold group-hover/obj:text-white")}>{obj.t}</span>
+                                                <span className={cn("text-xs transition-colors", obj.done ? "text-[var(--nexus-text-muted)] opacity-50 line-through" : "text-[var(--nexus-text)] opacity-80 font-bold group-hover/obj:opacity-100")}>{obj.t}</span>
                                             </div>
                                             <span className="text-[9px] font-black text-primary group-hover/obj:text-sky-300 transition-colors shrink-0">+{obj.xp} XP</span>
                                         </div>
                                     ))}
                                 </div>
-                                <Button variant="ghost" className="w-full text-[9px] font-black uppercase tracking-[0.2em] py-3 border border-white/10 hover:bg-white hover:text-black transition-all text-[var(--nexus-text-muted)]">View All Quests</Button>
+                                <Button variant="ghost" className="w-full text-[9px] font-black uppercase tracking-[0.2em] py-3 border border-[var(--nexus-border)] hover:bg-[var(--nexus-text)] hover:text-[var(--nexus-bg)] transition-all text-[var(--nexus-text-muted)]">View All Quests</Button>
                             </div>
 
                             {/* Global Rank Card - Moved to Sidebar */}
@@ -309,7 +309,7 @@ export default function Dashboard() {
                                 </div>
                                 <p className="text-[10px] text-[var(--nexus-text-muted)] font-medium relative z-10">Top 4% of Operators Worldwide</p>
                                 <div className="pt-1 relative z-10">
-                                    <Button variant="outline" size="sm" className="w-full font-black uppercase tracking-widest text-[9px] border-white/10 hover:border-primary/50 transition-all py-4" onClick={() => router.push('/leaderboard')}>Leaderboard</Button>
+                                    <Button variant="outline" size="sm" className="w-full font-black uppercase tracking-widest text-[9px] border-[var(--nexus-border)] hover:border-primary/50 text-[var(--nexus-text)] transition-all py-4" onClick={() => router.push('/leaderboard')}>Leaderboard</Button>
                                 </div>
                             </div>
                         </div>

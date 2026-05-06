@@ -194,29 +194,52 @@
     border-radius: 4px; /* Professional sharp corners */
 }
 
-/* 4. Ether (Modern/Laser) */
+/* 4. Ether (Modern Glassmorphism Dark) */
 .aesthetic-ether {
-    --nexus-bg: #020617;
-    --nexus-card: rgba(15, 23, 42, 0.8);
-    --nexus-border: rgba(34, 211, 238, 0.1);
-    --nexus-accent: #22d3ee;
+    --nexus-bg: #121212;
+    --nexus-card: rgba(25, 25, 25, 0.4);
+    --nexus-border: rgba(255, 255, 255, 0.1);
+    --nexus-accent: #f59e0b; /* Amber/Gold accent */
     --nexus-text: #ffffff;
     --nexus-text-muted: #94a3b8;
     --foreground: #ffffff;
     --muted-foreground: #94a3b8;
 }
+
 .aesthetic-ether .card-glass {
-    background: var(--nexus-card);
-    border: 1px solid var(--nexus-border);
-    position: relative;
-    overflow: hidden;
+    background: rgba(40, 40, 40, 0.25);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 0, 0, 0.3),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.aesthetic-ether .card-glass::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--nexus-accent), transparent);
-    animation: laser-scan 4s linear infinite;
+
+.aesthetic-ether .card-glass:hover {
+    background: rgba(50, 50, 50, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 15px 40px -10px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Deep Glass Overrides for Inner Elements (Tables, Inner Cards) */
+.aesthetic-ether table,
+.aesthetic-ether th,
+.aesthetic-ether td,
+.aesthetic-ether .bg-white\/5,
+.aesthetic-ether .bg-slate-800\/50,
+.aesthetic-ether .bg-black\/20 {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(12px) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.aesthetic-ether th {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 /* 5. Aurora (Vibrant/Dynamic) */
@@ -265,6 +288,68 @@
     background: var(--nexus-card);
     border: 1px solid var(--nexus-border);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* 7. Prism (Modern Light) */
+.aesthetic-prism {
+    --nexus-bg: #f0f2f5;
+    --nexus-card: rgba(255, 255, 255, 0.65);
+    --nexus-border: rgba(0, 0, 0, 0.06);
+    --nexus-accent: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+    --nexus-text: #0f172a;
+    --nexus-text-muted: #64748b;
+    --foreground: #0f172a;
+    --muted-foreground: #64748b;
+}
+
+.aesthetic-prism .card-glass {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 8px 32px 0 rgba(31, 38, 135, 0.05),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aesthetic-prism .card-glass:hover {
+    transform: translateY(-4px) scale(1.01);
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 20px 40px -10px rgba(31, 38, 135, 0.1),
+        0 10px 20px -5px rgba(31, 38, 135, 0.05),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+/* 8. Netscape (Web 1.0 Retro) */
+.aesthetic-netscape {
+    --nexus-bg: #c0c0c0;
+    --nexus-card: #c0c0c0;
+    --nexus-border: #808080;
+    --nexus-accent: #0000ee;
+    --nexus-text: #000000;
+    --nexus-text-muted: #333333;
+    --foreground: #000000;
+    --muted-foreground: #333333;
+}
+.aesthetic-netscape body, .aesthetic-netscape main, .aesthetic-netscape * {
+    font-family: "Times New Roman", Times, serif !important;
+    border-radius: 0 !important;
+}
+
+/* 9. Vintage (Classic Web Day-Mode) */
+.aesthetic-vintage {
+    --nexus-bg: #f5f0e1;
+    --nexus-card: #fffef9;
+    --nexus-border: #c9b99a;
+    --nexus-accent: #006666;
+    --nexus-text: #2c1810;
+    --nexus-text-muted: #8b7355;
+    --foreground: #2c1810;
+    --muted-foreground: #8b7355;
+}
+.aesthetic-vintage body, .aesthetic-vintage main, .aesthetic-vintage * {
+    font-family: Georgia, "Times New Roman", Times, serif !important;
 }
 
 /* 6. Zenith (Simplified/Light) */
@@ -370,6 +455,27 @@
     50% { opacity: 0.6; }
 }
 
+/* Prism Aesthetic Animations (Flutter Glassmorphism) */
+@keyframes prism-float {
+    0%, 100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+    33% { transform: translate(40px, -60px) scale(1.05) rotate(5deg); }
+    66% { transform: translate(-30px, 30px) scale(0.95) rotate(-5deg); }
+}
+
+@keyframes prism-spin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes prism-laser {
+    0% { transform: translateX(-100%) translateY(-50px) rotate(5deg); opacity: 0; }
+    20% { opacity: 0; }
+    50% { opacity: 1; }
+    80% { opacity: 0; }
+    100% { transform: translateX(100%) translateY(50px) rotate(-5deg); opacity: 0; }
+}
+
 /* Base Utility for Cards */
 .nexus-card {
     @apply transition-all duration-300;
@@ -427,6 +533,108 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
+/* 7. Prism */
+.aesthetic-prism .nexus-card {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 
+        0 8px 32px 0 rgba(31, 38, 135, 0.05),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.aesthetic-prism .nexus-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.3;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.aesthetic-prism .nexus-card:hover::before {
+    opacity: 1;
+    animation: prism-shimmer 2s linear infinite;
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+}
+
+@keyframes prism-shimmer {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+/* 8. Netscape */
+.aesthetic-netscape .nexus-card {
+    background: #c0c0c0;
+    border: 2px solid !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+    box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #404040 !important;
+    transition: none !important;
+}
+.aesthetic-netscape .nexus-card:hover {
+    border-color: #808080 #ffffff #ffffff #808080 !important;
+    box-shadow: inset 1px 1px 0px #404040, inset -1px -1px 0px #dfdfdf !important;
+    transform: none !important;
+}
+
+.aesthetic-netscape .card-glass {
+    background: #c0c0c0;
+    border: 2px solid !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+    box-shadow: inset 1px 1px 0px #dfdfdf, inset -1px -1px 0px #404040 !important;
+    backdrop-filter: none;
+}
+.aesthetic-netscape .card-glass:hover {
+    border-color: #808080 #ffffff #ffffff #808080 !important;
+    box-shadow: inset 1px 1px 0px #404040, inset -1px -1px 0px #dfdfdf !important;
+}
+
+/* 9. Vintage */
+.aesthetic-vintage .nexus-card {
+    background: #fffef9;
+    border: 2px solid #c9b99a;
+    box-shadow: 
+        2px 2px 0px #b8a88a,
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    transition: all 0.15s ease;
+}
+.aesthetic-vintage .nexus-card:hover {
+    border-color: #006666;
+    box-shadow: 
+        3px 3px 0px #006666,
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    transform: translate(-1px, -1px);
+}
+
+.aesthetic-vintage .card-glass {
+    background: #fffef9;
+    border: 2px solid #c9b99a;
+    box-shadow: 
+        2px 2px 0px #b8a88a,
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    backdrop-filter: none;
+}
+.aesthetic-vintage .card-glass:hover {
+    border-color: #006666;
+    transform: translate(-1px, -1px);
+    box-shadow: 
+        3px 3px 0px #006666,
+        inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
 /* --- ANTI-COLOR-TRAP LOGIC (CONTRAST SAFETY) --- */
 /* Only invert nexus variables if they are inside an explicitly LIGHT container */
 html:not(.dark) [class*="aesthetic-"]:not(.aesthetic-zenith) main :is(.bg-white, .bg-card, .bg-surface, .bg-slate-50, .bg-background) {
@@ -435,9 +643,23 @@ html:not(.dark) [class*="aesthetic-"]:not(.aesthetic-zenith) main :is(.bg-white,
 }
 
 /* Ensure Zenith always maintains its high-contrast dark text */
-.aesthetic-zenith {
+.aesthetic-zenith,
+.aesthetic-netscape,
+.aesthetic-vintage {
     --nexus-text: #0f172a !important;
     --nexus-text-muted: #475569 !important;
+}
+
+/* Override vintage text to its warm brown palette */
+.aesthetic-vintage {
+    --nexus-text: #2c1810 !important;
+    --nexus-text-muted: #8b7355 !important;
+}
+
+/* Override netscape text to pure black */
+.aesthetic-netscape {
+    --nexus-text: #000000 !important;
+    --nexus-text-muted: #333333 !important;
 }
 
 /* Fallback: If text is dark on a dark tailwind background, force it white */

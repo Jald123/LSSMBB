@@ -93,11 +93,11 @@
 
     if (document.readyState === 'complete') {
         injectStyles();
-        injectIndicator();
+        // injectIndicator(); // Moved to the React workspace shell header
     } else {
         window.addEventListener('load', () => {
             injectStyles();
-            injectIndicator();
+            // injectIndicator(); // Moved to the React workspace shell header
         });
     }
 })();

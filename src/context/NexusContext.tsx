@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type AppAesthetic = 'slate' | 'obsidian' | 'ocean' | 'carbon' | 'light' | 'ether' | 'aurora' | 'zenith';
+export type AppAesthetic = 'slate' | 'obsidian' | 'ocean' | 'carbon' | 'light' | 'ether' | 'aurora' | 'zenith' | 'prism' | 'netscape' | 'vintage';
 
 interface NexusState {
     lastPhaseId: string;

@@ -264,20 +264,10 @@ export default function LearnHub() {
                     </div>
 
                     {/* Specialized Foundation Banner (Phase 0) */}
-                    <div className="relative group p-[3px] rounded-[2rem] overflow-hidden">
-                        {/* Animated Laser Border */}
-                        <div 
-                            className="absolute inset-0 z-0 animate-[laser-sweep_8s_linear_infinite]"
-                            style={{
-                                background: 'conic-gradient(from 0deg, transparent 60%, #c2983d 80%, #ffd700 90%, #c2983d 100%)',
-                                margin: '-100%'
-                            }}
-                        />
-                        
+                    <div className="relative group p-[1px] rounded-[2rem] overflow-hidden border border-nexus-border/50">
                         <div className="relative z-10 nexus-card rounded-[2rem] p-10 overflow-hidden shadow-2xl">
                             {/* Decorative Elements */}
-                            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#c2983d]/5 to-transparent pointer-events-none"></div>
-                            <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#c2983d]/10 rounded-full blur-[100px] pointer-events-none"></div>
+                            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/5 to-transparent pointer-events-none"></div>
                             
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 relative z-10">
                                 <div className="max-w-xl space-y-4">
@@ -297,18 +287,8 @@ export default function LearnHub() {
                                     {currentCurriculum[0].lessons.map((lesson, idx) => (
                                         <div 
                                             key={lesson.id}
-                                            className="relative group/laser p-[2px] rounded-[1.5rem] overflow-hidden flex-1"
+                                            className="relative group/laser rounded-[1.5rem] overflow-hidden flex-1 border border-white/10 hover:border-white/30 transition-all"
                                         >
-                                            {/* Individual Card Laser */}
-                                            <div 
-                                                className="absolute inset-0 z-0 animate-[laser-sweep_12s_linear_infinite]"
-                                                style={{
-                                                    background: idx === 0 
-                                                        ? 'conic-gradient(from 0deg, transparent 60%, #22d3ee 80%, #ffffff 90%, #22d3ee 100%)'
-                                                        : 'conic-gradient(from 0deg, transparent 60%, #10b981 80%, #ffffff 90%, #10b981 100%)',
-                                                    margin: '-100%'
-                                                }}
-                                            />
                                             
                                             <div 
                                                 onClick={() => handleLessonClick(lesson)}

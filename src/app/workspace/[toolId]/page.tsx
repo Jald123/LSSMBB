@@ -479,26 +479,31 @@ const ToolWorkspace = () => {
                         <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'draw' ? null : 'draw')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'draw' ? 'bg-emerald-500/20 text-emerald-400 font-bold shadow-[0_0_10px_rgba(16,185,129,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`} title="Draw & Markup"><Pen className="w-4 h-4" /></button>
                         <button onClick={() => setActiveAssistantTool(activeAssistantTool === 'sniper' ? null : 'sniper')} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all group ${activeAssistantTool === 'sniper' ? 'bg-violet-500/20 text-violet-400 font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)]' : theme === 'light' ? 'hover:bg-slate-100 text-nexus-text-secondary hover:text-nexus-text-primary' : 'hover:bg-white/5 text-nexus-text-secondary hover:text-white'}`} title="Zoom Sniper"><Search className="w-4 h-4" /></button>
                     </div>
-                    <div className="w-px h-8 bg-nexus-border/50 mx-2" />
-                    <div className="flex items-center gap-1">
-                        <button onClick={() => handleZoom(-0.1)} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-indigo-500' : 'hover:bg-white/5 text-slate-400 hover:text-indigo-400'}`}><Minus className="w-4 h-4" /></button>
-                        <button onClick={resetZoom} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-orange-500' : 'hover:bg-white/5 text-slate-400 hover:text-orange-400'}`}><Home className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => handleZoom(0.1)} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-emerald-500' : 'hover:bg-white/5 text-slate-400 hover:text-emerald-400'}`}><Plus className="w-4 h-4" /></button>
+                    {/* Hidden Zoom, Theme, and Fullscreen Controls (per user request) */}
+                    <div className="hidden">
+                        <div className="w-px h-8 bg-nexus-border/50 mx-2" />
+                        <div className="flex items-center gap-1">
+                            <button onClick={() => handleZoom(-0.1)}><Minus className="w-4 h-4" /></button>
+                            <button onClick={resetZoom}><Home className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => handleZoom(0.1)}><Plus className="w-4 h-4" /></button>
+                        </div>
+                        <button onClick={toggleTheme}><Moon className="w-4 h-4" /></button>
+                        <button onClick={toggleFullScreen}><Maximize2 className="w-4 h-4" /></button>
                     </div>
-                    <div className="w-px h-8 bg-nexus-border/50 mx-2" />
-                    <button onClick={toggleTheme} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}>
-                        {theme === 'dark' ? <Sun className="w-4 h-4 group-hover:text-yellow-400" /> : <Moon className="w-4 h-4 group-hover:text-sky-400" />}
-                    </button>
-                    <div className="w-px h-8 bg-nexus-border/50 mx-1" />
-                    <button onClick={toggleFullScreen} className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all group ${theme === 'light' ? 'hover:bg-slate-100 text-slate-500 hover:text-slate-800' : 'hover:bg-white/5 text-slate-400 hover:text-white'}`}>
-                        {isFullScreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-                    </button>
-                    <div className={`text-[10px] font-orbitron font-black ml-2 uppercase opacity-50 tracking-widest ${theme === 'light' ? 'text-nexus-text-secondary' : 'text-nexus-text-secondary/60'}`}>AST-V2</div>
                 </div>
 
-                <div className={`p-1 rounded-full border flex shadow-inner w-1/4 justify-end ${theme === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-black/60 border-white/5'}`}>
-                    <button onClick={() => setViewMode('do')} className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'do' ? 'bg-nexus-cyan text-nexus-navy shadow-[0_0_15px_rgba(34,211,238,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}><Terminal className="w-3 h-3" /> DO</button>
-                    <button onClick={() => setViewMode('learn')} className={`px-5 py-1.5 rounded-full transition-all duration-300 flex items-center gap-2 text-[10px] font-black font-orbitron tracking-widest ${viewMode === 'learn' ? 'bg-nexus-purple text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 'text-slate-500 hover:text-slate-300'}`}><FileText className="w-3 h-3" /> LEARN</button>
+                <div className="w-1/4 flex items-center justify-end">
+                    {/* Moved LINK ACTIVE indicator to the header */}
+                    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full border shadow-inner ${theme === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-black/60 border-cyan-500/20'}`}>
+                        <div className={`w-2 h-2 rounded-full ${theme === 'light' ? 'bg-emerald-500 animate-pulse' : 'bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse'}`} />
+                        <span className={`text-[10px] font-orbitron font-black uppercase tracking-widest ${theme === 'light' ? 'text-slate-600' : 'text-cyan-400'}`}>Link Active</span>
+                    </div>
+                    
+                    {/* Hidden DO/LEARN buttons (per user request) */}
+                    <div className="hidden">
+                        <button onClick={() => setViewMode('do')}>DO</button>
+                        <button onClick={() => setViewMode('learn')}>LEARN</button>
+                    </div>
                 </div>
             </div>
 

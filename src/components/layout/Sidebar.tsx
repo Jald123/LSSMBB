@@ -20,7 +20,9 @@ import {
     FileText,
     Library,
     Plus,
-    X
+    X,
+    Moon,
+    Sun
 } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -43,12 +45,14 @@ import { useNexus } from "@/context/NexusContext";
 import { toolRegistry } from "@/data/toolRegistry";
 
 const GLOBAL_AESTHETICS = [
-    { id: 'slate', color: '#111318', label: 'Classic Slate' },
     { id: 'obsidian', color: '#050505', label: 'Glasscope' },
     { id: 'ocean', color: '#002B36', label: 'Titanium' },
-    { id: 'ether', color: '#0F172A', label: 'Ether (Modern)' },
+    { id: 'ether', color: 'linear-gradient(135deg, #121212 0%, #f59e0b 100%)', label: 'Ether (Flutter Glass)' },
     { id: 'aurora', color: '#1E1B4B', label: 'Aurora (Vibrant)' },
     { id: 'zenith', color: '#FFFFFF', label: 'Zenith (Pure)' },
+    { id: 'prism', color: 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)', label: 'Prism (Modern Light)' },
+    { id: 'netscape', color: '#c0c0c0', label: 'Netscape 1995' },
+    { id: 'vintage', color: '#f5f0e1', label: 'Vintage (Retro Web)' },
 ] as const;
 
 export function Sidebar({ 
@@ -112,14 +116,16 @@ export function Sidebar({
                         </>
                     )
                 };
-            case 'ether': // Modern
+            case 'ether': // Flutter Glassmorphism Dark
                 return {
-                    background: '#020617',
+                    background: 'rgba(18, 18, 18, 0.4)',
                     isLight: false,
                     overlay: (
                         <>
-                            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_10px_#22d3ee] animate-pulse" />
-                            <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle, #22d3ee 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+                            <div className="absolute inset-0 backdrop-blur-2xl" />
+                            <div className="absolute -top-[10%] -left-[10%] w-48 h-48 bg-amber-500/15 rounded-full blur-[50px] animate-pulse" />
+                            <div className="absolute bottom-[20%] -right-[10%] w-40 h-40 bg-orange-500/10 rounded-full blur-[40px] animate-pulse" />
+                            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }} />
                         </>
                     )
                 };
@@ -129,6 +135,11 @@ export function Sidebar({
                     isLight: false,
                     overlay: (
                         <>
+                            {/* LSS Geometric Pattern */}
+                            <div className="absolute inset-0 opacity-[0.25]" style={{ 
+                                backgroundImage: `url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg opacity='0.8'%3E%3Cpath d='M40 30h4v-4h2v4h4v2h-4v4h-2v-4h-4z' fill='%23fbbf24'/%3E%3Cpolygon points='120,40 130,20 140,40' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3Ccircle cx='160' cy='80' r='3' fill='%23a855f7'/%3E%3Crect x='20' y='120' width='12' height='2' fill='%2338bdf8' transform='rotate(-30 26 121)'/%3E%3Cpath d='M80 150a10 10 0 0 1 20 0' fill='none' stroke='%23fbbf24' stroke-width='2'/%3E%3Cpath d='M140 140l10 10m0-10l-10 10' stroke='%23ffffff' stroke-width='2'/%3E%3Ccircle cx='100' cy='100' r='2' fill='%23ffffff'/%3E%3Cpolyline points='10,180 15,175 20,180 25,175 30,180' fill='none' stroke='%23a855f7' stroke-width='2'/%3E%3Cpath d='M180 180h4v-4h2v4h4v2h-4v4h-2v-4h-4z' fill='%23ffffff'/%3E%3Cpolygon points='60,180 65,170 70,180' fill='none' stroke='%2338bdf8' stroke-width='2'/%3E%3Ccircle cx='180' cy='30' r='2' fill='%23fbbf24'/%3E%3Crect x='70' y='60' width='10' height='2' fill='%23ffffff' transform='rotate(45 75 61)'/%3E%3C/g%3E%3C/svg%3E")`,
+                                backgroundSize: '200px 200px'
+                            }} />
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1)_0%,transparent_50%)] animate-pulse" />
                             <div className="absolute top-[-20%] left-[-20%] w-full h-full bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-pink-500/10 blur-[120px] animate-pulse" />
                         </>
@@ -139,6 +150,43 @@ export function Sidebar({
                     background: '#f8fafc',
                     isLight: true,
                     overlay: <div className="absolute inset-0 bg-white/50 backdrop-blur-sm" />
+                };
+            case 'prism': // Modern Light
+                return {
+                    background: 'rgba(240, 242, 245, 0.8)',
+                    isLight: true,
+                    overlay: (
+                        <>
+                            <div className="absolute inset-0 backdrop-blur-xl" />
+                            <div className="absolute -top-[10%] -left-[10%] w-40 h-40 bg-indigo-500/10 rounded-full blur-[40px] animate-pulse" />
+                            <div className="absolute bottom-[20%] -right-[10%] w-32 h-32 bg-pink-500/10 rounded-full blur-[30px] animate-pulse" />
+                            <div className="absolute inset-0 opacity-[0.25] pointer-events-none" 
+                                style={{ 
+                                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 1l2 2-2 2-2-2zm6 0l2 2-2 2-2-2z' fill='%23cbd5e1' fill-opacity='0.5' fill-rule='evenodd'/%3E%3Cpath d='M5 7l2 2-2 2-2-2zm6 0l2 2-2 2-2-2z' fill='%23cbd5e1' fill-opacity='0.5' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+                                    backgroundSize: '12px 12px'
+                                }} 
+                            />
+                        </>
+                    )
+                };
+            case 'netscape':
+                return {
+                    background: '#c0c0c0',
+                    isLight: true,
+                    overlay: (
+                        <div className="absolute inset-0 border-r-[3px] border-[#808080] shadow-[inset_-1px_0_0_#ffffff]" />
+                    )
+                };
+            case 'vintage':
+                return {
+                    background: '#ede5d0',
+                    isLight: true,
+                    overlay: (
+                        <>
+                            <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'6\' height=\'6\' viewBox=\'0 0 6 6\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'0.4\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M5 0h1L0 6V5zM6 5v1H5z\'/%3E%3C/g%3E%3C/svg%3E")' }} />
+                            <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#006666]" />
+                        </>
+                    )
                 };
             default: // slate
                 return {
@@ -193,10 +241,10 @@ export function Sidebar({
                     {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
                 </button>
 
-                <nav className="flex-1 overflow-y-auto py-8 px-4 space-y-10 no-scrollbar">
+                <nav className="flex-1 overflow-y-auto py-8 px-4 space-y-10 no-scrollbar relative z-10">
                     {/* Primary Nav */}
                     <div className="space-y-2">
-                        {!isCollapsed && <p className={cn("px-4 text-[10px] font-black tracking-[0.2em] mb-4 uppercase", currentStyles.isLight ? "text-slate-400" : "text-slate-500")}>Primary Systems</p>}
+                        {!isCollapsed && <p className="px-4 text-[10px] font-black tracking-[0.2em] mb-4 uppercase" style={{ color: currentStyles.isLight ? '#94a3b8' : '#64748b' }}>Primary Systems</p>}
                         {PRIMARY_NAV.map((item) => {
                             const isActive = pathname === item.path || (item.path !== '/' && pathname?.startsWith(item.path));
                             return (
@@ -242,7 +290,7 @@ export function Sidebar({
                         {!isCollapsed && (
                             <div className="px-4 space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <p className={cn("text-[10px] font-black tracking-[0.2em] uppercase", currentStyles.isLight ? "text-slate-400" : "text-slate-500")}>Tactical Tools</p>
+                                    <p className="text-[10px] font-black tracking-[0.2em] uppercase" style={{ color: currentStyles.isLight ? '#94a3b8' : '#64748b' }}>Tactical Tools</p>
                                     <button 
                                         onClick={() => setIsAddingTool(!isAddingTool)}
                                         className={cn(
@@ -359,31 +407,65 @@ export function Sidebar({
                     </div>
                 </nav>
 
-                <div className={cn("p-4 border-t space-y-4 mt-auto", currentStyles.isLight ? "border-slate-100 bg-slate-50/50" : "border-white/5 bg-black/40 backdrop-blur-md")}>
-                    {/* Theme Selector */}
+                <div 
+                    className={cn("p-4 border-t space-y-4 mt-auto relative z-10", currentStyles.isLight ? "border-slate-300" : "border-white/5 bg-black/40 backdrop-blur-md")}
+                    style={currentStyles.isLight ? { backgroundColor: 'rgba(255,255,255,0.7)' } : undefined}
+                >
+                    {/* Theme Selector - Two rows: Dark / Day */}
                     {!isCollapsed && (
                         <div className="px-2 pb-2">
-                            <p className={cn("text-[9px] font-black tracking-widest mb-3 uppercase", currentStyles.isLight ? "text-slate-400" : "text-slate-500")}>UI Aesthetics</p>
+                            <p className="text-[9px] font-black tracking-widest mb-3 uppercase" style={{ color: currentStyles.isLight ? '#64748b' : '#64748b' }}>UI Aesthetics</p>
+                            
+                            {/* Dark Modes Row */}
+                            <div className="flex items-center gap-2 mb-2">
+                                <Moon className="w-3.5 h-3.5 shrink-0" style={{ color: currentStyles.isLight ? '#94a3b8' : '#475569' }} />
+                                <div className="flex items-center gap-1.5">
+                                    {GLOBAL_AESTHETICS.filter(t => ['obsidian', 'ocean', 'ether', 'aurora'].includes(t.id)).map((t) => {
+                                        const isSelected = mounted && appAesthetic === t.id;
+                                        return (
+                                            <button
+                                                key={t.id}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setAppAesthetic(t.id);
+                                                }}
+                                                className={cn(
+                                                    "w-6 h-6 rounded-full border-2 transition-all cursor-pointer relative z-50",
+                                                    isSelected ? "border-primary scale-110 shadow-[0_0_15px_rgba(34,211,238,0.5)]" : "border-slate-300 hover:border-slate-500"
+                                                )}
+                                                style={{ background: t.color }}
+                                                title={t.label}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            
+                            {/* Day Modes Row */}
                             <div className="flex items-center gap-2">
-                                {GLOBAL_AESTHETICS.map((t) => {
-                                    const isSelected = mounted && appAesthetic === t.id;
-                                    return (
-                                        <button
-                                            key={t.id}
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                setAppAesthetic(t.id);
-                                            }}
-                                            className={cn(
-                                                "w-7 h-7 rounded-full border-2 transition-all cursor-pointer relative z-50",
-                                                isSelected ? "border-primary scale-110 shadow-[0_0_15px_rgba(34,211,238,0.5)]" : "border-white/10 hover:border-white/30"
-                                            )}
-                                            style={{ backgroundColor: t.color }}
-                                            title={t.label}
-                                        />
-                                    );
-                                })}
+                                <Sun className="w-3.5 h-3.5 shrink-0" style={{ color: currentStyles.isLight ? '#94a3b8' : '#475569' }} />
+                                <div className="flex items-center gap-1.5">
+                                    {GLOBAL_AESTHETICS.filter(t => ['zenith', 'prism', 'netscape', 'vintage'].includes(t.id)).map((t) => {
+                                        const isSelected = mounted && appAesthetic === t.id;
+                                        return (
+                                            <button
+                                                key={t.id}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setAppAesthetic(t.id);
+                                                }}
+                                                className={cn(
+                                                    "w-6 h-6 rounded-full border-2 transition-all cursor-pointer relative z-50",
+                                                    isSelected ? "border-primary scale-110 shadow-[0_0_15px_rgba(34,211,238,0.5)]" : "border-slate-300 hover:border-slate-500"
+                                                )}
+                                                style={{ background: t.color }}
+                                                title={t.label}
+                                            />
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
                     )}
@@ -391,18 +473,11 @@ export function Sidebar({
                     <div className="space-y-1">
                         <Link
                             href="/settings"
-                            className={cn(
-                                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-black transition-all group",
-                                pathname?.startsWith('/settings') 
-                                    ? (currentStyles.isLight ? "text-primary bg-primary/10" : "text-white bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)]") 
-                                    : (currentStyles.isLight ? "text-slate-600 hover:text-primary hover:bg-slate-50" : "text-white hover:bg-white/5")
-                            )}
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-black transition-all group hover:bg-primary/5"
+                            style={{ color: currentStyles.isLight ? '#1e293b' : '#ffffff' }}
                             title={isCollapsed ? "Settings" : undefined}
                         >
-                            <Settings className={cn(
-                                "w-5 h-5 transition-all duration-500",
-                                currentStyles.isLight ? "text-slate-400 group-hover:text-primary" : "text-white group-hover:rotate-90"
-                            )} />
+                            <Settings className="w-5 h-5 transition-all duration-500 group-hover:text-primary" style={{ color: currentStyles.isLight ? '#475569' : '#ffffff' }} />
                             {!isCollapsed && <span className="tracking-tight">Settings</span>}
                         </Link>
                         <button
@@ -412,18 +487,11 @@ export function Sidebar({
                                 await fetch('/api/auth/logout', { method: 'POST' });
                                 window.location.href = '/login';
                             }}
-                            className={cn(
-                                "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-black transition-all group",
-                                currentStyles.isLight 
-                                    ? "text-slate-500 hover:text-red-600 hover:bg-red-50" 
-                                    : "text-white hover:text-red-400 hover:bg-red-400/10"
-                            )}
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-black transition-all group hover:bg-red-50"
+                            style={{ color: currentStyles.isLight ? '#475569' : '#ffffff' }}
                             title={isCollapsed ? "Sign Out" : undefined}
                         >
-                            <LogOut className={cn(
-                                "w-5 h-5 transition-all",
-                                currentStyles.isLight ? "text-slate-400 group-hover:text-red-600" : "text-white group-hover:-translate-x-1"
-                            )} />
+                            <LogOut className="w-5 h-5 transition-all group-hover:text-red-600" style={{ color: currentStyles.isLight ? '#64748b' : '#ffffff' }} />
                             {!isCollapsed && <span className="tracking-tight">Sign Out</span>}
                         </button>
                     </div>
