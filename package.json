@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate && npx prisma db push && next build",
+    "build": "npx prisma generate && next build",
+    "db:push": "npx prisma db push",
     "start": "next start",
     "lint": "next lint",
     "seed": "npx tsx prisma/seed.ts"
